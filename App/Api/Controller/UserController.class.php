@@ -28,7 +28,6 @@ class UserController extends BaseController {
 	protected $sex;              		  #性别
 	protected $mobile;           		  #认证手机号
     protected $mobile_is_validated;       #手机是否验证
-	protected $is_validated;              #是否验证(0-未验证,1-已验证)
 	protected $identity_card_0;   		  #身份证号正
 	protected $identity_card_1;   		  #身份证号反
     protected $identity_card_is_validated;#身份证是否验证
