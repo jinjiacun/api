@@ -6,7 +6,7 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --会员管理--
 ------------------------------------------------------------
 function of api:
-public function register                  用户注册
+public function register                  用户注册(finish)
 public function check_name                检查用户名
 public function check_mobile              检查手机号码
 public function mobile_validated          手机验证
@@ -48,7 +48,7 @@ class UserController extends BaseController {
 	#覆盖add方法
 	public function add($content)
 	{
-		$this->register($content);
+		//$this->register($content);
 	}
 	
     #用户注册
