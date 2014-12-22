@@ -1,4 +1,4 @@
-<?phe
+<?php
 namespace api\Controller;
 use Api\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
@@ -32,6 +32,8 @@ class UserController extends BaseController {
 	protected $identity_card_0;   		  #身份证号正
 	protected $identity_card_1;   		  #身份证号反
     protected $identity_card_is_validated;#身份证是否验证
+    protected $identity_card_no;          #身份证号码
+    protected $zipcode;                   #邮政编码
 	protected $province;                  #省份
 	protected $city;                      #城市
 	protected $district;                  #地区
@@ -44,7 +46,10 @@ class UserController extends BaseController {
 	protected $add_time;                  #注册日期
     
 	#覆盖add方法
-	public function add(){}
+	public function add($content)
+	{
+		$this->register($content);
+	}
 	
     #用户注册
 	public function register($content)
@@ -54,7 +59,7 @@ class UserController extends BaseController {
 		#检查数据
 		
 		#加密密码
-        $data['password'] = md5('password');
+        $data['password'] = md5($data['password']);
 
 		if(M('User')->add($data))
 		{
@@ -236,13 +241,38 @@ class UserController extends BaseController {
 	public function login($content)
 	{
 		$data = $this->fill($content);
-		session('user_name', $data['user_name']);
+		if(!isset($data['user_name'])
+		|| !isset($data['password'])
+		)
+		{	
+			return array(500,
+				         urlencode('参数传输失败'));
+		}
+
+		$where = array(
+					'user_name'=>$data['user_name'],
+					'password'=>md5($data['password'])
+			);
+		$tmp_one = M('User')->where($where)->find();
+		if($tmp_one)
+		{
+			session('user_name', $data['user_name']);
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+                    'message'=>urlencode('成功登录'),
+					),
+			);
+		}
+		
 		return array(
-			200,
-			array(
-				'is_success'=>0
-				),
-		);
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>urlencode('登录失败'),
+					),
+			);
 	}
 
 	#获取登录session
@@ -250,6 +280,7 @@ class UserController extends BaseController {
 	{
 		return array(
 			200,
-			session('user_name'));
+			session('user_name')
+			);
 	}
 }
