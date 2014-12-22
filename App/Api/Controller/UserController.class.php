@@ -36,6 +36,7 @@ class UserController extends BaseController {
 	protected $province;                  #省份
 	protected $city;                      #城市
 	protected $district;                  #地区
+	protected $town;                      #镇
 	protected $address;           		  #联系地址
     protected $address_id;                #默认收获地址
 	protected $photo;             		  #个人照片
