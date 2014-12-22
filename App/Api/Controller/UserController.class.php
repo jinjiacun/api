@@ -1,4 +1,4 @@
-<?php
+<?phe
 namespace api\Controller;
 use Api\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
@@ -11,8 +11,6 @@ public function check_name                检查用户名
 public function check_mobile              检查手机号码
 public function mobile_validated          手机验证
 public function identity_card_validated   身份证验证
-public function send_mobile_validate_code 发送手机验证码
-public function get_mobile_validate_code  查询手机验证码
 public function update_password           修改密码
 public function forget_password           忘记密码
 public function login                     登录
@@ -43,6 +41,39 @@ class UserController extends BaseController {
 	protected $email;             		  #E-mail
 	protected $make_collections_account;  #收款账户
 	protected $add_time;                  #注册日期
+    
+	#覆盖add方法
+	public function add(){}
+	
+    #用户注册
+	public function register($content)
+	{
+		$data = $this->fill($content);
+		
+		#检查数据
+		
+		#加密密码
+        $data['password'] = md5('password');
+
+		if(M('User')->add($data))
+		{
+			return array(
+						200,
+                        array('is_success'=>0,
+                              'message'=>urlencode('成功注册'),
+                              ),
+                           );
+		}
+		else
+		{
+			return array(200,
+                         array(
+							'is_success'=>-1,
+                            'message'=>urlencode('注册失败'),
+							),
+                         );
+		}
+	}
 
 	#检查用户名
 	/**

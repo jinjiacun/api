@@ -4,6 +4,10 @@ use Think\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --商品管理--
+------------------------------------------------------------
+public function get_list  
+
+------------------------------------------------------------
 */
 class GoodsController extends BaseController {
 
@@ -87,7 +91,7 @@ class GoodsController extends BaseController {
     *@@call_api call_api
     *@param {'status':200,'content':{'is_success':xxx,'message':'xxx'}}
     */
-    /*public function add($content)
+    public function add($content)
     {
     	//反解析
     	#格式化并检查参数
@@ -95,5 +99,5 @@ class GoodsController extends BaseController {
 		extract($format_params);
         
 		echo $goods_name;
-    }*/
+    }
 }

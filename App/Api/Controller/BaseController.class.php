@@ -3,6 +3,16 @@ namespace api\Controller;
 use Think\Controller;
 /**
 --基础类--
+------------------------------------------------------------
+public function add           			  添加数据
+public function get_list      			  查询数据列表
+public function get_row                   查询一行
+public function update                    更新
+public function delete                    删除
+public function send_mobile_validate_code 发送手机验证码
+public function get_mobile_validate_code  查询手机验证码
+public function send_email                发送邮件
+------------------------------------------------------------
 */
 class BaseController extends Controller {
 
@@ -19,8 +29,8 @@ class BaseController extends Controller {
 	public function __get($property_name)
 	{
 		if(isset($this->$property_name))
-		{
-			return $this->$property_name;
+
+			returt $this->$property_name;
 		}
 	}
 
@@ -102,5 +112,23 @@ class BaseController extends Controller {
 			return true;
 		}
 		return false;
+	}
+
+
+	public function send_mobile_validate_code($content)
+	{
+
+	}
+
+	#查询手机验证码
+	public function get_mobile_validate_code($content)  
+	{
+
+	}
+
+	#发送邮件
+	public function send_email($content)                
+	{
+
 	}
 }
