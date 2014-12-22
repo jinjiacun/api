@@ -13,12 +13,13 @@ class GoodsController extends BaseController {
 
     protected $_module_name = 'goods';
     protected $id;              #id
+    protected $user_id;         #用户id
     protected $goods_sn;        #商品编号
     protected $post_no;         #邮票志号
     protected $post_name;       #邮票名称
-    protected $post_condition;  #邮票品相
-    protected $post_spec;       #邮票规格
-    protected $post_cat;        #邮票品类
+    protected $post_condition;  #邮票品相编码
+    protected $post_spec;       #邮票规格编码
+    protected $post_cat;        #邮票品类编码
     protected $post_price;      #邮票单价
     protected $post_number;     #邮票数量
     protected $post_shop_price; #销售价格
@@ -28,7 +29,7 @@ class GoodsController extends BaseController {
     protected $yearbook_spec;   #年册规格
     protected $chronological;   #编年年份
     protected $issue;           #发行日期
-    protected $post_company;    #邮票单位
+    protected $post_unit;       #邮票单位编码
     protected $transaction_type;#交易类型
     protected $end_of_date;     #有效期至
     protected $promise;         #承诺
