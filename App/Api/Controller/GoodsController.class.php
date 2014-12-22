@@ -33,6 +33,7 @@ class GoodsController extends BaseController {
     protected $transaction_type;#交易类型
     protected $end_of_date;     #有效期至
     protected $promise;         #承诺
+    protected $is_check;        #是否审核通过
     protected $add_time;        #添加日期
 
     public function index(){
