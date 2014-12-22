@@ -4,29 +4,45 @@ use Api\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --会员管理--
+------------------------------------------------------------
+function of api:
+public function register                  用户注册
+public function check_name                检查用户名
+public function check_mobile              检查手机号码
+public function mobile_validated          手机验证
+public function identity_card_validated   身份证验证
+public function send_mobile_validate_code 发送手机验证码
+public function get_mobile_validate_code  查询手机验证码
+public function update_password           修改密码
+public function forget_password           忘记密码
+public function login                     登录
+public function get_info                  用户信息查询
+------------------------------------------------------------
 */
 class UserController extends BaseController {
 
 	protected $_module_name = 'user';
-	protected $id;               		 #关键字
-	protected $user_name;        		 #用户名
-	protected $password;                 #密码
-	protected $nick_name;        		 #昵称
-	protected $real_name;		 		 #真实姓名
-	protected $sex;              		 #性别
-	protected $mobile;           		 #认证手机号
-	protected $is_validated;             #是否验证(0-未验证,1-已验证)
-	protected $identity_card_0;   		 #身份证号正
-	protected $identity_card_1;   		 #身份证号反
-	protected $province;                 #省份
-	protected $city;                     #城市
-	protected $district;                 #地区
-	protected $address;           		 #联系地址
-	protected $photo;             		 #个人照片
-	protected $qq;                		 #QQ号码
-	protected $email;             		 #E-mail
-	protected $make_collections_account; #收款账户
-	protected $add_time;                 #注册日期
+	protected $id;               		  #关键字
+	protected $user_name;        		  #用户名
+	protected $password;                  #密码
+	protected $nick_name;        		  #昵称
+	protected $real_name;		 		  #真实姓名
+	protected $sex;              		  #性别
+	protected $mobile;           		  #认证手机号
+    protected $mobile_is_validated;       #手机是否验证
+	protected $is_validated;              #是否验证(0-未验证,1-已验证)
+	protected $identity_card_0;   		  #身份证号正
+	protected $identity_card_1;   		  #身份证号反
+    protected $identity_card_is_validated;#身份证是否验证
+	protected $province;                  #省份
+	protected $city;                      #城市
+	protected $district;                  #地区
+	protected $address;           		  #联系地址
+	protected $photo;             		  #个人照片
+	protected $qq;                		  #QQ号码
+	protected $email;             		  #E-mail
+	protected $make_collections_account;  #收款账户
+	protected $add_time;                  #注册日期
 
 	#检查用户名
 	/**
@@ -83,6 +99,8 @@ class UserController extends BaseController {
 
 		return false;
 	} 
+
+
 
 	#修改密码
 	/**
@@ -164,7 +182,15 @@ class UserController extends BaseController {
 	*/
 	public function forget_password($content)
 	{
+		$data = $this->fill($content);
 
+		if(!isset($data['mobile'])
+		|| !isset($data['new_password'])
+		)
+		{
+			return array(500,
+				         urlencode(''));
+		}
 	}
 
 
