@@ -43,18 +43,18 @@ class GoodsController extends BaseController {
 
     public function get_list($content)
     {
-        $data = parent::get_list($content);
-
+        list($data, $record_count) = parent::get_list($content);
+        
         $list = array();
         if($data)
         {
             foreach($data as $v)
             {
                 $list[] = array(
-                        'id'               => intval($v['Id']),
+                        'id'               => intval($v['id']),
                         'goods_sn'         => urlencode($v['goods_sn']),
-                        'goods_no'         => urlencode($v['goods_sn']),
-                        'goods_name'       => urlencode($v['goods_name']),
+                        'post_no'          => urlencode($v['post_no']),
+                        'post_name'        => urlencode($v['post_name']),
                         'post_condition'   => urlencode($v['post_condition']),
                         'post_spec'        => urlencode($v['post_spec']),
                         'post_cat'         => intval($v['post_cat']),
@@ -76,7 +76,8 @@ class GoodsController extends BaseController {
             unset($v);
         }
 
-        return array(200, $list);
+        return array(200, array('list'=>$list, 
+                                'record_count'=>$record_count));
     }
 
     #添加商品

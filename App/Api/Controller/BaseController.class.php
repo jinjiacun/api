@@ -87,8 +87,13 @@ class BaseController extends Controller {
 		$page_index = 1;
 		$page_size  = 10;
 		$list = $obj->page($page_index, $page_size)->where($data['where'])->select();
-		print_r($obj->getLastSql);
-		return $list;
+		#
+		$record_count = 0;
+		$record_count = $obj->where($data['where'])->count();
+		return array(
+					$list,
+					$record_count,
+					);
 	}
 
 	#查询单个
