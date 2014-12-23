@@ -4,7 +4,7 @@ use Think\Controller;
 class IndexController extends Controller {
 
     protected $type        = "" ; //数据类型
-	protected $method      = "" ; //方法名称
+	  protected $method      = "" ; //方法名称
     protected $in_content  = "" ; //输入参数
     protected $handler     = null;//资源处理句柄
 
@@ -39,6 +39,7 @@ class IndexController extends Controller {
 
 
     public function index(){//($type, $method=null, $content=null, $handler=null){
+      header("Content-Type: text/html;charset=utf-8");
         ##get
     	if(I('get.method'))
     	{
@@ -71,7 +72,7 @@ class IndexController extends Controller {
         || !isset($this->in_content))
         {
            return $this->call_back(500, 
-                            array('message'=>urlencode('参数输入不合法'),)
+                            array('message'=>urlencode('参数输入不合法'))
                             );
             return;
         }
@@ -79,7 +80,7 @@ class IndexController extends Controller {
         if('' == $this->method)
         {
            return $this->call_back(500,
-                            array('message'=>urlencode('方法名不为空'),)
+                            array('message'=>urlencode('方法名不为空'))
                             );
         }
 
@@ -102,7 +103,7 @@ class IndexController extends Controller {
 
         list($class_name, $method)= explode('.', $this->method);
         $class_name = 'Api/'.$class_name;
-    	$obj = A($class_name);
+    	  $obj = A($class_name);
         switch($this->type)
         {
             case 'resource':

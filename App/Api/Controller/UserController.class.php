@@ -321,7 +321,7 @@ class UserController extends BaseController {
 			);
 	}
 
-	private fucntion do_get_mobile($mobile)
+	private function do_get_mobile($mobile)
 	{
 		$where = array(
 				'mobile'=>$mobile,

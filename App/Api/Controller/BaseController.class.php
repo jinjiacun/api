@@ -29,8 +29,8 @@ class BaseController extends Controller {
 	public function __get($property_name)
 	{
 		if(isset($this->$property_name))
-
-			returt $this->$property_name;
+		{
+			return $this->$property_name;
 		}
 	}
 
@@ -78,10 +78,15 @@ class BaseController extends Controller {
 	#查询列表
 	public function get_list($content){
 		$data = $this->fill($content);
+		$data['where'] = isset($data['where'])?$data['where']:array();
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$obj  = M($this->_module_name);
-		$list = $obj->where($data)->page($data['page_index'].",".$data['page_size'])->select();
+		$page_index = $data['page_index'];
+		$page_size  = $data['page_size'];
+		$page_index = 1;
+		$page_size  = 10;
+		$list = $obj->page($page_index, $page_size)->where($data['where'])->select();
 		print_r($obj->getLastSql);
 		return $list;
 	}

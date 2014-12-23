@@ -27,7 +27,8 @@ class UseraddressController extends BaseController {
 	#设置默认收获地址
 	public function set_default_address($content)
 	{
-		
+		return array(200,
+                    array());
 	}
 	
 }
