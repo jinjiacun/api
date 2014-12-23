@@ -78,8 +78,10 @@ class BaseController extends Controller {
 	#查询列表
 	public function get_list($content){
 		$data = $this->fill($content);
+		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
+		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$obj  = M($this->_module_name);
-		$list = $obj->where($data)->select();
+		$list = $obj->where($data)->page($data['page_index'].",".$data['page_size'])->select();
 		print_r($obj->getLastSql);
 		return $list;
 	}

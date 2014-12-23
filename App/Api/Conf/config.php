@@ -11,5 +11,6 @@ return array(
      'domain_url'    => 'http://localhost',
      'media_url_pre' => 'http://localhost/Api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),
+     'param_fmt_err' => array(500, urlencode('参数格式不正确'))
 	//'配置项'=>'配置值'
 );
