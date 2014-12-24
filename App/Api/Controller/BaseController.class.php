@@ -65,7 +65,9 @@ class BaseController extends Controller {
 		{
 			return array(
 					200,
-					array('is_success'=>0)
+					array('is_success'=>0,
+						  'id'=>$obj->getLastInsID()
+						  )
 				);
 		}
 
@@ -82,10 +84,16 @@ class BaseController extends Controller {
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$obj  = M($this->_module_name);
-		$page_index = $data['page_index'];
-		$page_size  = $data['page_size'];
-		$page_index = 1;
-		$page_size  = 10;
+		if(isset($data['page_index']))
+			$page_index = $data['page_index'];
+		else
+			$page_index = 1;
+		if(isset($data['page_size']))
+			$page_size  = $data['page_size'];
+		else
+			$page_size  = 10;
+		//$page_index = 1;
+		//$page_size  = 10;
 		$list = $obj->page($page_index, $page_size)->where($data['where'])->select();
 		#
 		$record_count = 0;
@@ -142,5 +150,26 @@ class BaseController extends Controller {
 	public function send_email($content)                
 	{
 
+	}
+
+	function get_real_ip(){
+		$ip=false;
+		if(!empty($_SERVER["HTTP_CLIENT_IP"])){
+			$ip = $_SERVER["HTTP_CLIENT_IP"];
+		}
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ips = explode (", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
+		if ($ip) 
+			{
+				array_unshift($ips, $ip); $ip = FALSE; 
+			}
+			for ($i = 0; $i < count($ips); $i++) {
+				if (!eregi ("^(10|172\.16|192\.168)\.", $ips[$i])) {
+				$ip = $ips[$i];
+				break;
+				}
+			}
+		}
+		return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
 	}
 }

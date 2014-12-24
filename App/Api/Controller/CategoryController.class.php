@@ -13,7 +13,7 @@ class CategoryController extends BaseController {
 
 	public function get_list($content)
 	{
-		$data = parent::get_list($content);
+		list($data, $record_count) = parent::get_list($content);
 
 		$list = array();
 		if($data)
@@ -27,6 +27,9 @@ class CategoryController extends BaseController {
 			}
 		}
 
-		return array(200, $list);
+		return array(200, array(
+							'list'=>$list,
+							'record_count'=>$record_count)
+					);
 	}
 }

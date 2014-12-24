@@ -1,4 +1,4 @@
-<?phe
+<?php
 namespace api\Controller;
 use Api\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');

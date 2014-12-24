@@ -1,6 +1,6 @@
 <?php
 namespace api\Controller;
-use Think\Controller;
+use Api\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --会员登录日志管理--
