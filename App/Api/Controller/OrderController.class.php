@@ -13,6 +13,8 @@ class OrderController extends BaseController {
     protected $id;
     protected $sell_id;
     protected $buy_id;
+    protected $cat_id;
+    protected $cat_name;
     protected $goods_info;
     protected $pay_id;
     protected $shipping_id;

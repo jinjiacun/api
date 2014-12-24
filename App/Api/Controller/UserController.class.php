@@ -30,6 +30,12 @@ public function check_name                检查用户名(finish)
 @@output
 @param $is_exists 0-存在,-1-不存在
 ##--------------------------------------------------------##
+public function check_nick_name                检查(finish)
+@@input
+@param $nick_name 用户名
+@@output
+@param $is_exists 0-存在,-1-不存在
+##--------------------------------------------------------##
 public function check_mobile              检查手机号码(finish)
 @@input
 @param $mobile 手机号码
@@ -194,6 +200,18 @@ class UserController extends BaseController {
 						);
 		}		
 
+	    #检查昵称
+		if($this->do_get_nick_name($data['nick_name']))
+		{	
+			return array(
+					200,
+					array(
+						'is_success'=>-4,
+						'message'   =>urlencode('此昵称已存在'),
+						),
+						);
+		}	
+
 		#加密密码
         $data['password'] = md5($data['password']);
 
@@ -279,6 +297,70 @@ class UserController extends BaseController {
 
 		return false;
 	} 
+
+	#检查
+	/**
+	*@@input
+	*@param $nick_name  
+	*@@output
+	*@param $is_exists  是否存在(0-存在，-1-不存在)
+	*/
+	public function check_nick_name($content)
+	{
+		$data = $this->fill($content);
+
+		if(!isset($data['nick_name']))
+		{
+			return C('param_err');
+		}
+
+		$data['nick_name'] = htmlspecialchars(trim($data['nick_name']));
+
+		if('' == $data['nick_name'])
+		{
+			return C('param_fmt_err');
+		}
+
+		if($this->do_get_nick_name($data['nick_name']))
+		{
+			return array(
+						200,
+						array(
+							'is_exists'=>0,
+							'message'=>urlencode('此已存在'),
+							),
+				);
+		}
+
+		return array(
+					200,
+					array(
+						'is_exists'=>-1,
+						'message'=>urlencode('此不存在'),
+						),
+			);
+	}
+
+	private function do_get_nick_name($nick_name = '')
+	{
+		if('' == $nick_name)
+		{
+			return false;
+		}
+
+		$where = array(
+				'nick_name' => $nick_name,
+			);
+		$res = M('User')->where($where)->find();
+		if($res)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	
 
 	#检查手机号码
 	/*

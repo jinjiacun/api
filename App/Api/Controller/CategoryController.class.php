@@ -4,6 +4,12 @@ use Think\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --分类管理--
+------------------------------------------------------------
+function of api:
+public function get_category_attr         
+public function get_category_attr_show
+public function chage_category_attr_show
+public function get_goods_ids_by_where
 */
 class CategoryController extends BaseController {
 	
