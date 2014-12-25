@@ -7,6 +7,15 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 ------------------------------------------------------------
 function of api:
 
+public function get_list
+@@input
+@param $page_index
+@param $page_size
+@param $where
+@@output
+@param $id
+@param $name
+##--------------------------------------------------------##
 public function getlist_by_attr_ids  通过多个属性id获取属性的名称和id  
 @@input 
 @param $attr_ids   属性的id集合(之间用逗号隔开)

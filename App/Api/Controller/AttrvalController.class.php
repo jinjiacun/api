@@ -14,6 +14,14 @@ public function getlist_by_attrval_ids  通过多个属性值id获取属性值�
 @param $attr_val_id    属性值id
 @param $attr_val_name  属性值名称
 ##--------------------------------------------------------##
+public function getlist_by_attr_ids    通过属性id集合获取属性值的名称和id
+@@input
+@param $attr_ids      属性的id集合(之间用逗号隔开)
+@@output
+@param $attr_id        属性id
+@param $attr_val_id    属性值id
+@param $attr_val_name  属性值名称
+##--------------------------------------------------------##
 */
 class AttrvalController extends BaseController {
 	protected $_module_name = 'attr_val';
@@ -64,5 +72,54 @@ class AttrvalController extends BaseController {
 				200,
 				$list
 		);
+	}
+	
+	#通过属性id集合获取属性值的名称和id
+	public function getlist_by_attr_ids($content)
+	/*
+	@@input
+	@param $attr_ids      属性的id集合(之间用逗号隔开)
+	@@output
+	@param $attr_id        属性id
+	@param $attr_val_id    属性值id
+	@param $attr_val_name  属性值名称
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['attr_ids']))
+		{
+			return C('param_err');
+		}
+		
+		$data['attr_ids'] = htmlspecialchars(trim($data['attr_ids']));
+
+		if('' == $data['attr_ids'])
+		{
+			return C('param_fmt_err');
+		}
+
+		$where['attr_id'] = array("in", $data['attr_ids']);
+
+		$list = array();
+		$tmp_list = M('Attr_val')->where($where)->select();
+		
+		if($tmp_list
+		&& 0<= count($tmp_list)
+		)
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[] = array(
+						'attr_id'       =>urlencode($v['attr_id']),
+						'attr_val_id'   =>urlencode($v['id']),
+						'attr_val_name' =>urlencode($v['name']),
+					);
+			}
+		}
+
+		return array(
+				200,
+				$list,
+			);
 	}
 }
