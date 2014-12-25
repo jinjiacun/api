@@ -30,7 +30,7 @@ public function check_name                检查用户名(finish)
 @@output
 @param $is_exists 0-存在,-1-不存在
 ##--------------------------------------------------------##
-public function check_nick_name                检查(finish)
+public function check_nick_name                检查昵称(finish)
 @@input
 @param $nick_name 用户名
 @@output
@@ -298,7 +298,7 @@ class UserController extends BaseController {
 		return false;
 	} 
 
-	#检查
+	#检查昵称
 	/**
 	*@@input
 	*@param $nick_name  
@@ -340,7 +340,8 @@ class UserController extends BaseController {
 						),
 			);
 	}
-
+	
+	#获取昵称
 	private function do_get_nick_name($nick_name = '')
 	{
 		if('' == $nick_name)
