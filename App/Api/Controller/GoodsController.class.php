@@ -5,8 +5,18 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --商品管理--
 ------------------------------------------------------------
+function of api:
+
 public function get_list  
 
+public function get_goods_ids_by_cat_attr_val   获取商品id通过分类及其属性值
+@@input
+@param $cat_id         分类
+@param $attr_id_map    属性id和属性值id之间映射，
+*                      例如:属性名1-id 属性值1 属性值2 属性值3
+@@output
+@param $goods_ids      商品id集合，之间用逗号隔开
+##--------------------------------------------------------##    
 ------------------------------------------------------------
 */
 class GoodsController extends BaseController {
@@ -69,7 +79,7 @@ class GoodsController extends BaseController {
                         'post_company'     => $v['post_company'],
                         'transaction_type' => $v['transaction_type'],
                         'end_of_date'      => $v['end_of_date'],
-                        'promise'          => $v['promise'],
+                        'promise'          => urlencode($v['promise']),
                         'add_time'         => $v['add_time'],
                     );  
             }
@@ -94,7 +104,7 @@ class GoodsController extends BaseController {
     *@@call_api call_api
     *@param {'status':200,'content':{'is_success':xxx,'message':'xxx'}}
     */
-    public function add($content)
+    /*public function add($content)
     {
     	//反解析
     	#格式化并检查参数
@@ -102,5 +112,68 @@ class GoodsController extends BaseController {
 		extract($format_params);
         
 		echo $goods_name;
-    }
+    }*/
+
+	#获取商品id通过分类及其属性值
+    public function get_goods_ids_by_cat_attr_val($content)
+    /*   
+	@@input
+	@param $cat_id         分类
+	@param $attr_id_map    属性id和属性值id之间映射，
+	*                      例如:属性名1-id 属性值1 属性值2 属性值3
+	@@output
+	@param $goods_ids      商品id集合，之间用逗号隔开
+	*/
+	{
+	   $data = $this->fill($content);
+
+       if(!isset($data['cat_id'])
+       || !isset($data['attr_id_map'])
+        )
+       {
+            return C('param_err');
+       }
+
+       $data['cat_id'] = intval($data['cat_id']);
+       $data['attr_id_map'] = intval($data['attr_id_map']);
+
+       if(0>= $data['cat_id']
+       || '' == $data['attr_id_map']
+       )
+       {
+            return C('param_fmt_err');
+       }
+
+       if(0< = $data['attr_id_map'])
+       {
+        $where_list = array();
+        foreach($data['attr_id_map'] as $v)
+        {
+            $tmp_list = array();
+            foreach($v as $s_v)
+            {
+                $tmp_list[] = $s_v;
+            }
+            $tmp_str = implode(' or ', $tmp_list);
+            $where_list[] = sprintf("(%s)", $tmp_str);
+            unset($s_v);
+        }
+        unset($v);
+        $where_str = implode(' and ', $where_list);
+       }
+
+       if('' != $where_str)
+       {
+            $list = M('Goods_attr_val')->field("id")->where($where_str)->select();
+       }
+       else
+       {
+            $list = M('Goods_attr_val')->field("id")->select();
+       }
+
+       return array(
+            200,
+            $list
+        );
+	}
 }

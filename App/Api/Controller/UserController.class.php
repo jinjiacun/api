@@ -749,22 +749,45 @@ class UserController extends BaseController {
 			return C('param_fmt_err');
 		}
 
+		$list  = array(); 
 		$where = array(
-				'Id' => $data['user_id'],
+				'id' => $data['user_id'],
 			);
 		$tmp_one = M('User')->where($where)->find();
 		if($tmp_one)
 		{
-			return array(
-					200,
-					$tmp_one
+			$list = array(
+				'id'                         => urlencode($tmp_one['id']),
+				'user_name'                  => urlencode($tmp_one['user_name']),
+				'password'                   => urlencode($tmp_one['password']),
+				'nick_name'                  => urlencode($tmp_one['nick_name']),
+				'real_name'                  => urlencode($tmp_one['real_name']),
+				'sex'                        => urlencode($tmp_one['sex']),
+				'mobile'                     => urlencode($tmp_one['mobile']),
+			    'mobile_is_validated'        => urlencode($tmp_one['mobile_is_validated']),
+				'identity_card_0'            => urlencode($tmp_one['identity_card_0']),
+				'identity_card_1'            => urlencode($tmp_one['identity_card_1']),
+			    'identity_card_is_validated' => urlencode($tmp_one['identity_card_is_validated']),
+			    'identity_card_no'           => urlencode($tmp_one['identity_card_no']),
+			    'zipcode'                    => urlencode($tmp_one['zipcode']),
+				'province'                   => urlencode($tmp_one['province']),
+				'city'                       => urlencode($tmp_one['city']),
+				'district'                   => urlencode($tmp_one['district']),
+				'town'                       => urlencode($tmp_one['town']),
+				'address'                    => urlencode($tmp_one['address']),
+			    'address_id'                 => urlencode($tmp_one['address_id']),
+				'photo'                      => urlencode($tmp_one['photo']),
+				'qq'                         => urlencode($tmp_one['qq']),
+				'email'                      => urlencode($tmp_one['email']),
+				'make_collections_account'   => urlencode($tmp_one['make_collections_account']),
+				'add_time'                   => urlencode($tmp_one['add_time']),
 				);
 		}
 
 		return array(
-				200,
-				array()
-			);
+					200,
+					$list
+				);
 	}
 
 	private function do_getuserinfo_by_id($user_id = 0)

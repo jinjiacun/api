@@ -99,7 +99,7 @@ class IndexController extends Controller {
                           $this->method,
                           $this->in_content,
                           $this->type);
-        file_put_contents(__PUBLIC__."log/request.log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
 
         list($class_name, $method)= explode('.', $this->method);
         $class_name = 'Api/'.$class_name;
@@ -125,7 +125,7 @@ class IndexController extends Controller {
                                       $this->type,
                                       $status_code,
                                       $out_content);
-                    file_put_contents(__PUBLIC__."log/request.log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                   break;
@@ -141,7 +141,7 @@ class IndexController extends Controller {
                                       $this->type,
                                       $status_code,
                                       $out_content);
-                    file_put_contents(__PUBLIC__."log/request.log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                 break;
@@ -156,11 +156,11 @@ class IndexController extends Controller {
                           $this->getIP(),
                           date("Y-m-d H:i:s"), 
                           $this->method,
-                          $this->in_content,
+                          var_export($this->in_content, true),
                           $this->type,
                           $status_code,
                           $out_content);
-        file_put_contents(__PUBLIC__."log/request.log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
     }
 
     public function call_back($status_code, $out_content)
