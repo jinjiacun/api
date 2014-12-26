@@ -49,6 +49,13 @@ public function del_by_val_ids     通过多个属性值id来删除属性值
 @param $attr_val_ids  属性值id(之间用逗号隔开)
 @@output
 @param $is_success 0-成功操作，-1-操作失败
+##--------------------------------------------------------##
+public function add_mul            一次添加多个属性值方法
+@@input
+@param $attr_id        属性id
+@param $attr_val_names 属性值名称(之间用逗号隔开)
+@@output
+@param $is_success 0-成功操作,-1-操作失败   
 */
 class AttrvalController extends BaseController {
 	protected $_module_name = 'attr_val';
@@ -346,5 +353,66 @@ class AttrvalController extends BaseController {
 					'message'   => urlencode('操作失败'),
 				)
 			);
+	}
+	
+	#一次添加多个属性值方法
+	public function add_mul($content)
+	/*
+	@@input
+	@param $attr_id        属性id
+	@param $attr_val_names 属性值名称(之间用逗号隔开)
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败 
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['attr_id'])
+		|| !isset($data['attr_val_names'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['attr_id'] = intval($data['attr_id']);
+		$data['attr_val_names'] = 
+			htmlspecialchars(trim($data['attr_val_names']));
+		
+		if(0>= $data['attr_id']
+		|| '' == $data['attr_val_name']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$data_list = array();
+		$attr_val_name_list = explode(',', $data['attr_val_names']);
+		$count = count($attr_val_name_list);
+		for($i=0; $i<$count; $i++)
+		{
+			$data_list[] = array(
+				'attr_id' => $data['attr_id'],
+				'name'    => $attr_val_name_list[$i],
+			);
+		}
+		
+		if(M('Attr_val')->addAll($dataList))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=> 0,
+					'message'   => urlencode('成功操作'),
+				),
+			);
+		}
+		
+		return array(
+			200,
+			array(
+				'is_success'=>-1,
+				'message'   =>urlencode('操作失败'),
+			),
+		);
 	}
 }
