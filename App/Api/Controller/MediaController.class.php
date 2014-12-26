@@ -116,4 +116,71 @@ class MediaController extends BaseController {
 		*/
 	}
 
+
+	public function get_list($content)
+	{
+		list($data, $record_count) = parent::get_list($content);
+        
+        $list = array();
+        if($data)
+        {
+            foreach($data as $v)
+            {
+                $list[] = array(
+                        'id'               => intval($v['id']),
+                        'dict_sn'          => urlencode($v['dict_sn']),
+                        'media_url'        => urlencode($v['media_url']),
+                        'http_url'         => C('media_url_pre').$v['media_url'],
+                    );  
+            }
+            unset($v);
+        }
+
+        return array(200, array('list'=>$list, 
+                                'record_count'=>$record_count));
+	}
+
+	#
+	/**
+	*@@input
+	*@param $media_id 
+	*@@output
+	*@param $media_id
+	*@param $dict_sn
+	*@param $media_url
+	*@param $http_url
+	*/
+	public function get_by_id($content)
+	{
+		$data = $this->fill($content);
+
+		if(!isset($data['media_id']))
+		{
+			return C('param_err');
+		}
+
+		$data['media_id'] = intval($data['media_id']);
+
+		if(0>= $data['media_id'])
+		{
+			return C('param_fmt_err');
+		}
+
+		$list = array();
+		$tmp_one = M('Media')->find($data['media_id']);
+		if($tmp_one)
+		{
+			$list = array(
+				'media_id'  => intval($tmp_one['id']),
+				'dict_sn'   => urlencode($tmp_one['dict_sn']),
+				'media_url' => urlencode($tmp_one['media_url']),
+				'http_url'  => C('media_url_pre').$tmp_one['media_url'],
+				);
+		}
+
+		return array(
+			200,
+			$list,
+		);
+	}
 }

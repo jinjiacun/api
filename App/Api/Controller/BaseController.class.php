@@ -114,7 +114,7 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
-		if($obj->update($data))
+		if($obj->where($data['where'])->update($data['data']))
 		{
 			return true;
 		}

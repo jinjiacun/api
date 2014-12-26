@@ -144,7 +144,7 @@ class GoodsController extends BaseController {
             return C('param_fmt_err');
        }
 
-       if(0< = $data['attr_id_map'])
+       if(0<= $data['attr_id_map'])
        {
         $where_list = array();
         foreach($data['attr_id_map'] as $v)

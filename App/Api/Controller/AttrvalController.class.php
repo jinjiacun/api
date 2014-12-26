@@ -44,6 +44,11 @@ public function check_attr_val_is_bind    判定此属性值是否绑定
 @@output
 @param $is_bind      0-绑定,-1-没绑定   
 ##--------------------------------------------------------##
+public function del_by_val_ids     通过多个属性值id来删除属性值
+@@input
+@param $attr_val_ids  属性值id(之间用逗号隔开)
+@@output
+@param $is_success 0-成功操作，-1-操作失败
 */
 class AttrvalController extends BaseController {
 	protected $_module_name = 'attr_val';
@@ -286,7 +291,7 @@ class AttrvalController extends BaseController {
 				array(
 					'is_bind'=>0,
 					'message'=> urlencode('已绑定')
-				);
+				)
 			);	
 		}
 		
@@ -295,7 +300,51 @@ class AttrvalController extends BaseController {
 				array(
 					'is_bind'=>-1,
 					'message'=> urlencode('未绑定')
-				);
+				)
+			);
+	}
+	
+	#通过多个属性值id来删除属性值
+	public function del_by_val_ids($content)
+	/*
+	@@input
+	@param $attr_val_ids  属性值id(之间用逗号隔开)
+	@@output
+	@param $is_success 0-成功操作，-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['attr_val_ids']))
+		{
+			return C('param_err');
+		}
+		
+		$data['attr_val_ids'] = 
+		   htmlspecialchars(trim($data['attr_val_ids']));
+		
+		if('' == $data['attr_val_ids'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if(M(‘Att_rval’)->delete($date['attr_val_ids']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=> 0,
+					'message'   => urlencode('成功操作'),
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=> -1,
+					'message'   => urlencode('操作失败'),
+				)
 			);
 	}
 }
