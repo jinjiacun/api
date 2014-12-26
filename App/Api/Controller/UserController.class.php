@@ -73,7 +73,7 @@ public function forget_password           忘记密码(finish)
 ##--------------------------------------------------------##
 public function login                     登录(finish)
 @@input
-@param $user_name 用户名
+@param $user_name 用户名/昵称/手机号码
 @param $password  密码
 @@output
 @param $is_success 0-成功登录，-1-登录失败， -2-用户名不存在， -3-密码不正确
@@ -676,7 +676,7 @@ class UserController extends BaseController {
 	#登录
 	/**
 	*@@input
-	*@param $user_name  用户名
+	*@param $user_name  用户名/昵称/手机号码
 	*@param $password   密码
 	*/
 	public function login($content)
@@ -707,8 +707,54 @@ class UserController extends BaseController {
 		if($tmp_one)
 		{
 			$user_info = $this->do_getuserinfo_by_username($data['user_name']);
-			session('user_name', $data['user_name']);
-			session('user_id',   $user_info['Id']);
+			session('user_name',   $data['user_name']);
+			session('user_id',     $user_info['id']);
+			session('nick_name',   $user_info['nick_name']);
+			session('user_mobile', $user_info['user_mobile']);
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+                    'message'=>urlencode('成功登录'),
+					),
+			);
+		}
+		
+		#昵称登录
+		$where = array(
+				'nick_name' => $data['user_name'],
+				'password'  => md5($data['password'])
+		);
+		$tmp_one = M('User')->where($where)->find();
+		if($tmp_one)
+		{
+			$user_info = $this->do_getuserinfo_by_nickname($data['user_name']);
+			session('user_name',   $data['user_name']);
+			session('user_id',     $user_info['id']);
+			session('nick_name',   $user_info['nick_name']);
+			session('user_mobile', $user_info['user_mobile']);
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+                    'message'=>urlencode('成功登录'),
+					),
+			);
+		}
+		
+		#手机号码登录
+		$where = array(
+				'mobile'   => $data['user_name'],
+				'password' => md5($data['password'])
+		);
+		$tmp_one = M('User')->where($where)->find();
+		if($tmp_one)
+		{
+			$user_info = $this->do_getuserinfo_by_mobile($data['user_name']);
+			session('user_name',   $data['user_name']);
+			session('user_id',     $user_info['id']);
+			session('nick_name',   $user_info['nick_name']);
+			session('user_mobile', $user_info['user_mobile']);
 			return array(
 				200,
 				array(
@@ -856,6 +902,46 @@ class UserController extends BaseController {
 
 		$where = array(
 			'user_name' => $user_name,
+			);
+
+		$tmp_one = M('User')->where($where)->find();
+		if($tmp_one)
+		{
+			return $tmp_one;
+		}
+
+		return array();
+	}
+	
+	private function do_getuserinfo_by_nickname($nick_name = '')
+	{
+		if('' == $nick_name)
+		{
+			return array();
+		}
+
+		$where = array(
+			'nick_name' => $nick_name,
+			);
+
+		$tmp_one = M('User')->where($where)->find();
+		if($tmp_one)
+		{
+			return $tmp_one;
+		}
+
+		return array();
+	}
+	
+	private function do_getuserinfo_by_mobile($mobile = '')
+	{
+		if('' == $mobile)
+		{
+			return array();
+		}
+
+		$where = array(
+			'mobile' => $mobile,
 			);
 
 		$tmp_one = M('User')->where($where)->find();
