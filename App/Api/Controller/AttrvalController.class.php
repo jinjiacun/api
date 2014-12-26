@@ -38,6 +38,12 @@ public function getlist_by_attr_ids    通过属性id集合获取属性值的名
 @param $attr_val_id    属性值id
 @param $attr_val_name  属性值名称
 ##--------------------------------------------------------##
+public function check_attr_val_is_bind    判定此属性值是否绑定
+@@input
+@param $attr_val_id  属性值id
+@@output
+@param $is_bind      0-绑定,-1-没绑定   
+##--------------------------------------------------------##
 */
 class AttrvalController extends BaseController {
 	protected $_module_name = 'attr_val';
@@ -241,6 +247,55 @@ class AttrvalController extends BaseController {
 		return array(
 				200,
 				$list,
+			);
+	}
+	
+	#判定此属性值是否绑定
+	public function check_attr_val_is_bind($content)
+	/*
+	@@input
+	@param $attr_val_id  属性值id
+	@@output
+	@param $is_bind      0-绑定,-1-没绑定
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['attr_val_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['attr_val_id'] = intval($data['attr-val_id']);
+		
+		if(0>= $data['attr_val_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$count = 0;
+		$where = array(
+			'attr_val_id' => $data['attr_val_id'],
+		);
+		$count = M('Cat_attr_val')->where($where)->count();
+		if($count
+		&& 0< $count)
+		{
+			return array(
+				200,
+				array(
+					'is_bind'=>0,
+					'message'=> urlencode('已绑定')
+				);
+			);	
+		}
+		
+		return array(
+				200,
+				array(
+					'is_bind'=>-1,
+					'message'=> urlencode('未绑定')
+				);
 			);
 	}
 }

@@ -56,6 +56,14 @@ public function chage_category_attr_val_show    改变分类显示属性值
 @param $option_list      进行运算操作的列表，用逗号隔开
 @@output
 @param $is_success 0-操作成功,-1-操作失败
+##--------------------------------------------------------##
+public function get_category_attr_val_map_stat 
+* 获取当前分类绑定属性值和商品绑定属性值的统计数
+@@input
+@param $cat_id 当前分类id
+@@output
+@param $attr_val_id 属性值id
+@param $stat        上面对应的属性值的统计值
 */
 class CategoryController extends BaseController {
 	
@@ -471,5 +479,53 @@ class CategoryController extends BaseController {
 					'message'   =>urlencode('操作失败'),
 				),
 			);
+	}
+	
+	#获取当前分类绑定属性值和商品绑定属性值的统计数
+	public function get_category_attr_val_map_stat($content)
+	/*
+	@@input
+	@param $cat_id 当前分类id
+	@@output
+	@param $attr_val_id 属性值id
+	@param $stat        上面对应的属性值的统计值
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['cat_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['cat_id'] = intval($data['cat_id']);
+		
+		if(0>= $data['cat_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$category_info = M('Category')->find($data['cat_id']);
+		$list = array();
+		$attr_id_list      = explode(',', $category_info->attr_val_id);
+		$bind_attr_id_list = explode(',', $category_info->goods_attr_val_ids); 
+		
+		if($attr_id_list
+		&& 0< count($attr_id_list))
+		{
+			$count = count($attr_id_list);
+			for($i=0; $i< $count; $i++)
+			{
+				$list[] = array(
+					'attr_val_id' => intval($attr_id_list[$i]),
+					'stat'        => intval($bind_attr_id_list[$i])
+				);
+			}
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 }
