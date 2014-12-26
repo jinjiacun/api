@@ -73,10 +73,14 @@ class CategoryController extends BaseController {
 			foreach($data as $v)
 			{
 				$list[] = array(
-						'id'=>intval($v['Id']),
-						'name'=>urlencode($v['name']),
+						'id'          		 => intval($v['Id']),
+						'name'        		 => urlencode($v['name']),
+						'attr_val_id' 		 => urlencode($v['attr_val_id']),
+						'goods_attr_val_ids' => urlencode($v['goods_attr_val_ids']),
+						'add_time'           => intval($v['add_time']),
 					);	
 			}
+			unset($data, $v);
 		}
 
 		return array(200, array(
@@ -114,7 +118,6 @@ class CategoryController extends BaseController {
 		
 		$attr_id_list      = array();
 		$attr_val_id_list  = array();
-		$attr_val_map_list = array();
 		$attr_id           = 0;
 		$attr_val_id       = 0;
 		#查询此分类下的属性值
@@ -130,10 +133,10 @@ class CategoryController extends BaseController {
 				$attr_id     = intval($v['attr_id']);
 				$attr_val_id = intval($v['attr_val_id']);
 				
-				$attr_id_list[$attr_id]         = '';
-				$attr_val_id_list[$attr_val_id] = '';
-				$attr_val_map_list[$attr_id][$attr_val_id] = '';
+				$attr_id_list[]     = $attr_id;
+				$attr_val_id_list[] = $attr_val_id;
 			}
+			unset($v);
 		}
 		unset($attr_id, $attr_val_id);
 		
@@ -144,31 +147,29 @@ class CategoryController extends BaseController {
 		##查询目标属性名称
 		if(0 < count($attr_id_list))
 		{
-			$key_attr_id_list = array_keys($attr_id_list);
+			$attr_ids         = implode(',', $attr_id_list);
 			unset($attr_id_list);
-			$attr_ids         = implode(',', $key_attr_id_list);
-			unset($key_attr_id_list);
 			$obj = A('Api/Attr');
 			$tmp_data = array(
 				'attr_ids' => $attr_ids,
 			);
 			list(, $attr_name_list) = 
 			          $obj->getlist_by_attr_ids(json_encode($tmp_data));
+			unset($tmp_data, $attr_ids);
 		}
 		
 		##查询目标属性值名称
 		if(0 <count($attr_val_id_list))
 		{
-			$key_attr_val_id_list = array_keys($attr_val_id_list);
+			$attr_val_ids         = implode(',', $attr_val_id_list);
 			unset($attr_val_id_list);
-			$attr_val_ids         = implode(',', $key_attr_val_id_list);
-			unset($key_attr_val_id_list);
 			$obj = A('Api/Attrval');
 			$tmp_data = array(
 				'attr_val_ids' => $attr_val_ids,
 			);
 			list(, $attr_val_name_list) = 
 			       $obj->getlist_by_attrval_ids(json_encode($tmp_data));
+			unset($tmp_data, $attr_val_ids);
 		}
 		
 		$list          = array();
@@ -176,26 +177,25 @@ class CategoryController extends BaseController {
 		$attr_name     = '';
 		$attr_val_id   = 0;
 		$attr_val_name = '';
-		if(0 <count($attr_val_map_list))
+		if($tmp_list
+		&&	0 <count($tmp_list)
+		)
 		{
-			foreach($attr_val_map_list as $k=>$v)
+			foreach($tmp_list as $k=>$v)
 			{
-				$attr_id   = $k;
-				$attr_name = $attr_name_list[$attr_id];
-				foreach($v as $s_k => $s_v)
-				{
-					$attr_val_id   = $s_k;
-					$attr_val_name = $attr_val_name_list[$attr_val_id];
-				}
+				$attr_id       = intval($v['attr_id']);
+				$attr_name     = $attr_name_list[$attr_id];
+				$attr_val_id   = intval($v['attr_val_id']);
+				$attr_val_name = $attr_val_name_list[$attr_val_id];
+
 				$list[] = array(
 						'attr_id'       => $attr_id,
 						'attr_name'     => $attr_name,
 						'attr_val_id'   => $attr_val_id,
 						'attr_val_name' => $attr_val_name,
 				);
-				unset($s_k, $s_v);
 			}
-			unset($attr_val_map_list, $k, $v);
+			unset($map_list, $k, $v);
 		}
 		
 		return array(
@@ -232,13 +232,20 @@ class CategoryController extends BaseController {
 		$where = array(
 			'cat_id' => $data['cat_id'],
 		);
-		$tmp_list = M('Cat_attr_val')->where($where)->select();
-		if($tmp_list)
+		$tmp_list = M('Cat_attr_val')->field("attr_val_id")
+		                             ->where($where)
+		                             ->select();
+		if($tmp_list
+		&& 0 < count($tmp_list)
+		)
 		{
-			return array(
-				200,
-				$tmp_list,
-			);
+			foreach($tmp_list as $v)
+			{
+				$list[] = array(
+						'attr_val_id' => intval($v['attr_val_id']),
+					);
+			}
+			unset($tmp_list, $v);
 		}
 		
 		return array(
@@ -306,14 +313,16 @@ class CategoryController extends BaseController {
 		}
 		
 		$obj = M('Category')->find($data['cat_id']);
-		$goods_attr_val_ids = $obj->goods_attr_val_ids;
+		if($obj
+		&& $obj->goods_attr_val_ids)
+			$goods_attr_val_ids = $obj->goods_attr_val_ids;
 		
 		return array(
 			200,
 			array(
 				'goods_attr_val_ids' => $goods_attr_val_ids,
+				),
 			);
-		);
 	}
 	
 	#获取多个分类属性
@@ -356,20 +365,35 @@ class CategoryController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
-		
-		$where = array(
-			
-		);
-		$tmp_list = M('Cat_attr_val')->field('attr_id, attr_val_id')
-		                             ->where($where)
-		                             ->select();
-		if($tmp_list
-		&& 0<= count($tmp_list))
+
+
+		$tmp_row = M('Category')->field('attr_val_id,goods_attr_val_ids')
+		                             ->find($data['cat_id']);
+		if($tmp_row
+		&& 0<= count($tmp_row))
 		{
-			return array(
-				200,
-				$tmp_list
+			#
+			$obj = A('Attrval');
+			$where = array(
+				'attr_val_ids'=>$tmp_row->attr_val_id
 			);
+			list(,$map_attr_val) = 
+			      $obj->getattrlist_map_by_attrval_ids(json_encode($where));
+
+			$cat_attr_val_id_list   = explode(',', $tmp_row->attr_val_id);
+			$goods_attr_val_id_list = explode(',', $tmp_row->goods_attr_val_ids);
+			if(0< count($cat_attr_val_id_list))
+			{
+				foreach($cat_attr_val_id_list as $k=> $v)
+				{
+					if(0 < $goods_attr_val_id_list[$k])
+					{
+						$list[] = array('attr_val_id'=>intval($v),
+							            'attr_id'    =>intval($map_attr_val[$v]['attr_id']));
+					}	
+				}
+				unset($cat_attr_val_id_list, $goods_attr_val_id_list, $k, $v);
+			}
 		}
 		
 		return array(
@@ -396,11 +420,11 @@ class CategoryController extends BaseController {
 			return C('param_err');
 		}
 		
-		$data['cat_id'] = intval($data['cat_id');
+		$data['cat_id'] = intval($data['cat_id']);
 		$data['option_list'] = 
 		           htmlspecialchars(trim($data['option_list']));
 		           
-		if(0>= $data['cat_id'
+		if(0>= $data['cat_id']
 		|| '' == $data['option_list'])
 		{
 			return C('param_fmt_err');

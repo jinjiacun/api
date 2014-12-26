@@ -44,6 +44,7 @@ class AttrController extends BaseController {
 						'name'=>urlencode($v['name']),
 					);	
 			}
+			unset($data, $v);
 		}
 
 		return array(200, array(
