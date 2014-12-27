@@ -5,13 +5,38 @@ use Think\Controller;
 --基础类--
 ------------------------------------------------------------
 public function add           			  添加数据
+public function add_mul                   批量添加
+##--------------------------------------------------------##
 public function get_list      			  查询数据列表
+@@input
+@param $page_index   当前满足条件的第几页(可选)
+@param $page_size    当前请求的页面数(可选)
+@param $where        当前查询条件(可选)
+@@output
+@param 返回对应的列表，具体内容看具体的对应的模块
+##--------------------------------------------------------##
 public function get_row                   查询一行
+##--------------------------------------------------------##
 public function update                    更新
+@@input
+@param $where 条件
+@param $data  要更新的数据
+@@output
+@param $is_success 0-成功操作，-1-操作失败
+##--------------------------------------------------------##
 public function delete                    删除
+@@input
+@param $content 条件
+@@output
+@param $is_success 0-成功操作,-1-操作失败
+##--------------------------------------------------------##
 public function send_mobile_validate_code 发送手机验证码
+##--------------------------------------------------------##
 public function get_mobile_validate_code  查询手机验证码
+##--------------------------------------------------------##
 public function send_email                发送邮件
+##--------------------------------------------------------##
+public function get_real_ip               获取当前访问的ip地址
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -40,6 +65,8 @@ class BaseController extends Controller {
 		//反解析
     	#格式化并检查参数
 		$format_params = json_decode($content, true);
+
+		/*
 		$key_list      = array_keys($format_params);
 		extract($format_params);
 
@@ -55,6 +82,8 @@ class BaseController extends Controller {
 		}
 
 		return $data;
+		*/
+		return $format_params;
 	}
 
 	#添加
@@ -76,9 +105,43 @@ class BaseController extends Controller {
 				 array('is_success'=>-1)
 				 );
 	}
+	
+	#批量添加
+	public function add_mul($content)
+	{
+		$data = $this->fill($content);
+		$obj = M($this->_module_name);
+		if($obj->addAll($data))
+		{
+			return array(
+				200,
+				array(
+					'is_success' => 0,
+					'message'    => urlencode('成功操作'),
+				),
+			);
+		}
+		
+		return array(
+			200,
+			array(
+				'is_success' => -1,
+				'message'    => urlencode('操作失败'),
+			),
+		);
+	}
 
 	#查询列表
-	public function get_list($content){
+	public function get_list($content)
+	/*
+	@@input
+	@param $page_index   当前满足条件的第几页(可选)
+	@param $page_size    当前请求的页面数(可选)
+	@param $where        当前查询条件(可选)
+	@@output
+	@param 返回对应的列表，具体内容看具体的对应的模块
+	*/
+	{
 		$data = $this->fill($content);
 		$data['where'] = isset($data['where'])?$data['where']:array();
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
@@ -109,21 +172,46 @@ class BaseController extends Controller {
 
 	}
 
-	#修改
+	#修改	
 	public function update($content)
+	/**
+	@@input
+	@param $where 条件
+	@param $data  要更新的数据
+	@@output
+	@param $is_success 0-成功操作，-1-操作失败
+	*/
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
-		if($obj->where($data['where'])->update($data['data']))
+		if($obj->where($data['where'])->save($data['data']))
 		{
-			return true;
+			return array(
+				200,
+				array(
+				'is_success'=>0,
+				'message'   => urlencode('操作成功')
+				),
+			);
 		}
 
-		return false;
+		return array(
+			200,
+			array(
+			'is_success'=>-1,
+			'message'   =>urlencode('操作失败'),
+			),
+		);
 	}
 
 	#删除
-	public function delete($content, $status, $content)
+	public function delete($content)
+	/*
+	@@input
+	@param $content 条件
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
@@ -152,7 +240,8 @@ class BaseController extends Controller {
 
 	}
 
-	function get_real_ip(){
+	#获取当前访问的ip地址
+	public function get_real_ip($content){
 		$ip=false;
 		if(!empty($_SERVER["HTTP_CLIENT_IP"])){
 			$ip = $_SERVER["HTTP_CLIENT_IP"];

@@ -335,7 +335,7 @@ class AttrvalController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		if(M(‘Att_rval’)->delete($date['attr_val_ids']))
+		if(M('attr_val')->delete($data['attr_val_ids']))
 		{
 			return array(
 				200,
@@ -379,7 +379,7 @@ class AttrvalController extends BaseController {
 			htmlspecialchars(trim($data['attr_val_names']));
 		
 		if(0>= $data['attr_id']
-		|| '' == $data['attr_val_name']
+		|| '' == $data['attr_val_names']
 		)
 		{
 			return C('param_fmt_err');
@@ -395,8 +395,8 @@ class AttrvalController extends BaseController {
 				'name'    => $attr_val_name_list[$i],
 			);
 		}
-		
-		if(M('Attr_val')->addAll($dataList))
+		$obj = M('Attr_val');
+		if($obj->addAll($data_list))
 		{
 			return array(
 				200,
