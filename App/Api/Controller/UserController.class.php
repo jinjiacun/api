@@ -521,7 +521,7 @@ class UserController extends BaseController {
 	#修改密码
 	/**
 	*@@input
-	*@param $id            用户id
+	*@param $user_id       用户id
 	*@param $old_password  用户旧密码
 	*@param $new_password  新密码
 	*@@output
