@@ -531,7 +531,7 @@ class UserController extends BaseController {
 	{
 		$data = $this->fill($content);
 
-		if(!isset($data['user_name'])
+		if(!isset($data['user_id'])
 		|| !isset($data['old_password'])
 		|| !isset($data['new_password'])
 		)
@@ -539,11 +539,11 @@ class UserController extends BaseController {
 			return C('param_err');
 		}
 
-		$data['user_name'] = htmlspecialchars(trim($data['user_name']));
+		$data['user_id'] = intval($data['user_id']);
 		$data['old_password'] = htmlspecialchars(trim($data['old_password']));
 		$data['new_password'] = htmlspecialchars(trim($data['new_password']));
 
-		if('' == $data['user_name']
+		if(0 >= $data['user_id']
 		|| '' == $data['old_password']
 		|| '' == $data['new_password']
 		)
@@ -552,7 +552,7 @@ class UserController extends BaseController {
 		}
 
 		#检查是否存在此用户信息
-		if(!$this->do_get_userinfo_by_user_name_passwd($date['user_name'],
+		if(!$this->do_get_userinfo_by_user_id_passwd($date['user_id'],
 			                                           $data['old_password']))
 		{
 			return 	array(200,
@@ -564,7 +564,7 @@ class UserController extends BaseController {
 		}
 
 		$where = array(
-				'user_name'=>$data['user_name'],
+				'id'=>$data['user_id'],
 				'password'=>md5($data['old_password']),
 			);
 		$res = M('User')->where($where)->save(array('password'=>md5($data['new_password']))); 
@@ -586,6 +586,25 @@ class UserController extends BaseController {
 					'message'   =>urlencode('修改失败')
 					)
 					);
+	}
+	
+	#通过用户名和密码查询用户
+	private function do_get_userinfo_by_user_id_passwd($user_id='', $password='')
+	{
+		if(0>= $user_id
+		|| '' == $password)
+		{
+			return false;
+		}
+		
+		$where = array(
+			'id' => $user_id,
+			'password' = md5($password),
+		);
+		$res = M('User')->where($where)->find();
+		if($res)
+			return true;
+		return false;
 	}
 
 	#通过用户名和密码查询用户
