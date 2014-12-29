@@ -589,7 +589,7 @@ class UserController extends BaseController {
 	}
 	
 	#通过用户名和密码查询用户
-	private function do_get_userinfo_by_user_id_passwd($user_id='', $password='')
+	private function do_get_userinfo_by_user_id_passwd($user_id=0, $password='')
 	{
 		if(0>= $user_id
 		|| '' == $password)
