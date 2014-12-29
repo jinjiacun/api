@@ -38,6 +38,15 @@ public function getlist_by_attr_ids    通过属性id集合获取属性值的名
 @param $attr_val_id    属性值id
 @param $attr_val_name  属性值名称
 ##--------------------------------------------------------##
+public function getview_by_attr_ids   通过属性值id集合获取属性和属性值的视图
+@@input
+@param $attr_val_ids   属性值id集合(之间用逗号隔开) 
+@@output
+@param $attr_id       属性id
+@param $attr_val_id   属性值id
+@param $attr_name     属性名称
+@param $attr_val_name 属性值名称
+##--------------------------------------------------------##
 public function check_attr_val_is_bind    判定此属性值是否绑定
 @@input
 @param $attr_val_id  属性值id
@@ -260,6 +269,56 @@ class AttrvalController extends BaseController {
 				200,
 				$list,
 			);
+	}
+	
+	#通过属性值id集合获取属性和属性值的视图
+	public function getview_by_attr_ids($content)
+	/*
+	@@input
+	@param $attr_val_ids   属性值id集合(之间用逗号隔开) 
+	@@output
+	@param $attr_id       属性id
+	@param $attr_val_id   属性值id
+	@param $attr_name     属性名称
+	@param $attr_val_name 属性值名称
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['attr_val_ids']))
+		{
+			return C('param_err');
+		}
+		
+		$data['attr_val_ids'] = htmlspecialchars(trim($data['attr_val_ids']));
+		
+		if('' == $data['attr_val_ids'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$obj = D('AttrView');
+		$where['Attr_val.id'] = array('in', $data['attr_val_ids']);
+		$tmp_list = $obj->where($where)->select();
+		if($tmp_list
+		&& 0< count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[] = array(
+						'attr_id'       => intval($v['attr_id']),
+						'attr_val_id'   => intval($v['attr_val_id']),
+						'attr_name'     => urlencode($v['attr_name']),
+						'attr_val_name' => urlencode($v['attr_val_name']),
+				);
+			}
+			unset($tmp_list, $v);
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 	
 	#判定此属性值是否绑定

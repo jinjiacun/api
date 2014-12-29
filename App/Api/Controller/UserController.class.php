@@ -599,7 +599,7 @@ class UserController extends BaseController {
 		
 		$where = array(
 			'id' => $user_id,
-			'password' = md5($password),
+			'password' => md5($password),
 		);
 		$res = M('User')->where($where)->find();
 		if($res)

@@ -162,9 +162,9 @@ class BaseController extends Controller {
 		$record_count = 0;
 		$record_count = $obj->where($data['where'])->count();
 		return array(
-					$list,
-					$record_count,
-					);
+					$list, 
+					$record_count
+		);
 	}
 
 	#查询单个

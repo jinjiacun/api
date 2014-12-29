@@ -6,15 +6,13 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --分类管理--
 ------------------------------------------------------------
 function of api:
-
+ 
 public function get_category_info_by_id         通过分类获取分类信息
 @@input
 @param $cat_id          分类id
 @@output
 @param $id                  分类id
 @param $name                分类名称
-@param $attr_val_id         分类绑定的属性
-@param $goods_attr_val_ids  商品绑定的属性统计
 @param $add_time            添加日期
 ##--------------------------------------------------------##    
 public function get_category_attr               获取分类属性及其属性值(finish)
@@ -81,6 +79,7 @@ class CategoryController extends BaseController {
 	protected $id;                         #id
 	protected $name;                       #name
 
+
 	public function get_list($content)
 	{
 		list($data, $record_count) = parent::get_list($content);
@@ -93,8 +92,6 @@ class CategoryController extends BaseController {
 				$list[] = array(
 						'id'          		 => intval($v['id']),
 						'name'        		 => urlencode($v['name']),
-						'attr_val_id' 		 => urlencode($v['attr_val_id']),
-						'goods_attr_val_ids' => urlencode($v['goods_attr_val_ids']),
 						'add_time'           => intval($v['add_time']),
 					);	
 			}
@@ -115,8 +112,6 @@ class CategoryController extends BaseController {
 	@@output
 	@param $id                  分类id
 	@param $name                分类名称
-	@param $attr_val_id         分类绑定的属性
-	@param $goods_attr_val_ids  商品绑定的属性统计
 	@param $add_time            添加日期
 	*/
 	{
@@ -136,12 +131,10 @@ class CategoryController extends BaseController {
 		$list = array();
 		$tmp_one = M('Category')->find($data['cat_id']);
 		if($tmp_one)
-		{
+		{	
 			$list = array(
 				'id'                 => intval($tmp_one['id']),
 				'name'	             => urlencode($tmp_one['name']),
-				'attr_val_id'        => $tmp_one['attr_val_id'],
-				'goods_attr_val_ids' => $tmp_one['goods_attr_val_ids'],
 			);
 		}
 		
