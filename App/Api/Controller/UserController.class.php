@@ -552,7 +552,7 @@ class UserController extends BaseController {
 		}
 
 		#检查是否存在此用户信息
-		if(!$this->do_get_userinfo_by_user_id_passwd($date['user_id'],
+		if(!$this->do_get_userinfo_by_user_id_passwd($data['user_id'],
 			                                           $data['old_password']))
 		{
 			return 	array(200,

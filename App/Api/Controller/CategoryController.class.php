@@ -244,10 +244,10 @@ class CategoryController extends BaseController {
 				$attr_val_name = $attr_val_name_list[$attr_val_id];
 
 				$list[] = array(
-						'attr_id'       => $attr_id,
+						'attr_id'       => intval($attr_id),
 						'attr_name'     => $attr_name,
-						'attr_val_id'   => $attr_val_id,
-						'attr_val_name' => $attr_val_name,
+						'attr_val_id'   => intval($attr_val_id),
+						'attr_val_name' => urlencode($attr_val_name),
 				);
 			}
 			unset($map_list, $k, $v);
