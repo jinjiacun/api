@@ -128,6 +128,55 @@ class UserController extends BaseController {
 		//$this->register($content);
 	}
 	
+	public function get_list($content)
+    {
+        list($data, $record_count) = parent::get_list($content);
+        
+        $list = array();
+        if($data)
+        {
+            foreach($data as $v)
+            {
+				$tmp_data = array(
+					'media_id' => $v['photo']
+				);
+				list(,$media_info) = 
+					A('Media')->get_by_id(json_encode($tmp_data));
+                $list[] = array(
+                    'id'                         => urlencode($v['id']),
+					'user_name'                  => urlencode($v['user_name']),
+					'password'                   => urlencode($v['password']),
+					'nick_name'                  => urlencode($v['nick_name']),
+					'real_name'                  => urlencode($v['real_name']),
+					'sex'                        => urlencode($v['sex']),
+					'mobile'                     => urlencode($v['mobile']),
+					'mobile_is_validated'        => urlencode($v['mobile_is_validated']),
+					'identity_card_0'            => urlencode($v['identity_card_0']),
+					'identity_card_1'            => urlencode($v['identity_card_1']),
+					'identity_card_is_validated' => urlencode($v['identity_card_is_validated']),
+					'identity_card_no'           => urlencode($v['identity_card_no']),
+					'zipcode'                    => urlencode($v['zipcode']),
+					'province'                   => urlencode($v['province']),
+					'city'                       => urlencode($v['city']),
+					'district'                   => urlencode($v['district']),
+					'town'                       => urlencode($v['town']),
+					'address'                    => urlencode($v['address']),
+					'address_id'                 => urlencode($v['address_id']),
+					'photo'                      => urlencode($v['photo']),
+					'photo_url'                  => $media_info['http_url'],
+					'qq'                         => urlencode($v['qq']),
+					'email'                      => urlencode($v['email']),
+					'make_collections_account'   => urlencode($v['make_collections_account']),
+					'add_time'                   => urlencode($v['add_time']),
+                    );  
+            }
+            unset($v);
+        }
+
+        return array(200, array('list'=>$list, 
+                                'record_count'=>$record_count));
+    }
+	
     #用户注册
     /*
     @@input 
