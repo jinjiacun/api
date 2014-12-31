@@ -496,7 +496,7 @@ class CategoryController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		$tmp_data = array(
+		$where = array(
 			'cat_id'       => $data['cat_id'],
 			'attr_id'      => $data['attr_id'],
 			'attr_val_id'  => $data['attr_val_id'],

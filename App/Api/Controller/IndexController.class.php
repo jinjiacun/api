@@ -117,14 +117,15 @@ class IndexController extends Controller {
                     */
                     list($status_code, $out_content) = $obj->{$method}($this->in_content, $handler);#处理带有资源的数据信息
                     #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n", 
+                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
                                       $this->getIP(),
                                       date("Y-m-d H:i:s"), 
                                       $this->method,
                                       $this->in_content,
                                       $this->type,
                                       $status_code,
-                                      $out_content);
+                                      urldecode(json_encode($out_content))
+                                      );
                     file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
@@ -133,14 +134,15 @@ class IndexController extends Controller {
                 {
                     list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据
                     #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n", 
+                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
                                       $this->getIP(),
                                       date("Y-m-d H:i:s"), 
                                       $this->method,
                                       $this->in_content,
                                       $this->type,
                                       $status_code,
-                                      $out_content);
+                                      urldecode(json_encode($out_content))
+                                      );
                     file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
@@ -156,10 +158,11 @@ class IndexController extends Controller {
                           $this->getIP(),
                           date("Y-m-d H:i:s"), 
                           $this->method,
-                          var_export($this->in_content, true),
+                          json_encode($this->in_content),
                           $this->type,
                           $status_code,
-                          $out_content);
+                          json_encode($out_content)
+                          );
         file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
     }
 
