@@ -55,13 +55,19 @@ public function get_category_attr_val_show      获取分类显示属性值(fini
 @@input
 @param $cat_id         分类id
 @@output
+@param $cat_id         分类id
+@param $cat_name       分类名称
 @param $attr_id        属性id
+@param $attr_name      属性名称
 @param $attr_val_id    属性值id
+@param $attr_val_name  属性值名称
 ##--------------------------------------------------------##
 public function chage_category_attr_val_show    改变分类显示属性值
 @@input
 @param $cat_id           分类id
-@param $option_list      进行运算操作的列表，用逗号隔开
+@param $attr_id          要改变的属性id
+@param $attr_val_id      要改变的属性值id
+@param $chg_val          改变的值
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -401,8 +407,12 @@ class CategoryController extends BaseController {
 	@@input
 	@param $cat_id         分类id
 	@@output
+	@param $cat_id         分类id
+	@param $cat_name       分类名称
 	@param $attr_id        属性id
+	@param $attr_name      属性名称
 	@param $attr_val_id    属性值id
+	@param $attr_val_name  属性值名称
 	*/
 	{
 		$list = array();
@@ -420,35 +430,30 @@ class CategoryController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
-
-
-		$tmp_row = M('Category')->field('attr_val_id,goods_attr_val_ids')
-		                             ->find($data['cat_id']);
-		if($tmp_row
-		&& 0<= count($tmp_row))
+		                                 
+		$tmp_list = D('CategoryAttrView')
+		                             ->where($data)
+		                             ->select();
+        
+		if($tmp_list
+		&& 0<= count($tmp_list))
 		{
-			#
-			$obj = A('Attrval');
-			$where = array(
-				'attr_val_ids'=>$tmp_row->attr_val_id
-			);
-			list(,$map_attr_val) = 
-			      $obj->getattrlist_map_by_attrval_ids(json_encode($where));
-
-			$cat_attr_val_id_list   = explode(',', $tmp_row->attr_val_id);
-			$goods_attr_val_id_list = explode(',', $tmp_row->goods_attr_val_ids);
-			if(0< count($cat_attr_val_id_list))
+			foreach($tmp_list as $k=> $v)
 			{
-				foreach($cat_attr_val_id_list as $k=> $v)
+				$goods_stat = intval($v['goods_stat']);
+				if(0 < $goods_stat)
 				{
-					if(0 < $goods_attr_val_id_list[$k])
-					{
-						$list[] = array('attr_val_id'=>intval($v),
-							            'attr_id'    =>intval($map_attr_val[$v]['attr_id']));
-					}	
+					$list[] = array(
+						'cat_id'         => intval($v['cat_id']),
+						'cat_name'       => urlencode($v['cat_name']),
+						'attr_id'        => intval($v['attr_id']),
+						'attr_name'      => urlencode($v['attr_name']),
+						'attr_val_id'    => intval($v['attr_val_id']),
+						'attr_val_name'  => urlencode($v['attr_val_name']),
+					);
 				}
-				unset($cat_attr_val_id_list, $goods_attr_val_id_list, $k, $v);
 			}
+			unset($tmp_list, $k, $v);
 		}
 		
 		return array(
@@ -462,61 +467,66 @@ class CategoryController extends BaseController {
 	/*    
 	@@input
 	@param $cat_id           分类id
-	@param $option_list      进行运算操作的列表，用逗号隔开
+	@param $attr_id          要改变的属性id
+	@param $attr_val_id      要改变的属性值id
+	@param $chg_val          改变的值
 	@@output
 	@param $is_success 0-操作成功,-1-操作失败
 	*/
 	{
 		$data = $this->fill($content);
 		if(!isset($data['cat_id'])
-		|| !isset($data['option_list'])
+		|| !isset($data['attr_id'])
+		|| !isset($data['attr_val_id'])
+		|| !isset($data['chg_val'])
 		)
 		{
 			return C('param_err');
 		}
 		
-		$data['cat_id'] = intval($data['cat_id']);
-		$data['option_list'] = 
-		           htmlspecialchars(trim($data['option_list']));
+		$data['cat_id']      = intval($data['cat_id']);
+		$data['attr_id']     = intval($data['attr_id']);
+		$data['attr_val_id'] = intval($data['attr_val_id']);
+		$data['chg_val']     = intval($data['chg_val']);
 		           
-		if(0>= $data['cat_id']
-		|| '' == $data['option_list'])
+		if(0 >= $data['cat_id']
+		|| 0 >= $data['attr_id']
+		|| 0 >= $data['attr_val_id'])
 		{
 			return C('param_fmt_err');
 		}
 		
-		$option_list = explode(',', $data['option_list']);
-		
-		#获取当前分类属性值统计
 		$tmp_data = array(
-			'cat_id' => $data['cat_id'],
+			'cat_id'       => $data['cat_id'],
+			'attr_id'      => $data['attr_id'],
+			'attr_val_id'  => $data['attr_val_id'],
 		);
-		list(,$cur_stat)    = 
-			$this->get_category_attr_val_stat(json_encode($tmp_data));
-			
-		$cur_stat_list = explode(',', $cur_stat);
-		$result_list = array();
 		
-		for($i=0; $i< count($cur_stat_list); $i++)
+		if(0 > $data['chg_val'])
 		{
-			$result_list[] = $optioin_list[$i] 
-			               + $cur_stat_list[$i];
+			if(M('Cat_attr_val')->where($where)->setDec('goods_stat', abs($data['chg_val'])))
+			{
+				return array(
+					200,
+					array(
+						'is_success' => 0,
+						'message'    => urlencode('操作成功'),
+					),
+				);
+			}
 		}
-		
-		$result = implode(',', $result_list);
-	    $where = array(
-			'id'=> $data['cat_id'],
-	    );
-	    $tmp_data['goods_attr_val_ids'] = $result;
-	    if(M('Category')->where($where)->save($tmp_data))
-	    {
-			return array(
-				200,
-				array(
-					'is_success'=>0,
-					'message'   =>urlencode('操作成功'),
-				),
-			);
+		elseif(0 < $data['chg_val'])
+		{
+			if(M('Cat_attr_val')->where($where)->setInc('goods_stat', abs($data['chg_val'])))
+			{
+				return array(
+					200,
+					array(
+						'is_success' => 0,
+						'message'    => urlencode('成功操作'),
+					),
+				);
+			}
 		}
 		
 		return array(
