@@ -265,7 +265,7 @@ class BaseController extends Controller {
 				array(
 					'is_success'=> 0,
 					'message'   => urlencode('成功操作'),
-				);
+				)
 			);
 		}
 		return array(

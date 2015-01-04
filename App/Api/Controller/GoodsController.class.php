@@ -20,7 +20,14 @@ public function get_goods_ids_by_cat_attr_val   获取商品id通过分类及其
 public function get_info
 @@input
 @param $id
+@@output
+##--------------------------------------------------------##
+public function get_attr_by_id  通过商品id获取绑定的属性值
+@@input
+@param $goods_id      商品id
 @@output   
+@param $attr_id       属性id
+@param $attr_val_id   属性值id
 ------------------------------------------------------------
 */
 class GoodsController extends BaseController {
@@ -212,6 +219,54 @@ class GoodsController extends BaseController {
                         'promise'          => urlencode($tmp_one['promise']),
                         'add_time'         => $tmp_one['add_time'],
 			);
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
+	
+	#通过商品id获取绑定的属性值
+	public function get_attr_by_id($content)
+	/*
+	@@input
+	@param $goods_id      商品id
+	@@output   
+	@param $attr_id       属性id
+	@param $attr_val_id   属性值id
+	*/
+	{
+		$data = $this->fill(content);
+		if(!isset($data['goods_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['goods_id'] = intval($data['goods_id']);
+		
+		if(0>= $data['goods_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$where = array(
+			'goods_id' => $data['goods_id'],
+		);
+		
+		$list = array();
+		$tmp_row = M('Goods_attr_val')->where($where)->select();
+		if($tmp_row
+		&& 0< count($tmp_row))
+		{
+			foreach($tmp_row as $v)
+			{
+				$list[] = array(
+					'attr_id'  => intval($v['attr_id']),
+					'attr_val' => intval($v['attr_val_id'])
+				);
+			}
+			unset($tmp_row, $v);
 		}
 		
 		return array(
