@@ -17,6 +17,11 @@ public function get_list      			  查询数据列表
 ##--------------------------------------------------------##
 public function get_row                   查询一行
 ##--------------------------------------------------------##
+public function get_info
+@@input
+@param $id
+@@output
+##--------------------------------------------------------##
 public function update                    更新
 @@input
 @param $where 条件
@@ -171,7 +176,45 @@ class BaseController extends Controller {
 	public function get_row($content){
 
 	}
-
+	
+	#通过关键字通过基本信息
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$tmp_one = M($this->_module_name)->find($data['id']);
+		if($tmp_one)
+		{
+			return array(
+				200,
+				$tmp_one
+			);
+		}
+		
+		return array(
+			200,
+			array(
+			),
+		);
+	}
+	
 	#修改	
 	public function update($content)
 	/**
