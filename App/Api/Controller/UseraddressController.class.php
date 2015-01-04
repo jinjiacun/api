@@ -123,7 +123,7 @@ class UseraddressController extends BaseController {
 	@@output
 	*/
 	{
-		$list(,$data) = parent::get_info($content);
+		list(,$data) = parent::get_info($content);
 		
 		$list = array();
 		if($data)

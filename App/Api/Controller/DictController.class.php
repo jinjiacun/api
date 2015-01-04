@@ -4,6 +4,10 @@ use Think\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --字典管理--
+ 
+public function get_name_map          获取编号和名称键值对
+@@input
+@param $cat_id   类别
 */
 class DictController extends BaseController {
 	
@@ -41,5 +45,46 @@ class DictController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	#获取编号和名称键值对
+	public function get_name_map($content)
+	/*
+	@@input
+	@param $cat_id   类别
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['cat_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['cat_id'] = intval($data['cat_id']);
+		
+		if(0>= $data['cat_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$where = array(
+			'cat_id' => $data['cat_id'],
+		);
+		$tmp_list = M($this->_module_name)->where($where)->select();
+		if($tmp_list
+		&& 0< count($tmp_list)
+		)
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[$v['sn']] = urlencode($v['name']);
+			}
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 }

@@ -41,6 +41,7 @@ class GoodsController extends BaseController {
     protected $issue;           #发行日期
     protected $post_unit;       #邮票单位编码
     protected $transaction_type;#交易类型
+    protected $has_end_date;    #是否有时间限制
     protected $end_of_date;     #有效期至
     protected $promise;         #承诺
     protected $is_check;        #是否审核通过
@@ -76,6 +77,7 @@ class GoodsController extends BaseController {
                         'issue'            => $v['issue'],
                         'post_unit'        => $v['post_unit'],
                         'transaction_type' => $v['transaction_type'],
+                        'has_end_date'     => intval($v['has_end_date']),
                         'end_of_date'      => $v['end_of_date'],
                         'promise'          => urlencode($v['promise']),
                         'add_time'         => $v['add_time'],

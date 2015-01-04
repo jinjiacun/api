@@ -7,6 +7,13 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 ------------------------------------------------------------
 function of api:
  
+##--------------------------------------------------------##    
+public function get_category_name_map           获取所有分类的id和名称的映射对
+@@input
+@@output
+@param $key             对应分类id(cat_id)
+@param $value 			对应分类名称(cat_name)  
+##--------------------------------------------------------##    
 public function get_category_info_by_id         通过分类获取分类信息
 @@input
 @param $cat_id          分类id
@@ -108,6 +115,34 @@ class CategoryController extends BaseController {
 							'list'=>$list,
 							'record_count'=>$record_count)
 					);
+	}
+
+	#获取所有分类的id和名称的映射对
+	public function get_category_name_map($content)
+	/*
+	@@input
+	@@output
+	@param $key             对应分类id(cat_id)
+	@param $value 			对应分类名称(cat_name)  
+	*/
+	{
+		$list = array();
+		$tmp_list = M($this->_module_name)->select();
+		
+		if($tmp_list
+		&& 0< count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[intval($v['id'])] = urlencode($v['name']);
+			}
+			unset($v, $tmp_list);
+		}
+		
+		return array(
+			200,
+			$list,
+		);
 	}
 	
 	#通过分类获取分类信息
