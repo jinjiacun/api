@@ -13,6 +13,8 @@ public function set_defalt_address           设置默认收获地址
 @@output
 @param $is_success 0-成功设置,-1-设置失败
 ------------------------------------------------------------
+public function get_list
+------------------------------------------------------------
 */
 class UseraddressController extends BaseController {
     protected $_module_name = 'user_address';
@@ -33,7 +35,7 @@ class UseraddressController extends BaseController {
 	public function set_default_address($content)
 	{
         $data = $this->fill($content);
-		if(!isset($data['user_id']
+		if(!isset($data['user_id'])
         && !isset($data['address_id'])
         )
 		{
@@ -70,8 +72,42 @@ class UseraddressController extends BaseController {
 		return array(200,
                     array(
 						'is_success'=>-1,
-						'message'=> urlencode('操作失败');
+						'message'=> urlencode('操作失败'),
 					));
+	}
+	
+	public function get_list($content)
+	{
+		list($data, $record_count) = parent::get_list($content);
+
+		$list = array();
+		if($data)
+		{
+			foreach($data as $v)
+			{
+				$list[] = array(
+						'id'        => intval($v['Id']),
+						'user_id'   => intval($v['user_id']),
+						'province'  => intval($v['province']),
+						'city'      => intval($v['city']),
+						'district'  => intval($v['district']),
+						'town'      => intval($v['town']),
+						'address'   => urlencode($v['address']),
+						'zipcode'   => urlencode($v['zipcode']),
+						'consignee' => urlencode($v['consignee']),
+						'mobile'    => urlencode($v['mobile']),
+						'telephone' => urlencode($v['telephone']),
+						'add_time'  => intval($v['add_time']),
+					);	
+			}
+		}
+
+		return array(200, 
+				array(
+					'list'=>$list,
+					'record_count'=> $record_count,
+					)
+				);
 	}
 	
 }
