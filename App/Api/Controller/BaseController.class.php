@@ -260,9 +260,21 @@ class BaseController extends Controller {
 		$obj  = M($this->_module_name);
 		if($obj->where($data)->delete())
 		{
-			return true;
+			return array(
+				200,
+				array(
+					'is_success'=> 0,
+					'message'   => urlencode('成功操作'),
+				);
+			);
 		}
-		return false;
+		return array(
+			200,
+			array(
+				'is_success'=> -1,
+				'message'   => urlencode('操作失败'),
+			)
+		);
 	}
 
 

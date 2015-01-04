@@ -193,7 +193,7 @@ class GoodsController extends BaseController {
 		}
 		
 		$list = array();
-		$tmp_one = M($this->_module_name)-find($data['id']);
+		$tmp_one = M($this->_module_name)->find($data['id']);
 		if($tmp_one)
 		{
 			$list = array(
@@ -213,5 +213,10 @@ class GoodsController extends BaseController {
                         'add_time'         => $tmp_one['add_time'],
 			);
 		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 }
