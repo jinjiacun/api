@@ -15,6 +15,11 @@ public function set_defalt_address           设置默认收获地址
 ------------------------------------------------------------
 public function get_list
 ------------------------------------------------------------
+public function get_info                    通过关键字获取一条收获地址信息
+@@input
+@param $id
+@@output
+------------------------------------------------------------
 */
 class UseraddressController extends BaseController {
     protected $_module_name = 'user_address';
@@ -86,7 +91,7 @@ class UseraddressController extends BaseController {
 			foreach($data as $v)
 			{
 				$list[] = array(
-						'id'        => intval($v['Id']),
+						'id'        => intval($v['id']),
 						'user_id'   => intval($v['user_id']),
 						'province'  => intval($v['province']),
 						'city'      => intval($v['city']),
@@ -110,4 +115,38 @@ class UseraddressController extends BaseController {
 				);
 	}
 	
+	#通过关键字获取一条收获地址信息
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$list(,$data) = parent::get_info($content);
+		
+		$list = array();
+		if($data)
+		{
+			$list = array(
+				'id'        => intval($data['id']),
+				'user_id'   => intval($data['user_id']),
+				'province'  => intval($data['province']),
+				'city'      => intval($data['city']),
+				'district'  => intval($data['district']),
+				'town'      => intval($data['town']),
+				'address'   => urlencode($data['address']),
+				'zipcode'   => urlencode($data['zipcode']),
+				'consignee' => urlencode($data['consignee']),
+				'mobile'    => urlencode($data['mobile']),
+				'telephone' => urlencode($data['telephone']),
+				'add_time'  => intval($data['add_time']),
+			);
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
 }
