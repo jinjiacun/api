@@ -16,7 +16,11 @@ public function get_goods_ids_by_cat_attr_val   获取商品id通过分类及其
 *                      例如:属性名1-id 属性值1 属性值2 属性值3
 @@output
 @param $goods_ids      商品id集合，之间用逗号隔开
-##--------------------------------------------------------##    
+##--------------------------------------------------------##
+public function get_info
+@@input
+@param $id
+@@output   
 ------------------------------------------------------------
 */
 class GoodsController extends BaseController {
@@ -34,11 +38,6 @@ class GoodsController extends BaseController {
     protected $post_number;     #邮票数量
     protected $post_shop_price; #销售价格
     protected $post_photo_list; #邮票照片
-    protected $post_zodiac;     #生肖系列
-    protected $zodiac_cat;      #生肖种类
-    protected $yearbook_spec;   #年册规格
-    protected $chronological;   #编年年份
-    protected $issue;           #发行日期
     protected $post_unit;       #邮票单位编码
     protected $transaction_type;#交易类型
     protected $has_end_date;    #是否有时间限制
@@ -70,11 +69,6 @@ class GoodsController extends BaseController {
                         'post_price'       => $v['post_price'],
                         'post_number'      => $v['post_number'],
                         'post_shop_price'  => $v['post_shop_price'],
-                        'post_zodiac'      => $v['post_zodiac'],
-                        'zodiac_cat'       => $v['zodiac_cat'],
-                        'yearbook_spec'    => $v['yearbook_spec'],
-                        'chronological'    => $v['chronological'],
-                        'issue'            => $v['issue'],
                         'post_unit'        => $v['post_unit'],
                         'transaction_type' => $v['transaction_type'],
                         'has_end_date'     => intval($v['has_end_date']),
@@ -175,5 +169,49 @@ class GoodsController extends BaseController {
             200,
             $list
         );
+	}
+	
+	#获取商品一条基本信息
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$tmp_one = M($this->_module_name)-find($data['id']);
+		if($tmp_one)
+		{
+			$list = array(
+						'id'               => intval($tmp_one['id']),
+                        'goods_sn'         => urlencode($tmp_one['goods_sn']),
+                        'post_no'          => urlencode($tmp_one['post_no']),
+                        'post_name'        => urlencode($tmp_one['post_name']),
+                        'post_cat'         => intval($tmp_one['post_cat']),
+                        'post_price'       => $tmp_one['post_price'],
+                        'post_number'      => $tmp_one['post_number'],
+                        'post_shop_price'  => $tmp_one['post_shop_price'],
+                        'post_unit'        => $tmp_one['post_unit'],
+                        'transaction_type' => $tmp_one['transaction_type'],
+                        'has_end_date'     => intval($tmp_one['has_end_date']),
+                        'end_of_date'      => $tmp_one['end_of_date'],
+                        'promise'          => urlencode($tmp_one['promise']),
+                        'add_time'         => $tmp_one['add_time'],
+			);
+		}
 	}
 }
