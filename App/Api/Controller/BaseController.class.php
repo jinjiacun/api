@@ -151,6 +151,7 @@ class BaseController extends Controller {
 		$data['where'] = isset($data['where'])?$data['where']:array();
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
+		$data['order']      = isset($data['order'])?$data['order']:array('id'=>'desc');
 		$obj  = M($this->_module_name);
 		if(isset($data['page_index']))
 			$page_index = $data['page_index'];
@@ -162,7 +163,10 @@ class BaseController extends Controller {
 			$page_size  = 10;
 		//$page_index = 1;
 		//$page_size  = 10;
-		$list = $obj->page($page_index, $page_size)->where($data['where'])->select();
+		$list = $obj->page($page_index, $page_size)
+		            ->where($data['where'])
+		            ->order($data['order'])
+		            ->select();
 		#
 		$record_count = 0;
 		$record_count = $obj->where($data['where'])->count();
