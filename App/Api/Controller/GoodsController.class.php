@@ -237,7 +237,7 @@ class GoodsController extends BaseController {
 	@param $attr_val_id   属性值id
 	*/
 	{
-		$data = $this->fill(content);
+		$data = $this->fill($content);
 		if(!isset($data['goods_id']))
 		{
 			return C('param_err');
@@ -255,15 +255,15 @@ class GoodsController extends BaseController {
 		);
 		
 		$list = array();
-		$tmp_row = M('Goods_attr_val')->where($where)->select();
-		if($tmp_row
-		&& 0< count($tmp_row))
+		$tmp_list = M('Goods_attr_val')->where($where)->select();
+		if($tmp_list
+		&& 0< count($tmp_list))
 		{
-			foreach($tmp_row as $v)
+			foreach($tmp_list as $v)
 			{
 				$list[] = array(
-					'attr_id'  => intval($v['attr_id']),
-					'attr_val' => intval($v['attr_val_id'])
+					'attr_id'     => intval($v['attr_id']),
+					'attr_val_id' => intval($v['attr_val_id'])
 				);
 			}
 			unset($tmp_row, $v);
