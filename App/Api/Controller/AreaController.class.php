@@ -29,7 +29,7 @@ class AreaController extends BaseController {
 			{
 				$list[] = array(
 						'areaid'      =>intval($v['areaid']),
-						'areaname'    =>urlencode($v['name']),
+						'areaname'    =>urlencode($v['areaname']),
 						'parentid'    =>intval($v['parentid']),
 						'arrparentid' =>$v['arrparentid'],
 						'child'       =>intval($v['child']),
