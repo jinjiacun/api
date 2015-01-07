@@ -67,7 +67,7 @@ class CommentController extends BaseController {
 	                              website varchar(255) comment '公司网址',
 	                              record varchar(255) comment '官网备案',
 	                              content text comment '曝光内容',
-	                              pic_1 not null default 0 int comment '图片1',
+	                              pic_1 int not null default 0 comment '图片1',
 	                              pic_2 int not null default 0 comment '图片2',
 	                              pic_3 int not null default 0 comment '图片3',
 	                              pic_4 int not null default 0 comment '图片4',
