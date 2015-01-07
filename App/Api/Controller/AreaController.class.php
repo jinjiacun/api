@@ -20,8 +20,15 @@ class AreaController extends BaseController {
 
 	public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
-
+		$data = $this->fill($content);
+		$data['where'] = isset($data['where'])?$data['where']:array();
+		$data['order'] = isset($data['order'])?$data['order']:array('id'=>'desc');
+		$obj  = M($this->_module_name);
+		//$page_index = 1;
+		//$page_size  = 10;
+		$data = $obj->where($data['where'])
+		            ->order($data['order'])
+		            ->select();
 		$list = array();
 		if($data)
 		{
@@ -40,10 +47,7 @@ class AreaController extends BaseController {
 			unset($data, $v);
 		}
 
-		return array(200, array(
-							'list'=>$list,
-							'record_count'=>$record_count)
-					);
+		return array(200, $list);
 	}
 
 	public function add($content)

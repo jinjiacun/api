@@ -17,10 +17,10 @@ class MediaController extends BaseController {
 	#上传文件
 	/**
 	*@@input
-	*@param $media_data  媒体数据
-	*@param $media_type  媒体数据类型
-	*@param $media_ext   媒体后缀名
-	*@param $module_name 模块名称 
+	*@param $field_name  
+	*@param $file_name
+	*@param $file_ext
+	*@param $module_sn  
 	*@@output
 	*
 	*
