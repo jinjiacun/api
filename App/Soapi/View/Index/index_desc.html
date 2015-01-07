@@ -1,0 +1,1020 @@
+<html>
+<head>
+	<title>api接口描述</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<h1>目录</h1>
+<h2>分类模块</h2>
+<h2>商品模块</h2>
+<h2>用户模块</h2>
+<h2>订单模块</h2>
+<h2>其他模块</h2>
+
+<hr>
+<hr>
+<hr>
+<p id="goods_1">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_list<br/>
+方法描述:获取商品列表<br/>
+输入参数格式:<br/>
+method=goods.get_goods_list<br/>
+content={'cat_id':xxx,'sort_type':xxx,'sort_way':xxx,'page_index':xxx,'page_size':xxx}<br/>
+*@@input<br/>
+*@params $cat_id     分类cat_id <br/>
+*@params $sort_type  排序类型 1-价格 2-上架时间 3-更新时间<br/>
+*@params $sort_way   排序方式 0-升序 1-降序<br/>
+*@params $page_index 当前页的索引<br/>
+*@params $page_size  页的大小<br/>
+示例输出:<br/>
+{'status_code':200,'content':{"goods_list":[{"goods_id":xxx,"goods_name":"xxx",<br/>
+                              "picture_url":"xxx","goods_weight":xxx,"basic_price":xxx,<br/>
+                              "process_price":xxx,"procted_price":xxx,"shop_price":xxx,<br/>
+                              "goods_sell_num":xxx,'is_autoprice':xxx}],
+                              "record_count":xxx}<br/>
+*@@output<br/>
+*@params $goods_id   商品关键字<br/>
+*@params $goods_name 商品名称<br/>
+*@params $picture_url 商品图片url<br/>
+*@params $goods_weight 商品重量(注:浮点型)<br/>
+*@params $basic_price  基础金价(注:浮点型)<br/>
+*@params $protect_price 运保费(注:浮点型)<br/>
+*@params $process_price 工费(注:浮点型)<br/>
+*@params $shop_price 商品售价(注:浮点型)<br/>
+*@params $goods_sell_num 商品销售量<br/>
+*@params $is_autoprice   是否是投资系列(0-非投资，1-投资)<br/>
+*<br/>
+*@params $record_count 当前条件下的所有商品记录数<br/>
+</p>
+<hr>
+<p id="goods_2">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:goods_search<br/>
+方法描述:商品搜索<br/>
+输入参数格式:<br/>
+method=goods.goods_search<br/>
+content={’keyword':'xxx','page_index':xxx,'page_size':xxx}<br/>
+*@@input<br/>
+*@params $keyword    关键字<br/>
+*@params $page_index 当前页的索引<br/>
+*@params $page_size  页面大小<br/>
+示例输出:<br/>
+{'status_code':200,'content':{"goods_list":[{"goods_id":xxx,"goods_name":"xxx",<br/>
+                              "picture_url":"xxx","goods_weight":xxx,"basic_price":xxx,<br/>
+                              "process_price":xxx,"procted_price":xxx,"shop_price":xxx,<br/>
+                              "goods_sell_num":xxx,"is_autoprice":xxx}],
+                              "record_count":xxx}<br/>
+*@@output<br/>
+*@params $goods_id   商品关键字<br/>
+*@params $goods_name 商品名称<br/>
+*@params $picture_url 商品图片url<br/>
+*@params $goods_weight 商品重量(注:浮点型)<br/>
+*@params $basic_price  基础金价(注:浮点型)<br/>
+*@params $protect_price 运保费(注:浮点型)<br/>
+*@params $process_price 工费(注:浮点型)<br/>
+*@params $shop_price 商品售价(注:浮点型)<br/>
+*@params $goods_sell_num 商品销售量<br/>
+*@params $is_autoprice   是否是投资系列(0-非投资，1-投资)<br/>
+*<br/>
+*@params $record_count 当前条件下的所有商品记录数<br/>
+</p>
+<hr>
+<p id="goods_3">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_by_id<br/>
+方法描述:查询单个商品基本信息<br/>
+输入参数格式:<br/>
+method=goods.get_goods_by_id<br/>
+content={'goods_id':xxx}<br/>
+*@@input<br/>
+*@params $goods_id 商品id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'goods_id':xxx,'goods_name':'xxx','goods_brief':'xxx','shop_price':xxx,<br/>
+                              'goods_weight':xxx,'basic_price':xxx,'protect_price':xxx,<br/>
+                              'process_price':xxx,'goods_sell_num':xxx,'is_on_sale':xxx,'is_autoprice':xxx}}<br/>
+*@@output<br/>
+*@params $goods_id   商品关键字<br/>
+*@params $goods_name 商品名称<br/>
+*$params $goods_brief 商品简要描述<br/>
+*@params $shop_price 商品售价(注:浮点型)<br/>
+*@params $goods_weight 商品重量(注:浮点型)<br/>
+*@params $basic_price  基础金价(注:浮点型)<br/>
+*@params $protect_price 运保费(注:浮点型)<br/>
+*@params $process_price 工费(注:浮点型)<br/>
+*@params $goods_sell_num 商品销售量<br/>
+*@params $small_pic      小图标<br/>
+*@params $is_on_sale     是否下架(0-下架,1-上架)<br/>
+*@param  $is_autoprice   是否投资系列(0-非投资,1-投资)<br/>
+</p>
+<hr>
+<p id="goods_4">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_photo<br/>
+方法描述:查询商品相册<br/>
+输入参数格式:<br/>
+method=goods.get_goods_photo<br/>
+content={'goods_id':xxx}<br/>
+*@@input<br/>
+*@params $goods_id 商品id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'picture_url':'xxx'},...,{'picture_url':'xxx'}]}<br/>
+*@@output<br/>
+*@params $picture_url 图片地址<br/>
+</p>
+<hr>
+<p id="goods_5">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_show_attr<br/>
+方法描述:获取商品显示属性列表<br/>
+输入参数格式:<br/>
+method=goods.get_goods_show_attr<br/>
+content={'goods_id':xxx}<br/>
+*@@input<br/>
+*@params $goods_id 商品id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'attr_name':'xxx','attr_value':'xxx'},...,<br/>
+                              {'attr_name':'xxx','attr_value':'xxx'}]<br/>
+*@@output<br/>
+*@params $attr_name  属性名称<br/>
+*@params $attr_value 属性值 <br/>
+</p>
+<hr>
+<p id="goods_6">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_store_attr<br/>
+方法描述:获取商品库存属性<br/>
+输入参数格式:<br/>
+method=goods.get_goods_store_attr<br/>
+content={'goods_id':xxx}<br/>
+*@@input<br/>
+*@params $goods_id 商品id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'product_id':xxx,'attr_name':'xxx','attr_value':xxx,'product_num':xxx,'attr_val_id':xxx},...,<br/>
+                              {'product_id':xxx,'attr_name':'xxx','attr_value':xxx,'product_num':xxx,'attr_val_id':xxx}]<br/>
+*@@output<br/>
+*@params $product_id  属性库存id(注:非负整型)<br/>
+*@params $attr_name   库存属性名<br/>
+*@params $attr_value  库存属性值<br/>
+*@params $product_num 属性库存数量(注:非负整型)<br/>
+*@params $attr_val_id 属性值id(注:非负整型)<br/>
+</p>
+<hr>
+<p id="goods_7">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_prices<br/>
+方法描述:依据不同重量查询商品售价，基础金价，加工费，运保费<br/>
+输入参数格式:<br/>
+method=goods.get_goods_prices<br/>
+content={'goods_id':xxx,'goods_weight':xxx}<br/>
+*@@input<br/>
+*@params $goods_id     商品id<br/>
+*@params $goods_weight 商品重量(注:浮点型)<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'shop_price':xxx,'basic_price':'xxx','protect_price':xxx,'process_price':xxx},...,<br/>
+                              {'shop_price':xxx,'basic_price':'xxx','protect_price':xxx,'process_price':xxx}]<br/>
+*@@output<br/>
+*@params $shop_price 商品售价(注:浮点型)<br/>
+*@params $basic_price  基础金价(注:浮点型)<br/>
+*@params $protect_price 运保费(注:浮点型)<br/>
+*@params $process_price 工费(注:浮点型)<br/>
+</p>
+<hr>
+<p id="goods_8">
+模块名称:goods<br/>
+模块名称描述:商品模块<br/>
+方法名称:get_goods_desc_by_id<br/>
+方法描述:获取商品详情<br/>
+输入参数格式:<br/>
+method=goods.get_goods_desc_by_id<br/>
+content={'goods_id':xxx}<br/>
+*@@input<br/>
+*@params $goods_id     商品id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'picture_url':'xxx'},...,{'picture_url':'xxx'}]<br/>
+*@@output<br/>
+*$params $picture_url 详情图片url<br/>
+</p>
+<hr>
+<hr>
+<p id="user_1">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:get_goods_prices<br/>
+方法描述:注册用户<br/>
+输入参数格式:<br/>
+method=user.register<br/>
+content={'username':'xxx','password':'xxx','is_validated':xxx,'mobile':'xxx','shop':xxx,'sex':xxx,'identity_card':xxx,'birthday':'xxx','age_segment':xxx}<br/>
+*@@input<br/>
+*@params $username     用户名<br/>
+*@params $password     密码<br/>
+*@params $is_validated 手机验证(0或者1,1为通过验证)<br/>
+*@params $mobile       手机号码<br/>
+*@params $shop         门店id(非负整数)<br/>
+*@params @sex          性别(0-保密,1-男,2-女)<br/>
+*@param  @identity_card 身份证号<br/>
+*@param  @birthday      出生日期<br/>
+*@param  @age_segment   年龄段<br/>
+注:
+1     30岁以下
+2     30—45岁
+3     46—59岁
+4     60岁以上
+示例输出:<br/>
+{'status_code':200,'content':[{'is_success':xxx}<br/>
+                              
+*@@output<br/>
+*@params $is_success   0-注册成功,1-注册失败(数字)<br/>
+</p>
+<hr>
+<p id="user_2">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:check_username<br/>
+方法描述:检查用户名是否存在<br/>
+输入参数格式:<br/>
+method=user.check_username<br/>
+content={'username':'xxx'}<br/>
+*@input<br/>
+*$params $username 用户名<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'is_exists':xxx}<br/>
+*@output<br/>
+*@params $is_exists 0-用户名不存在,1-用户名存在(数字)<br/>
+</p>
+<hr>
+<p id="user_3">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:login<br/>
+方法描述:会员登录<br/>
+输入参数格式:<br/>
+method=user.login<br/>
+content={'user_name':'xxx','password':'xxx'}<br/>
+*@input<br/>
+*@params $user_name  用户名<br/>
+*@params $password   密码<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'is_success':xxx}<br/>
+*@output<br/>
+*@params $is_success   0-成功登录,1-登录失败<br/>
+*@params $user_id      用户id<br/>
+</p>
+<hr>
+<p id="user_4">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:user_info<br/>
+方法描述:查看用户信息<br/>
+输入参数格式:<br/>
+method=user.user_info<br/>
+content={'user_id':xxx}<br/>
+*@input<br/>
+*@params $user_id 用户id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'user_name':'xxx','nickname':'xxx','
+                              birthday':'xxx','性别':'xxx','is_validated':xxx,'identity_card':'xxx',
+                              'mobile_phone':'xxx','store_id':xxx}<br/>
+*@output<br/>
+*@params $user_name     用户名<br/>
+*@params $nickname      昵称<br/>
+*@params $birthday      出生日期<br/>
+*@params $sex           性别<br/>
+*@param  $is_validated  是否手机验证(0-未验证,1-已验证)<br/>
+*@params $identity_card 身份证号<br/>
+*@params $mobile_phone  手机号码<br/>
+*@params $store_id       门店id<br/>
+</p>
+<hr>
+<p id="user_5">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:update_password<br/>
+方法描述:修改密码<br/>
+输入参数格式:<br/>
+method=user.update_password<br/>
+content={'user_id':xxx}<br/>
+*@input<br/>
+*@params $type           0-忘记密码,1-修改密码<br/>
+*@params $user_id        用户id<br/>
+*@params $mobile_phone   手机号码<br/>
+*@params $old_password   旧密码<br/>
+*@params $new_password   新密码<br/>
+注:当type为0时,输入参数(mobile_phone,new_password)
+   当type为1时,输入参数(user_id, old_password, new_password)
+
+示例输出:<br/>
+{'status_code':200,'content':[{'is_success':'xxx'}<br/>
+*@output<br/>
+*@params $is_success   0-成功,1-失败,-1:原密码不正确<br/>
+</p>
+<hr>
+<p id="user_6">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:address<br/>
+方法描述:用户收获地址<br/>
+输入参数格式:<br/>
+method=user.address<br/>
+content={'user_id':xxx}<br/>
+*@input<br/>
+*@params $user_id       用户id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'address_id':xxx,'country':xxx,'province':xxx,'province_n':'xxx','city':xxx,'city_n':'xxx','district':xxx,'district_n':'xxx', <br/>
+                                'address':'xxx','address_n':'xxx','zipcode':'xxx','consignee':'xxx','mobile':'xxx' <br/>
+                                'sign_building':'xxx','best_time':'xxx','identity_card':'xxx'},<br/>
+                                ...<br/>
+                                {xxx}]}<br/>
+*@output<br/>
+*@params $address_id    收货地址id<br/>
+*@params $country       国家<br/>
+*@params $province      省份<br/>
+*@params $province_n    省份名称<br/>
+*@params $city          城市<br/>
+*@params $city_n        城市名称<br/>
+*@params $district      区域<br/>
+*@params $district_n    区域名称<br/>
+*@params $address       详细地址<br/>
+*@params $address_n     详细地址描述<br/>
+*@params $zipcode       邮编<br/>
+*@params $consignee     收货人<br/>
+*@params $mobile        手机号码<br/>
+*@params $sign_building 标记性建筑<br/>
+*@params $best_time     最佳配送时间(任何一天、工作日、双休日)<br/>
+*@params $identity_card 身份证号码<br/>
+</p>
+<hr>
+<p id="user_7">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:add_address<br/>
+方法描述:添加收货地址<br/>
+输入参数格式:<br/>
+method=user.add_address<br/>
+content={'user_id':xxx,'country':xxx,'province':xxx,'city':xxx,'district':xxx, <br/>
+          'address':'xxx','zipcode':'xxx','consignee':'xxx','mobile':'xxx' <br/>
+          'sign_building':'xxx','best_time':'xxx','identity_card':'xxx'}<br/>
+*@@input<br/>
+*@params $user_id       用户id<br/>
+*@params $country       国家<br/>
+*@params $province      省份<br/>
+*@params $city          城市<br/>
+*@params $district      区域<br/>
+*@params $address       详细地址<br/>
+*@params $zipcode       邮编<br/>
+*@params $consignee     收货人<br/>
+*@params $mobile        手机号码<br/>
+*@params $sign_building 标记性建筑<br/>
+*@params $best_time     最佳配送时间(任何一天、工作日、双休日)<br/>
+*@params $identity_card 身份证号码<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+*@output<br/>
+*@params $is_success   0-注册成功,1-注册失败<br/>
+</p>
+<hr>
+<p id="user_8">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:check_mobile<br/>
+方法描述:查询此手机号码是否注册<br/>
+输入参数格式:<br/>
+method=user.check_mobile<br/>
+content={'mobile_phone':'xxx'}<br/>
+*@@input<br/>
+*@params $mobile_phone 手机号码<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_exists':xxx}}<br/>
+*@output<br/>
+*@params $is_exists 0-不存在,1-存在<br/>
+</p>
+<hr>
+<p id="user_9">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:del_address<br/>
+方法描述:删除收货地址<br/>
+输入参数格式:<br/>
+method=user.del_address<br/>
+content={'user_id':xxx,'address_id':xxx}<br/>
+*@@input<br/>
+*@param $user_id       用户id<br/>
+*@param $address_id    收货地址id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+*@output<br/>
+*@param $is_success   0:成功删除,-1:删除失败<br/>
+*@param $message      消息<br/>
+</p>
+<hr>
+<p id="user_10">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:set_default_address<br/>
+方法描述:设置默认收货地址<br/>
+输入参数格式:<br/>
+method=user.set_default_address<br/>
+content={'user_id':xxx,'address_id':xxx}<br/>
+*@@input<br/>
+*@param $user_id       用户id<br/>
+*@param $address_id    收货地址id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+*@output<br/>
+*@param $is_success   0:成功修改,-1:修改失败<br/>
+*@param $message      消息<br/>
+</p>
+<hr>
+<p id="user_11">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:check_user_default_address<br/>
+方法描述:查询会员是否设置默认收货地址<br/>
+输入参数格式:<br/>
+method=user.check_user_default_address<br/>
+content={'user_id':xxx}<br/>
+*@@input<br/>
+*@param $user_id       用户id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_exists':xxx}}<br/>
+*@output<br/>
+*@param $is_exists   0:设置,1:未设置<br/>
+*@param $address_id  如果设置了，此处为默认绑定的收货地址id<br/>
+*@param $address_info  如果设置了，此处为默认绑定的收货地址<br/>
+*@param $message      消息<br/>
+</p>
+<hr>
+<p id="user_12">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:update_address<br/>
+方法描述:修改收货地址<br/>
+输入参数格式:<br/>
+method=user.update_address<br/>
+content={'user_id':xxx}<br/>
+*@@input<br/>
+*@params $user_id       用户id<br/>
+*@params $address_id    收货地址id<br/>
+*@params $country       国家<br/>
+*@params $province      省份<br/>
+*@params $city          城市<br/>
+*@params $district      区域<br/>
+*@params $address       详细地址<br/>
+*@params $zipcode       邮编<br/>
+*@params $consignee     收货人<br/>
+*@params $mobile        手机号码<br/>
+*@params $sign_building 标记性建筑<br/>
+*@params $best_time     最佳配送时间(任何一天、工作日、双休日)<br/>
+*@params $identity_card 身份证号码<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_exists':xxx}}<br/>
+*@output<br/>
+*@param $is_success     0:修改成功,-1:修改失败<br/>
+</p>
+<hr>
+<p id="user_13">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:get_address_by_id<br/>
+方法描述:通过收获地址id获取收获地址详细信息<br/>
+输入参数格式:<br/>
+method=user.get_address_by_id<br/>
+content={'user_id':xxx,'address_id':xxx}<br/>
+*@@input<br/>
+*@params $user_id       用户id<br/>
+*@params $address_id    收货地址id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'address_id':xxx,'country':xxx,'province':xxx,'proviince_n':'xxx',<br/>
+                              'city':xxx,'city_n':'xxx','district':xxx,'district_n':'xxx','address':'xxx',<br/>
+                              'zipcode':'xxx','consignee':'xxx','mobile':'xxx',sign_building':'xxx',<br/>
+                              'identity_card':'xxx'}}<br/>
+*@output<br/>
+*@params $address_id    收货地址id<br/>
+*@params $country       国家<br/>
+*@params $province      省份<br/>
+*@params $province_n    省份描述<br/>
+*@params $city          城市<br/>
+*@params $city_n        城市描述<br/>
+*@params $district      区域<br/>
+*@params $district_n    区域描述<br/>
+*@params $address       详细地址<br/>
+*@params $zipcode       邮编<br/>
+*@params $consignee     收货人<br/>
+*@params $mobile        手机号码<br/>
+*@params $sign_building 标记性建筑<br/>
+*@params $best_time     最佳配送时间(任何一天、工作日、双休日)<br/>
+*@params $identity_card 身份证号码<br/>
+</p>
+<hr>
+<p id="user_14">
+模块名称:user<br/>
+模块名称描述:用户模块<br/>
+方法名称:user_validated<br/>
+方法描述:手机验证<br/>
+输入参数格式:<br/>
+method=user.user_validated<br/>
+content={'user_id':xxx,'mobile_phone':'xxx','is_validated':xxx}<br/>
+*@@input<br/>
+*@param $user_id        用户id<br/>
+*@param $mobile_phone   手机号<br/>
+*@param $is_validated   是否验证(0-未验证,1-已验证)<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':'xxx'}}<br/>
+*@output<br/>
+*@param $is_success     是否操作成功(0-成功, -1-失败，-2-此手机号码簿正确)<br/>
+</p>
+<hr>
+<hr>
+<p id="order_1">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:done_order<br/>
+方法描述:下订单<br/>
+输入参数格式:<br/>
+method=order.done_order<br/>
+content={'user_id':xxx, 'goods_amount':xxx,'store_id':xxx,
+         'cart_goods_list':[{
+            'goods_id':xxx,'goods_sn':xxx,'product_id':xxx,'goods_name':xxx,
+            'market_price':xxx,'goods_price':xxx,'goods_number':xxx,
+            'goods_attr':'xxx', 'is_real'::xxx,'extension_code':'xxx'，
+            'parent_id':xxx,'rec_type':xxx,'is_gift':xxx
+            'is_shipping'::xxx,'can_handsel'::xxx,'goods_attr_id'::xxx,
+            'months'::xxx,'save_amount'::xxx,'is_selected':xxx}...],
+         'pay_id':xx,'shipping_id':xxx,'address_id':xxx,'identity_card':'xxx',
+         'need_inv':xx,'inv_type':xxx,'inv_payee':xxx,'inv_content':'xxx'
+         'postscript':'xxx'}<br/>
+*@@input<br/>
+*@param $user_id          用户id<br/>
+*@param $goods_amount     商品总金额<br/>
+*@param $store_id         门店id<br/>
+*########商品列表<br/>
+*@param $cart_goods_list  购物车商品<br/>
+***@param $goods_id         商品id<br/>
+***@param $goods_sn         商品编号<br/>
+***@param $product_id       货品id<br/>
+***@param $goods_name       商品名称<br/>
+***@param $goods_price      商品售价<br/>
+***@param $goods_number     商品数量<br/>
+***@param $goods_attr       商品规格<br/>
+***@param $rec_type         购物车商品类型，0，普通；1，团够；2，拍卖；3，夺宝奇兵,先阶段使用的是0<br/>
+***@param $goods_attr_id    该商品的属性的id，取自goods_attr的goods_attr_id<br/>
+*######
+*@param $pay_id         支付方式<br/>
+*@param $shipping_id    配送方式<br/>
+*@param $address_id     收货地址id<br/>
+*@param $identity_card  身份证号码<br/>
+*######
+*@param $need_inv       是否开发票(0-不开发票,1-开发票)<br/>
+*@param $inv_type       发票类型<br/>
+*@param $inv_payee      发票抬头<br/>
+*@param $inv_content    发票内容<br/>
+*@param $postscript     补充说明<br/> 
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'order_sn':'xxx','order_id':xxx,'message':'xxx','add_time':xxx,'order_amount':xxx}}<br/>
+*@output<br/>
+*@params $is_success        成功:0,-xx:为失败<br/>
+*@params $order_id          订单id<br/>
+*@params $order_sn          订单编号<br/>
+*$params $message           描述<br/>
+*@params $add_time          下单时间(unix时间戳)<br/>
+*@params $order_amount      订单金额(浮点型)<br/>
+*@params $log_id            订单日志id<br/>
+</p>
+<hr>
+<p id="order_2">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:order_list<br/>
+方法描述:我的订单-列表<br/>
+输入参数格式:<br/>
+method=order.order_list<br/>
+content={'user_id':xxx, 'page_size':xxx, 'page_index':xxx, 'type':xxx}<br/>
+*@@input<br/>
+*@params $user_id         用户id<br/>
+*@params $page_size       页面大小<br/>
+*@params $page_index      页面索引<br/>
+*@params $type            订单状态(0:全部,1:待付款<未确认>,2:待确认收货<确认、已付款、配货中、已发货>,3:确认收货<已收货>)<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'order_id':xxx,'order_sn':'xxx','total_fee':'xxx','add_time':'xxx','order_status':xxx,'shipping_status':xxx,'pay_status':xxx},...<br/>
+                                ,{'order_id':xxx,'order_sn':'xxx','total_fee':'xxx','add_time':'xxx','order_status':xxx,'shipping_status':xxx,'pay_status':xxx}]}<br/>
+*@output<br/>
+*@params $order_id        订单id<br/>
+*@params $order_sn        订单编号<br/>
+*$params $total_fee       应付金额<br/>
+*@params $add_time        下单时间<br/>
+*@params $add_time_n      下单时间描述<br/>
+*@params $order_status    订单状态<br/>
+*@params $order_status_n  订单状态描述<br/>
+*@params $shipping_status 配送状态<br/>
+*@params $shipping_status_n 配送状态描述<br/>
+*@params $pay_status      支付状态<br/>
+*@params $pay_status_n      支付状态描述<br/>
+</p>
+<hr>
+<p id="order_3">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:order_info<br/>
+方法描述:我的订单-详情<br/>
+输入参数格式:<br/>
+method=order.order_info<br/>
+content={'user_id':xxx,'order_id',xxx}<br/>
+*@@input<br/>
+*@params $user_id  用户id<br/>
+*@params $order_id 订单id<br/>
+*@params $order_sn 订单sn<br/>
+注：order_id和order_sn只要一个即可
+
+示例输出:<br/>
+{'status_code':200,'content':[{'address':'xxx','consignee':'xxx','tel':'xxx','store_id':xxx,'shipping_name':'xxx','order_sn':'xxx','order_status','shipping_status','pay_id':xxx,'pay_name':'xxx','pay_time':xxx},...<br/>
+                                ,{'address':'xxx','order_sn':'xxx','order_status','shipping_status','pay_id':xxx,'pay_name':'xxx','pay_time':xxx,'identity_card':'xxx','order_amount':xxx,'add_time':xxx,'add_time_n':'xxx',<br/>
+                                'log_id':xxx,'postscript':'xxx','is_autoprice':xxx}]}<br/>
+*@output<br/>
+*@params $address         收货地址<br/>
+*@params $consignee       收货人<br/>  
+*@params $tel             电话号码<br/>
+*@params $store_id        门店id<br/>
+*@params $shipping_name   配送方式<br/>
+*@params $invoice_no      物流单号<br/>
+*@params $order_sn        订单编号<br/>
+*@params $order_status    订单状态<br/>
+*@params $shipping_status 配送状态<br/>
+*@params $pay_status      支付状态<br/>
+*@params $pay_id          支付id<br/>
+*@params $pay_name        支付名称<br/>
+*@params $pay_time        支付时间<br/>
+*@params $need_inv        是否开发票((1:开,0:不开)<br/>
+*@param  $inv_type        发票类型<br/>
+*@param  $inv_payee       发票抬头('':个人,'xxx':单位)
+*@params $inv_content     发票内容<br/>
+*@params $identity_card   身份证号码<br/>
+*@param  $order_amount    订单金额<br/>
+*@param  $add_time        下单时间<br/>
+*@param  $add_time_n      下单时间<br/>
+*@param  $log_id          付款日志id<br/>
+*@param  $postscript      附言<br/>
+*@param  $is_autoprice    是否含有投资商品(1-含有，0-未含)
+</p>
+<hr>
+<p id="order_4">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:order_goods_list<br/>
+方法描述:我的订单-详情-商品列表<br/>
+输入参数格式:<br/>
+method=order.order_goods_list<br/>
+content={'user_id':xxx,'order_id',xxx}<br/>
+*@@input<br/>
+*@params $user_id  用户id<br/>
+*@params $order_id 订单id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':[{'goods_id':xxx,'goods_name':'xxx','goods_arrt':'xxx','goods_price':xxx,'goods_number':xxx,'goods_weight':xxx,'subtotal':xxx},...<br/>
+                                ,{'goods_id':xxx,'goods_name':'xxx','goods_arrt':'xxx','goods_price':xxx,'goods_number':xxx,'goods_weight':xxx,'subtotal':xxx,'is_autoprice':xxx}]}<br/>
+*@output<br/>
+*@params $goods_id     商品id<br/>
+*@params $goods_name   商品名称<br/>
+*@params $goods_arrt   商品品属性<br/>
+*@params $goods_price  商品价格<br/>
+*@params $goods_number 数量(个数)<br/>
+*@params $goods_weight 商品重量<br/>
+*@params $subtotal     商品小计<br/>
+*@param  $is_autoprice 是否投资(0-非投资,1-投资)
+</p>
+<hr>
+<p id="order_5">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:cancel_my_order<br/>
+方法描述:取消订单<br/>
+输入参数格式:<br/>
+method=order.cancel_my_order<br/>
+content={'user_id':xxx,'order_id',xxx}<br/>
+*@@input<br/>
+*@params $user_id  用户id<br/>
+*@params $order_id 订单id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':'xxx'}}<br/>
+*@output<br/>
+*@param $is_success (0:成功取消,-1:取消失败)<br/>
+*@param $message    提示信息<br/>
+</p>
+<hr>
+<p id="order_6">
+模块名称:order<br/>
+模块名称描述:订单模块<br/>
+方法名称:affirm_my_order<br/>
+方法描述:确认收货<br/>
+输入参数格式:<br/>
+method=order.affirm_my_order<br/>
+content={'user_id':xxx,'order_id',xxx}<br/>
+*@@input<br/>
+*@params $user_id  用户id<br/>
+*@params $order_id 订单id<br/>
+
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':'xxx'}}<br/>
+*@output<br/>
+*@param $is_success (0:成功,-1:失败)<br/>
+*@param $message    提示信息<br/>
+</p>
+<hr>
+<hr>
+<p id="help_1">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_realtime_price<br/>
+方法描述:获取投资实时报价,包含金价及其银价<br/>
+输入参数格式:<br/>
+method=help.get_realtime_price<br/>
+content={"cur_time":xxx}注:xxx为unix时间戳<br/>
+示例输出:
+{'status_code':200,'content':[{"au_price":xxx,
+                               "ag_price":xxx,
+							   "au_up_down":xxx,
+							   "ag_up_down",
+							   "au_percent",
+							   "ag_percent",	
+							   "au_chg_money,
+							   "ag_chg_money,
+							   "au_repo_price,
+							   "ag_repo_price
+                               }]}<br/>
+*@params au_price 黄金价格<br/>
+*@params ag_price 白银价格<br/>
+*@params au_up_down 黄金升活降 负数为降，反之为升(注:带符号浮点类型)<br/>
+*@params ag_up_down 白银升活降 负数为降，反之为升(注:带符号浮点类型)<br/>
+*@params au_percent 黄金幅度百分比 xxx%<br/>
+*@params ag_percent 白银幅度百分比 xxx%<br/>
+*@params au_chg_money 黄金幅度金额 <br/>
+*@params ag_chg_money 白银幅度金额<br/>
+*@params au_repo_price 黄金回购价<br/>
+*@params ag_repo_price 白银回购价<br/>
+</p>
+<hr>
+<p id="help_2">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_index_ad<br/>
+方法描述:获取首页广告图片,默认为3张<br/>
+输入参数格式:<br/>
+method=help.get_index_ad<br/>
+content={"ad_count":xxx}注:xxx为获取的广告个数<br/>
+示例输出:
+{'status_code':200,'content':[{"picture_url":"xxx",
+                               "type":xxx,
+							   "id":xxx
+                               },
+                               {xxx},...,{xxx}
+                               ]}<br/>
+*@params picture_url 图片地址<br/>
+*@params type        0-分类,1-商品<br/>
+*@params id          关键字id(依据上面type来定位商品id还是分类id)<br/>
+</p>
+<hr>
+<p id="help_3">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_index_recomment_goods<br/>
+方法描述:获取首页推荐商品<br/>
+输入参数格式:<br/>
+method=help.get_index_recomment_goods<br/>
+content={"recomment_goods":xxx}注:xxx任意数字，大于0的整数<br/>
+示例输出:
+{'status_code':200,'content':[{"index":"xxx",
+                               "goods_id":xxx,
+							   "picture_url":xxx
+                               },
+                               {xxx},...,{xxx}
+                               ]}<br/>
+*@params $index       目标索引,从左到右,从上往下依次为1,2,3,4,5<br/>
+*@params $goods_id    商品id<br/>
+*@parmss $picture_url 图片地址<br/>
+</p>
+<hr>
+<p id="help_4">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_area<br/>
+方法描述:获取国家,省份，城市，地区<br/>
+输入参数格式:<br/>
+method=help.get_area<br/>
+content={"region_id":xxx}注:xxx为0时代表查询国家，如果为国家的id就为查询省份，<br/>
+                                                  如果为省份的id就为查询城市，<br/>
+                                                  如果为城市的id就为查询地区，<br/>
+示例输出:
+{'status_code':200,'content':[{"region_id":"xxx",
+                               "region_name":xxx},
+                               {xxx},...,{xxx}
+                               ]}<br/>
+*@output<br/>
+*@params $region_id 关键字id<br/>
+*@params $region_name 名称(国家或省份或城市或地区名)<br/>
+</p>
+<hr>
+<p id="help_5">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_store_list<br/>
+方法描述:获取门店列表<br/>
+输入参数格式:<br/>
+method=help.get_store_list<br/>
+content={"cur_time":xxx}注:xxx为当前unix时间戳<br/>
+示例输出:
+{'status_code':200,'content':[{"store_id":"xxx",
+                               "store_name":xxx},
+                               {xxx},...,{xxx}
+                               ]}<br/>
+*@@output<br/>
+*@params $store_id   门店id(非负整数)<br/>
+*@params $store_name 门店名称<br/>
+</p>
+<hr>
+<p id="help_6">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_unix_time<br/>
+方法描述:获取系统当前unix时间戳<br/>
+输入参数格式:<br/>
+method=help.get_unix_time<br/>
+content={}<br/>
+示例输出:
+{'status_code':200,'content':{xxx}},xxx为unix时间戳<br/>
+</p>
+<hr>
+<p id="help_7">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:send_mobile_validate<br/>
+方法描述:发送验证码<br/>
+输入参数格式:<br/>
+method=help.send_mobile_validate<br/>
+content={‘mobile':'xxx'}<br/>
+示例输出:
+{'status_code':200,'content':{'is_success':xxx}},<br/>
+</p>
+<hr>
+<p id="help_8">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_mobile_validate<br/>
+方法描述:查询验证码<br/>
+输入参数格式:<br/>
+method=help.get_mobile_validate<br/>
+content={'mobile':'xxx'}<br/>
+示例输出:
+{'status_code':200,'content':{'is_success':xxx,'validate_code':'xxx'}}<br/>
+*@@output<br/>
+*@params $is_success 0-成功,1-失败<br/>
+*@params $validate_code 验证码<br/>
+</p>
+<hr>
+<p id="help_9">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:order_map_status<br/>
+方法描述:订单状态字典<br/>
+输入参数格式:<br/>
+method=help.order_map_status<br/>
+content={'cur_time':xxx}<br/>
+示例输出:
+{'status_code':200,'content':{'order_status':xxx,'shipping_status':xxx,'pay_status':xxx}}<br/>
+*@@output<br/>
+*@params $order_status     订单状态<br/>
+*@params $shipping_status  配送状态<br/>
+*@params $pay_status       支付状态<br/>
+</p>
+<hr>
+<p id="help_10">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:payment_way<br/>
+方法描述:支付方式列表<br/>
+输入参数格式:<br/>
+method=help.payment_way<br/>
+content={'cur_time':xxx}<br/>
+示例输出:
+{'status_code':200,'content':{'pay_id':xxx,'pay_code':'xxx','pay_name':'xxx'}}<br/>
+*@@output<br/>
+*@params $pay_id    支付关键字<br/>
+*@params $pay_code  支付代码<br/>
+*@params $pay_name  支付名称<br/>
+</p>
+<hr>
+<p id="help_11">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_payment_by_id<br/>
+方法描述:通过pay_id获取支付方式信息<br/>
+输入参数格式:<br/>
+method=help.get_payment_by_id<br/>
+content={'cur_time':xxx}<br/>
+示例输出:
+{'status_code':200,'content':{'pay_id':xxx,'pay_code':'xxx','pay_name':'xxx'}}<br/>
+*@@output<br/>
+*@params $pay_id   支付id<br/>
+*@params $pay_code 支付代码<br/>
+*@params $pay_name 支付名称<br/>
+</p>
+<hr>
+<p id="help_12">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:shipping_way<br/>
+方法描述:发货方式列表<br/>
+输入参数格式:<br/>
+method=help.shipping_way<br/>
+content={'cur_time':xxx}<br/>
+示例输出:
+{'status_code':200,'content':{'shipping_id':xxx,'shipping_code':'xxx','shipping_name':'xxx'}}<br/>
+*@@output<br/>
+*@params $shipping_id   配送方式id<br/>
+*@params $shipping_code 配送编号<br/>
+*@params $shipping_name 配送名称<br/>
+</p>
+<hr>
+<p id="help_13">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:get_store_address_by_id<br/>
+方法描述:通过门店id获取门店收货地址<br/>
+输入参数格式:<br/>
+method=help.get_store_address_by_id<br/>
+content={'id':xxx}<br/>
+*@@input $id 门店id
+示例输出:
+{'status_code':200,'content':{'store_id':xxx,'store_name':'xxx','province':xxx,<br/>
+                              'province_n':'xxx','city':xxx,'city_n':'xxx',<br/>
+                              'district':xxx,'district_n':'xxx','address':'xxx', <br/>
+                              'zipcode':'xxx','consignee':'xxx','mobile':'xxx',<br/>
+                              'address_n':'xxx'}}<br/>
+*@@output<br/>
+*@param $store_id   门店id<br/>
+*@param $store_name 门店名称<br/>
+*@param $province   省份id<br/>
+*@param $province_n 省份名称 <br/>
+*@param $city       城市id<br/>
+*@param $city_n     城市名称<br/>
+*@param $district   区域id<br/><br/>
+*@param $district_n 区域名称<br/><br/>
+*@param $address    详细地址<br/>
+*@param $zipcode    邮编<br/>
+*@param $consignee  收货人<br/>
+*@param $mobile     手机号码<br/>
+*@param $address_n  地址详细描述<br/>
+</p>
+<hr>
+<p id="help_14">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:invoice_info<br/>
+方法描述:基本发票信息<br/>
+输入参数格式:<br/>
+method=help.invoice_info<br/>
+content={'cur_time':xxx}<br/>
+示例输出:
+{'status_code':200,'content':{'invoice_content':xxx,'type':xxx}}<br/>
+*@@output<br/>
+*@param $invoice_content 发票内容<br/>
+*@param $type            发票类型<br/>
+</p>
+<hr>
+<p id="help_15">
+模块名称:help<br/>
+模块名称描述:其他<br/>
+方法名称:sys_info<br/>
+方法描述:商城系统信息<br/>
+输入参数格式:<br/>
+method=help.sys_info<br/>
+content={}<br/>
+示例输出:
+{'status_code':200,'content':{'shop_name':'xxx','server_telephone':'xxx'}}<br/>
+*@@output<br/>
+*@param $shop_name          商城名称<br/>
+*@param $server_telephone   客服电话<br/>
+</p>
+</body>
