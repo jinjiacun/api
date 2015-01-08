@@ -52,4 +52,13 @@ class TestController extends BaseController {
 				),
 			);
 	}
+
+	public function upload_file($content)
+	{
+		var_dump($_FILES);
+		return array(
+			200,
+			array()
+		);
+	}
 }

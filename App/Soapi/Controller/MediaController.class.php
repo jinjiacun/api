@@ -39,32 +39,111 @@ class MediaController extends BaseController {
 		{
 			return array(500,array(urlencode('参数不合法')));
 		}
+		
+		if(!isset($_FILES[$field_name]))
+		{
+			return array(
+				200,
+				array(
+					'is_sucess'=> -2,
+					'message'=>urlencode('没有文件上传'),
+				),
+			);
+		}
+		
+		if(0< $_FILES[$field_name]['error'])
+		{
+			return array(
+				200,
+				array(
+					'is_success'=> -3,
+					'message'=>urlencode('文件上传错误'),
+					'err'=>$_FILES[$field_name]['error']
+				),
+			);
+		}
 
 		switch($module_sn)
 		{
-			case '001001':#曝光图片
+			case '001001':#曝光图片 <350k
 			{
+				if(350 < ($_FILES[field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了350k')
+						),
+					);
+				}
+				
 				$file_dir  = 'media/'.'expression'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001002':#监管机构
+			case '001002':#监管机构 <20k
 			{
+				if(20 < ($_FILES[field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了20k')
+						),
+					);
+				}
 				$file_dir  = 'media/'.'regulators'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001003':#营业执照
+			case '001003':#营业执照 <350k
 			{
+				if(350 < ($_FILES[field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了350k')
+						),
+					);
+				}
 				$file_dir  = 'media/'.'license'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001004':#机构代码证
+			case '001004':#机构代码证 <350k
 			{
+				if(350 < ($_FILES[field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了350k')
+						),
+					);
+				}
 				$file_dir  = 'media/'.'code'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001004':#资质证明
+			case '001005':#资质证明 <350k
 			{
+				if(350 < ($_FILES[field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了350k')
+						),
+					);
+				}
 				$file_dir  = 'media/'.'certificate'.'/'.date("Y-m-d").'/';
+			}
+			break;
+			case '001006'#新闻图片(pc)
+			{
+				$file_dir  = 'media/'.'news_pc'.'/'.date("Y-m-d").'/';
+			}
+			break;
+			case '001007'#新闻图片（app)
+			{
+				$file_dir  = 'media/'.'news_app'.'/'.date("Y-m-d").'/';
 			}
 			break;
 		}
@@ -76,7 +155,7 @@ class MediaController extends BaseController {
 		{
 			case 'jpg':
 				{
-					$file_name = $file_dir.time().".jpg";
+					$file_name = $file_dir.time().".jpg";					
 				}
 				break;
 			case 'gif':
@@ -96,7 +175,7 @@ class MediaController extends BaseController {
 				break;
 		}
 		$data_file_name = $file_name;
-		$file_name = __PUBLIC__.$file_name;
+		$file_name = __PUBLIC__.$file_name;		
 		
 		if(move_uploaded_file($_FILES[$field_name]['tmp_name'], 
 			                 $file_name))
