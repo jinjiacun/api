@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --曝光/认证管理--

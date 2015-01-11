@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --管理--
@@ -166,7 +166,7 @@ class InexposalController extends BaseController {
 			return C('param_err');
 		}
 		
-		$data['user_id'] = intval(($data['user_id']);
+		$data['user_id'] = intval($data['user_id']);
 		$data['nature'] = htmlspecialchars(trim($data['nature']));
 		$data['trade'] = htmlspecialchars(trim($data['trade']));
 		$data['company_name'] = htmlspecialchars(trim($data['company_name']));
@@ -175,7 +175,14 @@ class InexposalController extends BaseController {
 		$data['content'] = htmlspecialchars(trim($data['content']));
 		$data['pic_1'] = htmlspecialchars(trim($data['pic_1']));
 		
-		if(
+		if(0 >= $data['user_id']
+		|| '' == $data['nature']
+		|| '' == $data['trade']
+		|| '' == $data['company_name']
+		|| '' == $data['amount']
+		|| '' == $data['website']
+		|| '' == $data['content']
+		|| 0 >= $data['pic_1']
 		)
 		{
 			return C('param_fmt_err');

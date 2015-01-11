@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --新闻管理--
@@ -83,10 +83,10 @@ class NewsController extends BaseController {
 			return C('param_err');
 		}
 		
-		$data['title']   = htmlspecialchars(trim(($data['title']));
-		$data['source']  = htmlspecialchars(trim(($data['source']));
-		$data['author']  = htmlspecialchars(trim(($data['author']));
-		$data['content'] = htmlspecialchars(trim(($data['content']));
+		$data['title']   = htmlspecialchars(trim($data['title']));
+		$data['source']  = htmlspecialchars(trim($data['source']));
+		$data['author']  = htmlspecialchars(trim($data['author']));
+		$data['content'] = htmlspecialchars(trim($data['content']));
 		$data['pic']     = intval($data['pic']);
 		
 		if('' == $data['title']
@@ -182,7 +182,7 @@ class NewsController extends BaseController {
 		}
 		
 		$list = array();
-		$tmp_one = M($this->_module_name)->find($data['id'])
+		$tmp_one = M($this->_module_name)->find($data['id']);
 		if($tmp_one)
 		{
 			$list = array(

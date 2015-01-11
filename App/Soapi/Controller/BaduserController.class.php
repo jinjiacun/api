@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --非文明用户管理--
@@ -57,7 +57,7 @@ class BaduserController extends BaseController {
 		
 		if(M($this->_module_name)->add($data))
 		{
-			return aray(
+			return array(
 				200,
 				array(
 					'is_success'=>0,

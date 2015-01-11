@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --媒体管理--
@@ -136,12 +136,12 @@ class MediaController extends BaseController {
 				$file_dir  = 'media/'.'certificate'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001006'#新闻图片(pc)
+			case '001006':#新闻图片(pc)
 			{
 				$file_dir  = 'media/'.'news_pc'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001007'#新闻图片（app)
+			case '001007':#新闻图片（app)
 			{
 				$file_dir  = 'media/'.'news_app'.'/'.date("Y-m-d").'/';
 			}

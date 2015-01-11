@@ -1,6 +1,6 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 --加黑管理--
@@ -17,6 +17,8 @@ public function add
 @@output
 @param $is_success 0-操作成功，-1-操作失败，-2-超过了加黒条数
 ##--------------------------------------------------------##
+public function get_list
+* 
 #统计加黑人数
 public function stat_user_all_amount
 @@input
@@ -28,7 +30,7 @@ public function stat_user_all_amount
 
 ##--------------------------------------------------------##
 */
-class CompanyController extends BaseController {
+class AddblackController extends BaseController {
 	protected $_module_name = "add_black";
 	protected $id;
 	protected $user_id;    #会员id
@@ -97,6 +99,33 @@ class CompanyController extends BaseController {
 				'message'=>C('option_fail')
 			)
 		);
+	}
+	
+	public function get_list($content)
+	{
+		list($data, $record_count) = parent::get_list($content);
+
+		$list = array();
+		if($data)
+		{
+			foreach($data as $v)
+			{
+				$list[] = array(
+						'id'         => intval($v['id']),
+					    'user_id'    => intval($v['user_id']),
+	                    'company_id' => intval($v['company_id']),
+						'add_time'   => intval($v['add_time']),
+						
+					);	
+			}
+		}
+
+		return array(200, 
+				array(
+					'list'=>$list,
+					'record_count'=> $record_count,
+					)
+				);
 	}
 		
 	#检查是否可以加黑

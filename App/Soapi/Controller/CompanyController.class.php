@@ -1,9 +1,9 @@
 <?php
 namespace Soapi\Controller;
-use Api\Controller;
+use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
---企业管理管理--
+--企业管理--
 ------------------------------------------------------------
 function of api:
  
@@ -45,6 +45,26 @@ public function get_info
 @param  $add_time          #添加日期
 ##--------------------------------------------------------##
 public function get_list
+##--------------------------------------------------------##
+#搜索
+public function search
+@@input
+@param $name   企业别名 
+@@output
+@param  $id                企业id
+@param  $nature            #企业性质(字典编码)
+@param  $trade             #所属行业
+@param  $company_name      #公司全称(唯一)
+@param  $auth_level        #认证级别
+@param  $company_type      #*企业类型
+@param  $reg_address       #*注册地址
+@param  $busin_license     #*营业执照(图片id)
+@param  $code_certificate  #*机构代码证(图片id)
+@param  $telephone         #*联系电话
+@param  $website           #*官方网址
+@param  $record            #*官网备案
+@param  $find_website      #查询网址
+@param  $add_time          #添加日期
 ##--------------------------------------------------------##
 */
 class CompanyController extends BaseController {
@@ -257,7 +277,79 @@ class CompanyController extends BaseController {
 					);
 		}
 		
-		
+		#搜索
+		public function search($content)
+		/*
+		@@input
+		@param $name   企业别名 
+		@@output
+		@param  $id                企业id
+		@param  $nature            #企业性质(字典编码)
+		@param  $trade             #所属行业
+		@param  $company_name      #公司全称(唯一)
+		@param  $auth_level        #认证级别
+		@param  $company_type      #*企业类型
+		@param  $reg_address       #*注册地址
+		@param  $busin_license     #*营业执照(图片id)
+		@param  $code_certificate  #*机构代码证(图片id)
+		@param  $telephone         #*联系电话
+		@param  $website           #*官方网址
+		@param  $record            #*官网备案
+		@param  $find_website      #查询网址
+		@param  $add_time          #添加日期
+		*/
+		{
+			$data = $this->fill($content);
+			
+			if(!isset($data['name']))
+			{
+				return C('param_err');
+			}
+			
+			$data = htmlspecialchars(trim($data['name']));
+			
+			if('' == $data['name'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			$list = array();
+			$record_count = 0;
+			$tmp_list = D('CompanyaliasView')->where($data)->select();
+			$record_count = D('CompanyaliasView')->where($data)->count();
+			if($tmp_list
+			&& 0< count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$list[] = array(
+						'id'                => intval($v['id']),
+						'nature'            => urlencode($v['nature']),
+						'trade'             => urlencode($v['trade']),
+						'company_name'      => urlencode($v['company_name']),
+						'auth_level'        => urlencode($v['auth_level']),
+						'company_type'      => urlencode($v['company_type']),
+						'reg_address'       => urlencode($v['reg_address']),
+						'busin_license'     => intval($v['busin_license']),
+						'code_certificate'  => intval($v['code_certificate']),
+						'telephone'         => urlencode($v['telephone']),
+						'website'           => $v['website'],
+						'record'            => urlencode($v['record']),
+						'find_website'      => $v['find_website'],
+						'add_time'          => intval($v['add_time']),
+					);
+				}
+				unset($v, $tmp_list);
+			}
+			
+			return array(
+				200,
+				array(
+					'list'=>$list,
+					'record_count'=>$record_count
+				),
+			);
+		}
 		
 		
 		
