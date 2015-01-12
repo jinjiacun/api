@@ -1,0 +1,874 @@
+<html>
+	<head></head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<body>
+<p id="in_1">
+模块名称:Inexposal<br/>
+模块名称描述:入库<br/>
+方法名称:add<br/>
+方法描述:提交曝光<br/>
+输入参数格式:<br/>
+method=Inexposal.add<br/>
+content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
+	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}<br/>
+@@input<br/>
+@param $user_id          #用户id<br/>
+@param $nature           #企业性质<br/>
+@param $trade            #所属行业<br/>
+@param $company_name     #公司名称<br/>
+@param $amount           #涉及金额<br/>
+@param $website          #公司网址<br/>
+@param $content          #曝光内容<br/>
+@param $pic_1            #上传图片<br/>
+@param $pic_2<br/>       
+@param $pic_3<br/>       
+@param $pic_4<br/>       
+@param $pic_5<br/>
+示例输出:
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="in_2">
+模块名称:Inexposal<br/>
+模块名称描述:入库<br/>
+方法名称:add_ex<br/>
+方法描述:提交企业认证申请<br/>
+输入参数格式:<br/>
+method=Inexposal.add_ex<br/>
+content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
+	   'corporation':'xxx','reg_address':'xxx','company_type':'xxx',<br/>
+	   'busin_license':xxx,'code_certificate':xxx,'telephone':'xxx',<br/>
+	   'website':xxx,'record':'xxx','agent_platform':'xxx','mem_sn':'xxx',<br/>
+	   'certificate':'xxx','find_website':'xxx'}<br/>
+@@input<br/>
+@param $user_id         *用户id<br/>
+@param $nature          *企业性质(字典编码)<br/>
+@param $trade           *所属行业(字典编码)<br/>
+@param company_name     *公司全称<br/>
+@param corporation      *公司简称<br/>
+@param reg_address      *注册地址<br/>
+@param company_type     *企业类型<br/>
+@param busin_license    *营业执照(图片id)<br/>
+@param code_certificate *机构代码证(图片id)<br/>
+@param telephone        *联系电话<br/>
+@param website          *官方网址<br/>
+@param record           *官网备案<br/>
+@param agent_platform   代理平台<br/>
+@param mem_sn           *会员编码<br/>
+@param certificate      *资质证明(图片id)<br/>
+@param find_website     查询网址<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+</p>
+<hr>
+<p id="in_3">
+模块名称:Inexposal<br/>
+模块名称描述:入库<br/>
+方法名称:chang_relate<br/>
+方法描述:关联企业<br/>
+输入参数格式:<br/>
+method=Inexposal.chang_relate<br/>
+content={'company_id':xxx}<br/>
+@@input<br/>
+@param $company_id 企业id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<hr>
+<p id="company_1">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:add<br/>
+方法描述:新增企业<br/>
+输入参数格式:<br/>
+method=Company.add_ex<br/>
+content={"nature":"xxx","trade":"xxx","company_name":"xxx","auth_level":"xxx","company_type":"xxx",
+         "reg_address":"xxx","busin_license":xxx,"code_certificate":"xxx","telephone":"xxx","website":"xxx",
+         "record":"xxx","find_website":"xxx"}<br/>
+@@input
+@param  $nature            #企业性质(字典编码)
+@param  $trade             #所属行业
+@param  $company_name      #公司全称(唯一)
+@param  $auth_level        #认证级别
+@param  $company_type      #*企业类型
+@param  $reg_address       #*注册地址
+@param  $busin_license     #*营业执照(图片id)
+@param  $code_certificate  #*机构代码证(图片id)
+@param  $telephone         #*联系电话
+@param  $website           #*官方网址
+@param  $record            #*官网备案
+@param  $find_website      #查询网址
+示例输出:<br/>
+{'status_code':200,'content':{"is_success":xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_2">
+模块名称:Companyalias<br/>
+模块名称描述:企业别名<br/>
+方法名称:add<br/>
+方法描述:新增企业别名<br/>
+输入参数格式:<br/>
+method=Companyalias.add<br/>
+content={"company_id":xxx,"name":"xxx"}<br/>
+@@input
+@param $company_id 企业id
+@param $name       企业别名
+示例输出:<br/>
+{'status_code':200,'content':{"is_success":xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_3">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:search<br/>
+方法描述:企业别名搜索<br/>
+输入参数格式:<br/>
+method=Company.search<br/>
+content={"name":"xxx"}<br/>
+@@input<br/>
+@param $name   企业别名 <br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+                               ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
+                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx','add_time':'xxx'},...,{...}]}<br/>
+@@output<br/>
+@param  $id                企业id<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $add_time          #添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_4">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:update<br/>
+方法描述:修改企业信息<br/>
+输入参数格式:<br/>
+method=Company.update<br/>
+content={'where':{'id':xxx},'data':{'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+                               ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
+                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx'}}<br/>
+@@input<br/>
+@@@where
+@param id 企业id
+@@@data
+@param  $nature            #企业性质(字典编码)
+@param  $trade             #所属行业
+@param  $company_name      #公司全称(唯一)
+@param  $auth_level        #认证级别
+@param  $company_type      #*企业类型
+@param  $reg_address       #*注册地址
+@param  $busin_license     #*营业执照(图片id)
+@param  $code_certificate  #*机构代码证(图片id)
+@param  $telephone         #*联系电话
+@param  $website           #*官方网址
+@param  $record            #*官网备案
+@param  $find_website      #查询网址
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_5">
+模块名称:Companyalias<br/>
+模块名称描述:企业别名<br/>
+方法名称:update<br/>
+方法描述:修改企业别名<br/>
+输入参数格式:<br/>
+method=Companyalias.update<br/>
+content={'where':{'id':xxx},'data':{'company_id':xxx,'name':'xxx'}}<br/>
+@@input<br/>
+@@@where
+@param id 企业别名id
+@@@data
+@param  $company_id            #企业id
+@param  $name                  #企业别名
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_6">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:delete<br/>
+方法描述:删除企业别名<br/>
+输入参数格式:<br/>
+method=Company.delete<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param id 企业id
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_7">
+模块名称:Companyalias<br/>
+模块名称描述:企业别名<br/>
+方法名称:delete<br/>
+方法描述:删除企业别名<br/>
+输入参数格式:<br/>
+method=Companyalias.delete<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param id 企业别名id
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_8">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:delete<br/>
+方法描述:黑榜企业<br/>
+输入参数格式:<br/>
+method=Companyalias.get_list<br/>
+content={'auth_level':'006001'}<br/>
+@@input<br/>
+@param id 企业别名id
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+                               ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
+                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx','add_time':'xxx'},...,{...}]}<br/>
+@@output<br/>
+@param  $id                企业id<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $add_time          #添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<hr>
+<p id="comment_1">
+模块名称:Comment<br/>
+模块名称描述:评论<br/>
+方法名称:add<br/>
+方法描述:添加评论<br/>
+输入参数格式:<br/>
+method=Comment.add<br/>
+content={'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx','expression':'xxx',
+         'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'is_anonymous':xxx}<br/>
+@@input<br/>
+@param $company_id      //企业id*<br/>
+@param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
+@param $type            //评论类型(点赞、提问、加黑)*<br/>
+@param $content         //评论内容*<br/>
+@param $expression      //评论表情<br/>
+@param $pic_1           //图片5张<br/>
+@param $pic_2<br/>
+@param $pic_3<br/>
+@param $pic_4<br/>
+@param $pic_5<br/>
+@param $is_anonymous   //是否匿名<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功操作,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_2">
+模块名称:Comment<br/>
+模块名称描述:评论<br/>
+方法名称:get_list<br/>
+方法描述:添加评论<br/>
+输入参数格式:<br/>
+method=Comment.get_list<br/>
+content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
+@@input<br/>
+@@@where
+@param $company_id      //企业id*<br/>
+@param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx',
+                               'content':'xxx','expression':'xxx','pic_1':xxx,
+                               'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,
+                               'is_anonymous':xxx,'add_time':xxx},...,{...}]}<br/>
+@@output<br/>
+@param $id
+@param $company_id      //企业id*<br/>
+@param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
+@param $type            //评论类型(点赞、提问、加黑)*<br/>
+@param $content         //评论内容*<br/>
+@param $expression      //评论表情<br/>
+@param $pic_1           //图片5张<br/>
+@param $pic_2<br/>
+@param $pic_3<br/>
+@param $pic_4<br/>
+@param $pic_5<br/>
+@param $is_anonymous   //是否匿名<br/>
+@param $add_time       //添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_3">
+模块名称:Comment<br/>
+模块名称描述:评论<br/>
+方法名称:check<br/>
+方法描述:审核评论<br/>
+输入参数格式:<br/>
+method=Comment.check<br/>
+content={'id':xxx,'is_validate':xxx,'validate_time':xxx}<br/>
+@@input<br/>
+@param $id<br/>
+@param $is_validate 审核结果(0-未通过,1-已通过)<br/>
+@param $validate_time 审核时间<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<hr>
+<p id="addblack_1">
+模块名称:Addblack<br/>
+模块名称描述:加黑<br/>
+方法名称:add<br/>
+方法描述:企业加黑<br/>
+输入参数格式:<br/>
+method=Addblack.add<br/>
+content={'exposal_id':xxx,'company_id':xxx}<br/>
+@@input<br/>
+@param $exposal_id  入库id<br/>
+@param $company_id  企业id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="addblack_2">
+模块名称:Addblack<br/>
+模块名称描述:加黑<br/>
+方法名称:stat_user_all_amount<br/>
+方法描述:统计加黑人数<br/>
+输入参数格式:<br/>
+method=Addblack.stat_user_all_amount<br/>
+content={'company_id':xxx}<br/>
+@@input<br/>
+@param $company_id 企业id
+示例输出:<br/>
+{'status_code':200,'content':xxx}<br/>
+@@output
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="addblack_3">
+模块名称:Addblack<br/>
+模块名称描述:加黑<br/>
+方法名称:get_user_by_company_id<br/>
+方法描述:统计加黑人数<br/>
+输入参数格式:<br/>
+method=Addblack.get_user_by_company_id<br/>
+content={'company_id':xxx}<br/>
+@@input<br/>
+@param $company_id 企业id
+示例输出:<br/>
+{'status_code':200,'content':[{'user_id':xxx},...,{...}]}<br/>
+@@output
+@param $user_id 用户id<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<hr>
+<p id="regulators_1">
+模块名称:Regulators<br/>
+模块名称描述:监管机构<br/>
+方法名称:add<br/>
+方法描述:添加监管机构<br/>
+输入参数格式:<br/>
+method=Regulators.add<br/>
+content={'type':'xxx','title':'xxx','website':'xxx','pic':xxx,'content':'xxx'}<br/>
+@@input
+@param $type     类型编号
+@param $title    标题
+@param $website  官网
+@param $pic      图片
+@param $content  内容
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="regulators_2">
+模块名称:Regulators<br/>
+模块名称描述:监管机构<br/>
+方法名称:update<br/>
+方法描述:修改监管机构<br/>
+输入参数格式:<br/>
+method=Regulators.update<br/>
+content={'where':{'id':xxx},'data':{'type':'xxx','title':'xxx','website':'xxx',
+                                    'pic':xxx,'content':'xxx'}}<br/>
+@@input
+@@@where
+@param $id       监管机构id
+@@@data
+@param $type     类型编号
+@param $title    标题
+@param $website  官网
+@param $pic      图片
+@param $content  内容
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="regulators_3">
+模块名称:Regulators<br/>
+模块名称描述:监管机构<br/>
+方法名称:get_list<br/>
+方法描述:查询监管机构<br/>
+输入参数格式:<br/>
+method=Regulators.add<br/>
+content={'where':{'id':xxx,'type':'xxx','title':'xxx','website':'xxx',
+                                    'pic':xxx,'content':'xxx'}}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id       监管机构id<br/>
+@param $type     类型编号<br/>
+@param $title    标题<br/>
+@param $website  官网<br/>
+@param $pic      图片<br/>
+@param $content  内容<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'type':'xxx','title':'xxx','website':'xxx',
+                              'pic':xxx,'content':'xxx',},...,{...}]}<br/>
+@@output<br/>
+@param $id<br/>
+@param $type     类型编号<br/>
+@param $title    标题<br/>
+@param $website  官网<br/>
+@param $pic      图片<br/>
+@param $content  内容<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="regulators_4">
+模块名称:Regulators<br/>
+模块名称描述:监管机构<br/>
+方法名称:delete<br/>
+方法描述:删除监管机构<br/>
+输入参数格式:<br/>
+method=Regulators.add<br/>
+content={'where':{'id':xxx,'type':'xxx','title':'xxx','website':'xxx',
+                                    'pic':xxx,'content':'xxx'}}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id       监管机构id<br/>
+@param $type     类型编号<br/>
+@param $title    标题<br/>
+@param $website  官网<br/>
+@param $pic      图片<br/>
+@param $content  内容<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<hr>
+<p id="news_1">
+模块名称:News<br/>
+模块名称描述:新闻<br/>
+方法名称:add<br/>
+方法描述:添加新闻<br/>
+输入参数格式:<br/>
+method=News.add<br/>
+content={'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
+@@input<br/>
+@param $title   标题<br/>
+@param $source  来源<br/>
+@param $author  作者<br/>
+@param $content 内容<br/>
+@param $pic     图片<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="news_2">
+模块名称:News<br/>
+模块名称描述:新闻<br/>
+方法名称:update<br/>
+方法描述:添加新闻<br/>
+输入参数格式:<br/>
+method=News.update<br/>
+content={'where':{'id':xxx},'data':{'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id<br/>    
+@@@data<br/>
+@param $title   标题<br/>
+@param $source  来源<br/>
+@param $author  作者<br/>
+@param $content 内容<br/>
+@param $pic     图片<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="news_3">
+模块名称:News<br/>
+模块名称描述:新闻<br/>
+方法名称:get_list<br/>
+方法描述:查询<br/>
+输入参数格式:<br/>
+method=News.get_list<br/>
+content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id<br/>
+@param $title   标题<br/>
+@param $source  来源<br/>
+@param $author  作者<br/>
+@param $content 内容<br/>
+@param $pic     图片<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'title':'xxx','source':'xxx','author':'xxx'
+                               'content':'xxx','pic':xxx},...,{...}]}<br/>
+@@output<br/>
+@param $id<br/>
+@param $title   标题<br/>
+@param $source  来源<br/>
+@param $author  作者<br/>
+@param $content 内容<br/>
+@param $pic     图片<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="news_4">
+模块名称:News<br/>
+模块名称描述:新闻<br/>
+方法名称:delete<br/>
+方法描述:查询<br/>
+输入参数格式:<br/>
+method=News.delete<br/>
+content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id<br/>
+@param $title   标题<br/>
+@param $source  来源<br/>
+@param $author  作者<br/>
+@param $content 内容<br/>
+@param $pic     图片<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
+<p id="pic_1">
+模块名称:Media<br/>
+模块名称描述:媒体<br/>
+方法名称:upload<br/>
+方法描述:上传图片<br/>
+输入参数格式:<br/>
+method=Media.upload<br/>
+content={'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
+@@input<br/>
+@param $field_name   图片字段<br/>
+@param $file_name    图片文件名称<br/>
+@param $file_ext     文件扩展名<br/>
+@param $module_sn    上传编号<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="pic_2">
+模块名称:Media<br/>
+模块名称描述:媒体<br/>
+方法名称:get_by_id<br/>
+方法描述:通过id查询信息<br/>
+输入参数格式:<br/>
+method=Media.get_by_id<br/>
+content={'media':xxx}<br/>
+@@input<br/>
+*@param $media_id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'media_id':xxx,'dict_sn':'xxx',<br/>
+                               'media_url':'xxx','http_url':'xxxx'<br/>
+                               },...,{...}]}<br/>
+@@output<br/>
+*@param $media_id   <br/>
+*@param $dict_sn   编号<br/>
+*@param $media_url 路径<br/>
+*@param $http_url  网络url<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
+<p id="help_1">
+	<table>
+		<tr>
+			<th>编号</th>
+			<th>字典类别id</th>
+			<th>字典类型名称</th>
+			<th>名称</th>
+			<th>备注</th>
+		</tr>
+		<tr>
+			<td>001001</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>曝光图片</td>
+			<td><350k</td>
+		</tr>
+		<tr>
+			<td>001002</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>监管机构</td>
+			<td><20k</td>
+		</tr>
+		<tr>
+			<td>001003</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>营业执照</td>
+			<td><350k</td>
+		</tr>
+		<tr>
+			<td>001004</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>机构代码证</td>
+			<td><350k</td>
+		</tr>
+		<tr>
+			<td>001005</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>资质证明</td>
+			<td><350k</td>
+		</tr>
+		<tr>
+			<td>001006</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>新闻图片(pc)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>001007</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>新闻图片（app)</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>002001</td>
+			<td>2</td>
+			<td>监管机构</td>
+			<td>贵金属监管机构</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>002002</td>
+			<td>2</td>
+			<td>监管机构</td>
+			<td>外汇监管机构</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>003001</td>
+			<td>3</td>
+			<td>企业性质</td>
+			<td>公司</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>003002</td>
+			<td>3</td>
+			<td>企业性质</td>
+			<td>平台</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>004001</td>
+			<td>4</td>
+			<td>所属行业</td>
+			<td>贵金属</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>004002</td>
+			<td>4</td>
+			<td>所属行业</td>
+			<td>外汇</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>005001</td>
+			<td>5</td>
+			<td>评论类型</td>
+			<td>点赞</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>005002</td>
+			<td>5</td>
+			<td>评论类型</td>
+			<td>提问</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>005003</td>
+			<td>5</td>
+			<td>评论类型</td>
+			<td>加黑</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>006001</td>
+			<td>6</td>
+			<td>认证级别</td>
+			<td>黑平台</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>006002</td>
+			<td>6</td>
+			<td>认证级别</td>
+			<td>未验证</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>006003</td>
+			<td>6</td>
+			<td>认证级别</td>
+			<td>合规</td>
+			<td></td>
+		</tr>
+		<tr>
+		<td colspan="3">允许的图片格式类型</td>
+		<td colspan="2">jpg,gif,jpeg,png</td>
+		
+		</tr>
+		
+	</table>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+</body>
+</html>
