@@ -6,6 +6,16 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --媒体管理--
 */
 class MediaController extends BaseController {
+	/**	
+	CREATE TABLE IF NOT EXISTS `yms_media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dict_sn` varchar(11) DEFAULT '0' COMMENT '媒体类型(1-商品)',
+  `media_url` varchar(255) DEFAULT NULL COMMENT '媒体相对路径',
+  `width` int(11) DEFAULT '0' COMMENT '图片宽度',
+  `height` int(11) DEFAULT '0' COMMENT '图片高度',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='媒体表' AUTO_INCREMENT=70 ;
+	*/
 	
 	 protected $_module_name = 'media';
      protected $id;              #id
