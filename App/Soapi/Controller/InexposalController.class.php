@@ -197,6 +197,7 @@ class InexposalController extends BaseController {
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
+					'id'=> M()->getLastInsID(),
 				),
 			);
 		}
@@ -304,6 +305,7 @@ class InexposalController extends BaseController {
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
+					'id'=> M()->getLastInsID(),
 				),
 			);
 		}

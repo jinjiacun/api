@@ -162,7 +162,8 @@ class CommentController extends BaseController {
 				200,
 				array(
 					'is_success'=>0,
-					'message'=> C('option_ok')
+					'message'=> C('option_ok'),
+					'id'=> M()->getLastInsID(),
 				),
 			);
 		}

@@ -10,9 +10,9 @@ function of api:
 
 #添加企业别名
 public function add
-@@input
-@param $company_id 企业id
-@param $name       企业别名
+	@@input
+	@param $company_id 企业id
+	@param $name       企业别名
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -71,7 +71,8 @@ class CompanyaliasController extends BaseController {
 				200,
 				array(
 					'is_success'=>0,
-					'messsage'=>C('option_ok')
+					'messsage'=>C('option_ok'),
+					'id'=> M()->getLastInsID(),
 				)
 			);
 		}

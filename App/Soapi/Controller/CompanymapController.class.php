@@ -3,7 +3,7 @@ namespace Soapi\Controller;
 use Soapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
---新闻管理--
+--企业映射管理--
 ------------------------------------------------------------
 function of api:
  
