@@ -2,6 +2,7 @@
 	<head></head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
+url:http://192.168.1.131/yms_api/index.php?m=Soapi
 <p id="in_1">
 模块名称:Inexposal<br/>
 模块名称描述:入库<br/>
@@ -82,6 +83,90 @@ content={'company_id':xxx}<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
 @param $is_sucess 0-成功，-1-失败<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_1">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:register<br/>
+方法描述:注册<br/>
+输入参数格式:<br/>
+method=User.register<br/>
+content={'mobile':'xxx','pswd':'xxx'}<br/>
+@@input<br/>
+@param $mobile       手机号码<br/>
+@param $pswd         密码<br/>
+@param $nickname     昵称(不设为自动生成)<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败,-2-手机号码已存在<br/>
+@param $user_id  用户id<br/>
+@param $nickname 用户昵称<br/>
+@param $sex      用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_2">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:login<br/>
+方法描述:登录<br/>
+输入参数格式:<br/>
+method=User.login<br/>
+content={'mobile':'xxx','pswd':'xxx'}<br/>
+@@input<br/>
+@param $mobile       手机号码<br/>
+@param $pswd         密码<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功,-1-失败,-2-用户名或者密码错误<br/>
+@param $user_id  用户id<br/>
+@param $nickname 用户昵称<br/>
+@param $sex      用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_3">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:find_passwd<br/>
+方法描述:找回密码<br/>
+输入参数格式:<br/>
+method=User.find_passwd<br/>
+content={'mobile':'xxx','new_pswd':'xxx'}<br/>
+@@input<br/>
+@param $mobile       手机号码<br/>
+@param $new_pswd     新密码<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功,-1-失败,-2-手机号码不存在<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_4">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:get_info<br/>
+方法描述:查询用户信息<br/>
+输入参数格式:<br/>
+method=User.get_info<br/>
+content={'uid':'xxx'}<br/>
+@@input<br/>
+@param $uid          用户id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{}]}<br/>
+@@output<br/>
+@用户json
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -635,13 +720,42 @@ content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/
 @param $source  来源<br/>
 @param $author  作者<br/>
 @param $content 内容<br/>
-@param $pic     图片<br/>
+@param $pic     图片(pc)<br/>
+@param $pic_app 图片(app)<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 </p>
 <hr>
 <p id="news_4">
+模块名称:News<br/>
+模块名称描述:新闻<br/>
+方法名称:delete<br/>
+方法描述:通过id查询一条信息<br/>
+输入参数格式:<br/>
+method=News.get_info<br/>
+content={{'id':xxx}<br/>
+@@input<br/>
+@@@where<br/>
+@param $id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'id':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
+                              'content':'xxx','pic':xxx,'pic_app':xxx,'add_time':xxx}}<br/>
+@@output<br/>
+@param $id<br/>
+@param $title    标题<br/>
+@param $source   来源<br/>
+@param $author   作者<br/>
+@param $content  内容<br/>
+@param $pic      图片(pc)<br/>
+@param $pic_app  图片(app)<br/>
+@param $add_time <br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="news_5">
 模块名称:News<br/>
 模块名称描述:新闻<br/>
 方法名称:delete<br/>

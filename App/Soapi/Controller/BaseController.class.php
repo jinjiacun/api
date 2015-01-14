@@ -300,7 +300,7 @@ class BaseController extends Controller {
 	}
 
 	#获取当前访问的ip地址
-	public function get_real_ip($content){
+	public function get_real_ip($content=''){
 		$ip=false;
 		if(!empty($_SERVER["HTTP_CLIENT_IP"])){
 			$ip = $_SERVER["HTTP_CLIENT_IP"];
@@ -319,5 +319,114 @@ class BaseController extends Controller {
 			}
 		}
 		return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
+	}
+	
+	//生成safekey
+	public function mk_passwd($params,$seg_index=0)
+	{
+		$seg_list = array(
+			"<nickname>|<mobile>|<validated>|<pswd>|<userip>|souhei975427",  #注册
+			"<mobile>|<new_pswd>|<userip>|souhei975427",                     #放记密码
+			"<uid>|<nickname>|<sex>|<birthday>|<job>|<address>|<userip>",    #更新用户信息
+			"<uid>|<yyyyMMdd>",						 #更新用户信息
+		);
+		$str = $seg_list[$seg_index];
+		switch($seg_index)
+		{
+			case 0:
+				{
+					$str = str_replace("<nickname>",  $params['nickname'], $str);
+					$str = str_replace("<mobile>",    $params['mobile']  , $str);
+					$str = str_replace("<validated>", $params['validated'], $str);
+					$str = str_replace("<pswd>",      $params['pswd'], $str);
+					$str = str_replace("<userip>",    $params['userip'], $str);
+				}
+			break;
+			case 1:
+				{
+					$str = str_replace("<mobile>",    $params['mobile']  , $str);					
+					$str = str_replace("<new_pswd>",  $params['new_pswd'], $str);
+					$str = str_replace("<userip>",    $params['userip'],   $str);
+				}
+			break;
+			case 3:
+				{
+					$str = str_replace("<uid>",       $params['uid']  ,    $str);					
+					$str = str_replace("<nickname>",  $params['nickname'], $str);
+					$str = str_replace("<sex>",       $params['sex'],      $str);
+					$str = str_replace("<birthday>",  $params['birthday'], $str);
+					$str = str_replace("<job>",       $params['job'],      $str);
+					$str = str_replace("<address>",   $params['address'],  $str);
+					$str = str_replace("<userip>",    $params['userip'],   $str);
+				}
+			break;
+			case 4:
+				{
+					$str = str_replace("<uid>",       $params['uid']  ,    $str);					
+					$str = str_replace("<yyyyMMdd>",  $params['yyyyMMdd'], $str);
+				}
+			break;
+		}
+		
+		
+		$re_str = $this->md5_16($str, true);
+		
+		return $re_str;
+	}
+	
+	public function md5_16($str){
+              return substr(md5($str),8,16);
+	}
+	
+	//动态生成昵称
+	public function make_nickname($len=6)
+	{
+		$chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ
+			abcdefghijklmnopqrstuvwxyz0123456789-@#~'; 
+		// characters to build the password from 
+		mt_srand((double)microtime()*1000000*getmypid()); 
+		// seed the random number generater (must be done) 
+		$password=''; 
+		while(strlen($password)<$len) 
+			$password.=substr($chars,(mt_rand()%strlen($chars)),1); 
+		return $password; 
+	}
+	
+	public function post($url, $params = false, $header = array()){
+		//$cookie_file = tempnam(dirname(__FILE__),'cookie');
+		$cookie_file = __PUBLIC__.'cookies.tmp';
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1); 
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60); 
+		//curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file); 
+		//curl_setopt($ch, CURLOPT_COOKIEFILE,$cookieFile); 
+		curl_setopt($ch, CURLOPT_COOKIEFILE,$cookie_file); 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,FALSE); 
+		curl_setopt($ch, CURLOPT_HTTPGET, true); 
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
+		if($params !== false){
+		 	curl_setopt($ch, CURLOPT_POSTFIELDS , $params);
+		} 
+		curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20100101 Firefox/21.0'); 
+		curl_setopt($ch, CURLOPT_URL,$url); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header); 
+		$result = curl_exec($ch); 
+		curl_close($ch); 
+		 
+		return $result; 
+	}
+	
+	
+	//通过id获取图片地址
+	protected function get_pic_url($id)
+	{
+		$pic_info = M('Media')->find($id);
+		if($pic_info)
+		{
+			return C('media_url_pre').$pic_info['media_url'];
+		}
 	}
 }

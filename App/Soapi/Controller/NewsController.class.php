@@ -44,7 +44,8 @@ class NewsController extends BaseController {
 	                              source varchar(255) comment '来源',
 	                              author varchar(255) comment '作者',
 	                              content text comment '内容',
-	                              pic int not null default 0 comment '配图',
+	                              pic int not null default 0 comment '配图(pc)',
+	                              pic_app int not null default 0 comment '配图(app)',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -56,6 +57,7 @@ class NewsController extends BaseController {
 	protected $author;
 	protected $content;
 	protected $pic;
+	protected $pic_app;
 	protected $add_time;
 
 	#添加
@@ -101,17 +103,18 @@ class NewsController extends BaseController {
 		
 		$data['add_time'] = time();
 		
-		if(M($this->_module_name)->add($content))
+		if(M($this->_module_name)->add($data))
 		{
 			return array(
-			200,
-			array(
-				'is_success'=>0,
-				'message'=>C('option_ok'),
-				'id'=> M()->getLastInsID(),
-			)
-		);
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+					'id'=> M()->getLastInsID(),
+				)
+			);
 		}
+		
 		
 		return array(
 			200,
@@ -139,6 +142,8 @@ class NewsController extends BaseController {
 						'author'  => urlencode($v['author']),
 						'content' => urlencode($v['content']),
 						'pic'     => intval($v['pic']),
+						'pic_url' => $this->get_pic_url($v['pic']),
+						'pic_app' => intval($v['pic_app']),
 						'add_time'=> intval($v['add_time']),
 						
 					);	
@@ -191,8 +196,11 @@ class NewsController extends BaseController {
 				'title'    => urlencode($tmp_one['title']),
 				'source'   => urlencode($tmp_one['source']),
 				'author'   => urlencode($tmp_one['author']), 
-				'content'  => urlencode($tmp_one['content']),
+				//'content'  => stripslashes(htmlspecialchars_decode(urlencode($tmp_one['content']))),
+				'content'  => urlencode(htmlspecialchars_decode($tmp_one['content'])),
 				'pic'      => intval($tmp_one['pic']),
+				'pic_url'  => $this->get_pic_url($tmp_one['pic']),
+				'pic_app'  => intval($tmp_one['pic_app']),
 				'add_time' => intval($tmp_one['add_time']), 
 			);
 		}
