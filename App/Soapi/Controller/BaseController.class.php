@@ -94,6 +94,7 @@ class BaseController extends Controller {
 	#添加
 	public function add($content){
 		$data = $this->fill($content);
+		$data['add_time'] = time();
 		$obj  = M($this->_module_name);
 		if($obj->add($data))
 		{
@@ -428,5 +429,77 @@ class BaseController extends Controller {
 		{
 			return C('media_url_pre').$pic_info['media_url'];
 		}
+	}
+	
+	#检查是否允许操作
+	protected function __check($content)
+	{
+		$star_time = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+		$end_time  = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
+		$content['add_time'] = array(array('gt', $star_time),
+		                             array('lt', $end_time));
+		if(M($this->_module_name)->where($content)->find())
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	#顶
+	public function __top($content, $field_name)
+	/*
+	@@input
+	@param $content    条件
+	@param $field_name 目标字段名称
+	@@output
+	@param true-成功, false-失败
+	*/
+	{	
+		if(M($this->_module_name)->where($content)->setInc($field_name, 1))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	#赞
+	public function __assist($content, $field_name)
+	{
+		return $this->__top($content, $field_name);
+	}
+	
+	#审核
+	public function validate($content)
+	{
+		$data = $this->fill($content);
+		unset($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array(
+			'id'=>$data['id']
+		);
+		unset($data);
+		$data = array(
+			'is_validate'=>1,
+			'validate_time'=>time(),
+		);
+		if(M($this->_module_name)->where($content)->save($data))
+		{
+				return true;
+		}
+		
+		return false;
 	}
 }

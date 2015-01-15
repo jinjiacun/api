@@ -22,6 +22,9 @@ public function add
 @param  $website           #*官方网址
 @param  $record            #*官网备案
 @param  $find_website      #查询网址
+@param  $agent_platform    #代理平台
+@param  $mem_sn            #会员编号
+@param  $certificate       #资质证明
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -42,9 +45,18 @@ public function get_info
 @param  $website           #*官方网址
 @param  $record            #*官网备案
 @param  $find_website      #查询网址
+@param  $agent_platform    #代理平台
+@param  $mem_sn            #会员编号
+@param  $certificate       #资质证明
 @param  $add_time          #添加日期
 ##--------------------------------------------------------##
 public function get_list
+##--------------------------------------------------------##
+#查询企业映射
+public function get_id_name_map
+@@input
+@@output
+格式[{'id':'name'},...,{}]
 ##--------------------------------------------------------##
 #搜索
 public function search
@@ -64,6 +76,9 @@ public function search
 @param  $website           #*官方网址
 @param  $record            #*官网备案
 @param  $find_website      #查询网址
+@param  $agent_platform    #代理平台
+@param  $mem_sn            #会员编号
+@param  $certificate       #资质证明
 @param  $add_time          #添加日期
 ##--------------------------------------------------------##
 */
@@ -83,8 +98,11 @@ class CompanyController extends BaseController {
 		   		                     website varchar(255) comment '官方网址',
 		   		                     record varchar(255) comment '官网备案',
 		   		                     find_website varchar(255) comment '查询网址',
+		   		                     agent_platform varchar(255) comment '代理平台',
+									 mem_sn varchar(255) comment '会员编号',
+									 certificate int not null default 0 comment '资质证明',
 		   		                     add_blk_amount int not null default 0 comment '加黑人数',
-		   		                     exp_amount int not null default 0 comment '曝光人数',          
+		   		                     exp_amount int not null default 0 comment '曝光人数',
 									 add_time int not null default 0 comment '添加日期'
 									 )charset=utf8;
 		 * */
@@ -104,6 +122,9 @@ class CompanyController extends BaseController {
 		protected $website;           #*官方网址
 		protected $record;            #*官网备案
 		protected $find_website;      #查询网址
+		protected $agent_platform;    #代理平台
+		protected $mem_sn;            #会员编号
+		protected $certificate;       #资质证明
 		protected $add_blk_amount;    #加黑人数
 		protected $exp_amount;        #曝光人数
 		protected $add_time;          #添加日期
@@ -125,6 +146,9 @@ class CompanyController extends BaseController {
 		@param  $website           #官方网址
 		@param  $record            #官网备案
 		@param  $find_website      #查询网址
+		@param  $agent_platform    #代理平台
+		@param  $mem_sn            #会员编号
+		@param  $certificate       #资质证明
 		@@output
 		@param $is_success 0-操作成功,-1-操作失败
 		*/
@@ -140,12 +164,12 @@ class CompanyController extends BaseController {
 				return C('param_err');
 			}
 			
-			$data['nature'] = htmlspecialchars(trim(($data['nature']));
-			$data['trade'] = htmlspecialchars(trim(($data['trade']));
-			$data['company_name'] = htmlspecialchars(trim(($data['company_name']));
-			$data['company_type'] = htmlspecialchars(trim(($data['company_type']));
+			$data['nature'] = htmlspecialchars(trim($data['nature']));
+			$data['trade'] = htmlspecialchars(trim($data['trade']));
+			$data['company_name'] = htmlspecialchars(trim($data['company_name']));
+			$data['company_type'] = htmlspecialchars(trim($data['company_type']));
 			
-			isset($data['auth_level'])?{$data['auth_level']=htmlspecialchars(trim($data['auth_level']))}:{};
+			//isset($data['auth_level'])?$data['auth_level']=htmlspecialchars(trim($data['auth_level'])):;
 			
 			
 			if('' == $data['nature']
@@ -198,6 +222,9 @@ class CompanyController extends BaseController {
 		@param  $website           #*官方网址
 		@param  $record            #*官网备案
 		@param  $find_website      #查询网址
+		@param  $agent_platform    #代理平台
+		@param  $mem_sn            #会员编号
+		@param  $certificate       #资质证明
 		@param  $add_time          #添加日期
 		*/
 		{
@@ -232,6 +259,9 @@ class CompanyController extends BaseController {
 						'website'           => $tmp_one['website'],
 						'record'            => urlencode($tmp_one['record']),
 						'find_website'      => $tmp_one['find_website'],
+						'agent_platform'    => urlencode($tmp_one['agent_platform']),
+						'mem_sn'            => $tmp_one['mem_sn'],
+						'certificate'       => intval($tmp_one['certificate']),
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -265,6 +295,9 @@ class CompanyController extends BaseController {
 							'website'           => $v['website'],
 							'record'            => urlencode($v['record']),
 							'find_website'      => $v['find_website'],
+							'agent_platform'    => urlencode($v['agent_platform']),
+							'mem_sn'            => $v['mem_sn'],
+							'certificate'       => intval($v['certificate']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -276,6 +309,33 @@ class CompanyController extends BaseController {
 						'record_count'=> $record_count,
 						)
 					);
+		}
+		
+		#查询企业映射
+		public function get_id_name_map($content)
+		/*
+		@@input
+		@@output
+		格式[{'id':'name'},...,{}]
+		*/
+		{
+			$list = array();
+			$tmp_list = M($this->_module_name)->field('id,company_name')
+			                                  ->select();
+			if($tmp_list
+			&& 0< count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$list[intval($v['id'])] = urlencode($v['company_name']);
+				}
+				unset($tmp_list, $v);
+			}
+			
+			return array(
+				200,
+				$list
+			);
 		}
 		
 		#搜索
@@ -297,6 +357,9 @@ class CompanyController extends BaseController {
 		@param  $website           #*官方网址
 		@param  $record            #*官网备案
 		@param  $find_website      #查询网址
+		@param  $agent_platform    #代理平台
+		@param  $mem_sn            #会员编号
+		@param  $certificate       #资质证明
 		@param  $add_time          #添加日期
 		*/
 		{
@@ -337,6 +400,9 @@ class CompanyController extends BaseController {
 						'website'           => $v['website'],
 						'record'            => urlencode($v['record']),
 						'find_website'      => $v['find_website'],
+						'agent_platform'    => urlencode($v['agent_platform']),
+						'mem_sn'            => $v['mem_sn'],
+						'certificate'       => intval($v['certificate']),
 						'add_time'          => intval($v['add_time']),
 					);
 				}

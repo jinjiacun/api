@@ -14,6 +14,7 @@ return array(
      'param_fmt_err' => array(500, urlencode('参数格式不正确')),
      'option_ok'     => urlencode('操作成功'),
      'option_fail'   => urlencode('操作失败'),
+     'option_no_allow' => urlencode('不允许操作'),
      'api_user_url'  => 'http://192.168.1.31:8300/Api/',
 	//'配置项'=>'配置值'
 );

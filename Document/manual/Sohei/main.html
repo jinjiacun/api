@@ -37,6 +37,39 @@ content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 <p id="in_2">
 模块名称:Inexposal<br/>
 模块名称描述:入库<br/>
+方法名称:get_list<br/>
+方法描述:提交曝光<br/>
+输入参数格式:<br/>
+method=Inexposal.get_list<br/>
+content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
+	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}<br/>
+@@input<br/>
+@param $user_id          #用户id<br/>
+@param $nature           #企业性质<br/>
+@param $trade            #所属行业<br/>
+@param $company_name     #公司名称<br/>
+@param $amount           #涉及金额<br/>
+@param $website          #公司网址<br/>
+@param $content          #曝光内容<br/>
+@param $pic_1            #图片<br/>
+@param $pic_2<br/>       
+@param $pic_3<br/>       
+@param $pic_4<br/>       
+@param $pic_5<br/>
+@param $top_num 顶的数目<br/>
+@param $add_time 添加日期<br/>
+示例输出:
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_sucess 0-成功，-1-失败<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="in_3">
+模块名称:Inexposal<br/>
+模块名称描述:入库<br/>
 方法名称:add_ex<br/>
 方法描述:提交企业认证申请<br/>
 输入参数格式:<br/>
@@ -69,7 +102,7 @@ content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
 @param $is_sucess 0-成功，-1-失败<br/>
 </p>
 <hr>
-<p id="in_3">
+<p id="in_4">
 模块名称:Inexposal<br/>
 模块名称描述:入库<br/>
 方法名称:chang_relate<br/>
@@ -268,7 +301,7 @@ method=Company.update<br/>
 content={'where':{'id':xxx},'data':{'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
-                               'find_website':'xxx'}}<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx}}<br/>
 @@input<br/>
 @@@where
 @param id 企业id
@@ -285,6 +318,9 @@ content={'where':{'id':xxx},'data':{'nature':'xxx','trade':'xxx','company_name':
 @param  $website           #*官方网址
 @param  $record            #*官网备案
 @param  $find_website      #查询网址
+@param  $agent_platform    #代理平台
+@param  $mem_sn            #会员编号
+@param  $certificate       #资质证明
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -358,18 +394,19 @@ content={'id':xxx}<br/>
 <p id="company_8">
 模块名称:Company<br/>
 模块名称描述:企业<br/>
-方法名称:delete<br/>
+方法名称:get_list<br/>
 方法描述:黑榜企业<br/>
 输入参数格式:<br/>
 method=Companyalias.get_list<br/>
-content={'auth_level':'006001'}<br/>
+content={'where':{'auth_level':'006001'}}<br/>
 @@input<br/>
 @param id 企业别名id
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
-                               'find_website':'xxx','add_time':'xxx'},...,{...}]}<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                               ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
 @param  $nature            #企业性质(字典编码)<br/>
@@ -384,6 +421,69 @@ content={'auth_level':'006001'}<br/>
 @param  $website           #*官方网址<br/>
 @param  $record            #*官网备案<br/>
 @param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
+@param  $add_time          #添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_9">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:get_list<br/>
+方法描述:企业查询<br/>
+输入参数格式:<br/>
+method=Company.get_list<br/>
+content={'where':{xxxx}}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+                               ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
+                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                               ,'add_time':'xxx'},...,{...}]}<br/>
+@@output<br/>
+@param  $id                企业id<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
+@param  $add_time          #添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_10">
+模块名称:Companyalias<br/>
+模块名称描述:企业<br/>
+方法名称:get_list<br/>
+方法描述:企业别名查询<br/>
+输入参数格式:<br/>
+method=Companyalias.get_list<br/>
+content={'where':{xxxx}}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{‘id’:xxx,'company_id':xxx,'name':'xxx','add_time':xxx}<br/>
+                              ,...,{...}]}<br/>
+@@output<br/>
+@param  $id                id<br/>
+@param  $company_id        #企业id<br/>
+@param  $name              #企业别名<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -398,14 +498,14 @@ content={'auth_level':'006001'}<br/>
 方法描述:添加评论<br/>
 输入参数格式:<br/>
 method=Comment.add<br/>
-content={'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx','expression':'xxx',
+content={'user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx',<br/>
          'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'is_anonymous':xxx}<br/>
 @@input<br/>
+@param $user_id         //用户id
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
 @param $content         //评论内容*<br/>
-@param $expression      //评论表情<br/>
 @param $pic_1           //图片5张<br/>
 @param $pic_2<br/>
 @param $pic_3<br/>
@@ -422,10 +522,54 @@ content={'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx','expressi
 </p>
 <hr>
 <p id="comment_2">
+模块名称:Comnews<br/>
+模块名称描述:企业新闻评论<br/>
+方法名称:add<br/>
+方法描述:添加<br/>
+输入参数格式:<br/>
+method=Comnews.add<br/>
+content={'user_id':xxx,'company_id':xxx,'news_id':xxx,'content':'xxx'}<br/>
+@@input<br/>
+@param $user_id;     #会员id<br/>
+@param $company_id;  #企业id<br/>
+@param $news_id;     #企业新闻id<br/>
+@param $content;     #评论内容<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功操作,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_3">
+模块名称:Comexposal<br/>
+模块名称描述:企业曝光评论<br/>
+方法名称:add<br/>
+方法描述:添加<br/>
+输入参数格式:<br/>
+method=Comexposal.add<br/>
+content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx'}<br/>
+@@input<br/>
+@param $user_id     会员id<br/>
+@param $exposal_id  企业入库id<br/>
+@param $parent_id   父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
+@param $content     内容<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_4">
 模块名称:Comment<br/>
 模块名称描述:评论<br/>
 方法名称:get_list<br/>
-方法描述:添加评论<br/>
+方法描述:评论查询<br/>
 输入参数格式:<br/>
 method=Comment.get_list<br/>
 content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
@@ -434,45 +578,204 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx',
-                               'content':'xxx','expression':'xxx','pic_1':xxx,
-                               'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,
-                               'is_anonymous':xxx,'add_time':xxx},...,{...}]}<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx',<br/>
+                               'content':'xxx','pic_1':xxx,<br/>
+                               'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
+                               'is_anonymous':xxx,'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id
+@param $user_id         //用户id
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
 @param $content         //评论内容*<br/>
-@param $expression      //评论表情<br/>
 @param $pic_1           //图片5张<br/>
 @param $pic_2<br/>
 @param $pic_3<br/>
 @param $pic_4<br/>
 @param $pic_5<br/>
 @param $is_anonymous   //是否匿名<br/>
+@param $top_num        //顶数<br/>
 @param $add_time       //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
 </p>
 <hr>
-<p id="comment_3">
+<p id="comment_5">
+模块名称:Comnews<br/>
+模块名称描述:评论(新闻)<br/>
+方法名称:get_list<br/>
+方法描述:评论(新闻)查询<br/>
+输入参数格式:<br/>
+method=Comnews.get_list<br/>
+content={'where':{'company_id':xxx,'news_id':xxx}}<br/>
+@@input<br/>
+@@@where
+@param $company_id      //企业id*<br/>
+@param $news_id       //新闻id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'news_id':xxx<br/>
+                               'content':'xxx','top_num':xxx,'add_time':xxx},...,{...}]}<br/>
+@@output<br/>
+@param $id
+@param $user_id         //用户id
+@param $company_id      //企业id*<br/>
+@param $news_id         //新闻id*<br/>
+@param $content         //评论内容*<br/>
+@param $top_num         //顶数<br/>
+@param $add_time        //添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_6">
+模块名称:Comexposal<br/>
+模块名称描述:评论(企业曝光)<br/>
+方法名称:get_list<br/>
+方法描述:评论(企业曝光)查询<br/>
+输入参数格式:<br/>
+method=Comexposal.get_list<br/>
+content={'where':{'exposal_id':xxx}}<br/>
+@@input<br/>
+@@@where
+@param $exposal_id       //曝光入库id<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'exposal_id':xxx,'parent_id':xxx<br/>
+                               'content':'xxx','is_validate':xxx,'validate_time':xxx,<br/>
+			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
+@@output<br/>
+@param $id
+@param $user_id         //用户id
+@param $exposal_id      //入库id*<br/>
+@param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)
+@param $content         //评论内容*<br/>
+@param $is_validate     //是否审核(0-未审核,1-审核)
+@param $validate_time   //审核日期
+@param $top_num         //顶数<br/>
+@param $add_time        //添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_7">
 模块名称:Comment<br/>
 模块名称描述:评论<br/>
-方法名称:check<br/>
+方法名称:validate<br/>
 方法描述:审核评论<br/>
 输入参数格式:<br/>
-method=Comment.check<br/>
-content={'id':xxx,'is_validate':xxx,'validate_time':xxx}<br/>
+method=Comment.validate<br/>
+content={'id':xxx}<br/>
 @@input<br/>
-@param $id<br/>
-@param $is_validate 审核结果(0-未通过,1-已通过)<br/>
-@param $validate_time 审核时间<br/>
+@param $id 评论id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output
 @param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_8">
+模块名称:Comnews<br/>
+模块名称描述:评论(新闻)<br/>
+方法名称:validate<br/>
+方法描述:审核评论<br/>
+输入参数格式:<br/>
+method=Comnews.validate<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param $id 评论id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_9">
+模块名称:Comexposal<br/>
+模块名称描述:评论(企业曝光)<br/>
+方法名称:validate<br/>
+方法描述:审核评论<br/>
+输入参数格式:<br/>
+method=Comexposal.validate<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param $id 评论id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_10">
+模块名称:Comnewsassist<br/>
+模块名称描述:新闻评论点赞<br/>
+方法名称:add<br/>
+方法描述:添加<br/>
+输入参数格式:<br/>
+method=Comnewsassist.add<br/>
+content={'user_id':xxx,'company_id':xxx,'news_id':xxx,'comment_id':xxx}<br/>
+@@input<br/>
+@param $user_id     用户id<br/>
+@param $company_id  企业id<br/>
+@param $news_id     新闻id<br/>
+@param $comment_id  企业新闻评论id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_11">
+模块名称:Comtop<br/>
+模块名称描述:企业评论顶<br/>
+方法名称:add<br/>
+方法描述:添加<br/>
+输入参数格式:<br/>
+method=Comtop.add<br/>
+content={'user_id':xxx,'company_id':xxx,'comment_id':xxx}<br/>
+@@input<br/>
+@param $user_id<br/>
+@param $company_id<br/>
+@param $comment_id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_12">
+模块名称:Comexposaltop<br/>
+模块名称描述:企业曝光评论顶<br/>
+方法名称:add<br/>
+方法描述:添加<br/>
+输入参数格式:<br/>
+method=Comexposaltop.add<br/>
+content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx}<br/>
+@@input<br/>
+@param $user_id     用户id<br/>
+@param $exposal_id  入库企业id<br/>
+@param $comment_id  入库评论id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -653,13 +956,14 @@ content={'where':{'id':xxx,'type':'xxx','title':'xxx','website':'xxx',
 方法描述:添加新闻<br/>
 输入参数格式:<br/>
 method=News.add<br/>
-content={'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
+content={'company_id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
 @@input<br/>
-@param $title   标题<br/>
-@param $source  来源<br/>
-@param $author  作者<br/>
-@param $content 内容<br/>
-@param $pic     图片<br/>
+@param $company_id 企业id<br/>
+@param $title      标题<br/>
+@param $source     来源<br/>
+@param $author     作者<br/>
+@param $content    内容<br/>
+@param $pic        图片<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -676,16 +980,17 @@ content={'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
 方法描述:添加新闻<br/>
 输入参数格式:<br/>
 method=News.update<br/>
-content={'where':{'id':xxx},'data':{'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+content={'where':{'id':xxx},'data':{'company_id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>    
 @@@data<br/>
-@param $title   标题<br/>
-@param $source  来源<br/>
-@param $author  作者<br/>
-@param $content 内容<br/>
-@param $pic     图片<br/>
+@param $company_id 企业id<br/>
+@param $title      标题<br/>
+@param $source     来源<br/>
+@param $author     作者<br/>
+@param $content    内容<br/>
+@param $pic        图片<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -702,26 +1007,31 @@ content={'where':{'id':xxx},'data':{'title':‘xxx’,'source':'xxx','author':'x
 方法描述:查询<br/>
 输入参数格式:<br/>
 method=News.get_list<br/>
-content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+content={'where':{'id':xxx,'company_id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
-@param $title   标题<br/>
-@param $source  来源<br/>
-@param $author  作者<br/>
-@param $content 内容<br/>
-@param $pic     图片<br/>
+@param $company_id 企业id<br/>
+@param $title      标题<br/>
+@param $source     来源<br/>
+@param $author     作者<br/>
+@param $content    内容<br/>
+@param $pic        图片<br/>
+@param $assist_num 点赞数<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'title':'xxx','source':'xxx','author':'xxx'
-                               'content':'xxx','pic':xxx},...,{...}]}<br/>
+{'status_code':200,'content':[{'id':xxx,'company_id':xxx,'title':'xxx','source':'xxx','author':'xxx'
+                               'content':'xxx','pic':xxx,'assist_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
+@param $company_id 企业id<br/>
 @param $title   标题<br/>
 @param $source  来源<br/>
 @param $author  作者<br/>
 @param $content 内容<br/>
 @param $pic     图片(pc)<br/>
 @param $pic_app 图片(app)<br/>
+@param $assist_num 点赞数<br/>
+@param $add_time  添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -739,17 +1049,19 @@ content={{'id':xxx}<br/>
 @@@where<br/>
 @param $id<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'id':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
-                              'content':'xxx','pic':xxx,'pic_app':xxx,'add_time':xxx}}<br/>
+{'status_code':200,'content':{'id':xxx,'company_id':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
+                              'content':'xxx','pic':xxx,'pic_app':xxx,'assist_num':xxx,'add_time':xxx}}<br/>
 @@output<br/>
 @param $id<br/>
+@param $company_id 企业id<br/>
 @param $title    标题<br/>
 @param $source   来源<br/>
 @param $author   作者<br/>
 @param $content  内容<br/>
 @param $pic      图片(pc)<br/>
 @param $pic_app  图片(app)<br/>
-@param $add_time <br/>
+@param $assist_num 点赞数<br/>
+@param $add_time 添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -759,7 +1071,7 @@ content={{'id':xxx}<br/>
 模块名称:News<br/>
 模块名称描述:新闻<br/>
 方法名称:delete<br/>
-方法描述:查询<br/>
+方法描述:删除<br/>
 输入参数格式:<br/>
 method=News.delete<br/>
 content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
@@ -771,6 +1083,26 @@ content={'where':{'id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/
 @param $author  作者<br/>
 @param $content 内容<br/>
 @param $pic     图片<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="news_6">
+模块名称:Newsassist<br/>
+模块名称描述:新闻点赞<br/>
+方法名称:add<br/>
+方法描述:添加纪录<br/>
+输入参数格式:<br/>
+method=Newsassist.add<br/>
+content={'news_id':xxx,'user_id':xxx}<br/>
+@@input<br/>
+@param $news_id 新闻id<br/>
+@param $user_id 用户id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -882,6 +1214,13 @@ content={'media':xxx}<br/>
 			<td>1</td>
 			<td>图片</td>
 			<td>新闻图片（app)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>001008</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>企业logo</td>
 			<td></td>
 		</tr>
 		

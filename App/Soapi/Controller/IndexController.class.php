@@ -104,6 +104,10 @@ class IndexController extends Controller {
         list($class_name, $method)= explode('.', $this->method);
         $class_name = 'Soapi/'.$class_name;
     	  $obj = A($class_name);
+    	if(!in_array($this->type,array('text','resource')))
+    	{
+			$this->type = 'text';
+		}
         switch($this->type)
         {
             case 'resource':

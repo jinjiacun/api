@@ -154,7 +154,12 @@ class MediaController extends BaseController {
 			case '001007':#新闻图片（app)
 			{
 				$file_dir  = 'media/'.'news_app'.'/'.date("Y-m-d").'/';
-			}
+			}			
+			break;
+			case '001008':#logo
+			{
+				$file_dir  = 'media/'.'logo'.'/'.date("Y-m-d").'/';
+			}			
 			break;
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))

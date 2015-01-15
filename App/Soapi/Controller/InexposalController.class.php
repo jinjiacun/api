@@ -92,6 +92,7 @@ class InexposalController extends BaseController {
 	                              mem_sn varchar(255) comment '会员编号',
 	                              certificate int not null default 0 comment '资质证明',
 	                              find_website varchar(255) comment 'find_website',
+	                              top_num int not null default 0 comment '顶数目',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -235,6 +236,7 @@ class InexposalController extends BaseController {
 						'pic_3'        => intval($v['pic_3']),
 						'pic_4'        => intval($v['pic_4']),
 						'pic_5'        => intval($v['pic_5']),
+						'top_num'      => intval($v['top_num']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}

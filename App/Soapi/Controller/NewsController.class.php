@@ -16,6 +16,7 @@ public function add
 @param $author  作者
 @param $content 内容
 @param $pic     图片
+@param $assist_num 点赞数
 @@output
 @param $is_success 0-操作成功，-1-操作失败
 ##--------------------------------------------------------##
@@ -28,47 +29,60 @@ public function get_info
 @param $id
 @@output
 @param $id
-@param $title    标题
-@param $source   来源
-@param $author   作者
-@param $content  内容
-@param $pic      图片
-@param $add_time 
+@param $title      标题
+@param $source     来源
+@param $author     作者
+@param $content    内容
+@param $pic        图片
+@param $assist_num 点赞数
+@param $add_time
+##--------------------------------------------------------##
+#新闻点赞
+public function __assist
+@@input
+@news_id
+@@output
+@param true-成功, false-失败
 ##--------------------------------------------------------##
 */
 class NewsController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_news(id int primary key auto_increment,
+	                              company_id int not null default 0 comment '企业id(为0时，是系统新闻)',
 	                              title varchar(255) comment '标题',
 	                              source varchar(255) comment '来源',
 	                              author varchar(255) comment '作者',
 	                              content text comment '内容',
 	                              pic int not null default 0 comment '配图(pc)',
 	                              pic_app int not null default 0 comment '配图(app)',
+	                              assist_num int not null default 0 comment '点赞数', 
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
 
 	protected $_module_name = 'news';
 	protected $id;
+	protected $company_id;
 	protected $title;
 	protected $source;
 	protected $author;
 	protected $content;
 	protected $pic;
 	protected $pic_app;
+	protected $assist_num;
 	protected $add_time;
 
 	#添加
 	public function add($content)
 	/*
 	@@input
-	@param $title   标题
-	@param $source  来源
-	@param $author  作者
-	@param $content 内容
-	@param $pic     图片
+	@param $company_id  企业id
+	@param $title       标题
+	@param $source      来源
+	@param $author      作者
+	@param $content     内容
+	@param $pic         图片
 	@@output
 	@param $is_success 0-操作成功，-1-操作失败
 	*/
@@ -136,15 +150,17 @@ class NewsController extends BaseController {
 			foreach($data as $v)
 			{
 				$list[] = array(
-						'id'      => intval($v['id']),
-						'title'   => urlencode($v['title']),
-						'source'  => urlencode($v['source']),
-						'author'  => urlencode($v['author']),
-						'content' => urlencode($v['content']),
-						'pic'     => intval($v['pic']),
-						'pic_url' => $this->get_pic_url($v['pic']),
-						'pic_app' => intval($v['pic_app']),
-						'add_time'=> intval($v['add_time']),
+						'id'          => intval($v['id']),
+						'company_id'  => intval($v['company_id']),
+						'title'       => urlencode($v['title']),
+						'source'      => urlencode($v['source']),
+						'author'      => urlencode($v['author']),
+						'content'     => urlencode($v['content']),
+						'pic'         => intval($v['pic']),
+						'pic_url'     => $this->get_pic_url($v['pic']),
+						'pic_app'     => intval($v['pic_app']),
+						'assist_num'  => intval($v['assist_num']),
+						'add_time'    => intval($v['add_time']),
 						
 					);	
 			}
@@ -170,6 +186,7 @@ class NewsController extends BaseController {
 	@param $author   作者
 	@param $content  内容
 	@param $pic      图片
+	@param $assist_num 点赞数
 	@param $add_time 
 	*/
 	{
@@ -192,16 +209,18 @@ class NewsController extends BaseController {
 		if($tmp_one)
 		{
 			$list = array(
-				'id'       => intval($tmp_one['id']),
-				'title'    => urlencode($tmp_one['title']),
-				'source'   => urlencode($tmp_one['source']),
-				'author'   => urlencode($tmp_one['author']), 
+				'id'          => intval($tmp_one['id']),
+				'company_id'  => intval($tmp_one['company_id']),
+				'title'       => urlencode($tmp_one['title']),
+				'source'      => urlencode($tmp_one['source']),
+				'author'      => urlencode($tmp_one['author']), 
 				//'content'  => stripslashes(htmlspecialchars_decode(urlencode($tmp_one['content']))),
-				'content'  => urlencode(htmlspecialchars_decode($tmp_one['content'])),
-				'pic'      => intval($tmp_one['pic']),
-				'pic_url'  => $this->get_pic_url($tmp_one['pic']),
-				'pic_app'  => intval($tmp_one['pic_app']),
-				'add_time' => intval($tmp_one['add_time']), 
+				'content'     => urlencode(htmlspecialchars_decode($tmp_one['content'])),
+				'pic'         => intval($tmp_one['pic']),
+				'pic_url'     => $this->get_pic_url($tmp_one['pic']),
+				'pic_app'     => intval($tmp_one['pic_app']),
+				'assist_num'  => intval($tmp_one['assist_num']),
+				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}
 		
@@ -210,9 +229,6 @@ class NewsController extends BaseController {
 			$list
 		);
 	}
-
-
-
 
 
 

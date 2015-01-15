@@ -80,7 +80,9 @@ class AddblackController extends BaseController {
 		}
 		
 		#检查
-		if(!$this->check_may($data['user_id'], $data['company_id']))
+		if(!$this->__check(array(
+			                 'user_id'=>$data['user_id'], 
+			                 $data['company_id'])))
 		{
 			return array(
 				200,
@@ -139,32 +141,6 @@ class AddblackController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
-	}
-		
-	#检查是否可以加黑
-	private function check_may($user_id, $company_id)
-	{
-		if(0>= $user_id
-		|| 0>= $company_id
-		)
-		{
-			return false;
-		}
-		
-		$content = array(
-			'user_id'    => $user_id,
-			'company_id' => $company_id,
-		);
-		$star_time = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-		$end_time  = mktime(23, 59, 59, date('m'), date('d'), date('Y'));
-		$content['add_time'] = array(array('gt', $star_time),
-		                             array('lt', $end_time));
-		if(M($this->_module_name)->where($content)->find())
-		{
-			return true;
-		}
-		
-		return false;
 	}
 	
 	#统计加黑人数
