@@ -11,6 +11,7 @@ function of api:
 public function add
 @@input
 @param  $nature            #企业性质(字典编码)
+@param  $logo              #企业logo
 @param  $trade             #所属行业
 @param  $company_name      #公司全称(唯一)
 @param  $auth_level        #认证级别
@@ -33,6 +34,8 @@ public function get_info
 @@input
 @param $id 企业id
 @@output
+@param  $id
+@param  $logo              #企业logo
 @param  $nature            #企业性质(字典编码)
 @param  $trade             #所属行业
 @param  $company_name      #公司全称(唯一)
@@ -63,7 +66,8 @@ public function search
 @@input
 @param $name   企业别名 
 @@output
-@param  $id                企业id
+@param  $id                #企业id
+@param  $logo              #企业logo
 @param  $nature            #企业性质(字典编码)
 @param  $trade             #所属行业
 @param  $company_name      #公司全称(唯一)
@@ -86,6 +90,7 @@ class CompanyController extends BaseController {
 	    /**
 		 * sql script:
 		  create table so_company(id int primary key auto_increment,
+		                             logo int not null default 0 comment '企业logo',
 		                             nature varchar(10) comment '企业性质',
 		   		                     trade varchar(10) comment '所属行业',
 		   		                     company_name varchar(255) comment '公司全称',
@@ -110,6 +115,7 @@ class CompanyController extends BaseController {
 		protected $_module_name = 'company';
 		
 		protected $id;
+		protected $logo;              #企业logo
 		protected $nature;            #企业性质(字典编码)
 		protected $trade;             #所属行业
 		protected $company_name;      #公司全称(唯一)
@@ -134,6 +140,7 @@ class CompanyController extends BaseController {
 		public function add($content)
 		/*
 		@@input
+		@param  $logo              #企业logo
 		@param  $nature            #*企业性质(字典编码)
 		@param  $trade             #*所属行业
 		@param  $company_name      #*公司全称(唯一)
@@ -210,6 +217,8 @@ class CompanyController extends BaseController {
 		@@input
 		@param $id 企业id
 		@@output
+		@param  $id
+		@param  $logo              #企业logo
 		@param  $nature            #企业性质(字典编码)
 		@param  $trade             #所属行业
 		@param  $company_name      #公司全称(唯一)
@@ -235,7 +244,7 @@ class CompanyController extends BaseController {
 				return C('param_err');
 			}
 		
-			$data = intval($data['id']);
+			$data['id'] = intval($data['id']);
 		
 			if(0>= $data['id'])
 			{
@@ -247,6 +256,7 @@ class CompanyController extends BaseController {
 			if($tmp_one)
 			{
 				$list = array(
+						'id'                => intval($tmp_one['id']),
 						'nature'            => urlencode($tmp_one['nature']),
 						'trade'             => urlencode($tmp_one['trade']),
 						'company_name'      => urlencode($tmp_one['company_name']),
@@ -254,7 +264,9 @@ class CompanyController extends BaseController {
 						'company_type'      => urlencode($tmp_one['company_type']),
 						'reg_address'       => urlencode($tmp_one['reg_address']),
 						'busin_license'     => intval($tmp_one['busin_license']),
+						'busin_license_url' => $this->get_pic_url($tmp_one['busin_license']),
 						'code_certificate'  => intval($tmp_one['code_certificate']),
+						'code_certificate_url' => $this->get_pic_url($tmp_one['code_certificate']),
 						'telephone'         => urlencode($tmp_one['telephone']),
 						'website'           => $tmp_one['website'],
 						'record'            => urlencode($tmp_one['record']),
@@ -262,6 +274,7 @@ class CompanyController extends BaseController {
 						'agent_platform'    => urlencode($tmp_one['agent_platform']),
 						'mem_sn'            => $tmp_one['mem_sn'],
 						'certificate'       => intval($tmp_one['certificate']),
+						'certificate_url'   => $this->get_pic_url($tmp_one['certificate']),
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -283,6 +296,7 @@ class CompanyController extends BaseController {
 				{
 					$list[] = array(
 							'id'                => intval($v['id']),
+							'logo'              => intval($v['logo']),
 							'nature'            => urlencode($v['nature']),
 							'trade'             => urlencode($v['trade']),
 							'company_name'      => urlencode($v['company_name']),
@@ -290,7 +304,9 @@ class CompanyController extends BaseController {
 							'company_type'      => urlencode($v['company_type']),
 							'reg_address'       => urlencode($v['reg_address']),
 							'busin_license'     => intval($v['busin_license']),
+							'busin_license_url' => $this->get_pic_url($v['busin_license']),
 							'code_certificate'  => intval($v['code_certificate']),
+							'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
 							'telephone'         => urlencode($v['telephone']),
 							'website'           => $v['website'],
 							'record'            => urlencode($v['record']),
@@ -298,6 +314,7 @@ class CompanyController extends BaseController {
 							'agent_platform'    => urlencode($v['agent_platform']),
 							'mem_sn'            => $v['mem_sn'],
 							'certificate'       => intval($v['certificate']),
+							'certificate_url'   => $this->get_pic_url($v['certificate']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -345,6 +362,7 @@ class CompanyController extends BaseController {
 		@param $name   企业别名 
 		@@output
 		@param  $id                企业id
+		@param  $logo              #企业logo
 		@param  $nature            #企业性质(字典编码)
 		@param  $trade             #所属行业
 		@param  $company_name      #公司全称(唯一)
@@ -370,7 +388,7 @@ class CompanyController extends BaseController {
 				return C('param_err');
 			}
 			
-			$data = htmlspecialchars(trim($data['name']));
+			$data['name'] = htmlspecialchars(trim($data['name']));
 			
 			if('' == $data['name'])
 			{
@@ -388,6 +406,7 @@ class CompanyController extends BaseController {
 				{
 					$list[] = array(
 						'id'                => intval($v['id']),
+						'logo'              => intval($v['logo']),
 						'nature'            => urlencode($v['nature']),
 						'trade'             => urlencode($v['trade']),
 						'company_name'      => urlencode($v['company_name']),

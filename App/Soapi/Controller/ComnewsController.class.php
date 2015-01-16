@@ -72,16 +72,18 @@ class ComnewsController extends BaseController {
 		$data['user_id']    = intval($data['user_id']);
 		$data['company_id'] = intval($data['company_id']);
 		$data['news_id']    = intval($data['news_id']);
-		$data['content']    = htmlspecialchars(trim($data['user_id']));
-		
+		$data['content']    = htmlspecialchars(trim($data['content']));
+
 		if(0>= $data['user_id']
 		|| 0>= $data['company_id']
 		|| 0>= $data['news_id']
-		|| '' != $data['content']
+		|| '' == $data['content']
 		)
 		{
 			return C('param_fmt_err');
 		}
+		
+		$data['add_time'] = time();
 		
 		if(M($this->_module_name)->add($data))
 		{
@@ -117,7 +119,7 @@ class ComnewsController extends BaseController {
 						'user_id'     => intval($v['user_id']),
 						'company_id'  => intval($v['company_id']),
 						'news_id'     => intval($v['news_id']),
-						'content'     => urlencode($v['id']),
+						'content'     => urlencode($v['content']),
 						'is_validate' => intval($v['is_validate']),
 						'assist_num'  => intval($v['assist_num']),
 						'add_time'    => intval($v['add_time']),

@@ -41,10 +41,12 @@ content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 方法描述:提交曝光<br/>
 输入参数格式:<br/>
 method=Inexposal.get_list<br/>
-content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+content={'id':xxx,'company_id':xxx,"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}<br/>
 @@input<br/>
+@param $id<br/>
+@param $company_id       关联企业id<br/>
 @param $user_id          #用户id<br/>
 @param $nature           #企业性质<br/>
 @param $trade            #所属行业<br/>
@@ -109,8 +111,9 @@ content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
 方法描述:关联企业<br/>
 输入参数格式:<br/>
 method=Inexposal.chang_relate<br/>
-content={'company_id':xxx}<br/>
+content={'id':xxx,'company_id':xxx}<br/>
 @@input<br/>
+@param $id<br/>
 @param $company_id 企业id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
@@ -212,22 +215,26 @@ content={'uid':'xxx'}<br/>
 方法描述:新增企业<br/>
 输入参数格式:<br/>
 method=Company.add_ex<br/>
-content={"nature":"xxx","trade":"xxx","company_name":"xxx","auth_level":"xxx","company_type":"xxx",
+content={'logo':xxx,"nature":"xxx","trade":"xxx","company_name":"xxx","auth_level":"xxx","company_type":"xxx",
          "reg_address":"xxx","busin_license":xxx,"code_certificate":"xxx","telephone":"xxx","website":"xxx",
-         "record":"xxx","find_website":"xxx"}<br/>
-@@input
-@param  $nature            #企业性质(字典编码)
-@param  $trade             #所属行业
-@param  $company_name      #公司全称(唯一)
-@param  $auth_level        #认证级别
-@param  $company_type      #*企业类型
-@param  $reg_address       #*注册地址
-@param  $busin_license     #*营业执照(图片id)
-@param  $code_certificate  #*机构代码证(图片id)
-@param  $telephone         #*联系电话
-@param  $website           #*官方网址
-@param  $record            #*官网备案
-@param  $find_website      #查询网址
+         "record":"xxx","find_website":"xxx",'agent_platform':'xxx','mem_sn':'xxx','certificate':'xxx'}<br/>
+@@input<br/>
+@param  $logo              #企业logo<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
 示例输出:<br/>
 {'status_code':200,'content':{"is_success":xxx}}<br/>
 @@output<br/>
@@ -267,12 +274,14 @@ content={"name":"xxx"}<br/>
 @@input<br/>
 @param $name   企业别名 <br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+{'status_code':200,'content':[{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
-                               'find_website':'xxx','add_time':'xxx'},...,{...}]}<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':'xxx'<br/>
+                               ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
+@param  $logo              #企业logo<br/>
 @param  $nature            #企业性质(字典编码)<br/>
 @param  $trade             #所属行业<br/>
 @param  $company_name      #公司全称(唯一)<br/>
@@ -285,6 +294,9 @@ content={"name":"xxx"}<br/>
 @param  $website           #*官方网址<br/>
 @param  $record            #*官网备案<br/>
 @param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -298,29 +310,30 @@ content={"name":"xxx"}<br/>
 方法描述:修改企业信息<br/>
 输入参数格式:<br/>
 method=Company.update<br/>
-content={'where':{'id':xxx},'data':{'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+content={'where':{'id':xxx},'data':{'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx}}<br/>
 @@input<br/>
-@@@where
-@param id 企业id
-@@@data
-@param  $nature            #企业性质(字典编码)
-@param  $trade             #所属行业
-@param  $company_name      #公司全称(唯一)
-@param  $auth_level        #认证级别
-@param  $company_type      #*企业类型
-@param  $reg_address       #*注册地址
-@param  $busin_license     #*营业执照(图片id)
-@param  $code_certificate  #*机构代码证(图片id)
-@param  $telephone         #*联系电话
-@param  $website           #*官方网址
-@param  $record            #*官网备案
-@param  $find_website      #查询网址
-@param  $agent_platform    #代理平台
-@param  $mem_sn            #会员编号
-@param  $certificate       #资质证明
+@@@where<br/>
+@param id 企业id<br/>
+@@@data<br/>
+@param  $logo              #企业logo<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -397,18 +410,19 @@ content={'id':xxx}<br/>
 方法名称:get_list<br/>
 方法描述:黑榜企业<br/>
 输入参数格式:<br/>
-method=Companyalias.get_list<br/>
+method=Company.get_list<br/>
 content={'where':{'auth_level':'006001'}}<br/>
 @@input<br/>
 @param id 企业别名id
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+{'status_code':200,'content':[{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
                                ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
+@param  $logo              #企业logo<br/>
 @param  $nature            #企业性质(字典编码)<br/>
 @param  $trade             #所属行业<br/>
 @param  $company_name      #公司全称(唯一)<br/>
@@ -440,13 +454,14 @@ method=Company.get_list<br/>
 content={'where':{xxxx}}<br/>
 @@input<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+{'status_code':200,'content':[{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
                                ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
+@param  $logo              #企业logo<br/>
 @param  $nature            #企业性质(字典编码)<br/>
 @param  $trade             #所属行业<br/>
 @param  $company_name      #公司全称(唯一)<br/>
@@ -484,6 +499,45 @@ content={'where':{xxxx}}<br/>
 @param  $id                id<br/>
 @param  $company_id        #企业id<br/>
 @param  $name              #企业别名<br/>
+@param  $add_time          #添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_11">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:get_info<br/>
+方法描述:通过id查询企业信息<br/>
+输入参数格式:<br/>
+method=Company.get_info<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param $id 企业id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+                               ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
+                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                               ,'add_time':'xxx'}}<br/>
+@@output<br/>
+@param  $id                企业id<br/>
+@param  $nature            #企业性质(字典编码)<br/>
+@param  $trade             #所属行业<br/>
+@param  $company_name      #公司全称(唯一)<br/>
+@param  $auth_level        #认证级别<br/>
+@param  $company_type      #*企业类型<br/>
+@param  $reg_address       #*注册地址<br/>
+@param  $busin_license     #*营业执照(图片id)<br/>
+@param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $telephone         #*联系电话<br/>
+@param  $website           #*官方网址<br/>
+@param  $record            #*官网备案<br/>
+@param  $find_website      #查询网址<br/>
+@param  $agent_platform    #代理平台<br/>
+@param  $mem_sn            #会员编号<br/>
+@param  $certificate       #资质证明<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -583,8 +637,8 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
                                'is_anonymous':xxx,'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
-@param $id
-@param $user_id         //用户id
+@param $id<br/>
+@param $user_id         //用户id<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
@@ -611,15 +665,15 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 method=Comnews.get_list<br/>
 content={'where':{'company_id':xxx,'news_id':xxx}}<br/>
 @@input<br/>
-@@@where
+@@@where<br/>
 @param $company_id      //企业id*<br/>
 @param $news_id       //新闻id<br/>
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'user_id':xxx,'news_id':xxx<br/>
                                'content':'xxx','top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
-@param $id
-@param $user_id         //用户id
+@param $id<br/>
+@param $user_id         //用户id<br/>
 @param $company_id      //企业id*<br/>
 @param $news_id         //新闻id*<br/>
 @param $content         //评论内容*<br/>
@@ -646,8 +700,8 @@ content={'where':{'exposal_id':xxx}}<br/>
                                'content':'xxx','is_validate':xxx,'validate_time':xxx,<br/>
 			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
-@param $id
-@param $user_id         //用户id
+@param $id<br/>
+@param $user_id         //用户id<br/>
 @param $exposal_id      //入库id*<br/>
 @param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)
 @param $content         //评论内容*<br/>
@@ -672,8 +726,8 @@ content={'id':xxx}<br/>
 @param $id 评论id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
-@@output
-@param $is_success 0-操作成功,-1-操作失败
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -691,8 +745,8 @@ content={'id':xxx}<br/>
 @param $id 评论id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
-@@output
-@param $is_success 0-操作成功,-1-操作失败
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>

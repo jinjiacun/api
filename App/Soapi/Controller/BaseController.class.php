@@ -176,6 +176,14 @@ class BaseController extends Controller {
 					$record_count
 		);
 	}
+	
+	#通过id查询
+	public function get_list_by_mul_ids($content)
+	{
+		$data  = $this->fill($content);
+		
+		
+	}
 
 	#查询单个
 	public function get_row($content){
@@ -232,7 +240,7 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
-		if($obj->where($data['where'])->save($data['data']))
+		if(false !== $obj->where($data['where'])->save($data['data']))
 		{
 			return array(
 				200,

@@ -24,6 +24,7 @@ class CompanyaliasController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_company_alias(id int primary key auto_increment,
+							   company_id int not null default 0 comment '企业id',
 	                           name varchar(255) comment '别名',
 	                           add_time int not null default 0 comment '添加日期'
 	                           )charset=utf8;
@@ -64,8 +65,8 @@ class CompanyaliasController extends BaseController {
 			return C('param_err');
 		}
 		
-		$data['add_time'] = time;
-		if(M($this->_module_name)->add($content))
+		$data['add_time'] = time();
+		if(M($this->_module_name)->add($data))
 		{
 			return array(
 				200,

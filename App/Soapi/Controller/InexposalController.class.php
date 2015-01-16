@@ -53,7 +53,7 @@ public function add_ex
 ##--------------------------------------------------------##
 #查询我的可信企业申请
 public function get_list_ex
-##--------------------------------------------------------## 
+##--------------------------------------------------------##
 #关联企业
 public function chang_relate
 @@input
@@ -61,6 +61,7 @@ public function chang_relate
 @param $company_id 企业id
 @@output
 @param $is_success 0-操作成功,-1-操作失败
+##--------------------------------------------------------##
 */
 class InexposalController extends BaseController {
 	
@@ -224,6 +225,7 @@ class InexposalController extends BaseController {
 			{
 				$list[] = array(
 				        'id'           => intval($v['id']),
+				        'company_id'   => intval($v['company_id']),
 						'user_id'      => intval($v['user_id']),
 						'nature'       => $v['nature'],  
 						'trade'        => $v['trade'],  
@@ -324,6 +326,8 @@ class InexposalController extends BaseController {
 	#查询我的可信企业申请
 	public function get_list_ex($content)
 	/**
+	@param $id
+    @param $company_id      关联企业id
     @param $user_id         *用户id
 	@param $nature          *企业性质(字典编码)
 	@param $trade           *所属行业
@@ -351,6 +355,7 @@ class InexposalController extends BaseController {
 			{
 				$list[] = array(
 				        'id'               => intval($v['id']),
+				        'company_id'       => intval($v['company_id']),
 						'user_id'          => intval($v['user_id']),
 						'nature'           => $v['nature'],  
 						'trade'            => $v['trade'],  

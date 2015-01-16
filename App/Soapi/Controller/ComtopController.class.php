@@ -17,13 +17,6 @@ public function add
 @@output
 @param $is_success 0-成功操作,-1-操作失败,-2-不允许添加
 ##--------------------------------------------------------##
-#检查
-public function __check
-@@input
-@param $comment_id
-@@output
-@param true-允许, false-不允许
-##--------------------------------------------------------##
 */
 class ComtopController extends BaseController {
 	/**
