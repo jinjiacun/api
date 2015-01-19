@@ -55,7 +55,7 @@ class MediaController extends BaseController {
 			return array(
 				200,
 				array(
-					'is_sucess'=> -2,
+					'is_success'=> -2,
 					'message'=>urlencode('没有文件上传'),
 				),
 			);
@@ -160,6 +160,11 @@ class MediaController extends BaseController {
 			{
 				$file_dir  = 'media/'.'logo'.'/'.date("Y-m-d").'/';
 			}			
+			break;
+			case '001009':#评论图片
+			{
+				$file_dir  = 'media/'.'comment'.'/'.date("Y-m-d").'/';
+			}
 			break;
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))

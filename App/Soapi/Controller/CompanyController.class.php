@@ -85,6 +85,13 @@ public function search
 @param  $certificate       #资质证明
 @param  $add_time          #添加日期
 ##--------------------------------------------------------##
+#查询企业名称是否存在
+public function exists_name
+@@input
+@param company_name  企业名称 
+@@output
+@param $is_exists 0-存在,-1-不存在
+##--------------------------------------------------------##
 */
 class CompanyController extends BaseController {
 	    /**
@@ -437,8 +444,47 @@ class CompanyController extends BaseController {
 			);
 		}
 		
-		
-		
+		#查询企业名称是否存在
+		public function exists_name($content)
+		/*
+		@@input
+		@param company_name  企业名称 
+		@@output
+		@param $is_exists 0-存在,-1-不存在
+		*/
+		{
+			$data = $this->fill($content);
+			if(!isset($data['company_name']))
+			{
+				return C('param_err');
+			}
+			
+			$data['company_name'] = htmlspecialchars(trim($data['company_name']));
+			
+			if('' == $data['company_name'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			if($this->__exists('company_name', $data['company_name']))
+			{
+				return array(
+					200,
+					array(
+						'is_exists'=>0,
+						'message'=>C('is_exists'),
+					),
+				);
+			}
+			
+			return array(
+					200,
+					array(
+						'is_exists'=>-1,
+						'message'=>C('no_exists'),
+					),
+				);
+		}
 		
 		
 		

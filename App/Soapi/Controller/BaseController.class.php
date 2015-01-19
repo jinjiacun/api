@@ -42,6 +42,8 @@ public function get_mobile_validate_code  查询手机验证码
 public function send_email                发送邮件
 ##--------------------------------------------------------##
 public function get_real_ip               获取当前访问的ip地址
+##--------------------------------------------------------##
+protected function __exists				  判定是否存在
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -510,4 +512,54 @@ class BaseController extends Controller {
 		
 		return false;
 	}
+	
+	#判定是否存在
+	protected function __exists($field_name, $field_value)
+	{
+		$content = array(
+			$field_name  => $field_value,
+		);
+		
+		$tmp_one = M($this->_module_name)->where($content)->find();
+		if($tmp_one)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

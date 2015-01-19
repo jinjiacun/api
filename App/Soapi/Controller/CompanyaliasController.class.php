@@ -19,6 +19,12 @@ public function add
 #查询企业别名
 public function get_list
 ##--------------------------------------------------------##
+#查询企业别名是否存在
+public function exists_name
+@@input
+@param name  企业别名 
+@@output
+@param $is_exists 0-存在,-1-不存在
 */
 class CompanyaliasController extends BaseController {
 	/**
@@ -113,9 +119,47 @@ class CompanyaliasController extends BaseController {
 				);
 	}
 	
-	
-	
-	
+	#查询企业别名是否存在
+	public function exists_name($content)
+	/*
+	@@input
+	@param name  企业别名 
+	@@output
+	@param $is_exists 0-存在,-1-不存在
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['name']))
+		{
+			return C('param_err');
+		}
+		
+		$data['name'] = htmlspecialchars(trim($data['name']));
+		
+		if('' == $data['name'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if($this->__exists('name', $data['name']))
+			{
+				return array(
+					200,
+					array(
+						'is_exists'=>0,
+						'message'=>C('is_exists'),
+					),
+				);
+			}
+			
+			return array(
+					200,
+					array(
+						'is_exists'=>-1,
+						'message'=>C('no_exists'),
+					),
+				);
+	}
 	
 	
 	

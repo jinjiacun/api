@@ -136,7 +136,8 @@ content={'mobile':'xxx','pswd':'xxx'}<br/>
 @param $pswd         密码<br/>
 @param $nickname     昵称(不设为自动生成)<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'is_success':xxx}}<br/>
+{'status_code':200,'content':{'is_success':xxx,'user_id':xxx,'nickname':'xxx',<br/>
+                             'sex':xxx,'cur_date':'xxx'}}<br/>
 @@output<br/>
 @param $is_sucess 0-成功，-1-失败,-2-手机号码已存在<br/>
 @param $user_id  用户id<br/>
@@ -159,10 +160,12 @@ content={'mobile':'xxx','pswd':'xxx'}<br/>
 @param $mobile       手机号码<br/>
 @param $pswd         密码<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'is_success':xxx}}<br/>
+{'status_code':200,'content':{'is_success':xxx,'user_id':xxx,'head_poratrait':'xxx','nickname':'xxx',<br/>
+                              'sex':xxx,'cur_date':'xxx'}}<br/>
 @@output<br/>
 @param $is_success 0-成功,-1-失败,-2-用户名或者密码错误<br/>
 @param $user_id  用户id<br/>
+@param $head_portrait 头像<br/>
 @param $nickname 用户昵称<br/>
 @param $sex      用户性别<br/>
 @param $cur_date 当前日期<br/>
@@ -171,6 +174,29 @@ content={'mobile':'xxx','pswd':'xxx'}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
 <p id="user_3">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:get_login_info<br/>
+方法描述:获取登录信息<br/>
+输入参数格式:<br/>
+method=User.get_login_info<br/>
+content={}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':{‘is_exists’:xxx,'user_id':xxx,'user_mobile':'xxx',
+                             'user_nick_name':'xxx','user_sex':xxx,'user_login_date':'xxx'}}<br/>
+@@output<br/>
+@param $is_exists       0-存在,-1-不存在<br/>
+@param $user_id         会员id<br/>
+@param $user_mobile     会员手机号码<br/>
+@param $user_nick_name  会员昵称<br/>
+@param $user_sex        会员性别<br/>
+@param $user_login_date 会员登录时间<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_4">
 模块名称:User<br/>
 模块名称描述:用户<br/>
 方法名称:find_passwd<br/>
@@ -189,7 +215,7 @@ content={'mobile':'xxx','new_pswd':'xxx'}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
-<p id="user_4">
+<p id="user_5">
 模块名称:User<br/>
 模块名称描述:用户<br/>
 方法名称:get_info<br/>
@@ -206,6 +232,7 @@ content={'uid':'xxx'}<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
+
 <hr>
 <hr>
 <p id="company_1">
@@ -555,7 +582,7 @@ method=Comment.add<br/>
 content={'user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx',<br/>
          'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'is_anonymous':xxx}<br/>
 @@input<br/>
-@param $user_id         //用户id
+@param $user_id         //用户id<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
@@ -843,14 +870,14 @@ content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx}<br/>
 方法描述:企业加黑<br/>
 输入参数格式:<br/>
 method=Addblack.add<br/>
-content={'exposal_id':xxx,'company_id':xxx}<br/>
+content={'user_id':xxx,'company_id':xxx}<br/>
 @@input<br/>
-@param $exposal_id  入库id<br/>
+@param $user_id     用户id<br/>
 @param $company_id  企业id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
-@@output
-@param $is_success 0-操作成功,-1-操作失败
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-超过了加黒条数
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1173,7 +1200,7 @@ content={'news_id':xxx,'user_id':xxx}<br/>
 方法描述:上传图片<br/>
 输入参数格式:<br/>
 method=Media.upload<br/>
-content={'title':‘xxx’,'source':'xxx','author':'xxx'}<br/>
+content={'field_name':‘xxx’,'file_name':'xxx','file_ext':'xxx','module_sn':'xxx'}<br/>
 @@input<br/>
 @param $field_name   图片字段<br/>
 @param $file_name    图片文件名称<br/>
@@ -1277,7 +1304,13 @@ content={'media':xxx}<br/>
 			<td>企业logo</td>
 			<td></td>
 		</tr>
-		
+		<tr>
+			<td>001009</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>评论图片</td>
+			<td></td>
+		</tr>
 		<tr>
 			<td>002001</td>
 			<td>2</td>

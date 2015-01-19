@@ -133,13 +133,12 @@ class CommentController extends BaseController {
 		$data['type']         = htmlspecialchars(trim($data['type']));
 		$data['content']      = htmlspecialchars(trim($data['content']));
 		$data['is_anonymous'] = intval($data['is_anonymous']);
-		$data['pic_1']        = intval($data['pic_1']);
+		
 		
 		if(0>= $data['user_id']
 		|| 0>= $data['company_id']
 		|| ''==$data['type']
 		|| ''==$data['content']
-		|| 0>= $data['pic_1']
 		)
 		{
 			return C('param_fmt_err');

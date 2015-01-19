@@ -28,9 +28,20 @@ public function login
 @@output
 @param $is_success 0-成功,-1-失败,-2-用户名或者密码错误
 @param $user_id  用户id
+@param $head_portrait 头像
 @param $nickname 用户昵称
 @param $sex      用户性别
 @param $cur_date 当前日期
+##--------------------------------------------------------##
+#获取登录信息
+public function get_login_info
+@@input
+@@output
+@param $user_id         会员id
+@param $user_mobile     会员手机号码
+@param $user_nick_name  会员昵称
+@param $user_sex        会员性别
+@param $user_login_date 会员登录时间
 ##--------------------------------------------------------##
 #找回密码
 public function find_passwd
@@ -154,10 +165,11 @@ class UserController extends BaseController {
 	@param $mobile   手机号码
 	@param $pswd     密码
 	@@output
-	@param $user_id  用户id
-	@param $nickname 用户昵称
-	@param $sex      用户性别
-	@param $cur_date 当前日期
+	@param $user_id       用户id
+	@param $head_portrait 头像
+	@param $nickname      用户昵称
+	@param $sex           用户性别
+	@param $cur_date      当前日期
 	*/
 	{
 		$data = $this->fill($content);
@@ -186,15 +198,25 @@ class UserController extends BaseController {
 		                             $data['pswd'],
 					     &$content))
 		{
+			if('' == $content['head_portrait'])
+			{
+				$content['head_portrait'] = C('api_user_domain').'/useravatar.gif';
+			}
+			session('user_id',         $content['user_id']);
+			session('user_mobile',     $data['mobile']);
+			session('user_nick_name',  $content['nickname']);
+			session('user_sex',        $content['user_sex']);
+			session('user_login_date', $content['cur_date']);
 			return array(
 				200,
 				array(
-				'is_success'=>0,
-				'message'  =>C('option_ok'),
-				'user_id'  =>$content['user_id'],
-				'nickname' =>$content['nickname'],
-				'sex'      =>$content['sex'],
-				'cur_date' =>$content['cur_date'],
+				'is_success'      =>0,
+				'message'         =>C('option_ok'),
+				'head_portrait'   =>$content['head_portrait'],
+				'user_id'  		  =>$content['user_id'],
+				'nickname' 		  =>$content['nickname'],
+				'sex'      		  =>$content['sex'],
+				'cur_date'   	  =>$content['cur_date'],
 				),
 			);
 		}
@@ -204,6 +226,44 @@ class UserController extends BaseController {
 			array(
 			'is_success'=>-1,
 			'message'=>C('option_fail'),
+			)
+		);
+	}
+	
+	#获取登录信息
+	public function get_login_info($content)
+	/*
+	@@input
+	@@output
+	@param $is_exists       0-存在,-1-不存在
+	@param $user_id         会员id
+	@param $user_mobile     会员手机号码
+	@param $user_nick_name  会员昵称
+	@param $user_sex        会员性别
+	@param $user_login_date 会员登录时间
+	*/
+	{
+		if(session('user_id'))
+		{
+			return array(
+				200,
+				array(
+					'is_success'       =>0,
+					'message'          => C('is_exists'),
+					'user_id'          => session('user_id'),
+					'user_mobile'      => session('user_mobile'),
+					'user_nick_name'   => session('user_nick_name'),
+					'user_sex'         => session('user_sex'),
+					'user_logiin_date' => session('user_login_date'),
+				),
+			);
+		}
+		
+		return array(
+			200,
+			array(
+				'is_exists'=>-1,
+				'message'=>C('no_exists')
 			)
 		);
 	}
@@ -223,10 +283,12 @@ class UserController extends BaseController {
 		{
 			$back_content = $re_json['Descr'];
 			$r_list = explode('|', $back_content);
-			$content['user_id']  = $r_list[0];
-			$content['nickname'] = $r_list[1];
-			$content['sex']      = $r_list[2];
-			$content['cur_date'] = $r_list[3];
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
 			return true;
 		}
 		elseif(-3 == $re_json['State'])

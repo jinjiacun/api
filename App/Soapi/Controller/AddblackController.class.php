@@ -82,7 +82,7 @@ class AddblackController extends BaseController {
 		#检查
 		if(!$this->__check(array(
 			                 'user_id'=>$data['user_id'], 
-			                 $data['company_id'])))
+			                 'company_id'=>$data['company_id'])))
 		{
 			return array(
 				200,
