@@ -209,10 +209,15 @@ class CommentController extends BaseController {
 						'type'         => $v['type'],
 						'content'      => urlencode($v['content']),
 						'pic_1'        => intval($v['pic_1']),
+						'pic_1_url'    => $this->get_pic_url($v['pic_1']),
 						'pic_2'        => intval($v['pic_2']),
+						'pic_2_url'    => $this->get_pic_url($v['pic_2']),
 						'pic_3'        => intval($v['pic_3']),
+						'pic_3_url'    => $this->get_pic_url($v['pic_3']),
 						'pic_4'        => intval($v['pic_4']),
+						'pic_4_url'    => $this->get_pic_url($v['pic_4']),
 						'pic_5'        => intval($v['pic_5']),
+						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
 						'is_validate'  => intval($v['is_validate']),
 						'is_anonymous' => intval($v['is_anonymous']),
 						'top_num'      => intval($v['top_num']),
@@ -257,7 +262,9 @@ class CommentController extends BaseController {
 		);
 		
 		$re_count = 0;
-		$re_count = M($this->_module_name)->where($content)->count();
+		$re_count = M($this->_module_name)->distinct('user_id')
+		                                  ->where($content)
+		                                  ->count();
 		
 		return array(
 			200,

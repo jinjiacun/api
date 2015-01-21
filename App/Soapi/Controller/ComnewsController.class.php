@@ -16,7 +16,7 @@ public function add
 @param $news_id;     #企业新闻id
 @param $content;     #评论内容
 @@output
-@param $is_success 0-成功操作,-1-操作失败
+@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作
 ##--------------------------------------------------------##
 public function get_list
 ##--------------------------------------------------------##
@@ -56,7 +56,7 @@ class ComnewsController extends BaseController {
 	@param $news_id;     #企业新闻id
 	@param $content;     #评论内容
 	@@output
-	@param $is_success 0-成功操作,-1-操作失败
+	@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作
 	*/
 	{
 		$data = $this->fill($content);
@@ -82,6 +82,20 @@ class ComnewsController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
+		
+		if(!$this->__check(array('news_id'   => $data['news_id'],
+								'company_id'=> $data['company_id'],
+								'user_id'   => $data['user_id']
+			)))
+			{
+				return array(
+				200,
+				array(
+					'is_success'=>-2,
+					'message'=>C('option_no_allow'),
+				),
+			 );
+			}
 		
 		$data['add_time'] = time();
 		

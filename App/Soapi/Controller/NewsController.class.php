@@ -23,6 +23,12 @@ public function add
 #查询
 public function get_list
 ##--------------------------------------------------------##
+#查询企业新闻映射
+public function get_id_name_map
+@@input
+@@output
+格式[{'id':'name'},...,{}]
+##--------------------------------------------------------##
 #通过id查询一条信息
 public function get_info
 @@input
@@ -172,6 +178,35 @@ class NewsController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	#查询企业新闻映射
+	public function get_id_name_map($content)
+	/*
+	@@input
+	@@output
+	*/
+	{
+		$list = array();
+		
+		unset($content);
+		
+		$content['company_id'] = array('neq',0);
+		$tmp_list = M($this->_module_name)->field("id,title")
+		                   ->where($content)->select();
+		if($tmp_list
+		&& 0< count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[intval($v['id'])] = urlencode($v['title']);
+			}
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 
 	#通过id查询一条信息

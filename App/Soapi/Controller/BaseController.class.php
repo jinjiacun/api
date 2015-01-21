@@ -336,10 +336,12 @@ class BaseController extends Controller {
 	public function mk_passwd($params,$seg_index=0)
 	{
 		$seg_list = array(
-			"<nickname>|<mobile>|<validated>|<pswd>|<userip>|souhei975427",  #注册
-			"<mobile>|<new_pswd>|<userip>|souhei975427",                     #放记密码
-			"<uid>|<nickname>|<sex>|<birthday>|<job>|<address>|<userip>",    #更新用户信息
-			"<uid>|<yyyyMMdd>",						 #更新用户信息
+			"<nickname>|<mobile>|<validated>|<pswd>|<userip>|souhei975427",               #(0)注册
+			"<mobile>|<smscode>|<new_pswd>|<userip>|souhei975427",                        #(1)忘记密码
+			"<uid>|<nickname>|<sex>|<birthday>|<job>|<address>|<userip>|souhei975427",    #(2)更新用户信息
+			"<uid>|<yyyyMMdd>|souhei975427",                                              #(3)查询用户信息
+			"<mobile>|<yyyyMMdd>|souhei975427",                                           #(4)检查手机号码
+			"<mobile>|<imagecode>|souhei975427",                                 #(5)获取手机短信验证码
 		);
 		$str = $seg_list[$seg_index];
 		switch($seg_index)
@@ -355,12 +357,13 @@ class BaseController extends Controller {
 			break;
 			case 1:
 				{
-					$str = str_replace("<mobile>",    $params['mobile']  , $str);					
+					$str = str_replace("<mobile>",    $params['mobile']  , $str);
+					$str = str_replace("<smscode>",   $params['smscode']  ,$str);
 					$str = str_replace("<new_pswd>",  $params['new_pswd'], $str);
 					$str = str_replace("<userip>",    $params['userip'],   $str);
 				}
 			break;
-			case 3:
+			case 2:
 				{
 					$str = str_replace("<uid>",       $params['uid']  ,    $str);					
 					$str = str_replace("<nickname>",  $params['nickname'], $str);
@@ -371,15 +374,25 @@ class BaseController extends Controller {
 					$str = str_replace("<userip>",    $params['userip'],   $str);
 				}
 			break;
-			case 4:
+			case 3:
 				{
 					$str = str_replace("<uid>",       $params['uid']  ,    $str);					
 					$str = str_replace("<yyyyMMdd>",  $params['yyyyMMdd'], $str);
 				}
 			break;
+			case 4:
+				{
+					$str = str_replace("<mobile>",    $params['mobile']  ,    $str);					
+					$str = str_replace("<yyyyMMdd>",  $params['yyyyMMdd'],    $str);
+				}
+			break;
+			case 5:
+				{
+					$str = str_replace("<mobile>",    $params['mobile']  ,    $str);
+					$str = str_replace("<imagecode>", $params['imagecode'],   $str);
+				}
+			break;
 		}
-		
-		
 		$re_str = $this->md5_16($str, true);
 		
 		return $re_str;

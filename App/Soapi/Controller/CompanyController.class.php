@@ -92,6 +92,23 @@ public function exists_name
 @@output
 @param $is_exists 0-存在,-1-不存在
 ##--------------------------------------------------------##
+#黑榜排行
+public function black_sort
+@@input
+@@output
+@param $id            企业id
+@param $company_name  企业名称
+@param $amount        加黑人数
+@param $last_time     最早曝光时间
+@param $user_list     用户Id列表
+##--------------------------------------------------------##
+#曝光统计
+public function stat_exposal
+@@input
+
+@@output
+
+##--------------------------------------------------------##
 */
 class CompanyController extends BaseController {
 	    /**
@@ -366,7 +383,8 @@ class CompanyController extends BaseController {
 		public function search($content)
 		/*
 		@@input
-		@param $name   企业别名 
+		@param $name    企业别名 
+		@param $user_id 会员id
 		@@output
 		@param  $id                企业id
 		@param  $logo              #企业logo
@@ -390,17 +408,28 @@ class CompanyController extends BaseController {
 		{
 			$data = $this->fill($content);
 			
-			if(!isset($data['name']))
+			if(!isset($data['name'])
+			|| !isset($data['user_id'])
+			)
 			{
 				return C('param_err');
 			}
 			
-			$data['name'] = htmlspecialchars(trim($data['name']));
+			$data['name']    = htmlspecialchars(trim($data['name']));
+			$data['user_id'] = intval($data['user_id']);
 			
 			if('' == $data['name'])
 			{
 				return C('param_fmt_err');
 			}
+			
+			//纪录查询信息
+			$content = array(
+				'user_id' => $data['user_id'],
+				'keyword' => $data['name'],
+			);
+			A('Soapi/Querylog')->add(json_encode($content));
+			unset($data['user_id']);
 			
 			$list = array();
 			$record_count = 0;
@@ -421,7 +450,9 @@ class CompanyController extends BaseController {
 						'company_type'      => urlencode($v['company_type']),
 						'reg_address'       => urlencode($v['reg_address']),
 						'busin_license'     => intval($v['busin_license']),
+						'busin_license_url' => $this->get_pic_url($v['busin_license']),
 						'code_certificate'  => intval($v['code_certificate']),
+						'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
 						'telephone'         => urlencode($v['telephone']),
 						'website'           => $v['website'],
 						'record'            => urlencode($v['record']),
@@ -429,6 +460,7 @@ class CompanyController extends BaseController {
 						'agent_platform'    => urlencode($v['agent_platform']),
 						'mem_sn'            => $v['mem_sn'],
 						'certificate'       => intval($v['certificate']),
+						'certificate_url'   => $this->get_pic_url($v['certificate']),
 						'add_time'          => intval($v['add_time']),
 					);
 				}
@@ -486,11 +518,52 @@ class CompanyController extends BaseController {
 				);
 		}
 		
-		
-		
-		
-		
-		
+		#黑榜排行
+		public function black_sort($content)
+		/*
+		@@input
+		@@output
+		@param $id            企业id
+		@param $company_name  企业名称
+		@param $amount        加黑人数
+		@param $last_time     最早曝光时间
+		@param $user_list     用户Id列表
+		*/
+		{
+			list(,$data) = $this->get_list($content);
+			$list 			= $data['list'];
+			$record_count 	= $data['record_count'];
+			
+			if($list
+			&& 0< count($list))
+			{
+				foreach($list as $k=>$v)
+				{
+					$content = array(
+						'company_id'=> intval($v['id'])
+					);
+					list(,$amount) = A('Soapi/Inexposal')
+					                ->stat_user_amount(json_encode($content));
+					$list[$k]['amount'] = $amount;
+					list(,$user_list) = A('Soapi/Inexposal')
+					                    ->stat_user_top(json_encode($content));
+					$list[$k]['user_list'] = $user_list;
+					list(,$min_time) = A('Soapi/Inexposal')
+					                   ->stat_user_min_date(json_encode($content));
+					$list[$k]['min_time'] = $min_time;
+				}
+				unset($k, $v);
+			}
+				
+			return array(
+				200,
+                                array(
+                                    'list'=>$list,
+                                    'record_count'=>$record_count
+                                )				
+			);
+			
+		}
 		
 		
 		

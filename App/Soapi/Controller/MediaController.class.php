@@ -50,7 +50,8 @@ class MediaController extends BaseController {
 			return array(500,array(urlencode('参数不合法')));
 		}
 		
-		if(!isset($_FILES[$field_name]))
+		if(!isset($_FILES[$field_name])
+		|| empty($_FILES[$field_name]))
 		{
 			return array(
 				200,
@@ -175,22 +176,22 @@ class MediaController extends BaseController {
 		{
 			case 'jpg':
 				{
-					$file_name = $file_dir.time().".jpg";					
+					$file_name = $file_dir.time().'_'.rand(1000,2000).".jpg";					
 				}
 				break;
 			case 'gif':
 				{
-					$file_name = $file_dir.time().".gif";
+					$file_name = $file_dir.time().'_'.rand(1000,2000).".gif";
 				}
 				break;
 			case 'jpeg':
 				{
-					$file_name = $file_dir.time().".jpeg";
+					$file_name = $file_dir.time().'_'.rand(1000,2000).".jpeg";
 				}
 				break;
 			case 'png':
 				{
-					$file_name = $file_dir.time().".png";
+					$file_name = $file_dir.time().'_'.rand(1000,2000).".png";
 				}
 				break;
 		}

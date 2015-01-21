@@ -30,12 +30,11 @@ class ComexposalController extends BaseController {
 	                              content text comment '内容',
 	                              is_validate int not null default 0 comment '是否审核',
 	                              validate_time int not null default 0  comment '审核时间',
-	                              top_num int not null default 0 comment '顶的数目',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
 	 
-	 protected $_module_name = 'com_exposal';
+	 protected $_module_name = 'Com_exposal';
 	 protected $id;
 	 protected $user_id;       #会员id
 	 protected $exposal_id;    #入库id

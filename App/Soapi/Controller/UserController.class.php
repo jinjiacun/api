@@ -49,7 +49,7 @@ public function find_passwd
 @param $mobile - 手机号
 @param $new_pswd - 新密码
 @@output
-@param $is_success 0-成功,-1-失败	,-2-手机号码不存在
+@param $is_success 0-成功,-1-失败	,-2-手机号码不存在,-3-短信验证码不正确
 ##--------------------------------------------------------##
 #查询用户信息
 public function get_info
@@ -58,15 +58,58 @@ public function get_info
 @@output
 @param $user_info 用户信息json
 ##--------------------------------------------------------##
+#判断用户手机号是否存在
+public function check_mobile
+@@input
+@param $mobile 手机号码
+@@output
+@param $is_exists 0-存在,-1-不存在
+##--------------------------------------------------------##
+#更新用户信息
+public function update
+@@input
+@param $uid       
+@param $nickname  会员昵称
+@param $sex       性别(1 - 男，0 - 女，-1 - 未知)
+@param $birthday  出生日期（格式：yyyy-MM-dd）
+@param $job       职业
+@param $address   所在地
+@@output
+@param $is_success 0-成功操作，-1-操作失败，-2-此用户不存在
+##--------------------------------------------------------##
+#更新用户头像信息
+public function update_photo
+@@input
+@param $uid
+@param $imageUpLoad 
+@@output
+@param $is_success 0-成功操作，-1-操作失败，-2-此用户不存在
+##--------------------------------------------------------##
+#发送手机验证码
+public function send_validate
+@@input
+@param $mobile    手机号码
+@param $imagecode 图形验证码
+@@output
+##--------------------------------------------------------##
+#获取图片验证码
+public function get_pic_validate
+@@input
+@param $mobile
+@@output
+@param $pic_url 图形验证码地址
+##--------------------------------------------------------##
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
-							 'register'    => "RegisterByMobile",    #通过手机号注册
-							 'login'       => "LoginByMobile",       #通过手机号登录 【允许get请求】
-							 'find_passwd' => "SetPswordByMobile",   #用户找回密码
-							 'update'      => "SetUserInfoByUid",    #更新用户信息
-							 'update_ex'   => "SetUserAvatarByUid",  #更新用户信息
-							 'get_info'    => "GetUserInfoByUid",    #查询用户信息
+							 'register'          => "RegisterByMobile",      #通过手机号注册
+							 'login'             => "LoginByMobile",         #通过手机号登录 【允许get请求】
+							 'find_passwd'       => "SetPswordByMobile",     #用户找回密码
+							 'update'            => "SetUserInfoByUid",      #更新用户信息
+							 'update_photo'      => "SetUserAvatarByUid",    #更新用户头像信息
+							 'get_info'          => "GetUserInfoByUid",      #查询用户信息
+			                 'check_mobile'      => "ExistsUserInfoByMobile",#检查手机号码
+			                 'send_validate'     => "SmsByFindPswd",         #发送手机验证
 							 );
 	#通过手机注册
 	public function register($content)
@@ -224,7 +267,8 @@ class UserController extends BaseController {
 		return array(
 			200,
 			array(
-			'is_success'=>-1,
+			'is_success'=>isset($content['status_code'])?
+					              $content['status_code']:-1,
 			'message'=>C('option_fail'),
 			)
 		);
@@ -303,16 +347,18 @@ class UserController extends BaseController {
 	public function find_passwd($content)
 	/*
 	@@input
-	@param $mobile - 手机号
+	@param $mobile   - 手机号
 	@param $new_pswd - 新密码
+	@param $smscode  - 短信验证码
 	@@output
-	@param $is_success 0-成功,-1-失败	,-2-手机号码不存在
+	@param $is_success 0-成功,-1-失败	,-2-手机号码不存在，-3-短信验证码不正确
 	*/
 	{
 		$data = $this->fill($content);
 		
 		if(!isset($data['mobile'])
 		|| !isset($data['new_pswd'])
+		|| !isset($data['smscode'])
 		)
 		{
 			return C('param_err');
@@ -320,15 +366,20 @@ class UserController extends BaseController {
 		
 		$data['mobile']   = htmlspecialchars(trim($data['mobile']));
 		$data['new_pswd'] = htmlspecialchars(trim($data['new_pswd']));
+		$data['smscode']  = htmlspecialchars(trim($data['smscode']));
 		
-		if('' != $data['mobile']
-		|| '' != $data['new_pswd'])
+		if('' == $data['mobile']
+		|| '' == $data['new_pswd']
+		|| '' == $data['smscode']
+		)
 		{
 			return C('param_fmt_err');
 		}
 		
+		unset($content);
+		$content = array();
 		if($this->call_SetPswordByMobile($data['mobile'],
-						 $data['new_pswd']))
+						 $data['new_pswd'],$data['smscode'], &$content))
 		{
 			return array(
 				200,
@@ -342,23 +393,26 @@ class UserController extends BaseController {
 		return array(
 				200,
 				array(
-				  'is_success'=>-1,
+				  'is_success'=>isset($content['status_code'])?
+					              $content['status_code']:-1,
 				  'message'=>C('option_fail'),
 				),
 			);
 	}
 	
 	
-	private function call_SetPswordByMobile($mobile, $new_pswd)
+	private function call_SetPswordByMobile($mobile, $new_pswd,
+	                                        $smscode, $content)
 	{
 		$params = array(
 			'mobile'   => $mobile,
-			'pswd'     => $pswd,
+			'new_pswd' => $new_pswd,
+			'smscode'  => $smscode,
 			'userip'   => $this->get_real_ip(),
 		);
 		$params['safekey']  = $this->mk_passwd($params, 1);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['find_passwd'];
-		$back_str = $this->post($url, $params);
+		$back_str = $this->post($url, $params);		
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
@@ -371,9 +425,14 @@ class UserController extends BaseController {
 			$content['cur_date'] = $r_list[3];
 			return true;
 		}
-		elseif(-3 == $re_json['State'])
+		elseif(-4 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
 			return false;
 		}
 		return false;
@@ -390,7 +449,7 @@ class UserController extends BaseController {
 	{
 		$data = $this->fill($content);
 		
-		if(!isset($data['user_id']))
+		if(!isset($data['uid']))
 		{
 			return C('param_err');
 		}
@@ -402,12 +461,14 @@ class UserController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		if($this->call_GetUserInfoByUid($data['uid']))
+		$content = array();
+		
+		if($this->call_GetUserInfoByUid($data['uid'], &$content))
 		{
 			return array(
 				200,
 				array(
-				
+				$content
 				),
 			);
 		}
@@ -418,14 +479,76 @@ class UserController extends BaseController {
 		);
 	}
 	
-	private function call_GetUserInfoByUid($uid)
+	private function call_GetUserInfoByUid($uid, $content)
 	{
 		$params = array(
 			'uid'=>$uid,
-			'yyyyMMdd'=>date("yyyyMMdd"),
+			'yyyyMMdd'=>date("Ymd"),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 3);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['get_info'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json)
+		{	
+			$content = $re_json;
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	#判断用户手机号是否存在
+	public function check_mobile($content)
+	/*
+	@@input
+	@param $mobile 手机号码
+	@@output
+	@param $is_exists 0-存在,-1-不存在
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['mobile']))
+		{
+			return C('param_err');
+		}
+		
+		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
+		
+		if('' == $data['mobile'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if($this->call_ExistsUserInfoByMobile($data['mobile']))
+		{
+			return array(
+				200,
+				array(
+					'is_exists'=>0,
+					'message'=>C('is_exists'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_exists'=>-1,
+					'message'=>C('no_exists'),
+				),
+			);
+	}
+	
+	private function call_ExistsUserInfoByMobile($mobile)
+	{
+		$params = array(
+			'mobile'=>$mobile,
+			'yyyyMMdd'=>date("Ymd"),
 		);
 		$params['safekey']  = $this->mk_passwd($params, 4);
-		$url = C('api_user_url').$this->USER_API_METHOD_LIST['get_info'];
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['check_mobile'];
 		$back_str = $this->post($url, $params);
 		$re_json = json_decode($back_str, true);
 		if($re_json
@@ -435,4 +558,224 @@ class UserController extends BaseController {
 		}
 		return false;
 	}
+	
+	#更新用户信息
+	public function update($content)
+	/*
+	@@input
+	@param $uid       
+	@param $nickname  会员昵称
+	@param $sex       性别(1 - 男，0 - 女，-1 - 未知)
+	@param $birthday  出生日期（格式：yyyy-MM-dd）
+	@param $job       职业
+	@param $address   所在地
+	@@output
+	@param $is_success 0-成功操作，-1-操作失败，-2-此用户不存在
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['nickname'])
+		|| !isset($data['sex'])
+		|| !isset($data['birthday'])
+		|| !isset($data['job'])
+		|| !isset($data['address'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid']      = intval($data['uid']);
+		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
+		$data['sex']      = intval($data['sex']); 
+		$data['birthday'] = htmlspecialchars(trim($data['birthday']));
+		$data['job']      = htmlspecialchars(trim($data['job']));
+		$data['address']  = htmlspecialchars(trim($data['address']));
+		
+		if(0 >= $data['uid']
+		|| '' == $data['nickname']
+		|| -2 >=  $data['sex']
+		|| '' == $data['birthday']
+		|| '' == $data['job']
+		|| '' == $data['address']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		unset($content);
+		$content = array();
+		
+		if($this->call_SetUserInfoByUid($data['uid'], 
+		                                $data['nickname'], 
+		                                $data['sex'],
+		                                $data['birthday'],
+		                                $data['job'],
+		                                $data['address'],
+		                                &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>isset($content['status_code'])?
+					              $content['status_code']:-1,
+					'message'=>C('option_fail'),
+				),
+			);
+	}
+	
+	private function call_SetUserInfoByUid($uid, $nickname, $sex, 
+	                                       $birthday, $job, $address, 
+	                                       $content)
+	{
+		$params = array(
+			'uid'      =>  $uid,
+			'nickname' =>  $nickname,
+			'sex'      =>  $sex,
+			'birthday' =>  $birthday,
+			'job'      =>  $job,
+			'address'  =>  $address,
+			'userip'   =>  $this->get_real_ip()
+		);
+		$params['safekey']  = $this->mk_passwd($params, 2);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			return false;
+		}
+		return false;
+	}
+	
+	#发送手机验证码
+	public function send_validate($content)
+	/*
+	@@input
+	@param $mobile    手机号码
+	@param $imagecode 图形验证码
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['mobile'])
+		|| !isset($data['imagecode'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['mobile']     = htmlspecialchars(trim($data['mobile']));
+		$data['imagecode']  = htmlspecialchars(trim($data['imagecode']));
+		
+		if('' == $data['mobile']
+		|| '' == $data['imagecode']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		if($this->call_SmsByFindPswd($data['mobile'], $data['imagecode']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+			);
+	}
+	
+	private function call_SmsByFindPswd($mobile, $imagecode)
+	{
+		$params = array(
+			'mobile'    =>  $mobile,
+			'imagecode' =>  $imagecode,
+		);
+		$params['safekey']  = $this->mk_passwd($params, 5);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['send_validate'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			return false;
+		}
+		return false;
+	}
+	
+	#获取图片验证码
+	public function get_pic_validate($content)
+	/*
+	@@input
+	@param $mobile
+	@@output
+	@param $pic_url 图形验证码地址
+	*/
+	{
+		$data = $this->fill($content);
+		return array(
+			200,
+			C('api_user_pic_url').$data['mobile']
+		);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

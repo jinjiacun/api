@@ -53,7 +53,7 @@ class RegulatorsController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_regulators(id int primary key auto_increment,
-	                              type int not null default 0 comment '类别(贵金属监管、外汇监管)',
+	                              type varchar(20) comment '类别(贵金属监管、外汇监管)',
 	                              title varchar(255) comment '标题',
 	                              website varchar(255) comment '官网',
 	                              pic int not null default 0 comment '图片',
@@ -176,6 +176,7 @@ class RegulatorsController extends BaseController {
 			'title'   => urlencode($tmp_one['title']),
 			'website' => $tmp_one['website'],
 			'pic'     => intval($tmp_one['pic']),
+			'pic_url' => $this->get_pic_url($tmp_one['pic']),
 			'content' => urlencode($tmp_one['content']),
 			'add_time'=> intval($tmp_one['add_time']), 
 			);
@@ -218,6 +219,7 @@ class RegulatorsController extends BaseController {
 						'title'   => urlencode($v['title']),
 						'website' => $v['website'],
 						'pic'     => intval($v['pic']),
+						'pic_url' => $this->get_pic_url($v['pic']),
 						'content' => urlencode($v['content']),
 						'add_time'=> intval($v['add_time']), 
                     );  

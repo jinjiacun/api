@@ -47,7 +47,7 @@ class ComnewsassistController extends BaseController {
 		@param $news_id
 		@param $comment_id
 		@@output
-		@param $is_success 0-成功操作,-1-操作失败
+		@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作
 		*/
 		{
 			$data = $this->fill($content);
@@ -75,7 +75,10 @@ class ComnewsassistController extends BaseController {
 			}
 			
 			if(!$this->__check(array(
-								'id'=> $data['comment_id']
+								'comment_id'=> $data['comment_id'],
+								'news_id'   => $data['news_id'],
+								'company_id'=> $data['company_id'],
+								'user_id'   => $data['user_id']
 			)))
 			{
 				return array(
@@ -86,6 +89,8 @@ class ComnewsassistController extends BaseController {
 				),
 			 );
 			}
+			
+			$data['add_time'] = time();
 			
 			if(M($this->_module_name)->add($data))
 			{

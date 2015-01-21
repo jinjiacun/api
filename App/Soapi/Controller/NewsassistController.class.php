@@ -38,7 +38,7 @@ class NewsassistController extends BaseController {
 		@param $news_id 新闻id
 		@param $user_id 用户id
 		@@output
-		@param $is_success 0-操作成功，-1-操作失败-2-不允许操作
+		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作
 	 */
 	 {
 		 $data = $this->fill($content);
