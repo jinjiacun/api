@@ -36,6 +36,7 @@ public function get_list
 @@output
 @param $id
 @param $user_id     //会员id
+@param $nickname    //会员昵称
 @param $company_id; //企业id
 @param $parent_id;  //盖楼评论
 @param $type;       //评论类型(点赞、提问、加黑)
@@ -179,6 +180,7 @@ class CommentController extends BaseController {
 	@@output
 	@param $id
 	@param $user_id     //会员id
+	@param $nickname    //会员昵称
 	@param $company_id; //企业id
 	@param $parent_id;  //盖楼评论
 	@param $type;       //评论类型(点赞、提问、加黑)
@@ -204,6 +206,7 @@ class CommentController extends BaseController {
 				$list[] = array(
 						'id'           => intval($v['id']),
 						'user_id'      => intval($v['user_id']),
+						'nickname'     => $this->_get_nickname($v['user_id']),
 						'company_id'   => intval($v['company_id']),
 						'parent_id'    => intval($v['parent_id']),
 						'type'         => $v['type'],

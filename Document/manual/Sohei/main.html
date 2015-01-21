@@ -38,10 +38,11 @@ content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 模块名称:Inexposal<br/>
 模块名称描述:入库<br/>
 方法名称:get_list<br/>
-方法描述:提交曝光<br/>
+方法描述:曝光查询<br/>
 输入参数格式:<br/>
 method=Inexposal.get_list<br/>
-content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
+                  "nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}}<br/>
 @@input<br/>
@@ -49,6 +50,7 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,"nature":"xxx","trade"
 @param $id<br/>
 @param $company_id       关联企业id<br/>
 @param $user_id          #用户id<br/>
+@param $nickname         #用户昵称<br/>
 @param $nature           #企业性质<br/>
 @param $trade            #所属行业<br/>
 @param $company_name     #公司名称<br/>
@@ -80,10 +82,11 @@ method=Inexposal.dynamic<br/>
 content={}<br/>
 @@input<br/>
 示例输出:
-{'status_code':200,'content':{'user_id':xxx,'add_time':xxx,<br/>
+{'status_code':200,'content':{'user_id':xxx,'nickname':'xxx','add_time':xxx,<br/>
                               'company_name':'xxx','content':'xxx'}}<br/>
 @@output<br/>
 @param $user_id      会员id<br/>
+@param $nickname     昵称<br/>
 @param $add_time     曝光时间<br/>
 @param $company_name 企业名称<br/>
 @param $content      曝光内容<br/>
@@ -590,7 +593,7 @@ content={'where':{'auth_level':'006001'}}<br/>
 @param $company_name  企业名称<br/>
 @param $amount        加黑人数<br/>
 @param $last_time     最早曝光时间<br/>
-@param $user_list     用户Id列表<br/>
+@param $user_list     用户Id列表(user_id和nickname)<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -706,10 +709,12 @@ method=Querylog.get_list<br/>
 content={}<br/>
 @@input<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'id':xxx,'user_id':xxx,'keyword':'xxx','add_time':'xxx'}}<br/>
+{'status_code':200,'content':{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
+                              'keyword':'xxx','add_time':'xxx'}}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id    会员id<br/>
+@param $nickname   会员昵称<br/>
 @param $keyword    查询关键字<br/>
 @param  $add_time  #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -823,13 +828,15 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx',<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
+                               'company_id':xxx,'parent_id':xxx,'type':'xxx',<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
                                'is_anonymous':xxx,'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
+@param $nickname        //会员昵称<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
@@ -860,11 +867,12 @@ content={'where':{'company_id':xxx,'news_id':xxx}}<br/>
 @param $company_id      //企业id*<br/>
 @param $news_id       //新闻id<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'news_id':xxx<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx','news_id':xxx<br/>
                                'content':'xxx','top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
+@param $nickname        //用户昵称<br/>
 @param $company_id      //企业id*<br/>
 @param $news_id         //新闻id*<br/>
 @param $content         //评论内容*<br/>
@@ -887,12 +895,14 @@ content={'where':{'exposal_id':xxx}}<br/>
 @@@where
 @param $exposal_id       //曝光入库id<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'exposal_id':xxx,'parent_id':xxx<br/>
+{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
+                               'exposal_id':xxx,'parent_id':xxx<br/>
                                'content':'xxx','is_validate':xxx,'validate_time':xxx,<br/>
 			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
+@param $nickname        //用户昵称<br/>
 @param $exposal_id      //入库id*<br/>
 @param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)
 @param $content         //评论内容*<br/>

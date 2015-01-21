@@ -12,6 +12,7 @@ function of api:
 public function add
 @@input
 @param $user_id;     #会员id
+@param $nickname     #会员昵称
 @param $company_id;  #企业id
 @param $news_id;     #企业新闻id
 @param $content;     #评论内容
@@ -131,6 +132,7 @@ class ComnewsController extends BaseController {
 				$list[] = array(
 						'id'          => intval($v['id']),
 						'user_id'     => intval($v['user_id']),
+						'nickname'    => $this->_get_nickname($v['user_id']),
 						'company_id'  => intval($v['company_id']),
 						'news_id'     => intval($v['news_id']),
 						'content'     => urlencode($v['content']),

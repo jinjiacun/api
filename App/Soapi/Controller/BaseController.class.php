@@ -542,8 +542,19 @@ class BaseController extends Controller {
 		return false;
 	}
 	
-	
-	
+	#通过用户id获取昵称
+	protected function _get_nickname($user_id)
+	{
+		$content = array(
+			'uid'=>$user_id
+		);
+		list(,$list) = A('Soapi/User')->get_info(json_encode($content));
+		
+		if($list[0]['UI_NickName'])
+			return $list[0]['UI_NickName'];
+			
+		return '';
+	}
 	
 	
 	

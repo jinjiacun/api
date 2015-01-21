@@ -321,6 +321,7 @@ class CompanyController extends BaseController {
 					$list[] = array(
 							'id'                => intval($v['id']),
 							'logo'              => intval($v['logo']),
+							'logo_url'          => $this->get_pic_url($v['logo']),
 							'nature'            => urlencode($v['nature']),
 							'trade'             => urlencode($v['trade']),
 							'company_name'      => urlencode($v['company_name']),
@@ -545,8 +546,20 @@ class CompanyController extends BaseController {
 					list(,$amount) = A('Soapi/Inexposal')
 					                ->stat_user_amount(json_encode($content));
 					$list[$k]['amount'] = $amount;
-					list(,$user_list) = A('Soapi/Inexposal')
+					list(,$tmp_user_list) = A('Soapi/Inexposal')
 					                    ->stat_user_top(json_encode($content));
+					if($tmp_user_list
+					&& 0< count($tmp_user_list))
+					{
+						foreach($tmp_user_list as $v)
+						{
+							$user_list[] = array(
+								'user_id'  =>$v,
+								'nickname' =>$this->_get_nickname($v),
+							);
+						}
+						unset($v, $tmp_user_list);
+					}
 					$list[$k]['user_list'] = $user_list;
 					list(,$min_time) = A('Soapi/Inexposal')
 					                   ->stat_user_min_date(json_encode($content));

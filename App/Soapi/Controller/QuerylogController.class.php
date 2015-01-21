@@ -92,6 +92,7 @@ class QuerylogController extends BaseController {
 				$list[] = array(
 						'id'          => intval($v['id']),
 						'user_id'     => intval($v['user_id']),
+						'nickname'    => $this->_get_nickname($v['user_id']),
 						'keyword'     => urlencode($v['keyword']),
 						'add_time'    => intval($v['add_time']),
 						

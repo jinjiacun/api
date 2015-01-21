@@ -124,6 +124,7 @@ class ComexposalController extends BaseController {
 				$list[] = array(
 						'id'           => intval($v['id']),
 						'user_id'      => intval($v['user_id']),
+						'nickname'     => $this->_get_nickname($v['user_id']),
 						'exposal_id'   => intval($v['exposal_id']),
 						'parent_id'    => intval($v['parent_id']),
 						'content'      => urlencode($v['content']),

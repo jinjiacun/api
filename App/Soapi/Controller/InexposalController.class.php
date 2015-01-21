@@ -242,6 +242,7 @@ class InexposalController extends BaseController {
 				        'id'           => intval($v['id']),
 				        'company_id'   => intval($v['company_id']),
 						'user_id'      => intval($v['user_id']),
+						'nickname'     => $this->_get_nickname($v['user_id']),
 						'nature'       => $v['nature'],  
 						'trade'        => $v['trade'],  
 						'company_name' => urlencode($v['company_name']),  
@@ -607,6 +608,7 @@ class InexposalController extends BaseController {
 			{
 				$list[] = array(
 					'user_id'  =>intval($v['user_id']),
+					'nickname' =>$this->_get_nickname($v['user_id']),
 					'add_time' =>intval($v['add_time']),
 					'company_name' => urlencode($v['company_name']),
 					'content' => urlencode($v['content']),
