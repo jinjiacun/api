@@ -20,5 +20,7 @@ return array(
      'api_user_url'  => 'http://192.168.1.31:8300/Api/',
      'api_user_domain' => 'http://192.168.1.31:8300',
      'api_user_pic_url' => 'http://192.168.1.31:8300/imgcode?m=',
+     'api_user_photo_url' => 'http://192.168.1.31:8310/',
+     'api_user_photo_def_url' = 'http://192.168.1.31:8310/useravatar.jpg',
 	//'配置项'=>'配置值'
 );
