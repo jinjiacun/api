@@ -99,7 +99,7 @@ class IndexController extends Controller {
                           $this->method,
                           $this->in_content,
                           $this->type);
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
 
         list($class_name, $method)= explode('.', $this->method);
         $class_name = 'Soapi/'.$class_name;
@@ -130,7 +130,7 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                   break;
@@ -147,7 +147,7 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                 break;
@@ -167,7 +167,7 @@ class IndexController extends Controller {
                           $status_code,
                           json_encode($out_content)
                           );
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
     }
 
     public function call_back($status_code, $out_content)

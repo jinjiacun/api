@@ -333,6 +333,8 @@ class UserController extends BaseController {
 			$content['head_portrait'] = $r_list[$index++];
 			$content['sex']      = $r_list[$index++];
 			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
 			return true;
 		}
 		elseif(-3 == $re_json['State'])
@@ -462,9 +464,12 @@ class UserController extends BaseController {
 		}
 		
 		$content = array();
+				
 		
 		if($this->call_GetUserInfoByUid($data['uid'], &$content))
 		{
+			$content['UI_Avatar'] = C('api_user_photo_url').$content['UI_Avatar'];
+			$content['UI_Avatar'] = str_replace('user','',$content['UI_Avatar']);
 			return array(
 				200,
 				array(
@@ -594,11 +599,7 @@ class UserController extends BaseController {
 		$data['address']  = htmlspecialchars(trim($data['address']));
 						
 		if(0 >= $data['uid']
-		|| '' == $data['nickname']
-		|| -2 >=  $data['sex']
-		|| '' == $data['birthday']
-		|| '' == $data['job']
-		|| '' == $data['address']
+		
 		)
 		{
 			return C('param_fmt_err');
@@ -645,7 +646,8 @@ class UserController extends BaseController {
 			'birthday' =>  $birthday,
 			'job'      =>  $job,
 			'address'  =>  $address,
-			'userip'   =>  $this->get_real_ip()
+			'userip'   =>  $this->get_real_ip(),
+			'yyyyMMdd' =>  date("Ymd"),
 		);
 		$params['safekey']  = $this->mk_passwd($params, 2);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update'];
@@ -653,7 +655,6 @@ class UserController extends BaseController {
 		$params['job']     = urlencode($params['job']);
 		$params['address'] = urlencode($params['address']);		
 		$back_str = $this->post($url, $params);
-		var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])

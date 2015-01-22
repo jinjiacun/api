@@ -29,6 +29,12 @@ public function add
 #查询我的曝光
 public function get_list
 ##--------------------------------------------------------##
+#查询曝光企业映射
+public function get_id_name_map
+@@input
+@@output
+格式[{'id':'name'},...,{}]
+##--------------------------------------------------------##
 #申请可信企业
 public function add_ex
 @@input
@@ -271,6 +277,32 @@ class InexposalController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	#查询曝光企业映射
+	public function get_id_name_map($content)
+	/*
+	@@input
+	@@output
+	*/
+	{
+		$list = array();
+		$tmp_list = M($this->_module_name)->field('id, company_name')
+		                                  ->select();
+		if($tmp_list
+		&& 0< count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[intval($v['id'])] = urlencode($v['company_name']);
+			}
+			unset($v, $tmp_list);
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 	
 	#申请可信企业

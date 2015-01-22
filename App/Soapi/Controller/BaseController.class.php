@@ -338,7 +338,7 @@ class BaseController extends Controller {
 		$seg_list = array(
 			"<nickname>|<mobile>|<validated>|<pswd>|<userip>|souhei975427",               #(0)注册
 			"<mobile>|<smscode>|<new_pswd>|<userip>|souhei975427",                        #(1)忘记密码
-			"<uid>|<nickname>|<sex>|<birthday>|<job>|<address>|<userip>|souhei975427",    #(2)更新用户信息
+			"<uid>|<userip>|<yyyyMMdd>|souhei975427",                                     #(2)更新用户信息
 			"<uid>|<yyyyMMdd>|souhei975427",                                              #(3)查询用户信息
 			"<mobile>|<yyyyMMdd>|souhei975427",                                           #(4)检查手机号码
 			"<mobile>|<imagecode>|souhei975427",                                 #(5)获取手机短信验证码
@@ -365,13 +365,9 @@ class BaseController extends Controller {
 			break;
 			case 2:
 				{
-					$str = str_replace("<uid>",       $params['uid']  ,    $str);					
-					$str = str_replace("<nickname>",  $params['nickname'], $str);
-					$str = str_replace("<sex>",       $params['sex'],      $str);
-					$str = str_replace("<birthday>",  $params['birthday'], $str);
-					$str = str_replace("<job>",       $params['job'],      $str);
-					$str = str_replace("<address>",   $params['address'],  $str);
+					$str = str_replace("<uid>",       $params['uid']  ,    $str);
 					$str = str_replace("<userip>",    $params['userip'],   $str);
+					$str = str_replace("<yyyyMMdd>",  $params['yyyyMMdd'], $str);
 				}
 			break;
 			case 3:

@@ -51,6 +51,31 @@ public function get_list
 @param $top_num               //顶数
 @param protected $add_time;   //添加日期
 ##--------------------------------------------------------##
+#查询评价(带两条回复)
+public function get_list_ex
+@@input
+@param $page_index         //当前页数(默认1)
+@param $page_size          //页面大小(默认10)
+@param $where              //里面是需要查询的条件(默认无条件)
+@param $order              //里面需要排序的字段(默认id倒排序)
+@@output
+@param $id
+@param $user_id     //会员id
+@param $nickname    //会员昵称
+@param $company_id; //企业id
+@param $parent_id;  //盖楼评论
+@param $type;       //评论类型(点赞、提问、加黑)
+@param $content;    //评论内容
+@param protected $pic_1;      //图片5张
+@param protected $pic_2;
+@param protected $pic_3;
+@param protected $pic_4;
+@param protected $pic_5;
+@param $is_validate           //是否审核
+@param $is_anonymous          //是否匿名
+@param $top_num               //顶数
+@param protected $add_time;   //添加日期
+##--------------------------------------------------------##
 #企业评论人数统计
 public function stat_user_all_amount
 @@input
@@ -233,6 +258,64 @@ class CommentController extends BaseController {
 					'list'=>$list,
 					'record_count'=> $record_count,
 					)
+		);
+	}
+	
+	#查询评价(带两条回复)
+	public function get_list_ex($content)
+	/*
+	@@input
+	@param $page_index         //当前页数(默认1)
+	@param $page_size          //页面大小(默认10)
+	@param $where              //里面是需要查询的条件(默认无条件)
+	@param $order              //里面需要排序的字段(默认id倒排序)
+	@@output
+	@param $id
+	@param $user_id     //会员id
+	@param $nickname    //会员昵称
+	@param $company_id; //企业id
+	@param $parent_id;  //盖楼评论
+	@param $type;       //评论类型(点赞、提问、加黑)
+	@param $content;    //评论内容
+	@param protected $pic_1;      //图片5张
+	@param protected $pic_2;
+	@param protected $pic_3;
+	@param protected $pic_4;
+	@param protected $pic_5;
+	@param $is_validate           //是否审核
+	@param $is_anonymous          //是否匿名
+	@param $top_num               //顶数
+	@param protected $add_time;   //添加日期
+	*/
+	{
+		$list         = array();
+		$record_count = 0;
+		
+		list(,$old_list) = $this->get_list($content);
+		$list = $old_list['list'];
+		$record_count = $old_list['record_count'];
+		
+		$data = $this->fill($content);
+		
+		
+		foreach($list as $k=> $v)
+		{
+			$data['where']['parent_id'] = intval($v['id']);
+			$data['page_size'] = 2;
+			$data['page_index'] = 1;
+			list(, $sub) = $this->get_list(json_encode($data));
+			$list[$k]['re_sub'] = array(
+				'list'=>$sub['list'],
+				'record_count'=>$sub['record_count']
+			);
+		}
+		unset($k, $v);
+		return array(
+			200,
+			array(
+				'list'         =>$list,
+				'record_count' =>$record_count
+			)
 		);
 	}
 	
