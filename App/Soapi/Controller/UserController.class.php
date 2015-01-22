@@ -592,7 +592,7 @@ class UserController extends BaseController {
 		$data['birthday'] = htmlspecialchars(trim($data['birthday']));
 		$data['job']      = htmlspecialchars(trim($data['job']));
 		$data['address']  = htmlspecialchars(trim($data['address']));
-		
+						
 		if(0 >= $data['uid']
 		|| '' == $data['nickname']
 		|| -2 >=  $data['sex']
@@ -649,7 +649,11 @@ class UserController extends BaseController {
 		);
 		$params['safekey']  = $this->mk_passwd($params, 2);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update'];
+		#转化urlencode
+		$params['job']     = urlencode($params['job']);
+		$params['address'] = urlencode($params['address']);		
 		$back_str = $this->post($url, $params);
+		var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])

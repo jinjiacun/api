@@ -337,7 +337,7 @@ class CompanyController extends BaseController {
 							'record'            => urlencode($v['record']),
 							'find_website'      => $v['find_website'],
 							'agent_platform'    => urlencode($v['agent_platform']),
-							'mem_sn'            => $v['mem_sn'],
+							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
 							'add_time'          => intval($v['add_time']),							

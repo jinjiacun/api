@@ -123,7 +123,6 @@ class CommentController extends BaseController {
 		|| !isset($data['company_id'])
 		|| !isset($data['type'])
 		|| !isset($data['content'])
-		|| !isset($data['pic_1'])
 		)
 		{
 			return C('param_err');
