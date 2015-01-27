@@ -160,10 +160,21 @@ class BaseController extends Controller {
 			$page_index = $data['page_index'];
 		else
 			$page_index = 1;
+			
+		if(0>= $page_index)
+		{
+			$page_index = 1;
+		}
+		
 		if(isset($data['page_size']))
 			$page_size  = $data['page_size'];
 		else
 			$page_size  = 10;
+			
+		if(20<= $page_size)
+		{
+			$page_size = 20;
+		}
 		//$page_index = 1;
 		//$page_size  = 10;
 		$list = $obj->page($page_index, $page_size)
@@ -401,6 +412,7 @@ class BaseController extends Controller {
 	//动态生成昵称
 	public function make_nickname($len=6)
 	{
+		/*
 		$chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ
 			abcdefghijklmnopqrstuvwxyz0123456789-@#~'; 
 		// characters to build the password from 
@@ -410,6 +422,10 @@ class BaseController extends Controller {
 		while(strlen($password)<$len) 
 			$password.=substr($chars,(mt_rand()%strlen($chars)),1); 
 		return $password; 
+		*/
+		$randStr = str_shuffle('1234567890');
+		$rand = substr($randStr,0,6);
+		return $rand;
 	}
 	
 	public function post($url, $params = false, $header = array()){
@@ -546,8 +562,8 @@ class BaseController extends Controller {
 		);
 		list(,$list) = A('Soapi/User')->get_info(json_encode($content));
 		
-		if($list[0]['UI_NickName'])
-			return $list[0]['UI_NickName'];
+		if(isset($list[0]['UI_NickName']))
+			return $list[0]['UI_NickName'];	
 			
 		return '';
 	}

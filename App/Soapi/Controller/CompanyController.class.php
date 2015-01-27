@@ -51,6 +51,8 @@ public function get_info
 @param  $agent_platform    #代理平台
 @param  $mem_sn            #会员编号
 @param  $certificate       #资质证明
+@param  $add_blk_amount    #加黑人数
+@param  $exp_amount        #曝光人数
 @param  $add_time          #添加日期
 ##--------------------------------------------------------##
 public function get_list
@@ -107,8 +109,6 @@ public function stat_exposal
 @@input
 
 @@output
-
-##--------------------------------------------------------##
 */
 class CompanyController extends BaseController {
 	    /**
@@ -258,6 +258,8 @@ class CompanyController extends BaseController {
 		@param  $agent_platform    #代理平台
 		@param  $mem_sn            #会员编号
 		@param  $certificate       #资质证明
+		@param  $add_blk_amount    #加黑人数
+	    @param  $exp_amount        #曝光人数
 		@param  $add_time          #添加日期
 		*/
 		{
@@ -299,6 +301,8 @@ class CompanyController extends BaseController {
 						'mem_sn'            => $tmp_one['mem_sn'],
 						'certificate'       => intval($tmp_one['certificate']),
 						'certificate_url'   => $this->get_pic_url($tmp_one['certificate']),
+						'add_blk_amount'    => intval($tmp_one['add_blk_amount']), 		
+						'exp_amount'        => intval($tmp_one['exp_amount']),				
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -340,6 +344,8 @@ class CompanyController extends BaseController {
 							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
+							'add_blk_amount'    => intval($tmp_one['add_blk_amount']),
+							'exp_amount'        => intval($tmp_one['exp_amount']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -563,7 +569,7 @@ class CompanyController extends BaseController {
 					$list[$k]['user_list'] = $user_list;
 					list(,$min_time) = A('Soapi/Inexposal')
 					                   ->stat_user_min_date(json_encode($content));
-					$list[$k]['min_time'] = $min_time;
+					$list[$k]['last_time'] = $min_time;
 				}
 				unset($k, $v);
 			}
@@ -577,19 +583,5 @@ class CompanyController extends BaseController {
 			);
 			
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 }

@@ -78,7 +78,7 @@ class MediaController extends BaseController {
 		{
 			case '001001':#曝光图片 <350k
 			{
-				if(350 < ($_FILES[field_name]["size"] / 1024))
+				if(350 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
@@ -93,7 +93,7 @@ class MediaController extends BaseController {
 			break;
 			case '001002':#监管机构 <20k
 			{
-				if(20 < ($_FILES[field_name]["size"] / 1024))
+				if(20 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
@@ -107,7 +107,7 @@ class MediaController extends BaseController {
 			break;
 			case '001003':#营业执照 <350k
 			{
-				if(350 < ($_FILES[field_name]["size"] / 1024))
+				if(350 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
@@ -121,7 +121,7 @@ class MediaController extends BaseController {
 			break;
 			case '001004':#机构代码证 <350k
 			{
-				if(350 < ($_FILES[field_name]["size"] / 1024))
+				if(350 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
@@ -135,7 +135,7 @@ class MediaController extends BaseController {
 			break;
 			case '001005':#资质证明 <350k
 			{
-				if(350 < ($_FILES[field_name]["size"] / 1024))
+				if(350 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,

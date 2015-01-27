@@ -79,6 +79,7 @@ class ComexposalController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		/*
 		if(!$this->__check(array('user_id'=>$data['user_id'],
 		                         'exposal_id'=>$data['exposal_id'])))
 		{
@@ -90,6 +91,7 @@ class ComexposalController extends BaseController {
 				)
 			);
 		}
+		*/
 	    $data['add_time'] = time();
 		
 		if(M($this->_module_name)->add($data))

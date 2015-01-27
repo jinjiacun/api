@@ -17,7 +17,7 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',True);
 define('APP_NAME','App');
-define('BIND_MODULE','Api');
+//define('BIND_MODULE','Api');
 // 定义应用目录
 define('APP_PATH','./App/');
 define('__PUBLIC__', dirname(__FILE__).'/Public/');

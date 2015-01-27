@@ -49,7 +49,8 @@ public function find_passwd
 @param $mobile - 手机号
 @param $new_pswd - 新密码
 @@output
-@param $is_success 0-成功,-1-失败	,-2-手机号码不存在,-3-短信验证码不正确
+@param $is_success 0-成功,-1-失败	,-2-mobile参数不合法,-3-短信验证码不正确
+	                                               -4-mobile不存在
 ##--------------------------------------------------------##
 #查询用户信息
 public function get_info
@@ -94,6 +95,13 @@ public function send_validate
 ##--------------------------------------------------------##
 #获取图片验证码
 public function get_pic_validate
+@@input
+@param $mobile
+@@output
+@param $pic_url 图形验证码地址
+##--------------------------------------------------------##
+#获取图片验证码
+public function get_pic_validate_ex
 @@input
 @param $mobile
 @@output
@@ -353,7 +361,8 @@ class UserController extends BaseController {
 	@param $new_pswd - 新密码
 	@param $smscode  - 短信验证码
 	@@output
-	@param $is_success 0-成功,-1-失败	,-2-手机号码不存在，-3-短信验证码不正确
+	@param $is_success 0-成功,-1-失败	,-2-mobile参数不合法,-3-短信验证码不正确
+	*                                    -4-mobile不存在
 	*/
 	{
 		$data = $this->fill($content);
@@ -392,11 +401,21 @@ class UserController extends BaseController {
 			);
 		}
 		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message']
+				)
+			);
+		}
+		
 		return array(
 				200,
 				array(
-				  'is_success'=>isset($content['status_code'])?
-					              $content['status_code']:-1,
+				  'is_success'=>-1,
 				  'message'=>C('option_fail'),
 				),
 			);
@@ -412,9 +431,10 @@ class UserController extends BaseController {
 			'smscode'  => $smscode,
 			'userip'   => $this->get_real_ip(),
 		);
-		$params['safekey']  = $this->mk_passwd($params, 1);
+		//$params['safekey']  = $this->mk_passwd($params, 1);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['find_passwd'];
 		$back_str = $this->post($url, $params);		
+		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
@@ -430,11 +450,19 @@ class UserController extends BaseController {
 		elseif(-4 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
+			$content['message'] = urlencode('mobile不存在');
 			return false;
 		}
-		elseif(-5 == $re_json['State'])
+		elseif(-3 == $re_json['State'])
 		{
 			$content['status_code'] = -3;
+			$content['message'] = urlencode('短信验证码不正确');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message'] = urlencode('mobile参数不合法');
 			return false;
 		}
 		return false;
@@ -676,6 +704,8 @@ class UserController extends BaseController {
 	@param $mobile    手机号码
 	@param $imagecode 图形验证码
 	@@output
+	@param $is_success 0-成功,-1-失败,-2-图片验证码不正确,-3-图片验证码接口报错
+	*                        -4-短信验证码接口报错,-5-mobile参数不合法
 	*/
 	{
 		$data = $this->fill($content);
@@ -696,7 +726,10 @@ class UserController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		if($this->call_SmsByFindPswd($data['mobile'], $data['imagecode']))
+		unset($content);
+		$content = array();
+		
+		if($this->call_SmsByFindPswd($data['mobile'], $data['imagecode'], &$content))
 		{
 			return array(
 				200,
@@ -707,6 +740,16 @@ class UserController extends BaseController {
 			);
 		}
 		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=> $content['message'],
+				),
+			);
+		}
 		return array(
 				200,
 				array(
@@ -716,7 +759,7 @@ class UserController extends BaseController {
 			);
 	}
 	
-	private function call_SmsByFindPswd($mobile, $imagecode)
+	private function call_SmsByFindPswd($mobile, $imagecode, $content)
 	{
 		$params = array(
 			'mobile'    =>  $mobile,
@@ -734,6 +777,25 @@ class UserController extends BaseController {
 		elseif(-4 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
+			$content['message']     = urlencode('图片验证码不正确');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('图片验证码接口报错');
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('图片验证码接口报错');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -5;
+			$content['message']     = urlencode('mobile参数不合法');
 			return false;
 		}
 		return false;
@@ -755,7 +817,23 @@ class UserController extends BaseController {
 		);
 	}
 	
-	
+	#获取图片验证码
+	public function get_pic_validate_ex($content)
+	/*
+	@@input
+	@param $mobile
+	@@output
+	@param $pic_url 图形验证码地址
+	*/
+	{
+		$data = $this->fill($content);
+		return array(
+			200,
+			array(
+				'img_url'=>C('api_user_pic_url').$data['mobile']
+			)
+		);
+	}
 	
 	
 	

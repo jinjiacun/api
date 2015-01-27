@@ -225,7 +225,7 @@ content={'mobile':'xxx','pswd':'xxx'}<br/>
 {'status_code':200,'content':{'is_success':xxx,'user_id':xxx,'head_poratrait':'xxx','nickname':'xxx',<br/>
                               'sex':xxx,'cur_date':'xxx'}}<br/>
 @@output<br/>
-@param $is_success 0-成功,-1-失败,-2-用户名错误<br/>
+@param $is_success 0-成功,-1-失败,-2-用户名不存在或密码错误<br/>
 @param $user_id  用户id<br/>
 @param $head_portrait 头像<br/>
 @param $nickname 用户昵称<br/>
@@ -273,7 +273,8 @@ content={'mobile':'xxx','smscode':'xxx','new_pswd':'xxx'}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-成功,-1-失败,-2-手机号码不存在<br/>
+@param $is_success 0-成功,-1-失败	,-2-mobile参数不合法,-3-短信验证码不正确<br/>
+	                                               -4-mobile不存在<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -339,14 +340,15 @@ content={'mobile':'xxx'}<br/>
 方法描述:发送短信验证码<br/>
 输入参数格式:<br/>
 method=User.send_validate<br/>
-content={'mobile':'xxx'}<br/>
+content={'mobile':'xxx','imagecode':'xxx'}<br/>
 @@input<br/>
 @param $mobile 手机号码<br/>
 @param $imagecode 图形验证码<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx'}}<br/>
 @@output<br/>
-@param $is_success 0-成功操作，-1-操作失败<br/>
+@param $is_success 0-成功,-1-失败,-2-图片验证码不正确,-3-图片验证码接口报错<br/>
+	                        -4-短信验证码接口报错,-5-mobile参数不合法<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -587,6 +589,7 @@ content={'where':{'auth_level':'006001'}}<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                                'exp_amount':xxx,exp_amount:xxx<br/>
                                ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param $id            企业id<br/>
@@ -612,7 +615,8 @@ content={'where':{xxxx}}<br/>
 {'status_code':200,'content':[{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
-                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                               'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx,<br/>
+                               'exp_amount':xxx,exp_amount:xxx<br/>
                                ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
@@ -632,6 +636,8 @@ content={'where':{xxxx}}<br/>
 @param  $agent_platform    #代理平台<br/>
 @param  $mem_sn            #会员编号<br/>
 @param  $certificate       #资质证明<br/>
+@param  $add_blk_amount    #加黑人数<br/>
+@param  $exp_amount        #曝光人数<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -675,6 +681,7 @@ content={'id':xxx}<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
+                               'add_blk_amount':xxx,'exp_amount':xxx<br/>
                                ,'add_time':'xxx'}}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
@@ -693,6 +700,8 @@ content={'id':xxx}<br/>
 @param  $agent_platform    #代理平台<br/>
 @param  $mem_sn            #会员编号<br/>
 @param  $certificate       #资质证明<br/>
+@param  $add_blk_amount    #加黑人数<br/>
+@param  $exp_amount        #曝光人数<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1299,7 +1308,7 @@ content={'where':{'id':xxx,'company_id':xxx,'title':‘xxx’,'source':'xxx','au
 方法描述:通过id查询一条信息<br/>
 输入参数格式:<br/>
 method=News.get_info<br/>
-content={{'id':xxx}<br/>
+content={'id':xxx}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
@@ -1711,6 +1720,19 @@ content={'media':xxx}<br/>
 		</tr>
 		
 	</table>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="help_2">
+<b>关于我们</b><br>
+method:News.get_info<br/>
+content:{"id":10}<br/>
+获取返回值里面的content进行base64解码即可获取其html<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

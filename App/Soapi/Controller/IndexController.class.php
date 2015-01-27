@@ -40,6 +40,7 @@ class IndexController extends Controller {
 
     public function index(){//($type, $method=null, $content=null, $handler=null){
       header("Content-Type: text/html;charset=utf-8");
+      $stime=microtime(true);
         ##get
     	if(I('get.method'))
     	{
@@ -120,27 +121,39 @@ class IndexController extends Controller {
                     }
                     */
                     list($status_code, $out_content) = $obj->{$method}($this->in_content, $handler);#处理带有资源的数据信息
+                    $etime=microtime(true);//获取程序执行结束的时间
+                    $total=$etime-$stime;   //计算差值
                     #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
+                    $log_str = sprintf("end   ip:%s   date:%s	use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
                                       $this->getIP(),
                                       date("Y-m-d H:i:s"), 
+                                      $total,
                                       $this->method,
                                       $this->in_content,
                                       $this->type,
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
+					
+					A('Soapi/Apistat')->add(json_encode(array(
+							'name'=>$this->method,
+							'run_time'=>$total,
+							'type'=>1
+					)));
                     self::call_back($status_code, $out_content);
                 }
                   break;
             case 'text':
                 {
                     list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据
+                    $etime=microtime(true);//获取程序执行结束的时间
+                    $total=$etime-$stime;   //计算差值
                     #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
+                    $log_str = sprintf("end   ip:%s   date:%s	use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
                                       $this->getIP(),
                                       date("Y-m-d H:i:s"), 
+                                      $total,
                                       $this->method,
                                       $this->in_content,
                                       $this->type,
@@ -148,6 +161,12 @@ class IndexController extends Controller {
                                       urldecode(json_encode($out_content))
                                       );
                     file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                    				
+					A('Soapi/Apistat')->add(json_encode(array(
+							'name'=>$this->method,
+							'run_time'=>$total,
+							'type'=>0
+					)));
                     self::call_back($status_code, $out_content);
                 }
                 break;
@@ -168,6 +187,14 @@ class IndexController extends Controller {
                           json_encode($out_content)
                           );
         file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        $etime=microtime(true);//获取程序执行结束的时间
+		$total=$etime-$stime;   //计算差值
+		
+		A('Soapi/Apistat')->add(json_encode(array(
+							'name'=>$this->method,
+							'run_time'=>$total,
+							'type'=>2
+					)));
     }
 
     public function call_back($status_code, $out_content)

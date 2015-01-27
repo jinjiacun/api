@@ -56,7 +56,7 @@ class AdminController extends BaseController {
 					array(
 						'is_success'=>-2,
 						'message'=>urlencode('用户名不存在')
-						);
+						)
 				);
 		}
 
@@ -67,7 +67,7 @@ class AdminController extends BaseController {
 					array(
 						'is_success'=>-3,
 						'message'=>urlencode('用户名和密码不正确')
-						);
+						)
 				);
 		}
 

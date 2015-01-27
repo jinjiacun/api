@@ -84,6 +84,7 @@ class ComnewsController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		/*
 		if(!$this->__check(array('news_id'   => $data['news_id'],
 								'company_id'=> $data['company_id'],
 								'user_id'   => $data['user_id']
@@ -97,6 +98,7 @@ class ComnewsController extends BaseController {
 				),
 			 );
 			}
+		*/
 		
 		$data['add_time'] = time();
 		

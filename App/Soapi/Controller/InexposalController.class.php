@@ -175,6 +175,7 @@ class InexposalController extends BaseController {
 	{
 		$data = $this->fill($content);
 		
+		
 		if(!isset($data['user_id'])
 		|| !isset($data['nature'])
 		|| !isset($data['trade'])
@@ -182,7 +183,7 @@ class InexposalController extends BaseController {
 		|| !isset($data['amount'])
 		|| !isset($data['website'])
 		|| !isset($data['content'])
-		|| !isset($data['pic_1'])
+		//|| !isset($data['pic_1'])
 		)
 		{
 			return C('param_err');
@@ -195,16 +196,16 @@ class InexposalController extends BaseController {
 		$data['amount'] = htmlspecialchars(trim($data['amount']));
 		$data['website'] = htmlspecialchars(trim($data['website']));
 		$data['content'] = htmlspecialchars(trim($data['content']));
-		$data['pic_1'] = htmlspecialchars(trim($data['pic_1']));
+		//$data['pic_1'] = htmlspecialchars(trim($data['pic_1']));
 		
 		if(0 >= $data['user_id']
 		|| '' == $data['nature']
 		|| '' == $data['trade']
 		|| '' == $data['company_name']
-		|| '' == $data['amount']
-		|| '' == $data['website']
+	  //|| '' == $data['amount']
+		//|| '' == $data['website']
 		|| '' == $data['content']
-		|| 0 >= $data['pic_1']
+		//|| 0 >= $data['pic_1']
 		)
 		{
 			return C('param_fmt_err');
@@ -477,13 +478,18 @@ class InexposalController extends BaseController {
 		if(M($this->_module_name)->where(array('id'=>$data['id']))
 		                         ->save($content))
 		{
-			return array(
-				200,
-				array(
-					'is_success'=>0,
-					'message'=>C('option_ok'),
-				),
-			);
+			//添加曝光人数统计
+			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
+					                     'exp_amount'))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					),
+				);
+			}
 		}
 		return array(
 				200,
@@ -626,12 +632,27 @@ class InexposalController extends BaseController {
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$data['order']      = isset($data['order'])?$data['order']:array('id'=>'desc');
 		
+		if(0>= $data['page_index'])
+		{
+			$data['page_index'] = 1;
+		}
+		
+		if(20<= $data['page_size'])
+		{
+			$data['page_size'] = 20;
+		}
+		
 		$where['auth_level'] = array('neq', '006003');
 		
 		$tmp_list = D('InexposalcompanyView')
-		            ->page($page_index, $page_size)
+		            ->page($data['page_index'], $data['page_size'])
 		            ->where($where)->select();
 		$record_count = D('InexposalcompanyView')->where($where)->count();
+		
+		$flat_form_count = 0;
+		//曝光平台数
+		$ttmp = M()->query("SELECT DISTINCT (company_id) FROM  `so_in_exposal` WHERE company_id <>0 AND TYPE =0");
+		$flat_form_count = count($ttmp);
 		
 		if($tmp_list
 		&& 0< count($tmp_list))
@@ -653,7 +674,8 @@ class InexposalController extends BaseController {
 			200,
 			array(
 				'list'=>$list,
-				'record_count'=>$record_count
+				'record_count'=>$record_count,
+				'flat_form_count'=>$flat_form_count,
 			)
 		);
 	}

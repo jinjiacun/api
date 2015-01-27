@@ -8,6 +8,11 @@ return array(
      'DB_PORT'       => 3306,        // 端口
      'DB_PREFIX'     => 'so_',    // 数据库表前缀
      'DB_CHARSET'    => 'utf8',    // 字符集
+     
+	 'DATA_CACHE_TYPE' => 'Memcache',
+	 'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
+	 'DATA_CACHE_TIME' => '3600',
+		
      'domain_url'    => 'http://192.168.1.131',
      'media_url_pre' => 'http://192.168.1.131/yms_api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),

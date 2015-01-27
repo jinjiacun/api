@@ -97,14 +97,19 @@ class AddblackController extends BaseController {
 		
 		if(M($this->_module_name)->add($data))
 		{
-			return array(
-				200,
-				array(
-					'is_success'=>0,
-					'message'=> C('option_ok'),
-					'id'=> M()->getLastInsID(),
-				),
-			);
+			//添加曝光人数统计
+			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']),
+					'add_blk_amount'))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=> C('option_ok'),
+						'id'=> M()->getLastInsID(),
+					),
+				);
+			}
 		}
 		
 		return array(
