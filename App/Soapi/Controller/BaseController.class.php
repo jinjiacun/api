@@ -554,6 +554,20 @@ class BaseController extends Controller {
 		return false;
 	}
 	
+	#修改判定存在
+	protected function __exists_ex($field_name, $field_value, $field_key_val)
+	{
+		$content[$field_name] =  $field_value;
+		$content['id']        = array('neq', $field_key_val);
+		$tmp_one = M($this->_module_name)->where($content)->find();
+		if($tmp_one)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	#通过用户id获取昵称
 	protected function _get_nickname($user_id)
 	{
@@ -566,6 +580,17 @@ class BaseController extends Controller {
 			return $list[0]['UI_NickName'];	
 			
 		return '';
+	}
+	
+	#最大值
+	public function __get_Max($field_name, $where)
+	{
+		$list = array();
+		$max_val = 0;
+		$max_val = M($this->_module_name)->where($where)->max($field_name);
+		$where[$field_name] = $max_val;
+		$list = M($this->_module_name)->where($where)->find();
+		return $list;
 	}
 	
 	

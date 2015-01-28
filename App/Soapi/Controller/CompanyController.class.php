@@ -283,6 +283,8 @@ class CompanyController extends BaseController {
 			{
 				$list = array(
 						'id'                => intval($tmp_one['id']),
+						'logo'              => intval($tmp_one['logo']),
+						'logo_url'          => $this->get_pic_url($tmp['logo']),
 						'nature'            => urlencode($tmp_one['nature']),
 						'trade'             => urlencode($tmp_one['trade']),
 						'company_name'      => urlencode($tmp_one['company_name']),
@@ -344,8 +346,8 @@ class CompanyController extends BaseController {
 							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
-							'add_blk_amount'    => intval($tmp_one['add_blk_amount']),
-							'exp_amount'        => intval($tmp_one['exp_amount']),
+							'add_blk_amount'    => intval($v['add_blk_amount']),
+							'exp_amount'        => intval($v['exp_amount']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -440,8 +442,55 @@ class CompanyController extends BaseController {
 			
 			$list = array();
 			$record_count = 0;
-			$tmp_list = D('CompanyaliasView')->where($data)->select();
-			$record_count = D('CompanyaliasView')->where($data)->count();
+			#通过别名查询company_id集合
+			$company_id_list = array();
+			$company_ids     = "";
+			
+			#别名搜索
+			$tmp_list = M('Company_alias')->field("company_id")
+			                              ->where(array('name'=>$data['name']))
+			                              ->select();
+			if($tmp_list
+			&& 0<count($tmp_list))
+			{
+				foreach($tmp_list as $k=> $v)
+				{
+					$company_id_list[] = $v['company_id'];
+				}
+				unset($tmp_list, $k, $v);
+			}
+			$company_ids = implode(',', $company_id_list);
+			$tmp_list = array();			
+			
+			
+			//D('CompanyaliasView')->where($data)->select();
+			if('' != $company_ids)
+			{
+				$where['id'] = array('in', $company_ids);
+				$tmp_list = M($this->_module_name)->where($where)->select();
+				//$record_count = D('CompanyaliasView')->where($data)->count();
+				$record_count = M($this->_module_name)->where($where)->count();
+			}
+			#查询企业名称
+			else
+			{
+				if(isset($where))unset($where);
+				$where['company_name'] = $data['name'];
+				$tmp_list = M($this->_module_name)->where($where)->select();
+				//$record_count = D('CompanyaliasView')->where($data)->count();
+				$record_count = M($this->_module_name)->where($where)->count();
+			}
+			
+			#查询网址
+			if(0== $record_count)
+			{
+				if(isset($where))unset($where);
+				$where['website'] = $data['name'];
+				$tmp_list = M($this->_module_name)->where($where)->select();
+				//$record_count = D('CompanyaliasView')->where($data)->count();
+				$record_count = M($this->_module_name)->where($where)->count();
+			} 
+			
 			if($tmp_list
 			&& 0< count($tmp_list))
 			{
@@ -450,6 +499,7 @@ class CompanyController extends BaseController {
 					$list[] = array(
 						'id'                => intval($v['id']),
 						'logo'              => intval($v['logo']),
+						'logo_url'          => $this->get_pic_url($v['logo']),
 						'nature'            => urlencode($v['nature']),
 						'trade'             => urlencode($v['trade']),
 						'company_name'      => urlencode($v['company_name']),
@@ -525,6 +575,55 @@ class CompanyController extends BaseController {
 				);
 		}
 		
+		#查询企业名称是否存在
+		public function exists_name_ex($content)
+		/*
+		@@input
+		@param $id
+		@param $company_name  企业名称 
+		@@output
+		@param $is_exists 0-存在,-1-不存在
+		*/
+		{
+			$data = $this->fill($content);
+			if(!isset($data['company_name'])
+			|| !isset($data['id'])
+			)
+			{
+				return C('param_err');
+			}
+			
+			$data['company_name'] = htmlspecialchars(trim($data['company_name']));
+			$data['id'] = intval($data['id']);
+			
+			if('' == $data['company_name']
+			|| 0 >= $data['id']
+			)
+			{
+				return C('param_fmt_err');
+			}
+			
+			if($this->__exists('company_name', $data['company_name'], $data['id']))
+			{
+				return array(
+					200,
+					array(
+						'is_exists'=>0,
+						'message'=>C('is_exists'),
+					),
+				);
+			}
+			
+			return array(
+					200,
+					array(
+						'is_exists'=>-1,
+						'message'=>C('no_exists'),
+					),
+				);
+		}
+		
+		
 		#黑榜排行
 		public function black_sort($content)
 		/*
@@ -549,8 +648,12 @@ class CompanyController extends BaseController {
 					$content = array(
 						'company_id'=> intval($v['id'])
 					);
+					
+					/*
 					list(,$amount) = A('Soapi/Inexposal')
 					                ->stat_user_amount(json_encode($content));
+					*/
+					$amount = $v['add_blk_amount'];
 					$list[$k]['amount'] = $amount;
 					list(,$tmp_user_list) = A('Soapi/Inexposal')
 					                    ->stat_user_top(json_encode($content));
@@ -583,5 +686,61 @@ class CompanyController extends BaseController {
 			);
 			
 		}
+		
+		#获取最大的值对应的信息
+		public function Max($content)
+		/*
+		 @@input
+		 @param $field_name 要统计的字段名称
+		 @@output
+		 * */
+		{
+			$data = $this->fill($content);
+			
+			if(!isset($data['field_name']))
+			{
+				return C('param_err');
+			}
+			
+			$data['field_name'] = htmlspecialchars(trim($data['field_name']));
+			
+			if('' == $data['field_name'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			$list = array();
+			$list = $this->__get_Max($data['field_name'],array('auth_level'=>'006001'));
+			
+			return array(
+				200,
+				$list
+			);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 }

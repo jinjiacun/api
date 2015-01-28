@@ -107,6 +107,14 @@ public function get_pic_validate_ex
 @@output
 @param $pic_url 图形验证码地址
 ##--------------------------------------------------------##
+#修改密码
+public function update_passwd
+@@input
+@param $uid       用户id
+@param $old_pswd  旧密码
+@param $new_pswd  新密码
+@@output
+@param $is_success 0-成功操作，-1-操作失败，-2-用户不存在，-3-原密码不正确
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
@@ -118,6 +126,7 @@ class UserController extends BaseController {
 							 'get_info'          => "GetUserInfoByUid",      #查询用户信息
 			                 'check_mobile'      => "ExistsUserInfoByMobile",#检查手机号码
 			                 'send_validate'     => "SmsByFindPswd",         #发送手机验证
+			                 'update_passwd'     => "SetUserNewPswd",        #修改密码
 							 );
 	#通过手机注册
 	public function register($content)
@@ -835,10 +844,105 @@ class UserController extends BaseController {
 		);
 	}
 	
+	#修改密码
+	public function update_passwd($content)
+	/*
+	@@input
+	@param $uid       用户id
+	@param $old_pswd  旧密码
+	@param $new_pswd  新密码
+	@@output
+	@param $is_success 0-成功操作，-1-操作失败，-2-用户不存在，-3-原密码不正确
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['old_pswd'])
+		|| !isset($data['new_pswd'])		
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid']       = intval($data['uid']);
+		$data['old_pswd']  = htmlspecialchars(trim($data['old_pswd']));
+		$data['new_pswd']  = htmlspecialchars(trim($data['new_pswd']));
+		
+		if(0>= $data['uid']
+		|| '' == $data['old_pswd']
+		|| '' == $data['new_pswd']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		unset($content);
+		$content = array();
+		if($this->call_SetUserNewPswd($data['uid'],
+		                              $data['old_pswd'],
+		                              $data['new_pswd'],
+		                              &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=> $content['message'],
+				),
+			);
+		}
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+			);
+	}
 	
-	
-	
-	
+	private function call_SetUserNewPswd($uid, $old_pswd, $new_pswd, $content)
+	{
+		$params = array(
+			'uid'       => $uid,
+			'old_pswd'  => $old_pswd,
+			'new_pswd'  => $new_pswd,
+		);
+		//$params['safekey']  = $this->mk_passwd($params, 5);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update_passwd'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('用户不存在');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('原密码不正确');
+			return false;
+		}
+
+		return false;
+	}
 	
 	
 	

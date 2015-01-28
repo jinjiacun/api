@@ -172,6 +172,16 @@ class MediaController extends BaseController {
 		{
 			mkdir(__PUBLIC__.$file_dir);
 		}
+		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png')))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-5,
+					'message'=> urlencode('图片格式错误')
+				),
+			);
+		}
 		switch($file_ext)
 		{
 			case 'jpg':

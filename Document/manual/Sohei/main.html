@@ -46,7 +46,7 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}}<br/>
 @@input<br/>
-@@@where
+@@@where<br/>
 @param $id<br/>
 @param $company_id       关联企业id<br/>
 @param $user_id          #用户id<br/>
@@ -375,6 +375,26 @@ content={'uid':xxx,'nickname':'xxx','sex':xxx,'birthday':'xxx','job':'xxx','addr
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
+<hr/>
+<p id="user_10">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:update_passwd<br/>
+方法描述:修改密码<br/>
+输入参数格式:<br/>
+method=User.update_passwd<br/>
+content={'uid':xxx,‘old_pswd':'xxx','new_pswd':'xxx'}<br/>
+@@input<br/>
+@param $uid       用户id<br/>
+@param $old_pswd  旧密码<br/>
+@param $new_pswd  新密码<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-成功操作，-1-操作失败，-2-用户不存在，-3-原密码不正确<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
 <hr>
 <p id="company_1">
@@ -677,7 +697,7 @@ content={'id':xxx}<br/>
 @@input<br/>
 @param $id 企业id<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
+{'status_code':200,'content':{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'company_type':'xxx','reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','mem_sn':'xxx','certificate':xxx<br/>
@@ -685,6 +705,7 @@ content={'id':xxx}<br/>
                                ,'add_time':'xxx'}}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
+@param  $logo              企业logo<br/>
 @param  $nature            #企业性质(字典编码)<br/>
 @param  $trade             #所属行业<br/>
 @param  $company_name      #公司全称(唯一)<br/>
@@ -1523,7 +1544,7 @@ content={'field_name':‘xxx’,'file_name':'xxx','file_ext':'xxx','module_sn':'
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-操作成功,-1-操作失败<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-没有文件上传,-3-文件上传错误,-4-文件大小限制，-5-图片格式错误<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
