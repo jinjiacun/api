@@ -528,11 +528,16 @@ class InexposalController extends BaseController {
 		$amount = 0;
 		if(isset($data['company_id'])
 		&& 0< $data['company_id'])
-			$amount = M($this->_module_name)->distinct('user_id')->where($data)->count();
+		{
+			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
+			$amount   = count($tmp_list);
+		}
 		else
 		{
 			$where['company_id'] = array('neq', 0);
-			$amount = M($this->_module_name)->distinct('user_id')->where($data)->count();
+			$where['type'] = 0;
+			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
+			$amount = count($tmp_list);
 		}
 		
 		return array(

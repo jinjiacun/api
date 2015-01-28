@@ -603,7 +603,7 @@ class CompanyController extends BaseController {
 				return C('param_fmt_err');
 			}
 			
-			if($this->__exists('company_name', $data['company_name'], $data['id']))
+			if($this->__exists_ex('company_name', $data['company_name'], $data['id']))
 			{
 				return array(
 					200,
