@@ -59,6 +59,18 @@ public function add_ex
 ##--------------------------------------------------------##
 #查询我的可信企业申请
 public function get_list_ex
+##--------------------------------------------------------## 
+#查询一条信息(曝光)
+public function get_info
+@@input
+@param $id
+@@output
+##--------------------------------------------------------##
+#查询一条信息(可信)
+public function get_info_ex
+@@input
+@param $id
+@@output
 ##--------------------------------------------------------##
 #关联企业
 public function chang_relate
@@ -280,6 +292,41 @@ class InexposalController extends BaseController {
 				);
 	}
 	
+	#查询我的曝光(附带评论)
+	public function get_list_com($content)
+	{
+		$list         = array();
+		$record_count = 0;
+		
+		list(,$old_list) = $this->get_list($content);
+		$list = $old_list['list'];
+		$record_count = $old_list['record_count'];
+		
+		$data = $this->fill($content);
+		
+		if(isset($data['where']))unset($data['where']);
+		
+		foreach($list as $k=> $v)
+		{
+			$data['where']['exposal_id'] = intval($v['id']);
+			$data['page_size'] = 2;
+			$data['page_index'] = 1;
+			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
+			$list[$k]['sub'] = array(
+				'list'=>$sub['list'],
+				'record_count'=>$sub['record_count']
+			);
+		}
+		unset($k, $v);
+		return array(
+			200,
+			array(
+				'list'         =>$list,
+				'record_count' =>$record_count
+			)
+		);
+	}
+	
 	#查询曝光企业映射
 	public function get_id_name_map($content)
 	/*
@@ -411,6 +458,7 @@ class InexposalController extends BaseController {
 				        'id'               => intval($v['id']),
 				        'company_id'       => intval($v['company_id']),
 						'user_id'          => intval($v['user_id']),
+						'nickname'         => $this->_get_nickname($v['user_id']),
 						'nature'           => $v['nature'],  
 						'trade'            => $v['trade'],  
 						'company_name'     => urlencode($v['company_name']),  
@@ -440,6 +488,124 @@ class InexposalController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	#查询一条信息(曝光)
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$tmp_one = M($this->_module_name)->find($data['id']);
+		if($tmp_one)
+		{
+			$list = array(
+						'id'           => intval($tmp_one['id']),
+				        'company_id'   => intval($tmp_one['company_id']),
+						'user_id'      => intval($tmp_one['user_id']),
+						'nickname'     => $this->_get_nickname($tmp_one['user_id']),
+						'nature'       => $tmp_one['nature'],  
+						'trade'        => $tmp_one['trade'],  
+						'company_name' => urlencode($tmp_one['company_name']),  
+						'amount'       => $tmp_one['amount'],  
+						'website'      => $tmp_one['website'],  
+						'content'      => urlencode($tmp_one['content']),  
+						'pic_1'        => intval($tmp_one['pic_1']),  
+						'pic_1_url'    => $this->get_pic_url($tmp_one['pic_1']),
+						'pic_2'        => intval($tmp_one['pic_2']),
+						'pic_2_url'    => $this->get_pic_url($tmp_one['pic_2']),
+						'pic_3'        => intval($tmp_one['pic_3']),
+						'pic_3_url'    => $this->get_pic_url($tmp_one['pic_3']),
+						'pic_4'        => intval($tmp_one['pic_4']),
+						'pic_4_url'    => $this->get_pic_url($tmp_one['pic_4']),
+						'pic_5'        => intval($tmp_one['pic_5']),
+						'pic_5_url'    => $this->get_pic_url($tmp_one['pic_5']),
+						'top_num'      => intval($tmp_one['top_num']),
+						'add_time'     => intval($tmp_one['add_time']),
+			);
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
+
+
+	#查询一条信息(可信)
+	public function get_info_ex($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$tmp_one = M($this->_module_name)->find($data['id']);
+		if($tmp_one)
+		{
+			$list = array(
+						'id'               => intval($tmp_one['id']),
+				        'company_id'       => intval($tmp_one['company_id']),
+						'user_id'          => intval($tmp_one['user_id']),
+						'nickname'     => $this->_get_nickname($tmp_one['user_id']),
+						'nature'           => $tmp_one['nature'],  
+						'trade'            => $tmp_one['trade'],  
+						'company_name'     => urlencode($tmp_one['company_name']),  
+						'corporation'      => urlencode($tmp_one['corporation']),
+						'reg_address'      => urlencode($tmp_one['reg_address']),
+						'company_type'     => urlencode($tmp_one['company_type']),
+						'busin_license'    => intval($tmp_one['busin_license']),
+						'busin_license_url'=> $this->get_pic_url($tmp_one['busin_license']),
+						'code_certificate' => intval($tmp_one['code_certificate']),
+						'code_certificate_url' => $this->get_pic_url($tmp_one['code_certificate']),
+						'telephone'        => urlencode($tmp_one['telephone']),
+						'website'          => $tmp_one['website'],
+						'record'           => urlencode($tmp_one['record']),
+						'agent_platform'   => urlencode($tmp_one['agent_platform']),
+						'mem_sn'           => urlencode($tmp_one['mem_sn']),
+						'certificate'      => intval($tmp_one['certificate']),
+						'certificate_url'  => $this->get_pic_url($tmp_one['certificate']),
+						'find_website'	   => $tmp_one['find_website'],
+						'add_time'         => intval($tmp_one['add_time']),
+			);
+		}
+		
+		return array(
+			200,
+			$list
+		);
 	}
 	
 	#关联企业
@@ -656,8 +822,17 @@ class InexposalController extends BaseController {
 		
 		$flat_form_count = 0;
 		//曝光平台数
-		$ttmp = M()->query("SELECT DISTINCT (company_id) FROM  `so_in_exposal` WHERE company_id <>0 AND TYPE =0");
-		$flat_form_count = count($ttmp);
+		$ttmp = M()->query("
+			select count(id) as tp_count
+			from `so_company`
+			where id in(
+			select company_id
+			from `so_in_exposal`
+			where type=0
+			)
+		");
+		//$flat_form_count = count($ttmp);
+		$flat_form_count = $ttmp[0]['tp_count'];
 		
 		if($tmp_list
 		&& 0< count($tmp_list))

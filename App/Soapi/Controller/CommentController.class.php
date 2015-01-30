@@ -172,15 +172,22 @@ class CommentController extends BaseController {
 		
 		$data['add_time'] = time();
 		
+		$parent_id = intval($data['parent_id']);
+		if(0== $parent_id)
+		{
+			//累计评论数
+			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
+											'com_amount'));
+		}								
 		if(M($this->_module_name)->add($data))
 		{
 			return array(
-				200,
-				array(
-					'is_success'=>0,
-					'message'=> C('option_ok'),
-					'id'=> M()->getLastInsID(),
-				),
+						200,
+						array(
+							'is_success'=>0,
+							'message'=> C('option_ok'),
+							'id'=> M()->getLastInsID(),
+						),
 			);
 		}
 		

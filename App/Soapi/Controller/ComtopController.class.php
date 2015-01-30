@@ -66,7 +66,8 @@ class ComtopController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		if(!$this->__check(array('comment_id'=>$data['comment_id'])))
+		if(!$this->__check(array('comment_id'=>$data['comment_id'],
+		                         'user_id'=>$data['user_id'])))
 		{
 			return array(
 				200,

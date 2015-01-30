@@ -459,6 +459,7 @@ class BaseController extends Controller {
 	//通过id获取图片地址
 	protected function get_pic_url($id)
 	{
+		if(0 == $id) return '';
 		$pic_info = M('Media')->find($id);
 		if($pic_info)
 		{

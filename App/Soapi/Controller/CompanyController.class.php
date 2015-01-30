@@ -132,6 +132,7 @@ class CompanyController extends BaseController {
 									 certificate int not null default 0 comment '资质证明',
 		   		                     add_blk_amount int not null default 0 comment '加黑人数',
 		   		                     exp_amount int not null default 0 comment '曝光人数',
+		   		                     com_amount int not null default 0 comment '评论人数',
 									 add_time int not null default 0 comment '添加日期'
 									 )charset=utf8;
 		 * */
@@ -304,7 +305,8 @@ class CompanyController extends BaseController {
 						'certificate'       => intval($tmp_one['certificate']),
 						'certificate_url'   => $this->get_pic_url($tmp_one['certificate']),
 						'add_blk_amount'    => intval($tmp_one['add_blk_amount']), 		
-						'exp_amount'        => intval($tmp_one['exp_amount']),				
+						'exp_amount'        => intval($tmp_one['exp_amount']),	
+						'com_amount'        => intval($tmp_one['com_amount']),			
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -348,6 +350,7 @@ class CompanyController extends BaseController {
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
 							'add_blk_amount'    => intval($v['add_blk_amount']),
 							'exp_amount'        => intval($v['exp_amount']),
+							'com_amount'        => intval($v['com_amount']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -369,8 +372,10 @@ class CompanyController extends BaseController {
 		格式[{'id':'name'},...,{}]
 		*/
 		{
+			$data = $this->fill($content);
 			$list = array();
 			$tmp_list = M($this->_module_name)->field('id,company_name')
+			                                  ->where($data['where'])
 			                                  ->select();
 			if($tmp_list
 			&& 0< count($tmp_list))
