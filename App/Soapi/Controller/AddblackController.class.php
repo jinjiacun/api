@@ -176,9 +176,11 @@ class AddblackController extends BaseController {
 		);
 		
 		$re_count = 0;
-		$re_count = M($this->_module_name)->distinct('user_id')
+		$re_count = M($this->_module_name)->distinct(true)
+		                                  ->field('user_id')
 		                                  ->where($content)
-		                                  ->count();
+		                                  ->select();
+		$re_count = count($re_count);
 		
 		return array(
 			200,

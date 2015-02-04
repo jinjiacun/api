@@ -129,6 +129,7 @@ class ComexposalController extends BaseController {
 						'nickname'     => $this->_get_nickname($v['user_id']),
 						'exposal_id'   => intval($v['exposal_id']),
 						'parent_id'    => intval($v['parent_id']),
+						'parent_content' => urlencode($this->get_parent_content($v['parent_id'])),
 						'content'      => urlencode($v['content']),
 						'is_validate'  => intval($v['is_validate']),
 						'validate_time'=> intval($v['validate_time']),

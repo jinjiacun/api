@@ -33,6 +33,7 @@ class ComnewsController extends BaseController {
 	                              is_validate int not null default 0 comment '是否审核',
 	                              validate_time int not null default 0  comment '审核时间',
 	                              assist_num int not null default 0 comment '点赞数',
+	                              is_delete int not null default 0 comment '是否删除(1-删除)',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -45,6 +46,7 @@ class ComnewsController extends BaseController {
 	 protected $content;     #评论内容
 	 protected $is_validate; #是否审核(0-未审核,1-已审核)
 	 protected $assist_num;  #点赞数目
+	 protected $is_delete;   #是否删除(1-删除)
 	 protected $add_time;    #添加日期
 	 
 	 
@@ -139,7 +141,9 @@ class ComnewsController extends BaseController {
 						'news_id'     => intval($v['news_id']),
 						'content'     => urlencode($v['content']),
 						'is_validate' => intval($v['is_validate']),
+						'validate_time'=> intval($v['validate_time']),
 						'assist_num'  => intval($v['assist_num']),
+						'is_delete'   => intval($v['is_delete']),
 						'add_time'    => intval($v['add_time']),
 					);	
 			}
@@ -151,5 +155,50 @@ class ComnewsController extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	#删除
+	public function delete($content)
+	/*
+	@@input
+	@id
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))
+		                                   ->save(array('is_delete'=>1)))
+		{
+			M($this->_module_name)->where(array('parent_id'=>$data['id']))
+			                      ->save(array('is_delete'=>1));
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);
 	}
 }

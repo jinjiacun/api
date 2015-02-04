@@ -48,6 +48,12 @@ public function get_list
 @param $content  内容
 @param $add_time 添加日期
 ##--------------------------------------------------------##
+#查询监管机构映射
+public function get_id_name_map
+@@input
+@@output
+格式[{'id':'name'},...,{}]
+##--------------------------------------------------------##
 */
 class RegulatorsController extends BaseController {
 	/**
@@ -230,4 +236,66 @@ class RegulatorsController extends BaseController {
         return array(200, array('list'=>$list, 
                                 'record_count'=>$record_count));
 	}
+	
+	#查询监管机构映射
+	public function get_id_name_map($content)
+	/*
+	@@input
+	@@output
+	格式[{'id':'name'},...,{}]
+	*/
+	{
+		$data = $this->fill($content);
+		$list = array();
+		$tmp_list = M($this->_module_name)->field('id,title')
+										  ->where($data['where'])
+										  ->select();
+		if($tmp_list
+		&& 0< count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[intval($v['id'])] = urlencode($v['title']);
+			}
+			unset($tmp_list, $v);
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

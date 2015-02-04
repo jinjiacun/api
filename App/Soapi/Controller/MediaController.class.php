@@ -76,14 +76,14 @@ class MediaController extends BaseController {
 
 		switch($module_sn)
 		{
-			case '001001':#曝光图片 <350k
+			case '001001':#曝光图片 <400k
 			{
-				if(350 < ($_FILES[$field_name]["size"] / 1024))
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
 						array('is_success'=>-4,
-							  'message'=> urlencode('超过了350k')
+							  'message'=> urlencode('超过了400k')
 						),
 					);
 				}
@@ -105,42 +105,42 @@ class MediaController extends BaseController {
 				$file_dir  = 'media/'.'regulators'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001003':#营业执照 <350k
+			case '001003':#营业执照 <400k
 			{
-				if(350 < ($_FILES[$field_name]["size"] / 1024))
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
 						array('is_success'=>-4,
-							  'message'=> urlencode('超过了350k')
+							  'message'=> urlencode('超过了400k')
 						),
 					);
 				}
 				$file_dir  = 'media/'.'license'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001004':#机构代码证 <350k
+			case '001004':#机构代码证 <400k
 			{
-				if(350 < ($_FILES[$field_name]["size"] / 1024))
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
 						array('is_success'=>-4,
-							  'message'=> urlencode('超过了350k')
+							  'message'=> urlencode('超过了400k')
 						),
 					);
 				}
 				$file_dir  = 'media/'.'code'.'/'.date("Y-m-d").'/';
 			}
 			break;
-			case '001005':#资质证明 <350k
+			case '001005':#资质证明 <400k
 			{
-				if(350 < ($_FILES[$field_name]["size"] / 1024))
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
 				{
 					return array(
 						200,
 						array('is_success'=>-4,
-							  'message'=> urlencode('超过了350k')
+							  'message'=> urlencode('超过了400k')
 						),
 					);
 				}
@@ -162,8 +162,17 @@ class MediaController extends BaseController {
 				$file_dir  = 'media/'.'logo'.'/'.date("Y-m-d").'/';
 			}			
 			break;
-			case '001009':#评论图片
+			case '001009':#评论图片<400k
 			{
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了400k')
+						),
+					);
+				}
 				$file_dir  = 'media/'.'comment'.'/'.date("Y-m-d").'/';
 			}
 			break;

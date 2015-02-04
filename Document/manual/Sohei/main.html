@@ -3,6 +3,29 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
 url:http://192.168.1.131/yms_api/index.php?m=Soapi
+<p id="version_1">
+模块名称:Version<br/>
+模块名称描述:版本更新<br/>
+方法名称:get_info<br/>
+方法描述:查询版本信息<br/>
+输入参数格式:<br/>
+method=Version.get_info<br/>
+content={'id':'xxx'}<br/>
+@@input<br/>
+@param $id          id(ios=1)<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'version_sn':'xxx','down_url':'xxx','must_update':'xxx',<br/>
+                               'content':'xxx','app_sys':'xxx'}]}<br/>
+@@output<br/>
+@param $version_sn   版本号<br/>
+@param $down_url     下载地址<br/>
+@param $must_update  是否强制更新(0-不强制,1-强制)<br/>
+@param $content      内容<br/>
+@param $app_sys      系统名称<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
 <p id="in_1">
 模块名称:Inexposal<br/>
 模块名称描述:入库<br/>
@@ -225,7 +248,7 @@ content={'mobile':'xxx','pswd':'xxx'}<br/>
 {'status_code':200,'content':{'is_success':xxx,'user_id':xxx,'head_poratrait':'xxx','nickname':'xxx',<br/>
                               'sex':xxx,'cur_date':'xxx'}}<br/>
 @@output<br/>
-@param $is_success 0-成功,-1-失败,-2-用户名不存在或密码错误<br/>
+@param $is_success 0-成功,-1-失败,-2-用户名不存在或密码错误,-3-用户被限制登录,-4-用户访问的IP被限制<br/>
 @param $user_id  用户id<br/>
 @param $head_portrait 头像<br/>
 @param $nickname 用户昵称<br/>
@@ -1588,7 +1611,7 @@ content={'media':xxx}<br/>
 			<td>1</td>
 			<td>图片</td>
 			<td>曝光图片</td>
-			<td><350k</td>
+			<td><400k</td>
 		</tr>
 		<tr>
 			<td>001002</td>
@@ -1602,21 +1625,21 @@ content={'media':xxx}<br/>
 			<td>1</td>
 			<td>图片</td>
 			<td>营业执照</td>
-			<td><350k</td>
+			<td><400k</td>
 		</tr>
 		<tr>
 			<td>001004</td>
 			<td>1</td>
 			<td>图片</td>
 			<td>机构代码证</td>
-			<td><350k</td>
+			<td><400k</td>
 		</tr>
 		<tr>
 			<td>001005</td>
 			<td>1</td>
 			<td>图片</td>
 			<td>资质证明</td>
-			<td><350k</td>
+			<td><400k</td>
 		</tr>
 		<tr>
 			<td>001006</td>
@@ -1644,7 +1667,7 @@ content={'media':xxx}<br/>
 			<td>1</td>
 			<td>图片</td>
 			<td>评论图片</td>
-			<td></td>
+			<td><400k</td>
 		</tr>
 		<tr>
 			<td>002001</td>
@@ -1688,6 +1711,27 @@ content={'media':xxx}<br/>
 			<td>4</td>
 			<td>所属行业</td>
 			<td>外汇</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>004003</td>
+			<td>4</td>
+			<td>所属行业</td>
+			<td>石油</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>004004</td>
+			<td>4</td>
+			<td>所属行业</td>
+			<td>大宗商品</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>004005</td>
+			<td>4</td>
+			<td>所属行业</td>
+			<td>其他</td>
 			<td></td>
 		</tr>
 		
@@ -1759,6 +1803,20 @@ method:Comment.get_list_ex<br/>
 <b>企业曝光附带两条评论纪录</b><br>
 method:Inexposal.get_list_com<br/>
 附带字段名称:sub<br/>
+<br/>
+<b>别名搜索企业带别名</b><br>
+method:Company.search<br/>
+附带字段名称:alias_list<br/>
+<br/>
+<b>评论显示时，带上自己评论未审核的</b><br/>
+where:{'_string':"user_id = {user_id} or is_validate = 1",'company_id':{company_id},'parent_id':0"}<br/>
+{user_id}当前登录会员id<br/>
+{company_id}当前企业id<br/>
+php例子：<br/>
+$map['_string']="user_id=1534 or is_validate=1";<br/>
+$map["company_id"]=9;<br/>
+$map["parent_id"]=0;<br/>
+echo json_encode($map);<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

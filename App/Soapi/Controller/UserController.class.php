@@ -26,7 +26,7 @@ public function login
 @param $mobile   手机号码
 @param $pswd     密码
 @@output
-@param $is_success 0-成功,-1-失败,-2-用户名或者密码错误
+@param $is_success 0-成功,-1-失败,-2-用户名或者密码错误,-3-用户被限制登录,-4-用户访问的IP被限制
 @param $user_id  用户id
 @param $head_portrait 头像
 @param $nickname 用户昵称
@@ -115,6 +115,23 @@ public function update_passwd
 @param $new_pswd  新密码
 @@output
 @param $is_success 0-成功操作，-1-操作失败，-2-用户不存在，-3-原密码不正确
+##--------------------------------------------------------##
+#更新用户状态
+public function update_status
+@@input
+@param $uid    用户id
+@param $state  0-关闭  1-正常
+@@output
+@param $is_success 0-操作成功,-1-操作失败,-3-用户不存在
+##--------------------------------------------------------##
+#更新用户登录ip
+public function update_ip
+@@input
+@param $uid      用户id
+@param $blackip  用户登录IP黑名单，多个IP用竖线分隔，支持带*号IP段
+@@output
+@param $is_success 0-操作成功,-1-操作失败,-3-用户不存在
+##--------------------------------------------------------##
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
@@ -127,6 +144,8 @@ class UserController extends BaseController {
 			                 'check_mobile'      => "ExistsUserInfoByMobile",#检查手机号码
 			                 'send_validate'     => "SmsByFindPswd",         #发送手机验证
 			                 'update_passwd'     => "SetUserNewPswd",        #修改密码
+			                 'update_status'     => "SetUserState",          #封号
+			                 'update_ip'         => "SetUserBlackIp",        #封ip
 							 );
 	#通过手机注册
 	public function register($content)
@@ -157,6 +176,7 @@ class UserController extends BaseController {
 			'sex'      =>-1,
 			'cur_date' =>''
 		);
+		
 		
 		if($this->call_RegisterByMobile($data['mobile'], $data['pswd'], &$content))
 		{
@@ -196,8 +216,13 @@ class UserController extends BaseController {
 			'userip'   => $this->get_real_ip(),
 		);
 		$params['safekey']  = $this->mk_passwd($params);
+		//var_dump($params);
+		$params['nickname'] = urlencode($params['nickname']);
+		//var_dump($params);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register'];
+		//var_dump($url);
 		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
@@ -338,6 +363,7 @@ class UserController extends BaseController {
 		);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login'];
 		$back_str = $this->post($url, $params);
+		
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
@@ -357,6 +383,16 @@ class UserController extends BaseController {
 		elseif(-3 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
 			return false;
 		}
 		return false;
@@ -691,6 +727,7 @@ class UserController extends BaseController {
 		#转化urlencode
 		$params['job']     = urlencode($params['job']);
 		$params['address'] = urlencode($params['address']);		
+		$params['nickname'] = urlencode($params['nickname']);
 		$back_str = $this->post($url, $params);
 		$re_json = json_decode($back_str, true);
 		if($re_json
@@ -944,8 +981,175 @@ class UserController extends BaseController {
 		return false;
 	}
 	
+	#更新用户状态
+	public function update_status($content)
+	/*
+	@@input
+	@param $uid    用户id
+	@param $state  0-关闭  1-正常
+	@@output
+	@param $is_success 0-操作成功,-1-操作失败,-2-用户不存在
+	*/
+	{
+			$data = $this->fill($content);
+			if(!isset($data['uid'])
+			|| !isset($data['state'])
+			)
+			{
+				return C('param_err');
+			}
+			
+			$data['uid'] = intval($data['uid']);
+			$data['state'] = intval($data['state']);
+			
+			if(0>= $data['uid'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			unset($content);
+			$content = array();
+			if($this->call_SetUserState($data['uid'],
+										$data['state'], 
+										&$content))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok')
+					)
+				);
+			}
+		
+			if(isset($content['status_code']))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>$content['status_code'],
+						'message'=> $content['message'],
+					),
+				);
+			}
+			return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>C('option_fail'),
+					),
+				);
+	}
 	
+	private function call_SetUserState($uid, $state, $content)
+	{
+		$params = array(
+			'uid'       => $uid,
+			'state'     => $state
+		);
+		$params['safekey']  = $this->mk_passwd($params, 6);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update_status'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('用户不存在');
+			return false;
+		}
+
+		return false;
+	}
+
+	#更新用户登录ip
+	public function update_ip($content)
+	/*
+	@@input
+	@param $uid      用户id
+	@param $blackip  用户登录IP黑名单，多个IP用竖线分隔，支持带*号IP段
+	@@output
+	@param $is_success 0-操作成功,-1-操作失败,-3-用户不存在
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['uid'])
+		|| !isset($data['blackip'])
+		)
+		{
+			return C('param_err');
+		}
+			
+		$data['uid'] = intval($data['uid']);
+		$data['blackip'] = $data['blackip'];
+		
+		if(0>= $data['uid'])
+		{
+			return C('param_fmt_err');
+		}
+			
+		unset($content);
+		$content = array();
+		if($this->call_SetUserBlackIp($data['uid'],
+									$data['blackip'], 
+									&$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=> $content['message'],
+				),
+			);
+		}
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+			);
+	}
 	
+	private function call_SetUserBlackIp($uid, $blackip, $content)
+	{
+		$params = array(
+			'uid'       => $uid,
+			'blackip'     => $blackip
+		);
+		$params['safekey']  = $this->mk_passwd($params, 7);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['update_ip'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('用户不存在');
+			return false;
+		}
+
+		return false;
+	}
 	
 	
 	

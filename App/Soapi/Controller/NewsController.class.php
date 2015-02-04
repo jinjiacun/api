@@ -56,6 +56,7 @@ class NewsController extends BaseController {
 	 * sql script:
 	 * create table so_news(id int primary key auto_increment,
 	                              company_id int not null default 0 comment '企业id(为0时，是系统新闻)',
+	                              sign int not null default 0 comment '正负面新闻(0-正面)',
 	                              title varchar(255) comment '标题',
 	                              source varchar(255) comment '来源',
 	                              author varchar(255) comment '作者',
@@ -70,6 +71,7 @@ class NewsController extends BaseController {
 	protected $_module_name = 'news';
 	protected $id;
 	protected $company_id;
+	protected $sign;
 	protected $title;
 	protected $source;
 	protected $author;
@@ -84,9 +86,11 @@ class NewsController extends BaseController {
 	/*
 	@@input
 	@param $company_id  企业id
+	@param $sign        正负面
 	@param $title       标题
 	@param $source      来源
 	@param $author      作者
+	@param $resume      摘要
 	@param $content     内容
 	@param $pic         图片
 	@@output
@@ -158,6 +162,7 @@ class NewsController extends BaseController {
 				$list[] = array(
 						'id'          => intval($v['id']),
 						'company_id'  => intval($v['company_id']),
+						'sign'        => intval($v['sign']),
 						'title'       => urlencode($v['title']),
 						'source'      => urlencode($v['source']),
 						'author'      => urlencode($v['author']),
@@ -216,9 +221,12 @@ class NewsController extends BaseController {
 	@param $id
 	@@output
 	@param $id
+	@param $company_id 企业id
+	@param $sign     正负面
 	@param $title    标题
 	@param $source   来源
 	@param $author   作者
+	@param $resume   摘要
 	@param $content  内容
 	@param $pic      图片
 	@param $assist_num 点赞数
@@ -246,9 +254,10 @@ class NewsController extends BaseController {
 			$list = array(
 				'id'          => intval($tmp_one['id']),
 				'company_id'  => intval($tmp_one['company_id']),
+				'sign'        => intval($tmp_one['sign']),
 				'title'       => urlencode($tmp_one['title']),
 				'source'      => urlencode($tmp_one['source']),
-				'author'      => urlencode($tmp_one['author']), 
+				'author'      => urlencode($tmp_one['author']),
 				//'content'  => stripslashes(htmlspecialchars_decode(urlencode($tmp_one['content']))),
 				'content'     => urlencode(htmlspecialchars_decode($tmp_one['content'])),
 				'pic'         => intval($tmp_one['pic']),

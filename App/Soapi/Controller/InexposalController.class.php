@@ -109,7 +109,6 @@ class InexposalController extends BaseController {
 	                              company_name varchar(255) comment '企业名称',
 	                              corporation  varchar(255) comment '企业简介',
 	  							  reg_address varchar(255) comment '注册地址',
-	                              company_type varchar(255) comment '公司类型',
 	                              busin_license int not null default 0 comment '营业执照',
 	     						  code_certificate int not null default 0 comment '机构代码证',
 	                              telephone varchar(255) comment '联系电话',
@@ -141,7 +140,6 @@ class InexposalController extends BaseController {
 	var $company_name;     #公司名称(企业全称)
 	var $corporation;      #企业简称
 	var $reg_address;      #注册地址
-	var $company_type;     #企业类型
 	var $busin_license;    #营业执照
 	var $code_certificate; #机构代码证
 	var $telephone;        #联系电话
@@ -304,17 +302,22 @@ class InexposalController extends BaseController {
 		
 		$data = $this->fill($content);
 		
+		$user_id = $data['user_id'];
 		if(isset($data['where']))unset($data['where']);
 		
 		foreach($list as $k=> $v)
 		{
 			$data['where']['exposal_id'] = intval($v['id']);
+			if(0< $user_id)
+				$data['where']['_string'] = "user_id=$user_id or is_validate=1";
+			elseif(0 == $user_id)
+				$data['where']['is_validate'] = 1;
 			$data['page_size'] = 2;
 			$data['page_index'] = 1;
 			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
 				'list'=>$sub['list'],
-				'record_count'=>$sub['record_count']
+				'record_count'=>intval($sub['record_count'])
 			);
 		}
 		unset($k, $v);
@@ -363,7 +366,6 @@ class InexposalController extends BaseController {
 	@param company_name     *公司全称
 	@param corporation      *公司简称
 	@param reg_address      *注册地址
-	@param company_type     *企业类型
 	@param busin_license    *营业执照
 	@param code_certificate *机构代码证
 	@param telephone        *联系电话
@@ -385,7 +387,6 @@ class InexposalController extends BaseController {
 		|| !isset($data['company_name'])
 		|| !isset($data['corporation'])
 		|| !isset($data['reg_address'])
-		|| !isset($data['company_type'])
 		|| !isset($data['busin_license'])
 		|| !isset($data['code_certificate'])
 		|| !isset($data['telephone'])
@@ -435,7 +436,6 @@ class InexposalController extends BaseController {
 	@param company_name     *公司全称
 	@param corporation      *公司简称
 	@param reg_address      *注册地址
-	@param company_type     *企业类型
 	@param busin_license    *营业执照
 	@param code_certificate *机构代码证
 	@param telephone        *联系电话
@@ -464,7 +464,6 @@ class InexposalController extends BaseController {
 						'company_name'     => urlencode($v['company_name']),  
 						'corporation'      => urlencode($v['corporation']),
 						'reg_address'      => urlencode($v['reg_address']),
-						'company_type'     => urlencode($v['company_type']),
 						'busin_license'    => intval($v['busin_license']),
 						'busin_license_url'=> $this->get_pic_url($v['busin_license']),
 						'code_certificate' => intval($v['code_certificate']),
@@ -585,7 +584,6 @@ class InexposalController extends BaseController {
 						'company_name'     => urlencode($tmp_one['company_name']),  
 						'corporation'      => urlencode($tmp_one['corporation']),
 						'reg_address'      => urlencode($tmp_one['reg_address']),
-						'company_type'     => urlencode($tmp_one['company_type']),
 						'busin_license'    => intval($tmp_one['busin_license']),
 						'busin_license_url'=> $this->get_pic_url($tmp_one['busin_license']),
 						'code_certificate' => intval($tmp_one['code_certificate']),
@@ -636,6 +634,11 @@ class InexposalController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		 $tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+			                           from so_in_exposal 
+			                           where company_id=".$data['company_id']);
+		$exp_amount = $tmp_amount[0]['tp_count'];
+		
 		if(isset($content)) unset($content);
 		
 		$content = array(
@@ -645,9 +648,18 @@ class InexposalController extends BaseController {
 		                         ->save($content))
 		{
 			//添加曝光人数统计
-			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
-					                     'exp_amount'))
-			{
+			//if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
+			//		                     'exp_amount'))
+			//{
+			//更新曝光人数
+			 $tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+			                           from so_in_exposal 
+			                           where company_id=".$data['company_id']);
+			                           
+			 $exp_amount = $tmp_amount[0]['tp_count'];
+			 M()->execute("update so_company 
+			            set exp_amount=$exp_amount 
+			            where id=".$data['company_id']);
 				return array(
 					200,
 					array(
@@ -655,7 +667,7 @@ class InexposalController extends BaseController {
 						'message'=>C('option_ok'),
 					),
 				);
-			}
+			//}
 		}
 		return array(
 				200,
@@ -735,8 +747,8 @@ class InexposalController extends BaseController {
 		}
 		
 		$list = array();
-		$tmp_list = M($this->_module_name)->field('user_id')
-		                                  ->distinct('user_id')
+		$tmp_list = M($this->_module_name)->distinct(true)
+		                                  ->field('user_id')
 		                                  ->where($data)
 		                                  ->limit(3)
 		                                  ->select();
@@ -813,12 +825,13 @@ class InexposalController extends BaseController {
 			$data['page_size'] = 20;
 		}
 		
-		$where['auth_level'] = array('neq', '006003');
+		$data['where']['auth_level'] = array('neq', '006003');
 		
 		$tmp_list = D('InexposalcompanyView')
 		            ->page($data['page_index'], $data['page_size'])
-		            ->where($where)->select();
-		$record_count = D('InexposalcompanyView')->where($where)->count();
+		            ->order($data['order'])
+		            ->where($data['where'])->select();
+		$record_count = D('InexposalcompanyView')->where($data['where'])->count();
 		
 		$flat_form_count = 0;
 		//曝光平台数
@@ -830,6 +843,8 @@ class InexposalController extends BaseController {
 			from `so_in_exposal`
 			where type=0
 			)
+			and  exp_amount >0
+			and auth_level='006001'
 		");
 		//$flat_form_count = count($ttmp);
 		$flat_form_count = $ttmp[0]['tp_count'];
@@ -840,9 +855,11 @@ class InexposalController extends BaseController {
 			foreach($tmp_list as $v)
 			{
 				$list[] = array(
-					'user_id'  =>intval($v['user_id']),
-					'nickname' =>$this->_get_nickname($v['user_id']),
-					'add_time' =>intval($v['add_time']),
+					'id'           =>intval($v['id']),
+					'company_id'   =>intval($v['company_id']),
+					'user_id'      =>intval($v['user_id']),
+					'nickname'     =>$this->_get_nickname($v['user_id']),
+					'add_time'     =>intval($v['add_time']),
 					'company_name' => urlencode($v['company_name']),
 					'content' => urlencode($v['content']),
 				);

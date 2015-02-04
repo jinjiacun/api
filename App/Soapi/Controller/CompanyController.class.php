@@ -119,13 +119,13 @@ class CompanyController extends BaseController {
 		   		                     trade varchar(10) comment '所属行业',
 		   		                     company_name varchar(255) comment '公司全称',
 		   		                     auth_level varchar(10) comment '认证级别',
-		   		                     company_type varchar(255) comment '企业类型',
-		   		                     reg_address varchar(255) comment '注册地址',
+		   		                     reg_address varchar(255) comment '联系地址',
 		   		                     busin_license int not null default 0 comment '营业执照',
 		   		                     code_certificate int not null default 0 comment 'code_certificate',
 		   		                     telephone varchar(255) comment '联系电话',
 		   		                     website varchar(255) comment '官方网址',
 		   		                     record varchar(255) comment '官网备案',
+		   		                     regulators_id int not null default 0 comment '监管机构id',
 		   		                     find_website varchar(255) comment '查询网址',
 		   		                     agent_platform varchar(255) comment '代理平台',
 									 mem_sn varchar(255) comment '会员编号',
@@ -145,13 +145,13 @@ class CompanyController extends BaseController {
 		protected $trade;             #所属行业
 		protected $company_name;      #公司全称(唯一)
 		protected $auth_level;        #认证级别
-		protected $company_type;      #*企业类型
-		protected $reg_address;       #*注册地址
+		protected $reg_address;       #*联系地址
 		protected $busin_license;     #*营业执照(图片id)
 		protected $code_certificate;  #*机构代码证(图片id)
 		protected $telephone;         #*联系电话
 		protected $website;           #*官方网址
 		protected $record;            #*官网备案
+		protected $regulators_id;     #监管机构id
 		protected $find_website;      #查询网址
 		protected $agent_platform;    #代理平台
 		protected $mem_sn;            #会员编号
@@ -170,13 +170,13 @@ class CompanyController extends BaseController {
 		@param  $trade             #*所属行业
 		@param  $company_name      #*公司全称(唯一)
 		@param  $auth_level        #认证级别
-		@param  $company_type      #*企业类型
-		@param  $reg_address       #注册地址
+		@param  $reg_address       #联系地址
 		@param  $busin_license     #营业执照(图片id)
 		@param  $code_certificate  #机构代码证(图片id)
 		@param  $telephone         #联系电话
 		@param  $website           #官方网址
 		@param  $record            #官网备案
+		@param  $regulators_id     #监管机构id
 		@param  $find_website      #查询网址
 		@param  $agent_platform    #代理平台
 		@param  $mem_sn            #会员编号
@@ -190,7 +190,6 @@ class CompanyController extends BaseController {
 			if(!isset($data['nature'])
 			|| !isset($data['trade'])
 			|| !isset($data['company_name'])
-			|| !isset($data['company_type'])
 			)
 			{
 				return C('param_err');
@@ -199,7 +198,6 @@ class CompanyController extends BaseController {
 			$data['nature'] = htmlspecialchars(trim($data['nature']));
 			$data['trade'] = htmlspecialchars(trim($data['trade']));
 			$data['company_name'] = htmlspecialchars(trim($data['company_name']));
-			$data['company_type'] = htmlspecialchars(trim($data['company_type']));
 			
 			//isset($data['auth_level'])?$data['auth_level']=htmlspecialchars(trim($data['auth_level'])):;
 			
@@ -207,7 +205,6 @@ class CompanyController extends BaseController {
 			if('' == $data['nature']
 			|| '' == $data['trade']
 			|| '' == $data['company_name']
-			|| '' == $data['company_type']
 			)
 			{
 				return C('param_fmt_err');
@@ -248,13 +245,13 @@ class CompanyController extends BaseController {
 		@param  $trade             #所属行业
 		@param  $company_name      #公司全称(唯一)
 		@param  $auth_level        #认证级别
-		@param  $company_type      #*企业类型
-		@param  $reg_address       #*注册地址
+		@param  $reg_address       #*联系地址
 		@param  $busin_license     #*营业执照(图片id)
 		@param  $code_certificate  #*机构代码证(图片id)
 		@param  $telephone         #*联系电话
 		@param  $website           #*官方网址
 		@param  $record            #*官网备案
+		@param  $regulators_id     #监管机构id
 		@param  $find_website      #查询网址
 		@param  $agent_platform    #代理平台
 		@param  $mem_sn            #会员编号
@@ -285,12 +282,11 @@ class CompanyController extends BaseController {
 				$list = array(
 						'id'                => intval($tmp_one['id']),
 						'logo'              => intval($tmp_one['logo']),
-						'logo_url'          => $this->get_pic_url($tmp['logo']),
+						'logo_url'          => $this->get_pic_url($tmp_one['logo']),
 						'nature'            => urlencode($tmp_one['nature']),
 						'trade'             => urlencode($tmp_one['trade']),
 						'company_name'      => urlencode($tmp_one['company_name']),
 						'auth_level'        => urlencode($tmp_one['auth_level']),
-						'company_type'      => urlencode($tmp_one['company_type']),
 						'reg_address'       => urlencode($tmp_one['reg_address']),
 						'busin_license'     => intval($tmp_one['busin_license']),
 						'busin_license_url' => $this->get_pic_url($tmp_one['busin_license']),
@@ -299,6 +295,7 @@ class CompanyController extends BaseController {
 						'telephone'         => urlencode($tmp_one['telephone']),
 						'website'           => $tmp_one['website'],
 						'record'            => urlencode($tmp_one['record']),
+						'regulators_id'     => intval($tmp_one['regulators_id']),
 						'find_website'      => $tmp_one['find_website'],
 						'agent_platform'    => urlencode($tmp_one['agent_platform']),
 						'mem_sn'            => $tmp_one['mem_sn'],
@@ -334,7 +331,6 @@ class CompanyController extends BaseController {
 							'trade'             => urlencode($v['trade']),
 							'company_name'      => urlencode($v['company_name']),
 							'auth_level'        => urlencode($v['auth_level']),
-							'company_type'      => urlencode($v['company_type']),
 							'reg_address'       => urlencode($v['reg_address']),
 							'busin_license'     => intval($v['busin_license']),
 							'busin_license_url' => $this->get_pic_url($v['busin_license']),
@@ -343,6 +339,7 @@ class CompanyController extends BaseController {
 							'telephone'         => urlencode($v['telephone']),
 							'website'           => $v['website'],
 							'record'            => urlencode($v['record']),
+							'regulators_id'     => intval($v['regulators_id']),
 							'find_website'      => $v['find_website'],
 							'agent_platform'    => urlencode($v['agent_platform']),
 							'mem_sn'            => urlencode($v['mem_sn']),
@@ -406,8 +403,7 @@ class CompanyController extends BaseController {
 		@param  $trade             #所属行业
 		@param  $company_name      #公司全称(唯一)
 		@param  $auth_level        #认证级别
-		@param  $company_type      #*企业类型
-		@param  $reg_address       #*注册地址
+		@param  $reg_address       #*联系地址
 		@param  $busin_license     #*营业执照(图片id)
 		@param  $code_certificate  #*机构代码证(图片id)
 		@param  $telephone         #*联系电话
@@ -509,7 +505,6 @@ class CompanyController extends BaseController {
 						'trade'             => urlencode($v['trade']),
 						'company_name'      => urlencode($v['company_name']),
 						'auth_level'        => urlencode($v['auth_level']),
-						'company_type'      => urlencode($v['company_type']),
 						'reg_address'       => urlencode($v['reg_address']),
 						'busin_license'     => intval($v['busin_license']),
 						'busin_license_url' => $this->get_pic_url($v['busin_license']),
@@ -518,12 +513,17 @@ class CompanyController extends BaseController {
 						'telephone'         => urlencode($v['telephone']),
 						'website'           => $v['website'],
 						'record'            => urlencode($v['record']),
+						'regulators_id'     => intval($v['regulators_id']),
 						'find_website'      => $v['find_website'],
 						'agent_platform'    => urlencode($v['agent_platform']),
 						'mem_sn'            => $v['mem_sn'],
 						'certificate'       => intval($v['certificate']),
 						'certificate_url'   => $this->get_pic_url($v['certificate']),
 						'add_time'          => intval($v['add_time']),
+						'alias_list'        => urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
+						'add_blk_amount'    => intval($v['add_blk_amount']),
+						'exp_amount'        => intval($v['exp_amount']),
+						'com_amount'        => intval($v['com_amount']),
 					);
 				}
 				unset($v, $tmp_list);
@@ -641,6 +641,9 @@ class CompanyController extends BaseController {
 		@param $user_list     用户Id列表
 		*/
 		{
+			$tmp_data    = json_decode($content, true);
+			$tmp_data['where']['exp_amount'] = array('neq',0);
+			$content = json_encode($tmp_data);
 			list(,$data) = $this->get_list($content);
 			$list 			= $data['list'];
 			$record_count 	= $data['record_count'];
@@ -653,7 +656,6 @@ class CompanyController extends BaseController {
 					$content = array(
 						'company_id'=> intval($v['id'])
 					);
-					
 					/*
 					list(,$amount) = A('Soapi/Inexposal')
 					                ->stat_user_amount(json_encode($content));
@@ -675,6 +677,7 @@ class CompanyController extends BaseController {
 						unset($v, $tmp_user_list);
 					}
 					$list[$k]['user_list'] = $user_list;
+					unset($user_list);
 					list(,$min_time) = A('Soapi/Inexposal')
 					                   ->stat_user_min_date(json_encode($content));
 					$list[$k]['last_time'] = $min_time;

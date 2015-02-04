@@ -161,6 +161,38 @@ class CompanyaliasController extends BaseController {
 				);
 	}
 	
+	#查询企业别名列表
+	public function get_name($company_id=0)
+	/**
+	@@input
+	@param $company_id 企业id
+	@@output
+	@param 
+	 * */
+	{
+		if(0 >= $company_id)
+			return C('param_err');
+			
+		$names = '';
+		$list = array();
+		$tmp_list = M($this->_module_name)->field('name')
+		                                  ->where(array('company_id'=>$company_id))
+		                                  ->select();
+		if($tmp_list
+		&& 0<count($tmp_list))                       
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[] = $v['name'];
+			}
+			unset($v, $tmp_list);
+		}
+			
+		$names = implode(',', $list);
+		
+		return $names;		
+	}
+	
 	
 	
 	

@@ -49,6 +49,8 @@ public function get_list
 @param $is_validate           //是否审核
 @param $is_anonymous          //是否匿名
 @param $top_num               //顶数
+@param $is_delete             //是否删除(0-未删除,1-已删除)
+@param $ip                    //ip地址
 @param protected $add_time;   //添加日期
 ##--------------------------------------------------------##
 #查询评价(带两条回复)
@@ -74,6 +76,8 @@ public function get_list_ex
 @param $is_validate           //是否审核
 @param $is_anonymous          //是否匿名
 @param $top_num               //顶数
+@param $is_delete             //是否删除(0-未删除,1-已删除)
+@param $ip                    //ip地址
 @param protected $add_time;   //添加日期
 ##--------------------------------------------------------##
 #企业评论人数统计
@@ -82,6 +86,33 @@ public function stat_user_all_amount
 @param $company_id 企业名称
 @@output
 @param $content 人数
+##--------------------------------------------------------##
+#通过id获取单条信息
+public function get_info
+@@input
+@param $id
+@@output
+##--------------------------------------------------------##
+#查询主评论
+private function get_parent_content
+@@input
+@id
+@@output
+@content
+##--------------------------------------------------------##
+#审核
+public function validate
+@@input
+@param $id
+@@output
+@param $is_success 0-成功操作,-1-操作失败
+##--------------------------------------------------------##
+#删除
+public function delete
+@@input
+@id
+@@output
+@param $is_success 0-成功操作,-1-操作失败
 ##--------------------------------------------------------##
 */
 class CommentController extends BaseController {
@@ -102,6 +133,8 @@ class CommentController extends BaseController {
 	                              validate_time int not null default 0  comment '审核时间',
 	                              is_anonymous int not null default 0 comment '是否匿名,默认0,不匿名',
 	                              top_num int not null default 0 comment '顶的数目',
+	                              is_delete int not null default 0 comment '0-未删除,1-已删除',
+	                              ip varchar(255) comment 'ip地址',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -120,6 +153,7 @@ class CommentController extends BaseController {
 	protected $pic_4;
 	protected $pic_5;
 	protected $is_validate; //是否审核
+	protected $is_delete;
 	protected $add_time;    //添加日期
 	
 	#添加评价
@@ -171,14 +205,18 @@ class CommentController extends BaseController {
 		
 		
 		$data['add_time'] = time();
+		$data['ip']       = $this->get_real_ip();
 		
+		/*
 		$parent_id = intval($data['parent_id']);
 		if(0== $parent_id)
 		{
 			//累计评论数
 			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
 											'com_amount'));
-		}								
+		}
+		*/
+								
 		if(M($this->_module_name)->add($data))
 		{
 			return array(
@@ -224,6 +262,8 @@ class CommentController extends BaseController {
 	@param $is_validate           //是否审核
 	@param $is_anonymous          //是否匿名
 	@param $top_num               //顶数
+	@param $is_delete             //是否删除(0-未删除,1-已删除)
+	@param $ip                    //ip地址
 	@param $add_time;   //添加日期
 	*/
 	{
@@ -240,6 +280,7 @@ class CommentController extends BaseController {
 						'nickname'     => $this->_get_nickname($v['user_id']),
 						'company_id'   => intval($v['company_id']),
 						'parent_id'    => intval($v['parent_id']),
+						'parent_content' => urlencode($this->get_parent_content($v['parent_id'])),
 						'type'         => $v['type'],
 						'content'      => urlencode($v['content']),
 						'pic_1'        => intval($v['pic_1']),
@@ -253,8 +294,11 @@ class CommentController extends BaseController {
 						'pic_5'        => intval($v['pic_5']),
 						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
 						'is_validate'  => intval($v['is_validate']),
+						'validate_time'=> intval($v['validate_time']),
 						'is_anonymous' => intval($v['is_anonymous']),
 						'top_num'      => intval($v['top_num']),
+						'is_delete'    => intval($v['is_delete']),
+						'ip'           => $v['ip'],
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -292,6 +336,8 @@ class CommentController extends BaseController {
 	@param $is_validate           //是否审核
 	@param $is_anonymous          //是否匿名
 	@param $top_num               //顶数
+	@param $is_delete             //是否删除(0-未删除,1-已删除)
+	@param $ip                    //ip地址
 	@param protected $add_time;   //添加日期
 	*/
 	{
@@ -364,18 +410,217 @@ class CommentController extends BaseController {
 		);
 	}
 	
+	#通过id获取单条信息
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$v = M($this->_module_name)->where($data)->find();
+		if($v)
+		{
+			$list = array(
+						'id'           => intval($v['id']),
+						'user_id'      => intval($v['user_id']),
+						'nickname'     => $this->_get_nickname($v['user_id']),
+						'company_id'   => intval($v['company_id']),
+						'parent_id'    => intval($v['parent_id']),
+						'type'         => $v['type'],
+						'content'      => urlencode($v['content']),
+						'pic_1'        => intval($v['pic_1']),
+						'pic_1_url'    => $this->get_pic_url($v['pic_1']),
+						'pic_2'        => intval($v['pic_2']),
+						'pic_2_url'    => $this->get_pic_url($v['pic_2']),
+						'pic_3'        => intval($v['pic_3']),
+						'pic_3_url'    => $this->get_pic_url($v['pic_3']),
+						'pic_4'        => intval($v['pic_4']),
+						'pic_4_url'    => $this->get_pic_url($v['pic_4']),
+						'pic_5'        => intval($v['pic_5']),
+						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
+						'is_validate'  => intval($v['is_validate']),
+						'is_anonymous' => intval($v['is_anonymous']),
+						'top_num'      => intval($v['top_num']),
+						'is_delete'    => intval($v['is_delete']),
+						'ip'           => $v['ip'],
+						'add_time'     => intval($v['add_time']),
+					);	
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
 	
 	
+	#审核
+	public function validate($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		unset($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array(
+			'id'=>$data['id']
+		);
+		unset($data);
+		$data = array(
+			'is_validate'=>1,
+			'validate_time'=>time(),
+		);
+		if(M($this->_module_name)->where($content)->save($data))
+		{
+			//审核评论时，记数
+			A('Soapi/Company')->__top(array('id'=>$data['id']), 
+											'com_amount');
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					)
+				);
+		}
+		
+		return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>C('option_fail'),
+					)
+		);
+	}
 	
+	#审核
+	public function validate_mul($content)
+	/*
+	@@input
+	@param $id 数组
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		unset($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = $data['id'];
+		
+		if(!is_array($data['id']))
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array(
+			'id'=>array('in',implode(',',$data['id']))
+		);
+		unset($data);
+		$data = array(
+			'is_validate'=>1,
+			'validate_time'=>time(),
+		);
+		if(M($this->_module_name)->where($content)->save($data))
+		{
+			//审核评论时，记数
+			A('Soapi/Company')->__top(array('id'=>$data['id']), 
+											'com_amount');
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					)
+				);
+		}
+		
+		return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>C('option_fail'),
+					)
+		);
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	#删除
+	public function delete($content)
+	/*
+	@@input
+	@id
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))
+		                                   ->save(array('is_delete'=>1)))
+		{
+			M($this->_module_name)->where(array('parent_id'=>$data['id']))
+			                      ->save(array('is_delete'=>1));
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);
+	}
 	
 	
 	

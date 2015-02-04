@@ -352,7 +352,9 @@ class BaseController extends Controller {
 			"<uid>|<userip>|<yyyyMMdd>|souhei975427",                                     #(2)更新用户信息
 			"<uid>|<yyyyMMdd>|souhei975427",                                              #(3)查询用户信息
 			"<mobile>|<yyyyMMdd>|souhei975427",                                           #(4)检查手机号码
-			"<mobile>|<imagecode>|souhei975427",                                 #(5)获取手机短信验证码
+			"<mobile>|<imagecode>|souhei975427",                                          #(5)获取手机短信验证码
+			"<uid>|<state>|souhei975427",                                                 #(6)更新用户状态
+			"<uid>|<blackip>|souhei975427",                                               #(7)更新用户登录IP黑名单
 		);
 		$str = $seg_list[$seg_index];
 		switch($seg_index)
@@ -397,6 +399,18 @@ class BaseController extends Controller {
 				{
 					$str = str_replace("<mobile>",    $params['mobile']  ,    $str);
 					$str = str_replace("<imagecode>", $params['imagecode'],   $str);
+				}
+			break;
+			case 6:
+				{
+					$str = str_replace("<uid>",       $params['uid']  ,      $str);
+					$str = str_replace("<state>",     $params['state']  ,    $str);
+				}
+			break;
+			case 7:
+				{
+					$str = str_replace("<uid>",       $params['uid']  ,       $str);
+					$str = str_replace("<blackip>",   $params['blackip']  ,   $str);
 				}
 			break;
 		}
@@ -533,10 +547,24 @@ class BaseController extends Controller {
 		);
 		if(M($this->_module_name)->where($content)->save($data))
 		{
-				return true;
+				//return true;
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					)
+				);
 		}
 		
-		return false;
+		//return false;
+		return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>C('option_fail'),
+					)
+				);
 	}
 	
 	#判定是否存在
@@ -593,9 +621,23 @@ class BaseController extends Controller {
 		$list = M($this->_module_name)->where($where)->find();
 		return $list;
 	}
-	
-	
-	
+		
+	#查询主评论
+	protected function get_parent_content($id)
+	/*
+	@@input
+	@id
+	@@output
+	@content
+	*/
+	{
+		if(0 >= $id) return '';
+		
+		$content = '';
+		$content = M($this->_module_name)->field('content')
+		                                 ->find($id);
+		return $content['content'];
+	}
 	
 	
 	
