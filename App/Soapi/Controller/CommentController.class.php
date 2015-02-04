@@ -556,9 +556,13 @@ class CommentController extends BaseController {
 		);
 		if(M($this->_module_name)->where($content)->save($data))
 		{
-			//审核评论时，记数
-			A('Soapi/Company')->__top(array('id'=>$data['id']), 
+			foreach($data['id'] as $v)
+			{
+				//审核评论时，记数
+				A('Soapi/Company')->__top(array('id'=>$v), 
 											'com_amount');
+			}
+			
 				return array(
 					200,
 					array(
