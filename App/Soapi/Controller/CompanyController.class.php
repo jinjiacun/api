@@ -104,11 +104,19 @@ public function black_sort
 @param $last_time     最早曝光时间
 @param $user_list     用户Id列表
 ##--------------------------------------------------------##
-#曝光统计
-public function stat_exposal
+#通过id查询名称
+private function get_name_by_id
 @@input
-
+@param $id
 @@output
+@param $name
+##--------------------------------------------------------##
+#通过id查询名称
+private function get_auth_level_by_id
+@@input
+@param $id
+@@output
+@param $name
 */
 class CompanyController extends BaseController {
 	    /**
@@ -296,8 +304,11 @@ class CompanyController extends BaseController {
 						'website'           => $tmp_one['website'],
 						'record'            => urlencode($tmp_one['record']),
 						'regulators_id'     => intval($tmp_one['regulators_id']),
+						'regulators_id_n'   => A('Soapi/Regulators')->get_name_by_id($tmp_one['regulators_id']),
 						'find_website'      => $tmp_one['find_website'],
-						'agent_platform'    => urlencode($tmp_one['agent_platform']),
+						'agent_platform'    => intval($tmp_one['agent_platform']),
+						'agent_platform_n'  => urlencode($this->get_name_by_id($tmp_one['agent_platform'])),
+						'agent_platform_auth_level'=>$this->get_auth_level_by_id($tmp_one['agent_platform']),
 						'mem_sn'            => $tmp_one['mem_sn'],
 						'certificate'       => intval($tmp_one['certificate']),
 						'certificate_url'   => $this->get_pic_url($tmp_one['certificate']),
@@ -342,6 +353,7 @@ class CompanyController extends BaseController {
 							'regulators_id'     => intval($v['regulators_id']),
 							'find_website'      => $v['find_website'],
 							'agent_platform'    => urlencode($v['agent_platform']),
+							'agent_platform_n'  => urlencode($this->get_name_by_id($v['agent_platform'])),
 							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
@@ -514,8 +526,10 @@ class CompanyController extends BaseController {
 						'website'           => $v['website'],
 						'record'            => urlencode($v['record']),
 						'regulators_id'     => intval($v['regulators_id']),
+						'regulators_id_n'   => urlencode(A('Soapi/Regulators')->get_name_by_id($v['regulators_id'])),
 						'find_website'      => $v['find_website'],
 						'agent_platform'    => urlencode($v['agent_platform']),
+						'agent_platform_n'  => urlencode($this->get_name_by_id($v['agent_platform'])),
 						'mem_sn'            => $v['mem_sn'],
 						'certificate'       => intval($v['certificate']),
 						'certificate_url'   => $this->get_pic_url($v['certificate']),
@@ -726,9 +740,37 @@ class CompanyController extends BaseController {
 			);
 		}
 		
+		#通过id查询名称
+		private function get_name_by_id($id)
+		/*
+		@@input
+		@param $id
+		@@output
+		@param $name
+		*/
+		{
+			if(0>= $id)
+				return '';
+				
+			$tmp = M($this->_module_name)->field('company_name')->find($id);
+			return $tmp['company_name'];
+		}
 		
-		
-		
+		#通过id查询名称
+		private function get_auth_level_by_id($id)
+		/*
+		@@input
+		@param $id
+		@@output
+		@param $name
+		*/
+		{
+			if(0>= $id)
+				return '';
+				
+			$tmp = M($this->_module_name)->field('auth_level')->find($id);
+			return $tmp['auth_level'];
+		}
 		
 		
 		

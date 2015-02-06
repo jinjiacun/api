@@ -86,6 +86,8 @@ public function stat_user_amount
 @param $company_id 企业id
 @@output
 ##--------------------------------------------------------##
+
+##--------------------------------------------------------##
 #曝光动态
 public function dynamic
 @@input
@@ -94,6 +96,30 @@ public function dynamic
 @param $add_time     曝光时间
 @param $company_name 企业名称
 @param $content      曝光内容
+##--------------------------------------------------------##
+#删除
+public function delete($content)
+/*
+@@input
+@id
+@@output
+@param $is_success 0-成功操作,-1-操作失败
+##--------------------------------------------------------##
+#更新曝光人数
+private function set_exp_amount
+@@input
+@param $company_id 企业id
+@@output
+@param true ,false
+
+#最新曝光
+public function last_exposal
+@@output
+@param $nickname
+@param $add_time
+@param $company_id
+@param $company_name
+@param $auth_level
 ##--------------------------------------------------------##
 */
 class InexposalController extends BaseController {
@@ -126,6 +152,7 @@ class InexposalController extends BaseController {
 	                              certificate int not null default 0 comment '资质证明',
 	                              find_website varchar(255) comment 'find_website',
 	                              top_num int not null default 0 comment '顶数目',
+	                              is_delete int not null default 0 comment '是否删除(1-删除)',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -159,7 +186,7 @@ class InexposalController extends BaseController {
 	var $mem_sn;         #会员编号
 	var $certificate;    #资质证明
 	var $find_website;   #查询网址
-	
+	var $is_delete;      #是否删除(1-删除)
 	var $add_time;       #添加日期
 	
 	
@@ -277,6 +304,7 @@ class InexposalController extends BaseController {
 						'pic_5'        => intval($v['pic_5']),
 						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
 						'top_num'      => intval($v['top_num']),
+						'is_delete'    => intval($v['is_delete']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -476,6 +504,7 @@ class InexposalController extends BaseController {
 						'certificate'      => intval($v['certificate']),
 						'certificate_url'  => $this->get_pic_url($v['certificate']),
 						'find_website'	   => $v['find_website'],
+						'is_delete'        => intval($v['is_delete']),
 						'add_time'         => intval($v['add_time']),
 					);	
 			}
@@ -537,6 +566,7 @@ class InexposalController extends BaseController {
 						'pic_5'        => intval($tmp_one['pic_5']),
 						'pic_5_url'    => $this->get_pic_url($tmp_one['pic_5']),
 						'top_num'      => intval($tmp_one['top_num']),
+						'is_delete'    => intval($tmp_one['is_delete']),
 						'add_time'     => intval($tmp_one['add_time']),
 			);
 		}
@@ -596,6 +626,7 @@ class InexposalController extends BaseController {
 						'certificate'      => intval($tmp_one['certificate']),
 						'certificate_url'  => $this->get_pic_url($tmp_one['certificate']),
 						'find_website'	   => $tmp_one['find_website'],
+						'is_delete'        => intval($tmp_one['is_delete']),
 						'add_time'         => intval($tmp_one['add_time']),
 			);
 		}
@@ -634,10 +665,10 @@ class InexposalController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		 $tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
-			                           from so_in_exposal 
-			                           where company_id=".$data['company_id']);
-		$exp_amount = $tmp_amount[0]['tp_count'];
+		//$tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+			                           //from so_in_exposal 
+			                           //where company_id=".$data['company_id']);
+		//$exp_amount = $tmp_amount[0]['tp_count'];
 		
 		if(isset($content)) unset($content);
 		
@@ -651,15 +682,16 @@ class InexposalController extends BaseController {
 			//if(A('Soapi/Company')->__top(array('id'=>$data['company_id']), 
 			//		                     'exp_amount'))
 			//{
-			//更新曝光人数
-			 $tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
-			                           from so_in_exposal 
-			                           where company_id=".$data['company_id']);
-			                           
-			 $exp_amount = $tmp_amount[0]['tp_count'];
-			 M()->execute("update so_company 
-			            set exp_amount=$exp_amount 
-			            where id=".$data['company_id']);
+			//~ //更新曝光人数
+			 //~ $tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+			                           //~ from so_in_exposal 
+			                           //~ where company_id=".$data['company_id']);
+			                           //~ 
+			 //~ $exp_amount = $tmp_amount[0]['tp_count'];
+			 //~ M()->execute("update so_company 
+			            //~ set exp_amount=$exp_amount 
+			            //~ where id=".$data['company_id']);
+			    $this->set_exp_amount($data['company_id']);
 				return array(
 					200,
 					array(
@@ -707,13 +739,15 @@ class InexposalController extends BaseController {
 		if(isset($data['company_id'])
 		&& 0< $data['company_id'])
 		{
+			$data['is_delete'] = 0;
 			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
 			$amount   = count($tmp_list);
 		}
 		else
 		{
-			$where['company_id'] = array('neq', 0);
-			$where['type'] = 0;
+			$data['company_id'] = array('neq', 0);
+			$data['type'] = 0;
+			$data['is_delete'] = 0;
 			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
 			$amount = count($tmp_list);
 		}
@@ -826,6 +860,7 @@ class InexposalController extends BaseController {
 		}
 		
 		$data['where']['auth_level'] = array('neq', '006003');
+		$data['where']['type'] = 0;
 		
 		$tmp_list = D('InexposalcompanyView')
 		            ->page($data['page_index'], $data['page_size'])
@@ -861,6 +896,7 @@ class InexposalController extends BaseController {
 					'nickname'     =>$this->_get_nickname($v['user_id']),
 					'add_time'     =>intval($v['add_time']),
 					'company_name' => urlencode($v['company_name']),
+					'auth_level'   => $v['auth_level'],
 					'content' => urlencode($v['content']),
 				);
 			}
@@ -876,5 +912,152 @@ class InexposalController extends BaseController {
 			)
 		);
 	}
+	
+	#删除
+	public function delete($content)
+	/*
+	@@input
+	@param $id           
+	@param company_id  企业id
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id'])
+		|| !isset($data['company_id'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		$data['company_id'] = intval($data['company_id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))
+		                                   ->save(array('is_delete'=>1)))
+		{
+			//更新统计曝光人数
+			//todo:
+			if(0<$data['company_id'])
+				$this->set_exp_amount($data['company_id']);
+			
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);
+	}
+	
+	
+	#更新曝光人数
+	private function set_exp_amount($company_id)
+	/*
+	@@input
+	@param $company_id 企业id
+	@@output
+	@param true ,false
+	*/
+	{
+		if(0>= $company_id)
+			return false;
+			
+		//更新曝光人数
+		$tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+								  from so_in_exposal 
+								  where is_delete=0
+								  and company_id=".$company_id);
+								   
+		 $exp_amount = $tmp_amount[0]['tp_count'];
+		 $res = M()->execute("update so_company 
+							  set exp_amount=$exp_amount 
+							  where id=".$company_id);
+	     if(false !== $res)
+			return true;
+		
+		return false;
+	}
+	
+	#最新曝光
+	public function last_exposal($content)
+	/*
+	@@output
+	@param $nickname
+	@param $add_time
+	@param $company_id
+	@param $company_name
+	@param $auth_level
+	*/
+	{
+		$str_sql = "
+			select e.user_id as user_id,
+			       e.add_time as add_time,
+			       e.company_id as company_id,
+			       c.company_name as company_name,
+			       c.auth_level as auth_level
+			from so_in_exposal as e left join so_company as c
+			on e.company_id = c.id
+			where c.auth_level<>'006003'
+			and e.is_delete =0
+			order by e.id desc
+			limit 10
+		";
+		$list = M()->query($str_sql);
+		foreach($list as $k=>$v)
+		{
+			$list[$k] = array(
+						'nickname'=>$this->_get_nickname($v['user_id']),
+						'add_time'=>intval($v['add_time']),
+						'company_id'=>intval($v['company_id']),
+						'company_name'=>urlencode($v['company_name']),
+						'auth_level'=>$v['auth_level']
+			);
+		}
+		return array(
+			200,
+			$list
+		);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
 }
 ?>

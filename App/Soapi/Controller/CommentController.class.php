@@ -110,9 +110,17 @@ public function validate
 #删除
 public function delete
 @@input
-@id
+@param $id          
+@param $company_id  企业id
 @@output
 @param $is_success 0-成功操作,-1-操作失败
+##--------------------------------------------------------##
+#更新评论人数统计
+private function set_com_amount
+@@input
+@param $company_id
+@@output
+$param true, false
 ##--------------------------------------------------------##
 */
 class CommentController extends BaseController {
@@ -139,7 +147,7 @@ class CommentController extends BaseController {
 	                             )charset=utf8;
 	 * */
 	
-	protected $_module_name = 'comment';
+	protected $_module_name = 'Comment';
 	
 	protected $id;
 	protected $user_id;
@@ -473,21 +481,27 @@ class CommentController extends BaseController {
 	public function validate($content)
 	/*
 	@@input
-	@param $id
+	@param id
+	@param $company_id
 	@@output
 	@param $is_success 0-成功操作,-1-操作失败
 	*/
 	{
 		$data = $this->fill($content);
 		unset($content);
-		if(!isset($data['id']))
+		if(!isset($data['company_id'])
+		|| !isset($data['id'])
+		)
 		{
 			return C('param_err');
 		}
 		
 		$data['id'] = intval($data['id']);
+		$data['company_id'] = intval($data['company_id']);
 		
-		if(0>= $data['id'])
+		if(0>= $data['id']
+		|| 0>= $data['company_id']
+		)
 		{
 			return C('param_fmt_err');
 		}
@@ -495,6 +509,7 @@ class CommentController extends BaseController {
 		$content = array(
 			'id'=>$data['id']
 		);
+		$company_id = $data['company_id'];
 		unset($data);
 		$data = array(
 			'is_validate'=>1,
@@ -502,9 +517,8 @@ class CommentController extends BaseController {
 		);
 		if(M($this->_module_name)->where($content)->save($data))
 		{
-			//审核评论时，记数
-			A('Soapi/Company')->__top(array('id'=>$data['id']), 
-											'com_amount');
+				//总数累计
+				$this->set_com_amount($company_id);
 				return array(
 					200,
 					array(
@@ -528,6 +542,7 @@ class CommentController extends BaseController {
 	/*
 	@@input
 	@param $id 数组
+	@param $company_id 企业数组
 	@@output
 	@param $is_success 0-成功操作,-1-操作失败
 	*/
@@ -549,6 +564,7 @@ class CommentController extends BaseController {
 		$content = array(
 			'id'=>array('in',implode(',',$data['id']))
 		);
+		$company_id = $data['company_id'];
 		unset($data);
 		$data = array(
 			'is_validate'=>1,
@@ -556,11 +572,10 @@ class CommentController extends BaseController {
 		);
 		if(M($this->_module_name)->where($content)->save($data))
 		{
-			foreach($data['id'] as $v)
+			foreach($company_id as $v)
 			{
 				//审核评论时，记数
-				A('Soapi/Company')->__top(array('id'=>$v), 
-											'com_amount');
+				$this->set_com_amount($v);
 			}
 			
 				return array(
@@ -585,20 +600,31 @@ class CommentController extends BaseController {
 	public function delete($content)
 	/*
 	@@input
-	@id
+	@param $id
+	@param $company_id
+	@param $parent_id
+	@param $is_validte
 	@@output
 	@param $is_success 0-成功操作,-1-操作失败
 	*/
 	{
 		$data = $this->fill($content);
-		if(!isset($data['id']))
+		if(!isset($data['id'])
+		|| !isset($data['company_id'])
+		|| !isset($data['is_validate'])
+		)
 		{
 			return C('param_err');
 		}
 		
 		$data['id'] = intval($data['id']);
+		$data['company_id'] = intval($data['company_id']);
+		$data['is_validate'] = intval($data['is_validate']);
+		$data['parent_id']   = intval($data['parent_id']);
 		
-		if(0>= $data['id'])
+		if(0>= $data['id']
+		|| 0>= $data['company_id']
+		)
 		{
 			return C('param_fmt_err');
 		}
@@ -606,8 +632,29 @@ class CommentController extends BaseController {
 		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))
 		                                   ->save(array('is_delete'=>1)))
 		{
-			M($this->_module_name)->where(array('parent_id'=>$data['id']))
-			                      ->save(array('is_delete'=>1));
+			//更新评论统计
+			$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
+			//删除为主评论，还需删除回复
+			if(0 < $data['parent_id'])
+			{
+				$list = M()->query("select id 
+				                    from so_comment 
+				                    where parent_id=$data[parent_id] 
+				                    and company_id=$data[company_id]
+				                    and is_delete=0
+				                    ");
+				if($list
+				&& 0<count($list))
+				{
+					foreach($list as $v)
+					{
+						$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
+					}
+				}
+				//删除所有回复评论
+				M($this->_module_name)->where(array('parent_id'=>$data['parent_id'],
+				                                    'is_delete'=>0))->delete();
+			}
 			return array(
 				200,
 				array(
@@ -626,8 +673,32 @@ class CommentController extends BaseController {
 		);
 	}
 	
-	
-	
+	#更新评论人数统计
+	private function set_com_amount($company_id, $sign=0, $is_validate=0)
+	/*
+	@@input
+	@param $company_id
+	@param $sign 默认0，-1为降
+	@@output
+	$param true, false
+	*/
+	{
+		if(0>= $company_id)
+			return false;
+			
+		//审核评论时，记数
+		
+		if(0 == $sign)
+		{
+			A('Soapi/Company')->__top(array('id'=>$company_id),'com_amount');
+												
+		}
+		else if(-1== $sign && 1 == $is_validate)
+		{
+			A('Soapi/Company')->__down(array('id'=>$company_id),'com_amount');
+		}										
+		return true;
+	}
 	
 	
 	

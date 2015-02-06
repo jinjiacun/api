@@ -174,7 +174,7 @@ class UserController extends BaseController {
 			'user_id'  =>0,
 			'nickname' =>isset($data['nickname'])?$data['nickname']:'',
 			'sex'      =>-1,
-			'cur_date' =>''
+			'cur_date' =>'',
 		);
 		
 		
@@ -277,7 +277,8 @@ class UserController extends BaseController {
 			'user_id'  =>0,
 			'nickname' =>'',
 			'sex'      =>-1,
-			'cur_date' =>''
+			'cur_date' =>'',
+			'userip'   =>isset($data['userip'])?$data['user_ip']:'',
 		);
 		if($this->call_LoginByMobile($data['mobile'],
 		                             $data['pswd'],
@@ -359,7 +360,7 @@ class UserController extends BaseController {
 		$params = array(
 			'mobile'   => $mobile,
 			'pswd'     => $pswd,
-			'userip'   => $this->get_real_ip(),
+			'userip'   => ''==$content['userip']?$this->get_real_ip():$content['userip'],
 		);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login'];
 		$back_str = $this->post($url, $params);
@@ -378,6 +379,12 @@ class UserController extends BaseController {
 			$content['cur_date'] = $r_list[$index++];
 			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
 			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			//添加登录日志
+			A('Soapi/Memlog')->add(json_encode(array(
+												'user_id'=>$content['user_id'],
+												'userip'=>$params['userip'],
+												'add_time'=>time()
+			)));
 			return true;
 		}
 		elseif(-3 == $re_json['State'])

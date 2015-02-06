@@ -23,7 +23,7 @@ public function get_info
 @@output
 ##--------------------------------------------------------##
 public function update                    更新
-@@input
+@@inputr
 @param $where 条件
 @param $data  要更新的数据
 @@output
@@ -439,7 +439,7 @@ class BaseController extends Controller {
 		*/
 		$randStr = str_shuffle('1234567890');
 		$rand = substr($randStr,0,6);
-		return $rand;
+		return 'SOUHEI_'.$rand;
 	}
 	
 	public function post($url, $params = false, $header = array()){
@@ -477,6 +477,28 @@ class BaseController extends Controller {
 		$pic_info = M('Media')->find($id);
 		if($pic_info)
 		{
+			//判定是手机来源
+            if(is_mobile_request())
+            {
+				//判定新闻
+            	if('001006' == $pic_info['dict_sn'])
+            	{					
+					$pic_pc = __PUBLIC__.$pic_info['media_url'];//目标app路径
+                    $type = substr($pic_info['media_url'],-4);
+                    $pic_app = str_replace($type,'',$pic_info['media_url']).'_app'.$type;                    
+					if(!file_exists(__PUBLIC__.$pic_app))
+					{
+						//生成手机缩略图
+                        $res = img2thumb($pic_pc, __PUBLIC__.$pic_app, 80, 60);
+                        if($res)
+                        {
+							return C('media_url_pre').$pic_app;
+						}
+					}	
+					else
+						return C('media_url_pre').$pic_app;
+				}	
+			}
 			return C('media_url_pre').$pic_info['media_url'];
 		}
 	}
@@ -518,6 +540,24 @@ class BaseController extends Controller {
 	public function __assist($content, $field_name)
 	{
 		return $this->__top($content, $field_name);
+	}
+	
+	#降
+	public function __down($content, $field_name)
+	/*
+	@@input
+	@param $content    条件
+	@param $field_name 目标字段名称
+	@@output
+	@param true-成功, false-失败
+	*/
+	{
+		if(M($this->_module_name)->where($content)->setDec($field_name, 1))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	#审核

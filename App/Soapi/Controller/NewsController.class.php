@@ -62,7 +62,6 @@ class NewsController extends BaseController {
 	                              author varchar(255) comment '作者',
 	                              content text comment '内容',
 	                              pic int not null default 0 comment '配图(pc)',
-	                              pic_app int not null default 0 comment '配图(app)',
 	                              assist_num int not null default 0 comment '点赞数', 
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
@@ -77,7 +76,6 @@ class NewsController extends BaseController {
 	protected $author;
 	protected $content;
 	protected $pic;
-	protected $pic_app;
 	protected $assist_num;
 	protected $add_time;
 
@@ -169,7 +167,6 @@ class NewsController extends BaseController {
 						'content'     => urlencode($v['content']),
 						'pic'         => intval($v['pic']),
 						'pic_url'     => $this->get_pic_url($v['pic']),
-						'pic_app'     => intval($v['pic_app']),
 						'assist_num'  => intval($v['assist_num']),
 						'add_time'    => intval($v['add_time']),
 						
@@ -262,7 +259,6 @@ class NewsController extends BaseController {
 				'content'     => urlencode(htmlspecialchars_decode($tmp_one['content'])),
 				'pic'         => intval($tmp_one['pic']),
 				'pic_url'     => $this->get_pic_url($tmp_one['pic']),
-				'pic_app'     => intval($tmp_one['pic_app']),
 				'assist_num'  => intval($tmp_one['assist_num']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);

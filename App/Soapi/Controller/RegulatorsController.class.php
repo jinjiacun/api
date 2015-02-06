@@ -54,6 +54,13 @@ public function get_id_name_map
 @@output
 格式[{'id':'name'},...,{}]
 ##--------------------------------------------------------##
+#通过id查询标题
+public function get_name_by_id
+@@input
+@param $id
+@@out
+@param $name
+##--------------------------------------------------------##
 */
 class RegulatorsController extends BaseController {
 	/**
@@ -266,8 +273,22 @@ class RegulatorsController extends BaseController {
 		);
 	}
 	
-	
-	
+	#通过id查询标题
+	public function get_name_by_id($id)
+	/*
+	@@input
+	@param $id
+	@@out
+	@param $name
+	*/
+	{
+		if(0>= $id)
+			return '';
+			
+		$tmp = M($this->_module_name)->field('title')
+		                             ->find($id);
+		return $tmp['title'];
+	}
 	
 	
 	
