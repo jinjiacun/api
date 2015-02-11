@@ -98,7 +98,6 @@ class RegulatorsController extends BaseController {
 	*/
 	{
 		$data = $this->fill($content);
-		
 		if(!isset($data['type'])
 		|| !isset($data['title'])
 		|| !isset($data['website'])

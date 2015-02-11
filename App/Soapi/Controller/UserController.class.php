@@ -180,6 +180,12 @@ class UserController extends BaseController {
 		
 		if($this->call_RegisterByMobile($data['mobile'], $data['pswd'], &$content))
 		{
+			//同步用户信息
+			$user_info = array(
+				'user_id'=>$content['user_id'],
+				'nickname'=>$content['nickname'],
+			);
+			A('Soapi/Member')->add(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -278,7 +284,7 @@ class UserController extends BaseController {
 			'nickname' =>'',
 			'sex'      =>-1,
 			'cur_date' =>'',
-			'userip'   =>isset($data['userip'])?$data['user_ip']:'',
+			'userip'   =>isset($data['userip'])?$data['userip']:'',
 		);
 		if($this->call_LoginByMobile($data['mobile'],
 		                             $data['pswd'],
@@ -293,6 +299,13 @@ class UserController extends BaseController {
 			session('user_nick_name',  $content['nickname']);
 			session('user_sex',        $content['user_sex']);
 			session('user_login_date', $content['cur_date']);
+			//修改登录信息
+			$user_info['data'] = array(
+				'last_login'   => time(),
+				'last_login_ip'=> $content['userip']
+			);
+			$user_info['where']['user_id'] = $content['user_id'];
+			A('Soapi/Member')->update(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -696,6 +709,12 @@ class UserController extends BaseController {
 		                                $data['address'],
 		                                &$content))
 		{
+			//同步昵称修改
+			$user_info['data'] = array(
+				'nickname' => $data['nickname'],
+			);
+			$user_info['where']['user_id'] = $data['uid'];
+			A('Soapi/Member')->update(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -1020,6 +1039,12 @@ class UserController extends BaseController {
 										$data['state'], 
 										&$content))
 			{
+				//同步更新状态
+				$user_info['data'] = array(
+					'state'=>$data['state'],
+				);
+				$user_info['where']['user_id'] = $data['uid'];
+				A('Soapi/Member')->update(json_encode($user_info));
 				return array(
 					200,
 					array(

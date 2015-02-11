@@ -137,6 +137,8 @@ class InexposalController extends BaseController {
 	  							  reg_address varchar(255) comment '注册地址',
 	                              busin_license int not null default 0 comment '营业执照',
 	     						  code_certificate int not null default 0 comment '机构代码证',
+	     						  mobile varchar(255) comment '个人联系电话',
+	     						  contact varchar(255) comment '联系人',
 	                              telephone varchar(255) comment '联系电话',
 	                              amount varchar(255) comment '涉及金额',
 	                              website varchar(255) comment '公司网址',
@@ -396,6 +398,8 @@ class InexposalController extends BaseController {
 	@param reg_address      *注册地址
 	@param busin_license    *营业执照
 	@param code_certificate *机构代码证
+	@param mobile            个人联系电话
+	@param contact           联系人
 	@param telephone        *联系电话
 	@param website          *官方网址
 	@param record           *官网备案
@@ -417,6 +421,8 @@ class InexposalController extends BaseController {
 		|| !isset($data['reg_address'])
 		|| !isset($data['busin_license'])
 		|| !isset($data['code_certificate'])
+		|| !isset($data['mobile'])
+		|| !isset($data['contact'])
 		|| !isset($data['telephone'])
 		|| !isset($data['website'])
 		|| !isset($data['record'])
@@ -466,6 +472,8 @@ class InexposalController extends BaseController {
 	@param reg_address      *注册地址
 	@param busin_license    *营业执照
 	@param code_certificate *机构代码证
+	@param mobile            个人联系电话
+	@param contact           联系人
 	@param telephone        *联系电话
 	@param website          *官方网址
 	@param record           *官网备案
@@ -496,6 +504,8 @@ class InexposalController extends BaseController {
 						'busin_license_url'=> $this->get_pic_url($v['busin_license']),
 						'code_certificate' => intval($v['code_certificate']),
 						'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
+						'mobile'               => urlencode($v['mobile']),
+						'contact'              => urlencode($v['contact']),
 						'telephone'        => urlencode($v['telephone']),
 						'website'          => $v['website'],
 						'record'           => urlencode($v['record']),
@@ -618,6 +628,8 @@ class InexposalController extends BaseController {
 						'busin_license_url'=> $this->get_pic_url($tmp_one['busin_license']),
 						'code_certificate' => intval($tmp_one['code_certificate']),
 						'code_certificate_url' => $this->get_pic_url($tmp_one['code_certificate']),
+						'mobile'           => urlencode($tmp_one['mobile']),
+						'contact'          => urlencode($tmp_one['contact']),
 						'telephone'        => urlencode($tmp_one['telephone']),
 						'website'          => $tmp_one['website'],
 						'record'           => urlencode($tmp_one['record']),
@@ -1015,8 +1027,9 @@ class InexposalController extends BaseController {
 			on e.company_id = c.id
 			where c.auth_level<>'006003'
 			and e.is_delete =0
+			and e.type = 0
 			order by e.id desc
-			limit 10
+			limit 7
 		";
 		$list = M()->query($str_sql);
 		foreach($list as $k=>$v)

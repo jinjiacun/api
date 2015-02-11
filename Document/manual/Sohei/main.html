@@ -126,7 +126,7 @@ content={}<br/>
 method=Inexposal.add_ex<br/>
 content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
 	   'corporation':'xxx','reg_address':'xxx','company_type':'xxx',<br/>
-	   'busin_license':xxx,'code_certificate':xxx,'telephone':'xxx',<br/>
+	   'busin_license':xxx,'code_certificate':xxx,'mobile':'xxx','contact':'xxx','telephone':'xxx',<br/>
 	   'website':xxx,'record':'xxx','agent_platform':'xxx','mem_sn':'xxx',<br/>
 	   'certificate':'xxx','find_website':'xxx'}<br/>
 @@input<br/>
@@ -139,6 +139,8 @@ content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
 @param company_type     *企业类型<br/>
 @param busin_license    *营业执照(图片id)<br/>
 @param code_certificate *机构代码证(图片id)<br/>
+@param mobile            个人联系电话<br/>
+@param contact           联系人<br/>
 @param telephone        *联系电话<br/>
 @param website          *官方网址<br/>
 @param record           *官网备案<br/>
@@ -794,6 +796,28 @@ content={}<br/>
 </p>
 <hr>
 <hr>
+<p id="company_14">
+模块名称:Companyassist<br/>
+模块名称描述:企业点赞<br/>
+方法名称:add<br/>
+方法描述:未认证企业点赞<br/>
+输入参数格式:<br/>
+method=Companyassist.add<br/>
+content={'company_id':xxx,'user_id':xxx}<br/>
+@@input<br/>
+@param company_id 企业id<br/>
+@param user_id 用户id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<hr>
+
 <p id="comment_1">
 模块名称:Comment<br/>
 模块名称描述:评论<br/>

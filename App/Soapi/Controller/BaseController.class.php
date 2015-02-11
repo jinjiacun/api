@@ -488,8 +488,11 @@ class BaseController extends Controller {
                     $pic_app = str_replace($type,'',$pic_info['media_url']).'_app'.$type;                    
 					if(!file_exists(__PUBLIC__.$pic_app))
 					{
+						$aa=getimagesize($pic_pc);
+						$width = $aa["0"]*0.5;
+						$height = $aa["0"]*0.5;
 						//生成手机缩略图
-                        $res = img2thumb($pic_pc, __PUBLIC__.$pic_app, 80, 60);
+                        $res = img2thumb($pic_pc, __PUBLIC__.$pic_app, $width, $height);
                         if($res)
                         {
 							return C('media_url_pre').$pic_app;
