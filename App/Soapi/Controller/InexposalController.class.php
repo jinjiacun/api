@@ -155,6 +155,7 @@ class InexposalController extends BaseController {
 	                              find_website varchar(255) comment 'find_website',
 	                              top_num int not null default 0 comment '顶数目',
 	                              is_delete int not null default 0 comment '是否删除(1-删除)',
+	                              user_agent varchar(255) comment '来源',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -252,6 +253,7 @@ class InexposalController extends BaseController {
 		
 		$data['type'] = 0;
 		$data['add_time'] = time();
+		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		
 		if(M($this->_module_name)->add($data))
 		{

@@ -143,6 +143,7 @@ class CommentController extends BaseController {
 	                              top_num int not null default 0 comment '顶的数目',
 	                              is_delete int not null default 0 comment '0-未删除,1-已删除',
 	                              ip varchar(255) comment 'ip地址',
+	                              user_agent varchar(255) comment '来源',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -214,7 +215,7 @@ class CommentController extends BaseController {
 		
 		$data['add_time'] = time();
 		$data['ip']       = $this->get_real_ip();
-		
+		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		/*
 		$parent_id = intval($data['parent_id']);
 		if(0== $parent_id)

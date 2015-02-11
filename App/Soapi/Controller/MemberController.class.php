@@ -25,6 +25,7 @@ class MemberController extends BaseController {
 	                             ip varchar(255) comment '限制ip,空白',
 	                             last_login int not null default 0 comment '最后登录时间',
 	                             last_login_ip varchar(255) comment '最后登录ip',
+	                             user_agent varchar(255) comment '注册来源',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -62,7 +63,7 @@ class MemberController extends BaseController {
 			return C('param_fmt_err');
 		}		
 		
-		
+		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		$data['add_time'] = time();
 		if(M($this->_module_name)->add($data))
 		{
