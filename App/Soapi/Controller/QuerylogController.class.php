@@ -20,6 +20,7 @@ class QuerylogController extends BaseController {
 	  create table so_query_log(id int primary key auto_increment,
 								 user_id int not null default 0 comment '会员id',
 								 keyword varchar(255) comment '查询关键字',
+								 user_agent varchar(255) comment '来源',
 								 add_time int not null default 0 comment '添加日期'
 								 )charset=utf8;
 	 * */
@@ -59,6 +60,7 @@ class QuerylogController extends BaseController {
 		}
 		
 		$data['add_time'] = time();
+		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		
 		if(M($this->_module_name)->add($data))
 		{

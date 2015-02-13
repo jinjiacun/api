@@ -63,6 +63,12 @@ public function get_id_name_map
 @@output
 格式[{'id':'name'},...,{}]
 ##--------------------------------------------------------##
+#查询企业级别映射
+public function get_id_auth_level_map
+@@input
+@@output
+格式[{'id':'name'},...,{}]
+##--------------------------------------------------------##
 #搜索
 public function search
 @@input
@@ -396,6 +402,35 @@ class CompanyController extends BaseController {
 				foreach($tmp_list as $v)
 				{
 					$list[intval($v['id'])] = urlencode($v['company_name']);
+				}
+				unset($tmp_list, $v);
+			}
+			
+			return array(
+				200,
+				$list
+			);
+		}
+		
+		#查询企业级别映射
+		public function get_id_auth_level_map($content)
+		/*
+		@@input
+		@@output
+		格式[{'id':'name'},...,{}]
+		*/
+		{
+			$data = $this->fill($content);
+			$list = array();
+			$tmp_list = M($this->_module_name)->field('id,auth_level')
+			                                 // ->where($data['where'])
+			                                  ->select();
+			if($tmp_list
+			&& 0< count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$list[intval($v['id'])] = urlencode($v['auth_level']);
 				}
 				unset($tmp_list, $v);
 			}

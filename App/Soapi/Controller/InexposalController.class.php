@@ -253,7 +253,7 @@ class InexposalController extends BaseController {
 		
 		$data['type'] = 0;
 		$data['add_time'] = time();
-		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		$data['user_agent'] = base64_encode($_SERVER['HTTP_USER_AGENT']);
 		
 		if(M($this->_module_name)->add($data))
 		{
@@ -439,6 +439,7 @@ class InexposalController extends BaseController {
 		
 		$data['type'] = 1;
 		$data['add_time'] = time();
+		$data['user_agent'] = base64_encode($_SERVER['HTTP_USER_AGENT']);
 		
 		if(M($this->_module_name)->add($data))
 		{
@@ -893,7 +894,7 @@ class InexposalController extends BaseController {
 			where type=0
 			)
 			and  exp_amount >0
-			and auth_level='006001'
+			and auth_level<>'006003'
 		");
 		//$flat_form_count = count($ttmp);
 		$flat_form_count = $ttmp[0]['tp_count'];

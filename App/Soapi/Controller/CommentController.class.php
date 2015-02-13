@@ -87,6 +87,12 @@ public function stat_user_all_amount
 @@output
 @param $content 人数
 ##--------------------------------------------------------##
+#统计未审核数目
+public function stat_no_validate
+@@input
+@@output
+@param $amount
+##--------------------------------------------------------##
 #通过id获取单条信息
 public function get_info
 @@input
@@ -416,6 +422,30 @@ class CommentController extends BaseController {
 		return array(
 			200,
 		    $re_count
+		);
+	}
+	
+	#统计未审核数目
+	public function stat_no_validate($content)
+	/*
+	@@input
+	@@output
+	@param $amount
+	*/
+	{
+		$amount = 0;
+		$where = array(
+			'is_validate'=>0,
+			'is_delete'=>0,
+		);
+		
+		$amount = M($this->_module_name)->where($where)->count();
+		$amount = intval($amount);
+		return array(
+			200,
+			array(
+				'amount'=>$amount,
+			)
 		);
 	}
 	

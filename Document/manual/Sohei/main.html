@@ -1339,11 +1339,12 @@ content={'where':{'id':xxx},'data':{'company_id':xxx,'title':‘xxx’,'source':
 方法描述:查询<br/>
 输入参数格式:<br/>
 method=News.get_list<br/>
-content={'where':{'id':xxx,'company_id':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+content={'where':{'id':xxx,'company_id':xxx,'sign':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
 @param $company_id 企业id<br/>
+@param $sign       正负面(默认0,0-正面,1-负面)
 @param $title      标题<br/>
 @param $source     来源<br/>
 @param $author     作者<br/>
@@ -1351,11 +1352,12 @@ content={'where':{'id':xxx,'company_id':xxx,'title':‘xxx’,'source':'xxx','au
 @param $pic        图片<br/>
 @param $assist_num 点赞数<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'company_id':xxx,'title':'xxx','source':'xxx','author':'xxx'
+{'status_code':200,'content':[{'id':xxx,'company_id':xxx,'sign':xxx,'title':'xxx','source':'xxx','author':'xxx'
                                'content':'xxx','pic':xxx,'assist_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $company_id 企业id<br/>
+@param $sign       正负面(默认0,0-正面,1-负面)<br/>
 @param $title   标题<br/>
 @param $source  来源<br/>
 @param $author  作者<br/>
@@ -1381,11 +1383,12 @@ content={'id':xxx}<br/>
 @@@where<br/>
 @param $id<br/>
 示例输出:<br/>
-{'status_code':200,'content':{'id':xxx,'company_id':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
+{'status_code':200,'content':{'id':xxx,'company_id':xxx,'sign':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
                               'content':'xxx','pic':xxx,'pic_app':xxx,'assist_num':xxx,'add_time':xxx}}<br/>
 @@output<br/>
 @param $id<br/>
 @param $company_id 企业id<br/>
+@param $sign       正负面(默认0,0-正面,1-负面)<br/>
 @param $title    标题<br/>
 @param $source   来源<br/>
 @param $author   作者<br/>
@@ -1841,6 +1844,10 @@ $map['_string']="user_id=1534 or is_validate=1";<br/>
 $map["company_id"]=9;<br/>
 $map["parent_id"]=0;<br/>
 echo json_encode($map);<br/>
+<br/>
+<b>下载地址接口</b>
+method:Down.index<br/>
+返回:content里面的url<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
