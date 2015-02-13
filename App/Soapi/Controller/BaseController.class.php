@@ -152,6 +152,13 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$data['where'] = isset($data['where'])?$data['where']:array();
+		if(isset($data['where']['sign']))
+		{
+			if(0<$data['where']['sign'])
+			{
+				$data['where']['sign'] = 1;
+			}
+		}
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$data['order']      = isset($data['order'])?$data['order']:array('id'=>'desc');
@@ -193,9 +200,7 @@ class BaseController extends Controller {
 	#通过id查询
 	public function get_list_by_mul_ids($content)
 	{
-		$data  = $this->fill($content);
-		
-		
+		$data  = $this->fill($content);		
 	}
 
 	#查询单个
@@ -483,14 +488,26 @@ class BaseController extends Controller {
 				//判定新闻
             	if('001006' == $pic_info['dict_sn'])
             	{					
+					//$pic_info['media_url']= 'media/news_pc/2015-02-07/1423303605_1282.jpg';
 					$pic_pc = __PUBLIC__.$pic_info['media_url'];//目标app路径
                     $type = substr($pic_info['media_url'],-4);
-                    $pic_app = str_replace($type,'',$pic_info['media_url']).'_app'.$type;                    
+                    $pic_app = str_replace($type,'',$pic_info['media_url']).'_app'.$type;
 					if(!file_exists(__PUBLIC__.$pic_app))
-					{
-						$aa=getimagesize($pic_pc);
-						$width = $aa["0"]*0.5;
-						$height = $aa["0"]*0.5;
+					{						
+						//$aa=getimagesize($pic_pc);
+						//var_dump($aa);
+						//$width = $aa[0];
+						//$height = $aa[1];
+						//$width = $width *0.5;
+						//$height = $height * 0.5;
+						//$width = intval($width);
+						//$height = intval($height);
+						//$width = intval($width);
+						//$height = intval($height);
+						$width = 160;
+						$height = 120;
+						//var_dump($width);
+						//var_dump($height);
 						//生成手机缩略图
                         $res = img2thumb($pic_pc, __PUBLIC__.$pic_app, $width, $height);
                         if($res)
@@ -500,7 +517,7 @@ class BaseController extends Controller {
 					}	
 					else
 						return C('media_url_pre').$pic_app;
-				}	
+				}
 			}
 			return C('media_url_pre').$pic_info['media_url'];
 		}

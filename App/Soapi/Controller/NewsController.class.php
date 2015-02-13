@@ -151,7 +151,8 @@ class NewsController extends BaseController {
 	public function get_list($content)
 	{
 		list($data, $record_count) = parent::get_list($content);
-
+		
+		
 		$list = array();
 		if($data)
 		{
@@ -173,7 +174,7 @@ class NewsController extends BaseController {
 					);	
 			}
 		}
-
+		
 		return array(200, 
 				array(
 					'list'=>$list,

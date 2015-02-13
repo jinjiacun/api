@@ -876,6 +876,7 @@ class InexposalController extends BaseController {
 		
 		$data['where']['auth_level'] = array('neq', '006003');
 		$data['where']['type'] = 0;
+		$data['where']['is_delete'] = 0;
 		
 		$tmp_list = D('InexposalcompanyView')
 		            ->page($data['page_index'], $data['page_size'])
