@@ -132,6 +132,15 @@ public function update_ip
 @@output
 @param $is_success 0-操作成功,-1-操作失败,-3-用户不存在
 ##--------------------------------------------------------##
+#获取帐号数
+public function get_login_amount
+@@output
+@amount 帐号数
+##--------------------------------------------------------##
+#获取用户数
+public function get_user_amount
+@amount 用户数
+##--------------------------------------------------------##
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
@@ -146,6 +155,8 @@ class UserController extends BaseController {
 			                 'update_passwd'     => "SetUserNewPswd",        #修改密码
 			                 'update_status'     => "SetUserState",          #封号
 			                 'update_ip'         => "SetUserBlackIp",        #封ip
+			                 'get_user_amount'   => "CountUserInfo",         #获取用户数
+			                 'get_login_amount'  => "CountUserLogin",        #获取帐号数
 							 );
 	#通过手机注册
 	public function register($content)
@@ -1184,9 +1195,143 @@ class UserController extends BaseController {
 	}
 	
 	
+	#获取帐号数
+	public function get_login_amount($content)
+	/*
+	@@output
+	@amount 帐号数
+	*/
+	{
+		$amount = 0;
+		
+		$content = array();
+		if($this->call_CountUserLogin(&$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'amount'    => $content['amount'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=> $content['message'],
+				),
+			);
+		}
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+			);
+	}
 	
+	public function call_CountUserLogin($content)
+	{
+		$params = array(
+			'yyyyMMdd' =>  date("Ymd"),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 8);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['get_login_amount'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$content['amount'] = $re_json['State'];
+			return true;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('用户不存在');
+			return false;
+		}
+
+		return false;
+	}
 	
+	#获取用户数
+	public function get_user_amount($content)
+	/*
+	@amount 用户数
+	*/
+	{
+		$amount = 0;
+		
+		$content = array();
+		if($this->call_CountUserInfo(&$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'amount'    => $content['amount'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=> $content['message'],
+				),
+			);
+		}
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+			);
+		
+		return array(
+			200,
+			array(
+				'amount'=>$amount
+			)
+		);
+	}
 	
+	private function call_CountUserInfo($content)
+	{
+		$params = array(
+			'yyyyMMdd' =>  date("Ymd"),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 8);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['get_user_amount'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$content['amount'] = $re_json['State'];
+			return true;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('用户不存在');
+			return false;
+		}
+
+		return false;
+	}
 	
 	
 	

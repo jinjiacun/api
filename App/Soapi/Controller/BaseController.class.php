@@ -360,6 +360,7 @@ class BaseController extends Controller {
 			"<mobile>|<imagecode>|souhei975427",                                          #(5)获取手机短信验证码
 			"<uid>|<state>|souhei975427",                                                 #(6)更新用户状态
 			"<uid>|<blackip>|souhei975427",                                               #(7)更新用户登录IP黑名单
+			"<yyyyMMdd>|souhei975427",                                                    #(8)统计用户信息
 		);
 		$str = $seg_list[$seg_index];
 		switch($seg_index)
@@ -416,6 +417,11 @@ class BaseController extends Controller {
 				{
 					$str = str_replace("<uid>",       $params['uid']  ,       $str);
 					$str = str_replace("<blackip>",   $params['blackip']  ,   $str);
+				}
+			break;
+			case 8:
+				{
+					$str = str_replace("<yyyyMMdd>",       $params['yyyyMMdd']  ,       $str);
 				}
 			break;
 		}

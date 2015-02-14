@@ -889,14 +889,19 @@ class InexposalController extends BaseController {
 		$ttmp = M()->query("
 			select count(id) as tp_count
 			from `so_company`
-			where id in(
+			");
+			/*
+			where 
+			id in(
 			select company_id
 			from `so_in_exposal`
 			where type=0
 			)
-			and  exp_amount >0
+			and  			
+			exp_amount >0
 			and auth_level<>'006003'
-		");
+			*/
+		//");
 		//$flat_form_count = count($ttmp);
 		$flat_form_count = $ttmp[0]['tp_count'];
 		
