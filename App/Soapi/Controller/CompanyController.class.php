@@ -123,6 +123,15 @@ private function get_auth_level_by_id
 @param $id
 @@output
 @param $name
+##--------------------------------------------------------##
+#通过企业id获取企业图片集合
+public function get_pic_list
+@@input
+@param $id
+@@output
+@param $media_id  图片id
+@param $dict_sn   媒体类型编码
+@param $media_url 媒体url
 */
 class CompanyController extends BaseController {
 	    /**
@@ -135,7 +144,9 @@ class CompanyController extends BaseController {
 		   		                     auth_level varchar(10) comment '认证级别',
 		   		                     reg_address varchar(255) comment '联系地址',
 		   		                     busin_license int not null default 0 comment '营业执照',
-		   		                     code_certificate int not null default 0 comment 'code_certificate',		   		                    
+		   		                     control_busin_license int not null default comment '是否有营业执照',
+		   		                     code_certificate int not null default 0 comment '机构代码证',		   		                    
+		   		                     control_code_certificate int null default 0 comment '是否有机构代码证',
 		   		                     telephone varchar(255) comment '联系电话',
 		   		                     website varchar(255) comment '官方网址',
 		   		                     record varchar(255) comment '官网备案',
@@ -144,6 +155,7 @@ class CompanyController extends BaseController {
 		   		                     agent_platform varchar(255) comment '代理平台',
 									 mem_sn varchar(255) comment '会员编号',
 									 certificate int not null default 0 comment '资质证明',
+									 control_certificate int not null default 0 comment '是否有资质证明',
 									 assist_amount int not null default 0 comment '点赞',
 		   		                     add_blk_amount int not null default 0 comment '加黑人数',
 		   		                     exp_amount int not null default 0 comment '曝光人数',
@@ -155,47 +167,53 @@ class CompanyController extends BaseController {
 		protected $_module_name = 'company';
 		
 		protected $id;
-		protected $logo;              #企业logo
-		protected $nature;            #企业性质(字典编码)
-		protected $trade;             #所属行业
-		protected $company_name;      #公司全称(唯一)
-		protected $auth_level;        #认证级别
-		protected $reg_address;       #*联系地址
-		protected $busin_license;     #*营业执照(图片id)
-		protected $code_certificate;  #*机构代码证(图片id)
-		protected $telephone;         #*联系电话
-		protected $website;           #*官方网址
-		protected $record;            #*官网备案
-		protected $regulators_id;     #监管机构id
-		protected $find_website;      #查询网址
-		protected $agent_platform;    #代理平台
-		protected $mem_sn;            #会员编号
-		protected $certificate;       #资质证明
-		protected $add_blk_amount;    #加黑人数
-		protected $exp_amount;        #曝光人数
-		protected $add_time;          #添加日期
+		protected $logo;                     #企业logo
+		protected $nature;                   #企业性质(字典编码)
+		protected $trade;                    #所属行业
+		protected $company_name;             #公司全称(唯一)
+		protected $auth_level;               #认证级别
+		protected $reg_address;              #*联系地址
+		protected $busin_license;            #*营业执照(图片id)
+		protected $control_busin_license;    #是否有营业执照
+		protected $code_certificate;         #*机构代码证(图片id)
+		protected $control_code_certificate; #是否有机构代码证
+		protected $telephone;                #*联系电话
+		protected $website;                  #*官方网址
+		protected $record;                   #*官网备案
+		protected $regulators_id;            #监管机构id
+		protected $find_website;             #查询网址
+		protected $agent_platform;           #代理平台
+		protected $mem_sn;                   #会员编号
+		protected $certificate;              #资质证明
+		protected $control_certificate;      #是否有资质证明
+		protected $add_blk_amount;           #加黑人数
+		protected $exp_amount;               #曝光人数
+		protected $add_time;                 #添加日期
 		
 		
 		#添加企业
 		public function add($content)
 		/*
 		@@input
-		@param  $logo              #企业logo
-		@param  $nature            #*企业性质(字典编码)
-		@param  $trade             #*所属行业
-		@param  $company_name      #*公司全称(唯一)
-		@param  $auth_level        #认证级别
-		@param  $reg_address       #联系地址
-		@param  $busin_license     #营业执照(图片id)
-		@param  $code_certificate  #机构代码证(图片id)
-		@param  $telephone         #联系电话
-		@param  $website           #官方网址
-		@param  $record            #官网备案
-		@param  $regulators_id     #监管机构id
-		@param  $find_website      #查询网址
-		@param  $agent_platform    #代理平台
-		@param  $mem_sn            #会员编号
-		@param  $certificate       #资质证明
+		@param  $logo                   	#企业logo
+		@param  $nature                 	#*企业性质(字典编码)
+		@param  $trade                  	#*所属行业
+		@param  $company_name           	#*公司全称(唯一)
+		@param  $auth_level             	#认证级别
+		@param  $reg_address            	#联系地址
+		@param  $busin_license            	#营业执照(图片id)		
+		@param  $control_busin_license 		#是否有营业执照
+		@param  $code_certificate       	#机构代码证(图片id)
+		@param  $control_code_certificate;  #是否有机构代码证
+		@param  $telephone              	#联系电话
+		@param  $website                	#官方网址
+		@param  $record                 	#官网备案
+		@param  $regulators_id          	#监管机构id
+		@param  $find_website           	#查询网址
+		@param  $agent_platform         	#代理平台
+		@param  $mem_sn                 	#会员编号
+		@param  $certificate            	#资质证明
+		@param  $control_certificate    	#是否有资质证明
 		@@output
 		@param $is_success 0-操作成功,-1-操作失败
 		*/
@@ -255,25 +273,28 @@ class CompanyController extends BaseController {
 		@param $id 企业id
 		@@output
 		@param  $id
-		@param  $logo              #企业logo
-		@param  $nature            #企业性质(字典编码)
-		@param  $trade             #所属行业
-		@param  $company_name      #公司全称(唯一)
-		@param  $auth_level        #认证级别
-		@param  $reg_address       #*联系地址
-		@param  $busin_license     #*营业执照(图片id)
-		@param  $code_certificate  #*机构代码证(图片id)
-		@param  $telephone         #*联系电话
-		@param  $website           #*官方网址
-		@param  $record            #*官网备案
-		@param  $regulators_id     #监管机构id
-		@param  $find_website      #查询网址
-		@param  $agent_platform    #代理平台
-		@param  $mem_sn            #会员编号
-		@param  $certificate       #资质证明
-		@param  $add_blk_amount    #加黑人数
-	    @param  $exp_amount        #曝光人数
-		@param  $add_time          #添加日期
+		@param  $logo              			#企业logo
+		@param  $nature            			#企业性质(字典编码)
+		@param  $trade             			#所属行业
+		@param  $company_name      			#公司全称(唯一)
+		@param  $auth_level        			#认证级别
+		@param  $reg_address       			#*联系地址
+		@param  $busin_license     			#*营业执照(图片id)
+		@param  $control_busin_license 		#是否有营业执照 
+		@param  $code_certificate  			#*机构代码证(图片id)
+		@param  $control_code_certificate;  #是否有机构代码证
+		@param  $telephone         			#*联系电话
+		@param  $website           			#*官方网址
+		@param  $record            			#*官网备案
+		@param  $regulators_id     			#监管机构id
+		@param  $find_website      			#查询网址
+		@param  $agent_platform    			#代理平台
+		@param  $mem_sn            			#会员编号
+		@param  $certificate       			#资质证明
+		@param  $control_certificate    	#是否有资质证明
+		@param  $add_blk_amount    			#加黑人数
+	    @param  $exp_amount        			#曝光人数
+		@param  $add_time          			#添加日期
 		*/
 		{
 			$data = $this->fill($content);
@@ -306,8 +327,10 @@ class CompanyController extends BaseController {
 						'reg_address'       => urlencode($tmp_one['reg_address']),
 						'busin_license'     => intval($tmp_one['busin_license']),
 						'busin_license_url' => $this->get_pic_url($tmp_one['busin_license']),
+						'control_busin_license' => intval($tmp_one['control_busin_license']),
 						'code_certificate'  => intval($tmp_one['code_certificate']),
 						'code_certificate_url' => $this->get_pic_url($tmp_one['code_certificate']),
+						'control_code_certificate'=> intval($tmp_one['control_code_certificate']),
 						'telephone'         => urlencode($tmp_one['telephone']),
 						'website'           => $tmp_one['website'],
 						'record'            => urlencode($tmp_one['record']),
@@ -320,6 +343,7 @@ class CompanyController extends BaseController {
 						'mem_sn'            => $tmp_one['mem_sn'],
 						'certificate'       => intval($tmp_one['certificate']),
 						'certificate_url'   => $this->get_pic_url($tmp_one['certificate']),
+						'control_certificate'=> intval($tmp_one['control_certificate']),
 						'assist_amount'     => intval($tmp_one['assist_amount']),
 						'add_blk_amount'    => intval($tmp_one['add_blk_amount']),						 		
 						'exp_amount'        => intval($tmp_one['exp_amount']),	
@@ -354,8 +378,10 @@ class CompanyController extends BaseController {
 							'reg_address'       => urlencode($v['reg_address']),
 							'busin_license'     => intval($v['busin_license']),
 							'busin_license_url' => $this->get_pic_url($v['busin_license']),
+							'control_busin_license' => intval($v['control_busin_license']),
 							'code_certificate'  => intval($v['code_certificate']),
 							'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
+							'control_code_certificate'=> intval($v['control_code_certificate']),
 							'telephone'         => urlencode($v['telephone']),
 							'website'           => $v['website'],
 							'record'            => urlencode($v['record']),
@@ -366,6 +392,7 @@ class CompanyController extends BaseController {
 							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
 							'certificate_url'   => $this->get_pic_url($v['certificate']),
+							'control_certificate'=> intval($v['control_certificate']),
 							'assist_amount'     => intval($v['assist_amount']),
 							'add_blk_amount'    => intval($v['add_blk_amount']),
 							'exp_amount'        => intval($v['exp_amount']),
@@ -470,14 +497,14 @@ class CompanyController extends BaseController {
 			$data = $this->fill($content);
 			
 			if(!isset($data['name'])
-			|| !isset($data['user_id'])
+			//|| !isset($data['user_id'])
 			)
 			{
 				return C('param_err');
 			}
 			
 			$data['name']    = htmlspecialchars(trim($data['name']));
-			$data['user_id'] = intval($data['user_id']);
+			//$data['user_id'] = intval($data['user_id']);
 			
 			if('' == $data['name'])
 			{
@@ -486,7 +513,7 @@ class CompanyController extends BaseController {
 			
 			//纪录查询信息
 			$content = array(
-				'user_id' => $data['user_id'],
+			//	'user_id' => $data['user_id'],
 				'keyword' => $data['name'],
 			);
 			A('Soapi/Querylog')->add(json_encode($content));
@@ -500,7 +527,7 @@ class CompanyController extends BaseController {
 			
 			#别名搜索
 			$tmp_list = M('Company_alias')->field("company_id")
-			                              ->where(array('name'=>$data['name']))
+			                              ->where(array('name'=>array('like','%'.$data['name'].'%')))
 			                              ->select();
 			if($tmp_list
 			&& 0<count($tmp_list))
@@ -527,7 +554,7 @@ class CompanyController extends BaseController {
 			else
 			{
 				if(isset($where))unset($where);
-				$where['company_name'] = $data['name'];
+				$where['company_name'] = array('like','%'.$data['name'].'%');
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
@@ -537,7 +564,7 @@ class CompanyController extends BaseController {
 			if(0== $record_count)
 			{
 				if(isset($where))unset($where);
-				$where['website'] = $data['name'];
+				$where['website'] = array('like', '%'.$data['name'].'%');
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
@@ -559,8 +586,10 @@ class CompanyController extends BaseController {
 						'reg_address'       => urlencode($v['reg_address']),
 						'busin_license'     => intval($v['busin_license']),
 						'busin_license_url' => $this->get_pic_url($v['busin_license']),
+						'control_busin_license' => intval($v['control_busin_license']),
 						'code_certificate'  => intval($v['code_certificate']),
 						'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
+						'control_code_certificate'=> intval($v['control_code_certificate']),
 						'telephone'         => urlencode($v['telephone']),
 						'website'           => $v['website'],
 						'record'            => urlencode($v['record']),
@@ -572,6 +601,7 @@ class CompanyController extends BaseController {
 						'mem_sn'            => $v['mem_sn'],
 						'certificate'       => intval($v['certificate']),
 						'certificate_url'   => $this->get_pic_url($v['certificate']),
+						'control_certificate'=> intval($v['control_certificate']),
 						'add_time'          => intval($v['add_time']),
 						'alias_list'        => urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
 						'assist_amount'     => intval($v['assist_amount']),
@@ -813,9 +843,46 @@ class CompanyController extends BaseController {
 		}
 		
 		
-		
-		
-		
+		#通过企业id获取企业图片集合
+		public function get_pic_list($content)
+		/*
+		@@input
+		@param $id
+		@@output
+		@param $media_id  图片id
+		@param $dict_sn   媒体类型编码
+		@param $media_url 媒体url
+		*/
+		{
+			$data = $this->fill($content);
+			
+			if(!isset($data['id']))
+			{
+				return C('param_err');
+			}
+			
+			$data['id'] = intval($data['id']);
+			
+			if(0>= $data['id'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			$media_list = array();
+			$media_count = 0;
+			
+			//查询此企业相关的图片(企业图片,曝光图片,可信企业认证图片,媒体曝光图片,
+            //			        企业评论图片,曝光评论图片，           )
+			//todo
+			
+			return array(
+				200,
+				array(
+					'list'=>$media_list,
+					'record_count'=>$media_count
+				)
+			);
+		}
 		
 		
 		

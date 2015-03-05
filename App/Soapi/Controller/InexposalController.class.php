@@ -1000,7 +1000,7 @@ class InexposalController extends BaseController {
 			return false;
 			
 		//更新曝光人数
-		$tmp_amount = M()->query("select count(distinct(user_id)) as tp_count
+		$tmp_amount = M()->query("select count(user_id) as tp_count
 								  from so_in_exposal 
 								  where is_delete=0
 								  and company_id=".$company_id);
