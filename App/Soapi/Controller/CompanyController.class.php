@@ -885,9 +885,154 @@ class CompanyController extends BaseController {
 		}
 		
 		
-		
-		
-		
+		//删除企业信息
+		public function delete($content)
+		/*
+		 @@input
+		 @param $company_id
+		 @@output
+		 @param $is_success 0-成功,-1-失败
+		*/
+		{
+			$data = $this->fill($content);
+			
+			if(!isset($data['id']))
+			{
+				return C('param_err');
+			}
+			
+			$data['id'] = intval($data['id']);
+			
+			if(0>= $data['id'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			//删除企业别名			
+			if(false === M('Company_alias')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'=>urlencode('删除别名失败'),
+					),
+				);
+			}
+						
+			//删除企业新闻
+			if(false === M('News')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-3,
+						'message'=>urlencode('删除企业新闻失败'),
+					),
+				);
+			}
+			
+			//查询曝光企业
+			$tmp_list = M("In_exposal")->
+			            field("id")->
+			            where(array("company_id"=>$data['id']))->
+			            select;
+			$tmp_ids = "";
+			$tmp_id_list = array();
+		    if($tmp_list
+		    && 0<count($tmp_list))
+		    {
+				foreach($tmp_list as $v)
+				{
+					$tmp_id_list[] = $v['id'];
+				}
+				unset($tmp_list, $v);
+			}
+			$tmp_ids = implode(',', $tmp_id_list);
+			unset($tmp_id_list);
+			
+			//删除企业曝光评论
+			if(false === M('Com_exposal')->
+			            where(array('exposal_id'=>array("in",$tmp_ids)))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-7,
+						'message'=>urlencode('删除企业曝光评论失败'),
+					),
+				);
+			}			
+			
+			//删除申请
+			if(false === M('In_exposal')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-4,
+						'message'=>urlencode('删除申请信息失败'),
+					),
+				);
+			}
+			
+			//删除评论
+			if(false === M('Comment')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-5,
+						'message'=>urlencode('删除评论失败'),
+					),
+				);
+			}
+			
+			//删除企业新闻评论
+			if(false === M('Com_news')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-6,
+						'message'=>urlencode('删除企业新闻评论失败'),
+					),
+				);
+			}
+			
+			//删除企业
+        	if(false === M($this->_module_name)->
+			            where(array('id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>urlencode('删除企业失败'),
+					),
+				);
+			}
+			
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>urlencode('成功删除企业'),
+				),
+			);
+		}
 		
 		
 		
