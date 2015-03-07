@@ -128,6 +128,12 @@ private function set_com_amount
 @@output
 $param true, false
 ##--------------------------------------------------------##
+#查询是否有回复
+private function has_child
+@@input
+@param $id
+@@output
+@param 0 -有 ，1-没有
 */
 class CommentController extends BaseController {
 	/**
@@ -314,6 +320,7 @@ class CommentController extends BaseController {
 						'top_num'      => intval($v['top_num']),
 						'is_delete'    => intval($v['is_delete']),
 						'ip'           => $v['ip'],
+						'has_child'    => $this->has_child($v['id']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -369,8 +376,8 @@ class CommentController extends BaseController {
 		foreach($list as $k=> $v)
 		{
 			$data['where']['parent_id'] = intval($v['id']);
-			$data['page_size'] = 2;
-			$data['page_index'] = 1;
+			$data['page_size'] = isset($data['page_size'])?$data['page_size']:2;
+			$data['page_index'] = isset($data['page_index'])?$data['page_index']:1;
 			list(, $sub) = $this->get_list(json_encode($data));
 			$list[$k]['re_sub'] = array(
 				'list'=>$sub['list'],
@@ -732,6 +739,26 @@ class CommentController extends BaseController {
 	}
 	
 	
+	#查询是否有回复
+	private function has_child($id)
+	/*
+	@@input
+	@param $id
+	@@output
+	@param 0 -有 ，1-没有
+	*/
+	{
+		if(0>= $id)
+			return -1;
+			
+		$where['parent_id'] = $id;
+		
+		$tmp_amount = M($this->_module_name)->where($where)->count();
+		if(0 == $tmp_amount)
+			return 1;
+		
+		return 0;
+	}
 	
 	
 	
