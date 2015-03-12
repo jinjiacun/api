@@ -188,6 +188,9 @@ class BaseController extends Controller {
 		            ->where($data['where'])
 		            ->order($data['order'])
 		            ->select();
+		            
+		            
+		//echo M()->getlastSql();
 		#
 		$record_count = 0;
 		$record_count = $obj->where($data['where'])->count();

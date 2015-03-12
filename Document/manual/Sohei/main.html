@@ -722,9 +722,9 @@ content={'id':xxx}<br/>
 @param $id 企业id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
-                               ,'reg_address':'xxx','busin_license':xxx,<br/>
-                               ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
-                               'find_website':'xxx','agent_platform':'xxx','regulators_id':xxx,'mem_sn':'xxx','certificate':xxx<br/>
+                               ,'reg_address':'xxx','busin_license':xxx,‘control_busin_license’:xxx<br/>
+                               ,'code_certificate':'xxx','control_code_certificate':xxx,'telephone':'xxx','website':'xxx','record':'xxx',<br/>
+                               'find_website':'xxx','agent_platform':'xxx','regulators_id':xxx,'mem_sn':'xxx','certificate':xxx,'control_certificate':xxx<br/>
                                'add_blk_amount':xxx,'exp_amount':xxx<br/>
                                ,'add_time':'xxx'}}<br/>
 @@output<br/>
@@ -736,7 +736,9 @@ content={'id':xxx}<br/>
 @param  $auth_level        #认证级别<br/>
 @param  $reg_address       #*联系地址<br/>
 @param  $busin_license     #*营业执照(图片id)<br/>
+@param  $control_busin_license #是否有营业执照(0-没有,1-有,默认为0)<br/>
 @param  $code_certificate  #*机构代码证(图片id)<br/>
+@param  $control_code_certificate 是否有机构代码证(0-没有,1-有,默认为0)<br/>
 @param  $telephone         #*联系电话<br/>
 @param  $website           #*官方网址<br/>
 @param  $record            #*官网备案<br/>
@@ -745,6 +747,7 @@ content={'id':xxx}<br/>
 @param  $regulators_id     #监管机构(0-暂无监管机构)<br/>
 @param  $mem_sn            #会员编号<br/>
 @param  $certificate       #资质证明<br/>
+@param  $control_certificate #是否有资质证明(0-没有,1-有,默认为0)<br/>
 @param  $add_blk_amount    #加黑人数<br/>
 @param  $exp_amount        #曝光人数<br/>
 @param  $add_time          #添加日期<br/>

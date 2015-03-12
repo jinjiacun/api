@@ -111,7 +111,7 @@ public function black_sort
 @param $user_list     用户Id列表
 ##--------------------------------------------------------##
 #通过id查询名称
-private function get_name_by_id
+public function get_name_by_id
 @@input
 @param $id
 @@output
@@ -811,7 +811,7 @@ class CompanyController extends BaseController {
 		}
 		
 		#通过id查询名称
-		private function get_name_by_id($id)
+		public function get_name_by_id($id)
 		/*
 		@@input
 		@param $id

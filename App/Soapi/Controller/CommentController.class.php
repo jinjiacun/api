@@ -134,6 +134,11 @@ private function has_child
 @param $id
 @@output
 @param 0 -有 ，1-没有
+##--------------------------------------------------------##
+#触发评论中是否有未审核的回复
+public function stat_re_comment
+@@output
+@param $is_success 0-操作成功,-1-操作失败
 */
 class CommentController extends BaseController {
 	/**
@@ -156,6 +161,7 @@ class CommentController extends BaseController {
 	                              is_delete int not null default 0 comment '0-未删除,1-已删除',
 	                              ip varchar(255) comment 'ip地址',
 	                              user_agent varchar(255) comment '来源',
+	                              childs int not null default 0 comment '未审核的回复数量',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -300,6 +306,7 @@ class CommentController extends BaseController {
 						'user_id'      => intval($v['user_id']),
 						'nickname'     => $this->_get_nickname($v['user_id']),
 						'company_id'   => intval($v['company_id']),
+						'company_name' => A('Soapi/Company')->get_name_by_id($v['company_id']),
 						'parent_id'    => intval($v['parent_id']),
 						'parent_content' => urlencode($this->get_parent_content($v['parent_id'])),
 						'type'         => $v['type'],
@@ -375,10 +382,20 @@ class CommentController extends BaseController {
 		
 		foreach($list as $k=> $v)
 		{
-			$data['where']['parent_id'] = intval($v['id']);
-			$data['page_size'] = isset($data['page_size'])?$data['page_size']:2;
-			$data['page_index'] = isset($data['page_index'])?$data['page_index']:1;
-			list(, $sub) = $this->get_list(json_encode($data));
+			if(isset($data['where']['_complex'])) 
+			{
+					$data['page_size'] = 10;
+					$data['page_index'] = 1;
+					$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
+					unset($data['where']['_complex']);
+			}
+			else
+			{
+					$data['page_size'] = 2;
+					$data['page_index'] = 1;
+			}
+			$data['where']['parent_id'] = intval($v['id']);			
+			list(, $sub) = $this->get_list(json_encode($data));			
 			$list[$k]['re_sub'] = array(
 				'list'=>$sub['list'],
 				'record_count'=>$sub['record_count']
@@ -726,15 +743,31 @@ class CommentController extends BaseController {
 			
 		//审核评论时，记数
 		
+		//动态统计评论数
+		$comment_amount = M($this->_module_name)
+		                  ->where(array(
+								'is_delete'=>0,
+								'is_validate'=>1,
+		                  ))
+		                  ->count();
+		if(false == M('Company')
+		            ->where(array('id'=>$company_id))
+		            ->save(array('com_amount')))
+		{
+			return false;
+		}
+		
+		/*
 		if(0 == $sign)
 		{
-			A('Soapi/Company')->__top(array('id'=>$company_id),'com_amount');
+			//A('Soapi/Company')->__top(array('id'=>$company_id),'com_amount');
 												
 		}
 		else if(-1== $sign && 1 == $is_validate)
 		{
-			A('Soapi/Company')->__down(array('id'=>$company_id),'com_amount');
-		}										
+			//A('Soapi/Company')->__down(array('id'=>$company_id),'com_amount');
+		}
+		*/										
 		return true;
 	}
 	
@@ -753,12 +786,59 @@ class CommentController extends BaseController {
 			
 		$where['parent_id'] = $id;
 		
-		$tmp_amount = M($this->_module_name)->where($where)->count();
+		$tmp_amount = M($this->_module_name)->where($where)->count();		
 		if(0 == $tmp_amount)
 			return 1;
 		
 		return 0;
 	}
+	
+	#触发评论中是否有未审核的回复
+	public function stat_re_comment($content)
+	/*
+	@@output
+	@param $is_success 0-操作成功,-1-操作失败
+	*/
+	{
+		//查询所有的主评论
+		$tmp_list = M($this->_module_name)
+		            ->field("id")
+		            ->where(array("parent_id"=>0,
+		                          "is_delete"=>0,))
+		            ->select();
+		if($tmp_list
+		&& 0<count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$tmp_count = M($this->_module_name)
+				->where(array('parent_id'=>$v['id'],
+						      'is_validate'=>0,
+				             ));
+				if(0< $tmp_count)
+				{
+					M($this->_module_name)->where(array("id"=>$v["id"]))->save(array("childs"=>$tmp_count));
+				}
+			}
+			unset($v, $tmp_list);
+		}
+		
+		
+		
+		
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'message'=>C('option_ok'),
+			)
+		);
+	}
+	
+	
+	
+	
+	
 	
 	
 	
