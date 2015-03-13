@@ -421,6 +421,67 @@ content={'uid':xxx,‘old_pswd':'xxx','new_pswd':'xxx'}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
+<p id="user_11">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:<br/>
+方法描述:检查微信openid是否绑定<br/>
+输入参数格式:<br/>
+method=User.check_loginname<br/>
+content={'loginname':xxx,'logintype':'xxx'}<br/>
+@@input<br/>
+@param $loginname  登录名<br/>
+@param $logintype  登录类型<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-存在,-1-不存在,-2-loginname参数不合法,-3-safekey参数不合法<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_12">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:<br/>
+方法描述:微信入口<br/>
+输入参数格式:<br/>
+method=User.entry_weixin<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+@@input<br/>
+@param $openid  	微信openid<br/>
+@param $mobile  	手机号码<br/>
+@param $passwd		密码<br/>
+@param $nickname    昵称<br/>
+@param $head_photo  用户头像<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success  是否成功<br/>
+@param $user_info   用户信息<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_13">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:<br/>
+方法描述:微信登录<br/>
+输入参数格式:<br/>
+method=User.login_weixin<br/>
+content={'openid':xxx}<br/>
+@@input<br/>
+@param $openid  	微信openid<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success  是否成功<br/>
+@param $user_info   用户信息<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
 <hr>
 <p id="company_1">
 模块名称:Company<br/>

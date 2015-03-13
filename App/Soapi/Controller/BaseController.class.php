@@ -359,11 +359,14 @@ class BaseController extends Controller {
 			"<mobile>|<smscode>|<new_pswd>|<userip>|souhei975427",                        #(1)忘记密码
 			"<uid>|<userip>|<yyyyMMdd>|souhei975427",                                     #(2)更新用户信息
 			"<uid>|<yyyyMMdd>|souhei975427",                                              #(3)查询用户信息
-			"<mobile>|<yyyyMMdd>|souhei975427",                                           #(4)检查手机号码
+			"<loginname>|<logintype>|<yyyyMMdd>|souhei975427",                            #(4)检查手机号码|用户名|手机号|邮箱
+			                                                                              #|QQ号|微信OpenId|QQOpenId|微博OpenId
 			"<mobile>|<imagecode>|souhei975427",                                          #(5)获取手机短信验证码
 			"<uid>|<state>|souhei975427",                                                 #(6)更新用户状态
 			"<uid>|<blackip>|souhei975427",                                               #(7)更新用户登录IP黑名单
 			"<yyyyMMdd>|souhei975427",                                                    #(8)统计用户信息
+			"<nickname>|<openid>|<userip>|souhei975427",                                  #(9)威信注册
+			"<ui_id>|<openid>|<userip>|souhei975427",                                     #(10)绑定微信
 		);
 		$str = $seg_list[$seg_index];
 		switch($seg_index)
@@ -400,8 +403,9 @@ class BaseController extends Controller {
 			break;
 			case 4:
 				{
-					$str = str_replace("<mobile>",    $params['mobile']  ,    $str);					
-					$str = str_replace("<yyyyMMdd>",  $params['yyyyMMdd'],    $str);
+					$str = str_replace("<loginname>",    $params['loginname']  ,    $str);	
+					$str = str_replace("<logintype>",    $params['logintype']  ,    $str);	
+					$str = str_replace("<yyyyMMdd>",     $params['yyyyMMdd']   ,    $str);
 				}
 			break;
 			case 5:
@@ -427,6 +431,19 @@ class BaseController extends Controller {
 					$str = str_replace("<yyyyMMdd>",       $params['yyyyMMdd']  ,       $str);
 				}
 			break;
+			case 9:
+				{
+					$str = str_replace("<nickname>", $params['nickname'], $str);
+					$str = str_replace("<openid>", $params['openid'], $str);
+					$str = str_replace("<userip>", $params['userip'], $str);
+				}
+			break;
+			case 10:
+				{
+					$str = str_replace("<ui_id>", $params["ui_id"], $str);
+					$str = str_replace("<openid>", $params["openid"], $str);
+					$str = str_replace("<userip>", $params["userip"], $str);
+				}
 		}
 		$re_str = $this->md5_16($str, true);
 		

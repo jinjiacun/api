@@ -703,12 +703,18 @@ class CommentController extends BaseController {
 				{
 					foreach($list as $v)
 					{
-						$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
+						//删除三级回复
+						M($this->_module_name)
+						->where(array('parent_id'=>$v['id']))
+						->save(array('is_delete'=>0));
 					}
 				}
 				//删除所有回复评论
-				M($this->_module_name)->where(array('parent_id'=>$data['parent_id'],
-				                                    'is_delete'=>0))->delete();
+				M($this->_module_name)
+				->where(array('parent_id'=>$data['parent_id']))
+				->save(array('is_delete'=>0));
+				//统计评论
+				$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
 			}
 			return array(
 				200,
@@ -746,6 +752,7 @@ class CommentController extends BaseController {
 		//动态统计评论数
 		$comment_amount = M($this->_module_name)
 		                  ->where(array(
+								'company_id'=>$company_id,
 								'is_delete'=>0,
 								'is_validate'=>1,
 		                  ))

@@ -141,22 +141,69 @@ public function get_login_amount
 public function get_user_amount
 @amount 用户数
 ##--------------------------------------------------------##
+#绑定微信帐号
+public function login_weixin
+@@input
+@param $openid 微信返回id
+@@output
+@param $content 返回用户信息
+##--------------------------------------------------------##
+#微信注册
+public function register_weixin
+@@input
+@param $nickname
+@param $openid
+@param $userip
+@@output
+@param $is_success 
+##--------------------------------------------------------##
+#绑定微信
+public function bind_weixin
+@@input
+@param $ui_id   用户id
+@param $openid  微信id
+@@output
+@param $is_success 
+##--------------------------------------------------------##
+#微信入口
+public function entry_weixin
+@@intput
+@param $openid   微信id 
+@param $mobile   手机号码
+@param $passwd   密码
+@param $nickname 昵称
+@@output
+@param $is_success  是否成功
+@param $user_info   用户信息
+##--------------------------------------------------------##
+#检查登录名是否存在
+public function check_loginname
+@@input
+@param $loginname 登录名
+@param $logintype 登录类型(=4,loginname=微信openid),(=5,loginname=QQopenid),
+*                        (=6,loginname=微博OpenId)
+@@output
+@param $is_success 0-存在,-1-不存在,-2-loginname参数不合法,-3-safekey参数不合法
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
-							 'register'          => "RegisterByMobile",      #通过手机号注册
-							 'login'             => "LoginByMobile",         #通过手机号登录 【允许get请求】
-							 'find_passwd'       => "SetPswordByMobile",     #用户找回密码
-							 'update'            => "SetUserInfoByUid",      #更新用户信息
-							 'update_photo'      => "SetUserAvatarByUid",    #更新用户头像信息
-							 'get_info'          => "GetUserInfoByUid",      #查询用户信息
-			                 'check_mobile'      => "ExistsUserInfoByMobile",#检查手机号码
-			                 'send_validate'     => "SmsByFindPswd",         #发送手机验证
-			                 'update_passwd'     => "SetUserNewPswd",        #修改密码
-			                 'update_status'     => "SetUserState",          #封号
-			                 'update_ip'         => "SetUserBlackIp",        #封ip
-			                 'get_user_amount'   => "CountUserInfo",         #获取用户数
-			                 'get_login_amount'  => "CountUserLogin",        #获取帐号数
+							 'register'          => "RegisterByMobile",            #通过手机号注册
+							 'login'             => "LoginByMobile",               #通过手机号登录 【允许get请求】
+							 'find_passwd'       => "SetPswordByMobile",           #用户找回密码
+							 'update'            => "SetUserInfoByUid",            #更新用户信息
+							 'update_photo'      => "SetUserAvatarByUid",          #更新用户头像信息
+							 'get_info'          => "GetUserInfoByUid",            #查询用户信息
+			                 'check_mobile'      => "ExistsUserInfoByLoginName",   #检查手机号码
+			                 'send_validate'     => "SmsByFindPswd",               #发送手机验证
+			                 'update_passwd'     => "SetUserNewPswd",              #修改密码
+			                 'update_status'     => "SetUserState",                #封号
+			                 'update_ip'         => "SetUserBlackIp",              #封ip
+			                 'get_user_amount'   => "CountUserInfo",               #获取用户数
+			                 'get_login_amount'  => "CountUserLogin",              #获取帐号数
+			                 'login_weixin'      => "LoginByWeixinOpenid",         #通过微信OpenId登录
+			                 'register_weixin'   => "RegisterByWeixinOpenid",      #通过微信openid注册
+			                 'bind_weixin'       => "BindUserLoginByWeixinOpenid", #绑定微信
+			                 'check_loginname'   => "ExistsUserInfoByLoginName",   #检查用户名是否存在
 							 );
 	#通过手机注册
 	public function register($content)
@@ -630,7 +677,7 @@ class UserController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		if($this->call_ExistsUserInfoByMobile($data['mobile']))
+		if($this->call_ExistsUserInfoByLoginName($data['mobile'],1))
 		{
 			return array(
 				200,
@@ -650,6 +697,7 @@ class UserController extends BaseController {
 			);
 	}
 	
+	/*
 	private function call_ExistsUserInfoByMobile($mobile)
 	{
 		$params = array(
@@ -664,6 +712,37 @@ class UserController extends BaseController {
 		&& 1 == $re_json['State'])
 		{	
 			return true;
+		}
+		return false;
+	}
+	*/
+	private function call_ExistsUserInfoByLoginName($loginname, $logintype, $content)
+	{
+		$params = array(
+			'loginname'=>$loginname,
+			'logintype'=>$logintype,
+			'yyyyMMdd'=>date("Ymd"),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 4);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['check_mobile'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 == $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message'] = urlencode('loginname参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message'] = urlencode('safekey参数不合法');
+			return false;
 		}
 		return false;
 	}
@@ -1331,6 +1410,554 @@ class UserController extends BaseController {
 		}
 
 		return false;
+	}
+	
+	#绑定微信帐号
+	public function login_weixin($content)
+	/*
+	@@input
+	@param $openid 微信返回id
+	@@output
+	@param $is_success -2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误,
+	* -4-用户被限制登录,-5-用户访问的IP被限制,-6-接口报错
+	* -100-输入的参数存在空值
+	@param $content 返回用户信息
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_LoginByWeixinOpenid($data['openid'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'user_info'    => $content['user_info'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
+	
+	private function call_LoginByWeixinOpenid($openid, $content)
+	{
+		$params = array(
+			'openid'=>$openid,
+			'userip'=>$this->get_real_ip(),
+		);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login_weixin'];		
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$user_info['user_id']  = $r_list[$index++];
+			$user_info['nickname'] = $r_list[$index++];
+			$user_info['head_portrait'] = $r_list[$index++];
+			$user_info['sex']      = $r_list[$index++];
+			$user_info['cur_date'] = $r_list[$index++];
+			$user_info['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$user_info['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			$content['user_info'] = $user_info;
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信OpenId参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('微信OpenId不存在或密码错误');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('用户被限制登录');
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -5;
+			$content['message']     = urlencode('用户访问的IP被限制');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+	
+	#微信注册
+	public function register_weixin($content)
+	/*
+	@@input
+	@param $openid
+	@@output
+	@param $is_success
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_RegisterByWeixinOpenid($data['openid'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'user_info'    => $content['user_info'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+		
+	}
+	
+	private function call_RegisterByWeixinOpenid($openid, $content)
+	{
+		$params = array(
+			'nickname'=>$this->make_nickname(),
+			'openid'=>$openid,
+			'userip'=>$this->get_real_ip(),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 9);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register_weixin'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$content['user_info'] = $re_json['Descr'];
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+	
+	#绑定微信
+	public function bind_weixin($content)
+	/*
+	@@input
+	@param $uid   用户id
+	@param $openid  微信id
+	@@output
+	@param $is_success 
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid'] = intval($data['uid']);
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if(0>= $data['uid']
+		|| '' == $data['openid']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_BindUserLoginByWeixinOpenid($data['uid'],$data['openid'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
+	
+	private function call_BindUserLoginByWeixinOpenid($uid, $openid, $content)
+	{
+		$params = array(
+			'ui_id'=>$this->make_nickname(),
+			'openid'=>$openid,
+			'userip'=>$this->get_real_ip(),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 10);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['bind_weixin'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$content['user_info'] = $re_json['Descr'];
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('绑定失败');
+			return false;
+		}
+
+		return false;
+	}
+	
+	#微信入口
+	public function entry_weixin($content)
+	/*
+	@@intput
+	@param $openid   微信id 
+	@param $mobile   手机号码
+	@param $passwd   密码
+	@param $nickname 昵称
+	@param $head_photo 头像
+	@@output
+	@param $is_success  是否成功
+	@param $user_info   用户信息
+	*/
+	/***
+	 * logic:
+	 * 1.检查是否跳过;
+	 * 2.如果跳过，微信单独注册;
+	 * 3.不是2步骤,检查手机号码是否存在，如果不存在,则进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
+	 * 4.如果手机号码存在，检查密码是否存在，如果密码不正确，返回密码错误;
+	 * 5.如果密码正确，绑定微信openid;
+	 * */
+	{
+		$data = $this->fill($content);
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars(trim($data['openid']));
+		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
+		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
+		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
+		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		
+		if('' == $data['opendid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		#1.检查是否跳过;
+		if('' == $data['mobile']
+		&& '' == $data['passwd']
+		&& '' == $data['nickname']
+		&& '' == $data['head_photo']
+		)
+		{
+			#2.如果跳过，微信单独注册;
+			//todo:
+			$params = array(
+				'openid'=> $data['openid']
+			);
+			return $this->register_weixin(json_encode($param));
+		}
+		else
+		{
+			#3.不是2步骤,检查手机号码是否存在，如果不存在,则进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
+			$params = array(
+				'mobile' => $data['mobile'],
+			);
+			list($status_code, $content) = $this->check_mobile(json_encode($params));
+			if(200 == $status_code
+			&& -1 == $content['is_success'])#手机号码不存在
+			{
+				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
+				$params = array(
+					'mobile'  =>$data['mobile'],
+					'pswd'    =>$data['passwd'],
+					'nickname'=>$data['nickname'],
+				);
+				list($status_code, $content) = $this->register(json_encode($params));
+				if(200 == $status_code
+				&& 0 == $content['is_success']
+				)
+				{
+					$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+					);
+					#绑定微信号码
+					list($status_code, $content) = $this->bind_weixin(json_encode($params));
+					if(200 == $status_code
+					&& 0 == $content['is_success']
+					)
+					{
+						#登录
+						$params = array(
+							'mobile'=>$data['mobile'],
+							'pswd'=>$data['passwd'],
+						);
+						return $this->login(json_encode($params));
+					}
+				}
+			}
+			
+			$params = array(
+				'mobile'=>$data['mobile'],
+				'pswd'=>$data['passwd'],
+			);
+			list($status_code, $content) = $this->login(json_encode($params));
+			#检查帐号不正确
+			if(200 == $status_code
+			&& -2 == $content['is_success']
+			)
+			{
+				#返回密码错误
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'   =>urlencode('密码错误'),
+					)
+				);
+			}
+			
+			
+			#5.如果密码正确，绑定微信openid;
+			$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+			);
+			#绑定微信号码
+			list($status_code, $content) = $this->bind_weixin(json_encode($params));
+			if(200 == $status_code
+			&& 0 == $content['is_success']
+			)
+			{
+				#登录
+				$params = array(
+					'mobile'=>$data['mobile'],
+					'pswd'=>$data['passwd'],
+				);
+				return $this->login(json_encode($params));
+			}
+			
+			return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>urlencode('操作失败'),
+				),
+			);
+		}
+	}
+	
+	#检查登录名是否存在
+	public function check_loginname($content)
+	/*
+	@@input
+	@param $loginname 登录名
+	@param $logintype 登录类型(=4,loginname=微信openid),(=5,loginname=QQopenid),
+	*                        (=6,loginname=微博OpenId)
+	@@output
+	@param $is_success 0-存在,-1-不存在,-2-loginname参数不合法,-3-safekey参数不合法
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['loginname'])
+		|| !isset($data['logintype'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['loginname'] = htmlspecialchars(trim($data['loginname']));
+		$data['logintype'] = intval($data['logintype']);
+		
+		if('' == $data['loginname']
+		|| 0 >= $data['logintype']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_ExistsUserInfoByLoginName($data['loginname'],$data['logintype'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_exists'=>0,
+					'message'=>C('is_exists'),
+				),
+			);
+		}
+		
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'   =>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_exists'=>-1,
+					'message'=>C('no_exists'),
+				),
+			);
+		
 	}
 	
 	
