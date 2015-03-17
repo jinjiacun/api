@@ -431,7 +431,8 @@ method=User.check_loginname<br/>
 content={'loginname':xxx,'logintype':'xxx'}<br/>
 @@input<br/>
 @param $loginname  登录名<br/>
-@param $logintype  登录类型<br/>
+@param $logintype  登录类型(=4,loginname=微信openid),(=5,loginname=QQopenid),<br/>
+*                        (=6,loginname=微博OpenId)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx'}}<br/>
 @@output<br/>
@@ -457,8 +458,12 @@ content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
 @@output<br/>
-@param $is_success  是否成功<br/>
-@param $user_info   用户信息<br/>
+@param $is_success  是否成功(0-成功,-1-操作失败，-2-密码错误)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -476,8 +481,218 @@ content={'openid':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
 @@output<br/>
-@param $is_success  是否成功<br/>
-@param $user_info   用户信息<br/>
+@param $is_success  是否成功(0-成功,-1-失败,-2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误,
+	* -4-用户被限制登录,-5-用户访问的IP被限制,-6-接口报错<br/>
+	* -100-输入的参数存在空值)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_14">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:<br/>
+方法描述:帐号解绑定<br/>
+输入参数格式:<br/>
+method=User.cancel_bind<br/>
+content={'uid':xxx,'logintype':xxx,'loginname':'xxx'}<br/>
+@@input<br/>
+@param $uid  	用户id<br/>
+@param $logintype  登录类型(=0,loginname=用户名),(=1,loginname=手机号),<br/>
+*                         (=2,loginname=邮箱),(=3,loginname=QQ号),<br/>
+*                         (=4,loginname=微信OpenId),(=5,loginname=QQOpenId),<br/>
+*                         (=6,loginname=微博OpenId)<br/>
+@param $loginname<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-成功,-1-操作错误,-2-loginname参数不合法,-3-safekey参数不合法<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_15">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:<br/>
+方法描述:在已有帐号上微信绑定<br/>
+输入参数格式:<br/>
+method=User.bind_weixin<br/>
+content={'uid':xxx,'openid':'xxx'}<br/>
+@@input<br/>
+@param $uid  	用户id<br/>
+@param $openid  微信openid<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,<br/>
+	                   -3-safekey参数不合法,-4-微信openid已存在,<br/>
+			   -6-绑定失败<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_16">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:entry_weibo<br/>
+方法描述:微博入口<br/>
+输入参数格式:<br/>
+method=User.entry_weibo<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+@@input<br/>
+@param $openid 微博openid<br/>
+@param $mobile 手机号码<br/>
+@param $passwd	 密码<br/>
+@param $nickname 昵称<br/>
+@param $head_photo 用户头像<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success 是否成功(0-成功,-1-操作失败，-2-密码错误)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_17">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:login_weibo<br/>
+方法描述:微博登录<br/>
+输入参数格式:<br/>
+method=User.login_weibo<br/>
+content={'openid':xxx,'userip':'xxx'}<br/>
+@@input<br/>
+@param $openid 微博openid<br/>
+@param $userip 用户ip<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success 是否成功(0-成功,-1-失败,-2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误, * -4-用户被限制登录,-5-用户访问的IP被限制,-6-接口报错<br/>
+* -100-输入的参数存在空值)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_18">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:bind_weibo<br/>
+方法描述:在已有帐号上微博绑定<br/>
+输入参数格式:<br/>
+method=User.bind_weibo<br/>
+content={'uid':xxx,'openid':'xxx','userip':'xxx'}<br/>
+@@input<br/>
+@param $uid 用户id<br/>
+@param $openid 微博openid<br/>
+@param $userip 用户ip<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,<br/>
+-3-safekey参数不合法,-4-微信openid已存在,<br/>
+-6-绑定失败<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_19">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:entry_qq<br/>
+方法描述:qq入口<br/>
+输入参数格式:<br/>
+method=User.entry_qq<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+@@input<br/>
+@param $openid qq的openid<br/>
+@param $mobile 手机号码<br/>
+@param $passwd	 密码<br/>
+@param $nickname 昵称<br/>
+@param $head_photo 用户头像<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success 是否成功(0-成功,-1-操作失败，-2-密码错误)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+<hr>
+<p id="user_20">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:login_qq<br/>
+方法描述:qq登录<br/>
+输入参数格式:<br/>
+method=User.login_qq<br/>
+content={'openid':xxx,'userip':'xxx'}<br/>
+@@input<br/>
+@param $openid qq的openid<br/>
+@param $userip 用户ip<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
+@@output<br/>
+@param $is_success 是否成功(0-成功,-1-失败,-2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误, * -4-用户被限制登录,-5-用户访问的IP被限制,-6-接口报错<br/>
+* -100-输入的参数存在空值)<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_21">
+模块名称:User<br/>
+模块名称描述:用户<br/>
+方法名称:login_qq<br/>
+方法描述:在已有帐号上qq绑定<br/>
+输入参数格式:<br/>
+method=User.bind_qq<br/>
+content={'uid':xxx,'openid':'xxx','userip':'xxx'}<br/>
+@@input<br/>
+@param $uid 用户id<br/>
+@param $openid qq的openid<br/>
+@param $userip 用户ip<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':'xxx'}}<br/>
+@@output<br/>
+@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,<br/>
+-3-safekey参数不合法,-4-微信openid已存在,<br/>
+-6-绑定失败<br/>
+@param $user_id 用户id<br/>
+@param $head_portrait 头像<br/>
+@param $nickname 用户昵称<br/>
+@param $sex 用户性别<br/>
+@param $cur_date 当前日期<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -721,7 +936,7 @@ content={'where':{xxxx}}<br/>
                                ,'reg_address':'xxx','busin_license':xxx,<br/>
                                ,'code_certificate':'xxx','telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx'，‘regulators_id’:xxx,'mem_sn':'xxx','certificate':xxx,<br/>
-                               'exp_amount':xxx,exp_amount:xxx<br/>
+                               'exp_amount':xxx,exp_amount:xxx,'select_amount':xxx<br/>
                                ,'add_time':'xxx'},...,{...}]}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
@@ -743,6 +958,7 @@ content={'where':{xxxx}}<br/>
 @param  $certificate       #资质证明<br/>
 @param  $add_blk_amount    #加黑人数<br/>
 @param  $exp_amount        #曝光人数<br/>
+@param  $select_amount     #查询次数<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -786,7 +1002,7 @@ content={'id':xxx}<br/>
                                ,'reg_address':'xxx','busin_license':xxx,‘control_busin_license’:xxx<br/>
                                ,'code_certificate':'xxx','control_code_certificate':xxx,'telephone':'xxx','website':'xxx','record':'xxx',<br/>
                                'find_website':'xxx','agent_platform':'xxx','regulators_id':xxx,'mem_sn':'xxx','certificate':xxx,'control_certificate':xxx<br/>
-                               'add_blk_amount':xxx,'exp_amount':xxx<br/>
+                               'add_blk_amount':xxx,'exp_amount':xxx,'select_amount':xxx<br/>
                                ,'add_time':'xxx'}}<br/>
 @@output<br/>
 @param  $id                企业id<br/>
@@ -811,6 +1027,7 @@ content={'id':xxx}<br/>
 @param  $control_certificate #是否有资质证明(0-没有,1-有,默认为0)<br/>
 @param  $add_blk_amount    #加黑人数<br/>
 @param  $exp_amount        #曝光人数<br/>
+@param  $select_amount     #查询次数<br/>
 @param  $add_time          #添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1760,6 +1977,13 @@ content={'media':xxx}<br/>
 			<td><400k</td>
 		</tr>
 		<tr>
+			<td>001010</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>意见反馈</td>
+			<td><400k</td>
+		</tr>
+		<tr>
 			<td>002001</td>
 			<td>2</td>
 			<td>监管机构</td>
@@ -1911,6 +2135,15 @@ echo json_encode($map);<br/>
 <b>下载地址接口</b>
 method:Down.index<br/>
 返回:content里面的url<br/>
+<b>意见反馈</b>
+method:Ideaback.add<br/>
+@@input<br/>
+@param $content 内容<br/>
+@param $pic     图片(不上传，值为0即可)<br/>
+@param $contact 联系方式<br/>
+@param $userip  用户ip(web端带上这个,移动端设置为空值)<br/>
+@output<br/>
+@param is_success 0-成功,-1-失败<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

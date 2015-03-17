@@ -176,6 +176,20 @@ class MediaController extends BaseController {
 				$file_dir  = 'media/'.'comment'.'/'.date("Y-m-d").'/';
 			}
 			break;
+			case '001010':#意见反馈<400k
+			{
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了400k')
+						),
+					);
+				}
+				$file_dir  = 'media/'.'idea'.'/'.date("Y-m-d").'/';
+			}
+			break;
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))
 		{

@@ -160,6 +160,7 @@ class CompanyController extends BaseController {
 		   		                     add_blk_amount int not null default 0 comment '加黑人数',
 		   		                     exp_amount int not null default 0 comment '曝光人数',
 		   		                     com_amount int not null default 0 comment '评论人数',
+		   		                     select_amount int not null default 0 comment '查询次数',
 									 add_time int not null default 0 comment '添加日期'
 									 )charset=utf8;
 		 * */
@@ -188,6 +189,7 @@ class CompanyController extends BaseController {
 		protected $control_certificate;      #是否有资质证明
 		protected $add_blk_amount;           #加黑人数
 		protected $exp_amount;               #曝光人数
+		protected $select_amount;            #查询次数
 		protected $add_time;                 #添加日期
 		
 		
@@ -294,6 +296,7 @@ class CompanyController extends BaseController {
 		@param  $control_certificate    	#是否有资质证明
 		@param  $add_blk_amount    			#加黑人数
 	    @param  $exp_amount        			#曝光人数
+	    @param  $select_amount              #查询次数
 		@param  $add_time          			#添加日期
 		*/
 		{
@@ -347,7 +350,8 @@ class CompanyController extends BaseController {
 						'assist_amount'     => intval($tmp_one['assist_amount']),
 						'add_blk_amount'    => intval($tmp_one['add_blk_amount']),						 		
 						'exp_amount'        => intval($tmp_one['exp_amount']),	
-						'com_amount'        => intval($tmp_one['com_amount']),			
+						'com_amount'        => intval($tmp_one['com_amount']),		
+						'select_amount'	    => intval($tmp_one['select_amount']),
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -374,6 +378,7 @@ class CompanyController extends BaseController {
 							'nature'            => urlencode($v['nature']),
 							'trade'             => urlencode($v['trade']),
 							'company_name'      => urlencode($v['company_name']),
+							'alias_list'        => urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
 							'auth_level'        => urlencode($v['auth_level']),
 							'reg_address'       => urlencode($v['reg_address']),
 							'busin_license'     => intval($v['busin_license']),
@@ -397,6 +402,7 @@ class CompanyController extends BaseController {
 							'add_blk_amount'    => intval($v['add_blk_amount']),
 							'exp_amount'        => intval($v['exp_amount']),
 							'com_amount'        => intval($v['com_amount']),
+							'select_amount'     => intval($v['select_amount']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -549,6 +555,8 @@ class CompanyController extends BaseController {
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
+				//更新查询次数
+				M($this->_module_name)->where($where)->setInc('select_amount', 1);
 			}
 			#查询企业名称
 			else
@@ -558,6 +566,7 @@ class CompanyController extends BaseController {
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
+				M($this->_module_name)->where($where)->setInc('select_amount', 1);
 			}
 			
 			#查询网址
@@ -568,6 +577,7 @@ class CompanyController extends BaseController {
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
+				M($this->_module_name)->where($where)->setInc('select_amount', 1);
 			} 
 			
 			if($tmp_list
@@ -582,6 +592,7 @@ class CompanyController extends BaseController {
 						'nature'            => urlencode($v['nature']),
 						'trade'             => urlencode($v['trade']),
 						'company_name'      => urlencode($v['company_name']),
+						'alias_list'        => urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
 						'auth_level'        => urlencode($v['auth_level']),
 						'reg_address'       => urlencode($v['reg_address']),
 						'busin_license'     => intval($v['busin_license']),
@@ -608,6 +619,7 @@ class CompanyController extends BaseController {
 						'add_blk_amount'    => intval($v['add_blk_amount']),
 						'exp_amount'        => intval($v['exp_amount']),
 						'com_amount'        => intval($v['com_amount']),
+						'select_amount'     => intval($v['select_amount']),
 					);
 				}
 				unset($v, $tmp_list);

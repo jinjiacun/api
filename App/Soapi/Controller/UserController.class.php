@@ -151,9 +151,9 @@ public function login_weixin
 #微信注册
 public function register_weixin
 @@input
-@param $nickname
-@param $openid
-@param $userip
+@param $nickname 用户昵称
+@param $openid   微信openid
+@param $userip   用户ip
 @@output
 @param $is_success 
 ##--------------------------------------------------------##
@@ -161,14 +161,14 @@ public function register_weixin
 public function bind_weixin
 @@input
 @param $ui_id   用户id
-@param $openid  微信id
+@param $openid  微信openid
 @@output
 @param $is_success 
 ##--------------------------------------------------------##
 #微信入口
 public function entry_weixin
 @@intput
-@param $openid   微信id 
+@param $openid   微信openid 
 @param $mobile   手机号码
 @param $passwd   密码
 @param $nickname 昵称
@@ -184,6 +184,89 @@ public function check_loginname
 *                        (=6,loginname=微博OpenId)
 @@output
 @param $is_success 0-存在,-1-不存在,-2-loginname参数不合法,-3-safekey参数不合法
+##--------------------------------------------------------##
+#通过解除登录账号绑定
+public function cancel_bind
+@@input
+@param $uid        用户id
+@param $logintype  登录类型(=0,loginname=用户名),(=1,loginname=手机号),
+*                         (=2,loginname=邮箱),(=3,loginname=QQ号),
+*                         (=4,loginname=微信OpenId),(=5,loginname=QQOpenId),
+*                         (=6,loginname=微博OpenId)
+@param $loginname
+@@output
+@param $is_success 0-成功,-1-操作错误,-2-loginname参数不合法,-3-safekey参数不合法
+##--------------------------------------------------------##
+#微博openid注册
+public function register_weibo
+@@input
+@param $nickname 昵称
+@param $openid   微博openid
+@param $userip   用户ip
+@@output
+@param $is_success 
+##--------------------------------------------------------##
+#qq的opendid注册
+public function register_qq
+@@input
+@param $nickname 昵称
+@param $openid   qq的openid
+@param $userip   用户ip
+@@output
+@param $is_success
+##--------------------------------------------------------##
+#微博openid登录
+public function login_weibo
+@@input
+@param $openid  微博openid
+@@output
+@param $content 返回用户信息
+##--------------------------------------------------------##
+#qq的opendid登录
+public function login_qq
+@@output
+@param $content 返回用户信息
+##--------------------------------------------------------##
+#绑定微博(openid)
+public function bind_weibo
+@@input
+@param $ui_id   用户id
+@param $openid  微博openid
+@@output
+@param $is_success
+##--------------------------------------------------------##
+#绑定qq(openid)
+public function bind_qq
+@@input
+@param $ui_id   用户id
+@param $openid  qq的openid
+@@output
+@param $is_success
+##--------------------------------------------------------##
+#微博入口(openid)
+public function entry_weibo
+@@intput
+@param $openid   微博openid 
+@param $mobile   手机号码
+@param $passwd   密码
+@param $nickname 昵称
+##--------------------------------------------------------##
+#qq入口(openid)
+public function entry_qq
+@@intput
+@param $openid   qq的openid 
+@param $mobile   手机号码
+@param $passwd   密码
+@param $nickname 昵称
+##--------------------------------------------------------##
+#头像上传
+public function head_photo_upload
+@@input
+@param $uid      用户id
+@param $pic_path 图片路径
+@@output
+@param $is_success 0-成功,-1-失败,-2-safekey参数不合法，-3-用户不存在，
+*                  -4-头像文件保存失败,-5-头像文件超出指定大小限制（暂定100KB）
 */
 class UserController extends BaseController {
 	private $USER_API_METHOD_LIST = array(
@@ -204,6 +287,14 @@ class UserController extends BaseController {
 			                 'register_weixin'   => "RegisterByWeixinOpenid",      #通过微信openid注册
 			                 'bind_weixin'       => "BindUserLoginByWeixinOpenid", #绑定微信
 			                 'check_loginname'   => "ExistsUserInfoByLoginName",   #检查用户名是否存在
+			                 'cancel_bind'       => "CanelBingUserLogin",          #解绑定
+							 'login_weibo'       => "LoginByWeiboOpenid",		   #通过微薄openid登录
+							 'register_weibo'    => "RegisterByWeiboOpenid",	   #通过微博openid注册
+							 'bind_weibo'        => "BindUserLoginByWeiboOpenid",  #绑定微博
+							 'login_qq'			 => "LoginByQQOpenid ",			   #通过qq的openid登录
+							 'register_qq'		 => "RegisterByQQOpenid", 	       #通过qq的openid注册
+							 'bind_qq'			 => "BindUserLoginByQQOpenid",	   #绑定qq的openid
+							 'head_photo_upload' => "SetUserAvatarByUid",          #上传头像
 							 );
 	#通过手机注册
 	public function register($content)
@@ -1418,10 +1509,14 @@ class UserController extends BaseController {
 	@@input
 	@param $openid 微信返回id
 	@@output
-	@param $is_success -2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误,
+	@param $is_success 0-成功,-1-失败,-2-微信OpenId参数不合法,-3-微信OpenId不存在或密码错误,
 	* -4-用户被限制登录,-5-用户访问的IP被限制,-6-接口报错
 	* -100-输入的参数存在空值
-	@param $content 返回用户信息
+	@param $user_id 用户id
+	@param $head_portrait 头像
+	@param $nickname 用户昵称
+	@param $sex 用户性别
+	@param $cur_date 当前日期
 	*/
 	{
 		$data = $this->fill($content);
@@ -1444,8 +1539,12 @@ class UserController extends BaseController {
 			return array(
 				200,
 				array(
-					'is_success'=>0,
-					'user_info'    => $content['user_info'],
+					'is_success'    =>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
 					'message'=>C('option_ok')
 				)
 			);
@@ -1485,14 +1584,13 @@ class UserController extends BaseController {
 			$back_content = $re_json['Descr'];
 			$r_list = explode('|', $back_content);
 			$index=0;
-			$user_info['user_id']  = $r_list[$index++];
-			$user_info['nickname'] = $r_list[$index++];
-			$user_info['head_portrait'] = $r_list[$index++];
-			$user_info['sex']      = $r_list[$index++];
-			$user_info['cur_date'] = $r_list[$index++];
-			$user_info['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
-			$user_info['head_portrait'] = str_replace('user','',$content['head_portrait']);
-			$content['user_info'] = $user_info;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
 			return true;
 		}
 		elseif(-1 == $re_json['State'])
@@ -1539,7 +1637,8 @@ class UserController extends BaseController {
 	public function register_weixin($content)
 	/*
 	@@input
-	@param $openid
+	@param $openid    微信openid
+	@param $nickname  昵称
 	@@output
 	@param $is_success
 	*/
@@ -1560,13 +1659,17 @@ class UserController extends BaseController {
 		}
 		
 		$content = array();
-		if($this->call_RegisterByWeixinOpenid($data['openid'], &$content))
+		if($this->call_RegisterByWeixinOpenid($data['openid'],$data['nickname'], &$content))
 		{
 			return array(
 				200,
 				array(
 					'is_success'=>0,
-					'user_info'    => $content['user_info'],
+					'head_portrait'   =>$content['head_portrait'],
+					'user_id'  		  =>$content['user_id'],
+					'nickname' 		  =>$content['nickname'],
+					'sex'      		  =>$content['sex'],
+					'cur_date'   	  =>$content['cur_date'],
 					'message'=>C('option_ok')
 				)
 			);
@@ -1592,10 +1695,10 @@ class UserController extends BaseController {
 		
 	}
 	
-	private function call_RegisterByWeixinOpenid($openid, $content)
+	private function call_RegisterByWeixinOpenid($openid, $nickname='', $content)
 	{
 		$params = array(
-			'nickname'=>$this->make_nickname(),
+			'nickname'=>'' == $nickname?$this->make_nickname():$nickname,
 			'openid'=>$openid,
 			'userip'=>$this->get_real_ip(),
 		);
@@ -1606,7 +1709,16 @@ class UserController extends BaseController {
 		if($re_json
 		&& 1 <= $re_json['State'])
 		{	
-			$content['user_info'] = $re_json['Descr'];
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
 			return true;
 		}
 		elseif(-1 == $re_json['State'])
@@ -1650,7 +1762,14 @@ class UserController extends BaseController {
 	@param $uid   用户id
 	@param $openid  微信id
 	@@output
-	@param $is_success 
+	@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,
+	                   -3-safekey参数不合法,-4-微信openid已存在,
+			   -6-绑定失败
+	@param $user_id 用户id
+	@param $head_portrait 头像
+	@param $nickname 用户昵称
+	@param $sex 用户性别
+	@param $cur_date 当前日期
 	*/
 	{
 		$data = $this->fill($content);
@@ -1679,6 +1798,11 @@ class UserController extends BaseController {
 				200,
 				array(
 					'is_success'=>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
 					'message'=>C('option_ok')
 				)
 			);
@@ -1706,18 +1830,31 @@ class UserController extends BaseController {
 	private function call_BindUserLoginByWeixinOpenid($uid, $openid, $content)
 	{
 		$params = array(
-			'ui_id'=>$this->make_nickname(),
+			'ui_id'=>$uid,
 			'openid'=>$openid,
 			'userip'=>$this->get_real_ip(),
 		);
+		//var_dump($params);
 		$params['safekey']  = $this->mk_passwd($params, 10);
+		//var_dump($params);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['bind_weixin'];
 		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 <= $re_json['State'])
 		{	
-			$content['user_info'] = $re_json['Descr'];
+			//$content['user_info'] = $re_json['Descr'];
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
 			return true;
 		}
 		elseif(-1 == $re_json['State'])
@@ -1764,7 +1901,7 @@ class UserController extends BaseController {
 	@param $nickname 昵称
 	@param $head_photo 头像
 	@@output
-	@param $is_success  是否成功
+	@param $is_success  是否成功(0-成功,-1-操作失败，-2-密码错误)
 	@param $user_info   用户信息
 	*/
 	/***
@@ -1780,32 +1917,31 @@ class UserController extends BaseController {
 		if(!isset($data['openid']))
 		{
 			return C('param_err');
-		}
-		
+		}		
 		$data['openid'] = htmlspecialchars(trim($data['openid']));
 		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
 		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
 		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
 		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
 		
-		if('' == $data['opendid'])
+		if('' == $data['openid'])
 		{
 			return C('param_fmt_err');
 		}
-		
 		#1.检查是否跳过;
 		if('' == $data['mobile']
 		&& '' == $data['passwd']
-		&& '' == $data['nickname']
-		&& '' == $data['head_photo']
+		//&& '' == $data['nickname']
+		//&& '' == $data['head_photo']
 		)
 		{
 			#2.如果跳过，微信单独注册;
 			//todo:
 			$params = array(
-				'openid'=> $data['openid']
+				'openid'=> $data['openid'],
+				'nickname'=> $data['nickname'],
 			);
-			return $this->register_weixin(json_encode($param));
+			return $this->register_weixin(json_encode($params));
 		}
 		else
 		{
@@ -1868,7 +2004,6 @@ class UserController extends BaseController {
 				);
 			}
 			
-			
 			#5.如果密码正确，绑定微信openid;
 			$params = array(
 						'openid'=>$data['openid'],
@@ -1876,6 +2011,7 @@ class UserController extends BaseController {
 			);
 			#绑定微信号码
 			list($status_code, $content) = $this->bind_weixin(json_encode($params));
+			
 			if(200 == $status_code
 			&& 0 == $content['is_success']
 			)
@@ -1886,6 +2022,13 @@ class UserController extends BaseController {
 					'pswd'=>$data['passwd'],
 				);
 				return $this->login(json_encode($params));
+			}
+			else
+			{
+				return array(
+					$status_code,
+					$content
+				);
 			}
 			
 			return array(
@@ -1960,11 +2103,1038 @@ class UserController extends BaseController {
 		
 	}
 	
+	#通过解除登录账号绑定
+	public function cancel_bind($content)
+	/*
+	@@input
+	@param $uid        用户id
+	@param $logintype  登录类型(=0,loginname=用户名),(=1,loginname=手机号),
+	*                         (=2,loginname=邮箱),(=3,loginname=QQ号),
+	*                         (=4,loginname=微信OpenId),(=5,loginname=QQOpenId),
+	*                         (=6,loginname=微博OpenId)
+	@param $loginname
+	@@output
+	@param $is_success 0-成功,-1-操作错误,-2-loginname参数不合法,-3-safekey参数不合法
+	*/
+	{
+		
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['logintype'])
+		|| !isset($data['loginname'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid'] = intval($data['uid']);
+		$data['logintype'] = intval($data['logintype']);
+		$data['loginname'] = htmlspecialchars(trim($data['loginname']));
+		
+		if(0>= $data['uid']
+		|| 0 > $data['logintype']
+		|| '' == $data['loginname']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_CanelBingUserLogin($data['uid'],$data['logintype'], 
+		                                  $data['loginname'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
 	
+	private function call_CanelBingUserLogin($uid, $logintype, $loginname, $content)
+	{
+		$params = array(
+			'ui_id'=>$uid,
+			'logintype'=>$logintype,
+			'loginname'=>$loginname,
+		);
+		$params['safekey']  = $this->mk_passwd($params, 11);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['cancel_bind'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$content['user_info'] = $re_json['Descr'];
+			return true;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('loginname参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+
+		return false;
+	}
 	
+	#微博openid注册
+	public function register_weibo($content)
+	/*
+	@@input
+	@param $nickname 昵称
+	@param $openid   微博openid
+	@param $userip   用户ip
+	@@output
+	@param $is_success
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_RegisterByWeiboOpenid($data['openid'],$data['nickname'],$data['userip'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'head_portrait'   =>$content['head_portrait'],
+					'user_id'  		  =>$content['user_id'],
+					'nickname' 		  =>$content['nickname'],
+					'sex'      		  =>$content['sex'],
+					'cur_date'   	  =>$content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
 	
+	private function call_RegisterByWeiboOpenid($openid, $nickname='',$userip='', $content)
+	{
+		$params = array(
+			'nickname'=>'' == $nickname?$this->make_nickname():$nickname,
+			'openid'=>$openid,
+			'userip'=>'' == $userip?$this->get_real_ip():$userip,
+		);
+		$params['safekey']  = $this->mk_passwd($params, 9);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register_weibo'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+
+	#qq的opendid注册
+	public function register_qq($content)
+	/*
+	@@input
+	@param $nickname 昵称
+	@param $openid   qq的openid
+	@param $userip   用户ip
+	@@output
+	@param $is_success
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_RegisterByQQOpenid($data['openid'],$data['nickname'],$data['userip'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'head_portrait'   =>$content['head_portrait'],
+					'user_id'  		  =>$content['user_id'],
+					'nickname' 		  =>$content['nickname'],
+					'sex'      		  =>$content['sex'],
+					'cur_date'   	  =>$content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
 	
+	private function call_RegisterByQQOpenid($openid, $nickname='', $userip='', $content)
+	{
+		$params = array(
+			'nickname'=>'' == $nickname?$this->make_nickname():$nickname,
+			'openid'=>$openid,
+			'userip'=>'' == $userip?$this->get_real_ip():$userip,
+		);
+		$params['safekey']  = $this->mk_passwd($params, 9);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register_qq'];
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+
+
+	#微博openid登录
+	public function login_weibo($content)
+	/*
+	@@input
+	@param $openid  微博openid
+	@param $userip  用户ip
+	@@output
+	@param $content 返回用户信息
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_LoginByWeiboOpenid($data['openid'], $data['userip'],&$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'    =>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
 	
+	private function call_LoginByWeiboOpenid($openid, $userip, $content)
+	{
+		$params = array(
+			'openid'=>$openid,
+			'userip'=>''==$userip?$this->get_real_ip():$userip,
+		);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login_weibo'];		
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信OpenId参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('微信OpenId不存在或密码错误');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('用户被限制登录');
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -5;
+			$content['message']     = urlencode('用户访问的IP被限制');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+
+	#qq的opendid登录
+	public function login_qq($content)
+	/*
+	@@input
+	@param $openid  微博openid
+	@param $userip  用户ip
+	@@output
+	@param $content 返回用户信息
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}
+		
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_LoginByQQOpenid($data['openid'], $data['userip'],&$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'    =>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
+	
+	private function call_LoginByQQOpenid($openid, $userip, $content)
+	{
+		$params = array(
+			'openid'=>$openid,
+			'userip'=>''==$userip?$this->get_real_ip():$userip,
+		);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login_qq'];		
+		$back_str = $this->post($url, $params);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信OpenId参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('微信OpenId不存在或密码错误');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('用户被限制登录');
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$content['status_code'] = -5;
+			$content['message']     = urlencode('用户访问的IP被限制');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('接口报错');
+			return false;
+		}
+
+		return false;
+	}
+	
+	#绑定微博(openid)
+	public function bind_weibo($content)
+	/*
+	@@input
+	@param $ui_id   用户id
+	@param $openid  微博openid
+	@param $userip  用户ip
+	@@output
+	@param $is_success
+	@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,
+	                   -3-safekey参数不合法,-4-微信openid已存在,
+			   -6-绑定失败
+	@param $user_id 用户id
+	@param $head_portrait 头像
+	@param $nickname 用户昵称
+	@param $sex 用户性别
+	@param $cur_date 当前日期
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid'] = intval($data['uid']);
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if(0>= $data['uid']
+		|| '' == $data['openid']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_BindUserLoginByWeiboOpenid($data['uid'],$data['openid'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
+	
+	private function call_BindUserLoginByWeiboOpenid($uid, $openid, $userip='', $content)
+	{
+		$params = array(
+			'ui_id'=>$uid,
+			'openid'=>$openid,
+			'userip'=>''== $userip?$this->get_real_ip():$userip,
+		);
+		//var_dump($params);
+		$params['safekey']  = $this->mk_passwd($params, 10);
+		//var_dump($params);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['bind_weibo'];
+		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			//$content['user_info'] = $re_json['Descr'];
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('绑定失败');
+			return false;
+		}
+
+		return false;
+	}
+
+	#绑定qq(openid)
+	public function bind_qq($content)
+	/*
+	@@input
+	@param $ui_id   用户id
+	@param $openid  qq的openid
+	@param $userip  用户ip
+	@@output
+	@param $is_success
+	@@output
+	@param $is_success
+	@param $is_success 0-成功，-1-操作失败,-2-微信openid参数不合法,
+	                   -3-safekey参数不合法,-4-微信openid已存在,
+			   -6-绑定失败
+	@param $user_id 用户id
+	@param $head_portrait 头像
+	@param $nickname 用户昵称
+	@param $sex 用户性别
+	@param $cur_date 当前日期
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['uid'])
+		|| !isset($data['openid'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid'] = intval($data['uid']);
+		$data['openid'] = htmlspecialchars($data['openid']);
+		
+		if(0>= $data['uid']
+		|| '' == $data['openid']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_BindUserLoginByQQOpenid($data['uid'],$data['openid'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'user_id'       => $content['user_id'],
+					'head_portrait' => $content['head_portrait'],
+					'nickname'      => $content['nickname'],
+					'sex'           => $content['sex'],
+					'cur_date'      => $content['cur_date'],
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+	}
+	
+	private function call_BindUserLoginByQQOpenid($uid, $openid, $userip='', $content)
+	{
+		$params = array(
+			'ui_id'=>$uid,
+			'openid'=>$openid,
+			'userip'=>''== $userip?$this->get_real_ip():$userip,
+		);
+		//var_dump($params);
+		$params['safekey']  = $this->mk_passwd($params, 10);
+		//var_dump($params);
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['bind_qq'];
+		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			//$content['user_info'] = $re_json['Descr'];
+			$back_content = $re_json['Descr'];
+			$r_list = explode('|', $back_content);
+			$index=0;
+			$content['user_id']  = $r_list[$index++];
+			$content['nickname'] = $r_list[$index++];
+			$content['head_portrait'] = $r_list[$index++];
+			$content['sex']      = $r_list[$index++];
+			$content['cur_date'] = $r_list[$index++];
+			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			return true;
+		}
+		elseif(-1 == $re_json['State'])
+		{
+			$content['status_code'] = -100;
+			$content['message']     = urlencode('输入的参数存在空值');
+			return false;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$content['status_code'] = -2;
+			$content['message']     = urlencode('微信openid参数不合法');
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message']     = urlencode('safekey参数不合法');
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$content['status_code'] = -4;
+			$content['message']     = urlencode('微信openid已存在');
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$content['status_code'] = -6;
+			$content['message']     = urlencode('绑定失败');
+			return false;
+		}
+
+		return false;
+	}
+
+	#微博入口(openid)
+	public function entry_weibo($content)
+	/*
+	@@intput
+	@param $openid   微博openid 
+	@param $mobile   手机号码
+	@param $passwd   密码
+	@param $nickname 昵称
+	*/
+	{
+		//todo
+	}
+	
+	#qq入口(openid)
+	public function entry_qq($content)
+	/*
+	@@intput
+	@param $openid   qq的openid 
+	@param $mobile   手机号码
+	@param $passwd   密码
+	@param $nickname 昵称
+	*/
+	{
+		//todo
+	}
+	
+	#头像上传
+	public function head_photo_upload($contact)
+	/*
+	@@input
+	@param $uid      用户id
+	@param $pic_path 图片路径
+	@@output
+	@param $is_success 0-成功,-1-失败,-2-safekey参数不合法，-3-用户不存在，
+	*                  -4-头像文件保存失败,-5-头像文件超出指定大小限制（暂定100KB）
+	*/
+	{
+		$data = $this->fill($contact);
+		if(!isset($data['uid'])
+		|| !isset($data['pic_path'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['uid'] = intval($data['uid']);
+		//$data['pic_path'] = htmlspecialchars(trim($data['pic_path']));
+		$data['pic_path'] = __PUBLIC__."tmp/tmp.jpg";
+		if(!file_exists($data['pic_path']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-2,
+					'message'=>urlencode('图片不存在'),
+				),
+			);
+		}
+		
+		
+		if(0>= $data['uid']
+		|| '' == $data['pic_path']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		$content = array();
+		if($this->call_SetUserAvatarByUid($data['uid'],$data['pic_path'], &$content))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		if(isset($content['status_code']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);		
+		
+	}
+	
+	private function call_SetUserAvatarByUid($uid, $pic_path, $content)
+	{
+		$params = array(
+			'uid'=>$uid,
+			'yyyyMMdd'=>date("Ymd"),
+		);
+		$params['safekey']  = $this->mk_passwd($params, 3);
+		
+		 //读取图片
+		 $fp  = fopen($pic_path, "rb");
+		 $buf = fread($fp, filesize($pic_path));
+		 fclose($fp);
+	     $filename = "tmp.jpg";
+	     $varname  = "imageUpLoad";
+	     $key      = "$varname\";filename=\"$filename\"\r\n";
+	     $handler  = $key;
+	     $params[$key]         = $buf;
+		
+		$url = C('api_user_url').$this->USER_API_METHOD_LIST['head_photo_upload'];
+		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
+		$re_json = json_decode($back_str, true);
+		if($re_json
+		&& 1 <= $re_json['State'])
+		{	
+			return true;
+		}
+		elseif(-2 == $re_json['State'])
+		{
+			$contact['status_code'] = -2;
+			$contact['message'] = urlencode("safekey参数不合法");
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$contact['status_code'] = -3;
+			$contact['message'] = urlencode("用户不存在");
+			return false;
+		}
+		elseif(-4 == $re_json['State'])
+		{
+			$contact['status_code'] = -4;
+			$contact['message'] = urlencode("头像文件保存失败");
+			return false;
+		}
+		elseif(-5 == $re_json['State'])
+		{
+			$contact['status_code'] = -5;
+			$contact['message'] = urlencode("头像文件超出指定大小限制（暂定100KB）");
+			return false;
+		}
+		elseif(0 == $re_json['State'])
+		{
+			$contact['status_code'] = -1;
+			$contact['message'] = urlencode("用户头像更新失败");
+			return false;
+		}
+
+		return false;
+	}
 	
 	
 	

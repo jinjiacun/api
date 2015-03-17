@@ -44,6 +44,12 @@ public function send_email                发送邮件
 public function get_real_ip               获取当前访问的ip地址
 ##--------------------------------------------------------##
 protected function __exists				  判定是否存在
+##--------------------------------------------------------##
+public function down_net_pic              从网络下载图片
+@@input
+@param $net_pic_url
+@@output
+@param $local_pic_url
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -367,6 +373,7 @@ class BaseController extends Controller {
 			"<yyyyMMdd>|souhei975427",                                                    #(8)统计用户信息
 			"<nickname>|<openid>|<userip>|souhei975427",                                  #(9)威信注册
 			"<ui_id>|<openid>|<userip>|souhei975427",                                     #(10)绑定微信
+			"<ui_id>|<logintype>|<loginname>|souhei975427",					              #(11)取消绑定
 		);
 		$str = $seg_list[$seg_index];
 		switch($seg_index)
@@ -444,9 +451,16 @@ class BaseController extends Controller {
 					$str = str_replace("<openid>", $params["openid"], $str);
 					$str = str_replace("<userip>", $params["userip"], $str);
 				}
+			break;
+			case 11:
+				{
+					$str = str_replace("<ui_id>",     $params["ui_id"], $str);
+					$str = str_replace("<logintype>", $params["logintype"], $str);
+					$str = str_replace("<loginname>", $params["loginname"], $str);
+				}
+			break;
 		}
-		$re_str = $this->md5_16($str, true);
-		
+		$re_str = $this->md5_16($str, true);		
 		return $re_str;
 	}
 	
@@ -725,10 +739,45 @@ class BaseController extends Controller {
 		return $content['content'];
 	}
 	
-	
-	
-	
-	
+	#从网络下载图片
+	public function down_net_pic($content)
+	/*
+	@@input
+	@param $net_pic_url
+	@@output
+	@param $local_pic_url
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['net_pic_url']))
+		{
+			return C('param_err');
+		}
+		
+		$data['net_pic_url'] = htmlspecialchars(trim($data['net_pic_url']));
+		
+		if('' == $data['net_pic_url'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$pic_path = __PUBLIC__."/tmp/tmp.jpg";
+		if(file_exists($pic_path))
+		{
+			@unlink($pic_path); 
+		}
+		@copy($data['net_pic_url'], $pic_path);
+		
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'message'=>C('option_ok'),
+				'local_pic_url'=>$pic_path
+			),
+		);
+	}
 	
 	
 	
