@@ -817,6 +817,7 @@ class UserController extends BaseController {
 		$params['safekey']  = $this->mk_passwd($params, 4);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['check_mobile'];
 		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
@@ -1941,7 +1942,30 @@ class UserController extends BaseController {
 				'openid'=> $data['openid'],
 				'nickname'=> $data['nickname'],
 			);
-			return $this->register_weixin(json_encode($params));
+			$re_back = $this->register_weixin(json_encode($params));
+			//下载头像并上传
+			if(200 == $re_back[0]
+			&& 0 == $re_back[1]['content']['is_success']
+			&& '' != $data['head_photo'])
+			{
+				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
+				if(200 == $status_code
+				&& 0 == $content['is_success'])
+				{
+					//上传用户头像
+					$uid = $re_back['user_id'];
+					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
+					if(200 != $status_code
+					|| 0 != $content['is_sucess'])
+					{
+						return array(
+							$status_code,
+							$content
+						);
+					}
+				}
+			}
+			return $re_back;
 		}
 		else
 		{
@@ -2543,13 +2567,13 @@ class UserController extends BaseController {
 		elseif(-2 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
-			$content['message']     = urlencode('微信OpenId参数不合法');
+			$content['message']     = urlencode('微博OpenId参数不合法');
 			return false;
 		}
 		elseif(-3 == $re_json['State'])
 		{
 			$content['status_code'] = -3;
-			$content['message']     = urlencode('微信OpenId不存在或密码错误');
+			$content['message']     = urlencode('微博OpenId不存在或密码错误');
 			return false;
 		}
 		elseif(-4 == $re_json['State'])
@@ -2811,7 +2835,7 @@ class UserController extends BaseController {
 		elseif(-2 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
-			$content['message']     = urlencode('微信openid参数不合法');
+			$content['message']     = urlencode('微博openid参数不合法');
 			return false;
 		}
 		elseif(-3 == $re_json['State'])
@@ -2823,7 +2847,7 @@ class UserController extends BaseController {
 		elseif(-4 == $re_json['State'])
 		{
 			$content['status_code'] = -4;
-			$content['message']     = urlencode('微信openid已存在');
+			$content['message']     = urlencode('微博openid已存在');
 			return false;
 		}
 		elseif(0 == $re_json['State'])
@@ -2986,7 +3010,155 @@ class UserController extends BaseController {
 	@param $nickname 昵称
 	*/
 	{
-		//todo
+		$data = $this->fill($content);
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}		
+		$data['openid'] = htmlspecialchars(trim($data['openid']));
+		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
+		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
+		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
+		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		#1.检查是否跳过;
+		if('' == $data['mobile']
+		&& '' == $data['passwd']
+		//&& '' == $data['nickname']
+		//&& '' == $data['head_photo']
+		)
+		{
+			#2.如果跳过，微博单独注册;
+			//todo:
+			$params = array(
+				'openid'=> $data['openid'],
+				'nickname'=> $data['nickname'],
+			);
+			$re_back = $this->register_weibo(json_encode($params));
+			//下载头像并上传
+			if(200 == $re_back[0]
+			&& 0 == $re_back[1]['content']['is_success']
+			&& '' != $data['head_photo'])
+			{
+				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
+				if(200 == $status_code
+				&& 0 == $content['is_success'])
+				{
+					//上传用户头像
+					$uid = $re_back['user_id'];
+					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
+					if(200 != $status_code
+					|| 0 != $content['is_sucess'])
+					{
+						return array(
+							$status_code,
+							$content
+						);
+					}
+				}
+			}
+			return $re_back;
+		}
+		else
+		{
+			#3.不是2步骤,检查手机号码是否存在，如果不存在,则进行手机号码+密码的注册,并且绑定微博和修改昵称+头像;
+			$params = array(
+				'mobile' => $data['mobile'],
+			);
+			list($status_code, $content) = $this->check_mobile(json_encode($params));
+			if(200 == $status_code
+			&& -1 == $content['is_success'])#手机号码不存在
+			{
+				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
+				$params = array(
+					'mobile'  =>$data['mobile'],
+					'pswd'    =>$data['passwd'],
+					'nickname'=>$data['nickname'],
+				);
+				list($status_code, $content) = $this->register(json_encode($params));
+				if(200 == $status_code
+				&& 0 == $content['is_success']
+				)
+				{
+					$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+					);
+					#绑定微信号码
+					list($status_code, $content) = $this->bind_weibo(json_encode($params));
+					if(200 == $status_code
+					&& 0 == $content['is_success']
+					)
+					{
+						#登录
+						$params = array(
+							'mobile'=>$data['mobile'],
+							'pswd'=>$data['passwd'],
+						);
+						return $this->login(json_encode($params));
+					}
+				}
+			}
+			
+			$params = array(
+				'mobile'=>$data['mobile'],
+				'pswd'=>$data['passwd'],
+			);
+			list($status_code, $content) = $this->login(json_encode($params));
+			#检查帐号不正确
+			if(200 == $status_code
+			&& -2 == $content['is_success']
+			)
+			{
+				#返回密码错误
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'   =>urlencode('密码错误'),
+					)
+				);
+			}
+			
+			#5.如果密码正确，绑定微博openid;
+			$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+			);
+			#绑定微信号码
+			list($status_code, $content) = $this->bind_weibo(json_encode($params));
+			
+			if(200 == $status_code
+			&& 0 == $content['is_success']
+			)
+			{
+				#登录
+				$params = array(
+					'mobile'=>$data['mobile'],
+					'pswd'=>$data['passwd'],
+				);
+				return $this->login(json_encode($params));
+			}
+			else
+			{
+				return array(
+					$status_code,
+					$content
+				);
+			}
+			
+			return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>urlencode('操作失败'),
+				),
+			);
+		}
 	}
 	
 	#qq入口(openid)
@@ -2999,7 +3171,155 @@ class UserController extends BaseController {
 	@param $nickname 昵称
 	*/
 	{
-		//todo
+		$data = $this->fill($content);
+		if(!isset($data['openid']))
+		{
+			return C('param_err');
+		}		
+		$data['openid'] = htmlspecialchars(trim($data['openid']));
+		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
+		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
+		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
+		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		
+		if('' == $data['openid'])
+		{
+			return C('param_fmt_err');
+		}
+		#1.检查是否跳过;
+		if('' == $data['mobile']
+		&& '' == $data['passwd']
+		//&& '' == $data['nickname']
+		//&& '' == $data['head_photo']
+		)
+		{
+			#2.如果跳过，qq单独注册;
+			//todo:
+			$params = array(
+				'openid'=> $data['openid'],
+				'nickname'=> $data['nickname'],
+			);
+			$re_back = $this->register_qq(json_encode($params));
+			//下载头像并上传
+			if(200 == $re_back[0]
+			&& 0 == $re_back[1]['content']['is_success']
+			&& '' != $data['head_photo'])
+			{
+				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
+				if(200 == $status_code
+				&& 0 == $content['is_success'])
+				{
+					//上传用户头像
+					$uid = $re_back['user_id'];
+					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
+					if(200 != $status_code
+					|| 0 != $content['is_sucess'])
+					{
+						return array(
+							$status_code,
+							$content
+						);
+					}
+				}
+			}
+			return $re_back;
+		}
+		else
+		{
+			#3.不是2步骤,检查手机号码是否存在，如果不存在,则进行手机号码+密码的注册,并且绑定qq和修改昵称+头像;
+			$params = array(
+				'mobile' => $data['mobile'],
+			);
+			list($status_code, $content) = $this->check_mobile(json_encode($params));
+			if(200 == $status_code
+			&& -1 == $content['is_success'])#手机号码不存在
+			{
+				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
+				$params = array(
+					'mobile'  =>$data['mobile'],
+					'pswd'    =>$data['passwd'],
+					'nickname'=>$data['nickname'],
+				);
+				list($status_code, $content) = $this->register(json_encode($params));
+				if(200 == $status_code
+				&& 0 == $content['is_success']
+				)
+				{
+					$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+					);
+					#绑定微信号码
+					list($status_code, $content) = $this->bind_qq(json_encode($params));
+					if(200 == $status_code
+					&& 0 == $content['is_success']
+					)
+					{
+						#登录
+						$params = array(
+							'mobile'=>$data['mobile'],
+							'pswd'=>$data['passwd'],
+						);
+						return $this->login(json_encode($params));
+					}
+				}
+			}
+			
+			$params = array(
+				'mobile'=>$data['mobile'],
+				'pswd'=>$data['passwd'],
+			);
+			list($status_code, $content) = $this->login(json_encode($params));
+			#检查帐号不正确
+			if(200 == $status_code
+			&& -2 == $content['is_success']
+			)
+			{
+				#返回密码错误
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'   =>urlencode('密码错误'),
+					)
+				);
+			}
+			
+			#5.如果密码正确，绑定qq的openid;
+			$params = array(
+						'openid'=>$data['openid'],
+						'uid'   =>$content['user_id'],
+			);
+			#绑定微信号码
+			list($status_code, $content) = $this->bind_qq(json_encode($params));
+			
+			if(200 == $status_code
+			&& 0 == $content['is_success']
+			)
+			{
+				#登录
+				$params = array(
+					'mobile'=>$data['mobile'],
+					'pswd'=>$data['passwd'],
+				);
+				return $this->login(json_encode($params));
+			}
+			else
+			{
+				return array(
+					$status_code,
+					$content
+				);
+			}
+			
+			return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>urlencode('操作失败'),
+				),
+			);
+		}
 	}
 	
 	#头像上传
@@ -3015,7 +3335,7 @@ class UserController extends BaseController {
 	{
 		$data = $this->fill($contact);
 		if(!isset($data['uid'])
-		|| !isset($data['pic_path'])
+		//|| !isset($data['pic_path'])
 		)
 		{
 			return C('param_err');
