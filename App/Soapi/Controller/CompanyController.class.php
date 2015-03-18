@@ -416,6 +416,76 @@ class CompanyController extends BaseController {
 					);
 		}
 		
+		//带主评论
+		//filter:评论审核时间最新
+		public function get_list_com($content)
+		{
+			list($status_code, $content) = $this->get_list($content);
+			
+			if($content
+			&& $content['list']
+			&& 0< $content['record_count']
+			)
+			{
+				foreach($content['list'] as $k=>$v)
+				{
+					$param['where'] = array(
+						'company_id'=>$v['id'],
+						'parent_id'=>0,
+						'is_delete'=>0,
+						'is_validate'=>1,
+					);
+					$param['order']['validate_time'] = "desc";
+					$param['page_index']=1;
+					$param['page_size'] = 1;
+					list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
+					$content['list'][$k]['sub_com'] = $sub_com['list'][0];
+				}
+			}
+			
+			return array(
+				200,
+				array(
+				    'list'=>$content['list'],
+					'record_count'=>$content['record_count'],
+				)
+			);
+		}
+		
+		//带曝光
+		//filter:最新曝光审核时间
+		public function get_list_exposal($content)
+		{
+			list($status_code, $content) = $this->get_list($content);
+			
+			if($content
+			&& $content['list']
+			&& 0< $content['record_count']
+			)
+			{
+				foreach($content['list'] as $k=>$v)
+				{
+					$param['where'] = array(
+						'company_id'=>$v['id'],
+						'type'=>0,
+					);
+					$param['order']['validate_time'] = "desc";
+					$param['page_index']=1;
+					$param['page_size'] = 1;
+					list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
+					$content['list'][$k]['sub_exposal'] = $sub_com['list'][0];
+				}
+			}
+			
+			return array(
+				200,
+				array(
+					'list'=>$content['list'],
+					'record_count'=>$content['record_count'],
+				)
+			);
+		}
+		
 		#查询企业映射
 		public function get_id_name_map($content)
 		/*

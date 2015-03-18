@@ -2135,7 +2135,7 @@ echo json_encode($map);<br/>
 <b>下载地址接口</b>
 method:Down.index<br/>
 返回:content里面的url<br/>
-<b>意见反馈</b>
+<b>意见反馈</b><br/>
 method:Ideaback.add<br/>
 @@input<br/>
 @param $content 内容<br/>
@@ -2144,6 +2144,12 @@ method:Ideaback.add<br/>
 @param $userip  用户ip(web端带上这个,移动端设置为空值)<br/>
 @output<br/>
 @param is_success 0-成功,-1-失败<br/>
+<b>企业列表查询(附带一条最近新审核过的主评论)</b><br/>
+method:Company.get_list_com<br/>
+对应字段名:sub_com<br/>
+<b>企业列表查询(附带一条最近新审核过的曝光信息)</b><br/>
+method:Company.get_list_exposal<br/>
+对应字段名:sub_exposal<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

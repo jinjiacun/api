@@ -156,6 +156,7 @@ class InexposalController extends BaseController {
 	                              top_num int not null default 0 comment '顶数目',
 	                              is_delete int not null default 0 comment '是否删除(1-删除)',
 	                              user_agent varchar(255) comment '来源',
+	                              validate_time int not null default 0 comment '审核时间',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -689,6 +690,7 @@ class InexposalController extends BaseController {
 		
 		$content = array(
 			'company_id'=> $data['company_id']
+			'validate_time'=>time(),
 		);
 		if(M($this->_module_name)->where(array('id'=>$data['id']))
 		                         ->save($content))
