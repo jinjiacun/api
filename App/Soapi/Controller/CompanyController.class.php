@@ -550,6 +550,8 @@ class CompanyController extends BaseController {
 		@@input
 		@param $name    企业别名 
 		@param $user_id 会员id
+		@param $nature  企业性质(默认为空,不设置此字段为不过滤这个条件)
+		@param $trade   所属行业(默认为空,不设置此字段为不过滤这个条件)
 		@@output
 		@param  $id                企业id
 		@param  $logo              #企业logo
@@ -580,6 +582,14 @@ class CompanyController extends BaseController {
 			}
 			
 			$data['name']    = htmlspecialchars(trim($data['name']));
+			if(isset($data['nature']))
+			{
+				$data['nature'] = htmlspecialchars(trim($data['nature']));
+			}
+			if(isset($data['trade']))
+			{
+				$data['trade'] = htmlspecialchars(trim($data['trade']));
+			}
 			//$data['user_id'] = intval($data['user_id']);
 			
 			if('' == $data['name'])
@@ -601,10 +611,12 @@ class CompanyController extends BaseController {
 			$company_id_list = array();
 			$company_ids     = "";
 			
+			$tmp_list = array();
 			#别名搜索
 			$tmp_list = M('Company_alias')->field("company_id")
 			                              ->where(array('name'=>array('like','%'.$data['name'].'%')))
 			                              ->select();
+			                              
 			if($tmp_list
 			&& 0<count($tmp_list))
 			{
@@ -622,6 +634,18 @@ class CompanyController extends BaseController {
 			if('' != $company_ids)
 			{
 				$where['id'] = array('in', $company_ids);
+				if(isset($data['nature'])
+				&& '' != $data['nature']
+				)
+				{
+					$where['nature'] = $data['nature'];
+				}
+				if(isset($data['trade'])
+				&& '' != $data['trade']
+				)
+				{
+					$where['trade'] = $data['trade'];
+				}
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
@@ -633,6 +657,17 @@ class CompanyController extends BaseController {
 			{
 				if(isset($where))unset($where);
 				$where['company_name'] = array('like','%'.$data['name'].'%');
+				if(isset($data['nature'])
+				&& ''!= $data['nature']
+				)
+				{
+					$where['nature'] = $data['nature'];
+				}
+				if(isset($data['trade'])
+				&& '' != $data['trade'])
+				{
+					$where['trade'] = $data['trade'];
+				}
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();
@@ -644,6 +679,16 @@ class CompanyController extends BaseController {
 			{
 				if(isset($where))unset($where);
 				$where['website'] = array('like', '%'.$data['name'].'%');
+				if(isset($data['nature'])
+				&& '' != $data['nature'])
+				{
+					$where['nature'] = $data['nature'];
+				}
+				if(isset($data['trade'])
+				&& '' != $data['trade'])
+				{
+					$where['trade'] = $data['trade'];
+				}
 				$tmp_list = M($this->_module_name)->where($where)->select();
 				//$record_count = D('CompanyaliasView')->where($data)->count();
 				$record_count = M($this->_module_name)->where($where)->count();

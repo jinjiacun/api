@@ -760,9 +760,11 @@ content={"company_id":xxx,"name":"xxx"}<br/>
 方法描述:企业别名搜索<br/>
 输入参数格式:<br/>
 method=Company.search<br/>
-content={"name":"xxx"}<br/>
+content={"name":"xxx","nature":"xxx","trade":"xxx"}<br/>
 @@input<br/>
-@param $name   企业别名 <br/>
+@param $name   企业别名<br/>
+@param $nature  企业性质(默认为空,不设置此字段为不过滤这个条件)<br/>
+@param $trade   所属行业(默认为空,不设置此字段为不过滤这个条件)<br/>
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'logo':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx','auth_level':'xxx'<br/>
                                ,'reg_address':'xxx','busin_license':xxx,<br/>

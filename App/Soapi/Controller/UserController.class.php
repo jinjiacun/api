@@ -1943,28 +1943,8 @@ class UserController extends BaseController {
 				'nickname'=> $data['nickname'],
 			);
 			$re_back = $this->register_weixin(json_encode($params));
-			//下载头像并上传
-			if(200 == $re_back[0]
-			&& 0 == $re_back[1]['content']['is_success']
-			&& '' != $data['head_photo'])
-			{
-				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
-				if(200 == $status_code
-				&& 0 == $content['is_success'])
-				{
-					//上传用户头像
-					$uid = $re_back['user_id'];
-					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
-					if(200 != $status_code
-					|| 0 != $content['is_sucess'])
-					{
-						return array(
-							$status_code,
-							$content
-						);
-					}
-				}
-			}
+			if($_r = $this->tmp_upload_head($re_back, $data))
+				return $_r;
 			return $re_back;
 		}
 		else
@@ -3039,28 +3019,8 @@ class UserController extends BaseController {
 				'nickname'=> $data['nickname'],
 			);
 			$re_back = $this->register_weibo(json_encode($params));
-			//下载头像并上传
-			if(200 == $re_back[0]
-			&& 0 == $re_back[1]['content']['is_success']
-			&& '' != $data['head_photo'])
-			{
-				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
-				if(200 == $status_code
-				&& 0 == $content['is_success'])
-				{
-					//上传用户头像
-					$uid = $re_back['user_id'];
-					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
-					if(200 != $status_code
-					|| 0 != $content['is_sucess'])
-					{
-						return array(
-							$status_code,
-							$content
-						);
-					}
-				}
-			}
+			if($_r = $this->tmp_upload_head($re_back, $data))
+				return $_r;
 			return $re_back;
 		}
 		else
@@ -3200,28 +3160,8 @@ class UserController extends BaseController {
 				'nickname'=> $data['nickname'],
 			);
 			$re_back = $this->register_qq(json_encode($params));
-			//下载头像并上传
-			if(200 == $re_back[0]
-			&& 0 == $re_back[1]['content']['is_success']
-			&& '' != $data['head_photo'])
-			{
-				list($status_code, $content) = $this->down_net_pic($data['head_photo']);
-				if(200 == $status_code
-				&& 0 == $content['is_success'])
-				{
-					//上传用户头像
-					$uid = $re_back['user_id'];
-					list($status_code, $content) = $this->head_photo_upload(json_encode(array("uid"=>$uid)));
-					if(200 != $status_code
-					|| 0 != $content['is_sucess'])
-					{
-						return array(
-							$status_code,
-							$content
-						);
-					}
-				}
-			}
+			if($_r = $this->tmp_upload_head($re_back, $data))
+				return $_r;
 			return $re_back;
 		}
 		else
@@ -3323,7 +3263,7 @@ class UserController extends BaseController {
 	}
 	
 	#头像上传
-	public function head_photo_upload($contact)
+	public function head_photo_upload($content)
 	/*
 	@@input
 	@param $uid      用户id
@@ -3333,7 +3273,7 @@ class UserController extends BaseController {
 	*                  -4-头像文件保存失败,-5-头像文件超出指定大小限制（暂定100KB）
 	*/
 	{
-		$data = $this->fill($contact);
+		$data = $this->fill($content);
 		if(!isset($data['uid'])
 		//|| !isset($data['pic_path'])
 		)
@@ -3343,7 +3283,8 @@ class UserController extends BaseController {
 		
 		$data['uid'] = intval($data['uid']);
 		//$data['pic_path'] = htmlspecialchars(trim($data['pic_path']));
-		$data['pic_path'] = __PUBLIC__."tmp/tmp.jpg";
+		//$data['pic_path'] = __PUBLIC__."tmp/tmp.jpg";
+		/*
 		if(!file_exists($data['pic_path']))
 		{
 			return array(
@@ -3354,6 +3295,7 @@ class UserController extends BaseController {
 				),
 			);
 		}
+		*/
 		
 		
 		if(0>= $data['uid']
@@ -3404,9 +3346,10 @@ class UserController extends BaseController {
 		$params['safekey']  = $this->mk_passwd($params, 3);
 		
 		 //读取图片
-		 $fp  = fopen($pic_path, "rb");
-		 $buf = fread($fp, filesize($pic_path));
-		 fclose($fp);
+		 //$fp  = fopen($pic_path, "rb");
+		 //$buf = fread($fp, filesize($pic_path));
+		 //fclose($fp);
+		 $buf = file_get_contents($pic_path);
 	     $filename = "tmp.jpg";
 	     $varname  = "imageUpLoad";
 	     $key      = "$varname\";filename=\"$filename\"\r\n";
@@ -3456,6 +3399,40 @@ class UserController extends BaseController {
 		return false;
 	}
 	
+	private function tmp_upload_head($re_back, $data)
+	{
+		//下载头像并上传
+		if(200 == $re_back[0]
+		&& 0 == $re_back[1]['is_success']
+		&& '' != $data['head_photo'])
+		{
+			$param = array(
+				'net_pic_url'=>$data['head_photo']
+			);	
+			list($status_code, $content) = $this->down_net_pic(json_encode($param));
+			unset($param);
+			if(200 == $status_code
+			&& 0 == $content['is_success'])
+			{
+				//上传用户头像
+				$uid = $re_back[1]['user_id'];
+				$param = array(
+					"uid"=>$uid,
+					'pic_path'=>$data['head_photo'],
+				);
+				list($s_status_code, $s_content) = $this->head_photo_upload(json_encode($param));
+				if(200 != $s_status_code
+				|| 0 != $s_content['is_sucess'])
+				{
+					return array(
+						$s_status_code,
+						$s_content
+					);
+				}
+			}
+			unset($param);
+		}
+	}
 	
 	
 	

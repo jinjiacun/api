@@ -767,14 +767,25 @@ class BaseController extends Controller {
 		{
 			@unlink($pic_path); 
 		}
-		@copy($data['net_pic_url'], $pic_path);
+		
+		
+		if(@copy($data['net_pic_url'], $pic_path))
+		{
+				return array(
+						200,
+						array(
+							'is_success'=>0,
+							'message'=>C('option_ok'),
+							'local_pic_url'=>$pic_path
+						),
+				);
+		}
 		
 		return array(
 			200,
 			array(
-				'is_success'=>0,
-				'message'=>C('option_ok'),
-				'local_pic_url'=>$pic_path
+				'is_success'=>-1,
+				'message'=>C('option_fail'),
 			),
 		);
 	}
