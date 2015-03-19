@@ -1955,8 +1955,8 @@ class UserController extends BaseController {
 			);
 			list($status_code, $content) = $this->check_mobile(json_encode($params));
 			if(200 == $status_code
-			&& -1 == $content['is_success'])#手机号码不存在
-			{
+			&& -1 == $content['is_exists'])#手机号码不存在
+			{				
 				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
 				$params = array(
 					'mobile'  =>$data['mobile'],
@@ -1965,7 +1965,7 @@ class UserController extends BaseController {
 				);
 				list($status_code, $content) = $this->register(json_encode($params));
 				if(200 == $status_code
-				&& 0 == $content['is_success']
+				&& 0 == $content['is_exists']
 				)
 				{
 					$params = array(
@@ -3031,7 +3031,7 @@ class UserController extends BaseController {
 			);
 			list($status_code, $content) = $this->check_mobile(json_encode($params));
 			if(200 == $status_code
-			&& -1 == $content['is_success'])#手机号码不存在
+			&& -1 == $content['is_exists'])#手机号码不存在
 			{
 				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
 				$params = array(
@@ -3172,7 +3172,7 @@ class UserController extends BaseController {
 			);
 			list($status_code, $content) = $this->check_mobile(json_encode($params));
 			if(200 == $status_code
-			&& -1 == $content['is_success'])#手机号码不存在
+			&& -1 == $content['is_exists'])#手机号码不存在
 			{
 				#进行手机号码+密码的注册,并且绑定微信和修改昵称+头像;
 				$params = array(
