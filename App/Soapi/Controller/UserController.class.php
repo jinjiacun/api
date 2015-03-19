@@ -3406,6 +3406,7 @@ class UserController extends BaseController {
 		&& 0 == $re_back[1]['is_success']
 		&& '' != $data['head_photo'])
 		{
+			/*
 			$param = array(
 				'net_pic_url'=>$data['head_photo']
 			);	
@@ -3414,6 +3415,7 @@ class UserController extends BaseController {
 			if(200 == $status_code
 			&& 0 == $content['is_success'])
 			{
+			*/
 				//上传用户头像
 				$uid = $re_back[1]['user_id'];
 				$param = array(
@@ -3429,8 +3431,8 @@ class UserController extends BaseController {
 						$s_content
 					);
 				}
-			}
-			unset($param);
+			//}
+			//unset($param);
 		}
 	}
 	
