@@ -460,6 +460,7 @@ class BaseController extends Controller {
 				}
 			break;
 		}
+		//var_dump($str);
 		$re_str = $this->md5_16($str, true);		
 		return $re_str;
 	}

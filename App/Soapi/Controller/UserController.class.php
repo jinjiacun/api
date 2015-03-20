@@ -348,6 +348,19 @@ class UserController extends BaseController {
 				),
 			);
 		}
+		if(isset($content['status_code'])
+		&& -3 == $content['status_code']
+		)
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>$content['status_code'],
+					'message'=>$content['message'],
+				)
+			);
+		}
+		
 		
 		return array(
 				200,
@@ -370,13 +383,16 @@ class UserController extends BaseController {
 			'validated'=> 0,
 			'userip'   => $this->get_real_ip(),
 		);
+		$params['nickname'] = urlencode($params['nickname']);
+		//var_dump($params);		
 		$params['safekey']  = $this->mk_passwd($params);
 		//var_dump($params);
-		$params['nickname'] = urlencode($params['nickname']);
+		//$params['nickname'] = urlencode($params['nickname']);
 		//var_dump($params);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register'];
 		//var_dump($url);
 		$back_str = $this->post($url, $params);
+		//var_dump($back_str);
 		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
@@ -393,6 +409,12 @@ class UserController extends BaseController {
 		elseif(-4 == $re_json['State'])
 		{
 			$content['status_code'] = -2;
+			return false;
+		}
+		elseif(-3 == $re_json['State'])
+		{
+			$content['status_code'] = -3;
+			$content['message'] = urlencode("safekey参数不合法");
 			return false;
 		}
 		return false;
@@ -1964,8 +1986,9 @@ class UserController extends BaseController {
 					'nickname'=>$data['nickname'],
 				);
 				list($status_code, $content) = $this->register(json_encode($params));
+				//var_dump($content);
 				if(200 == $status_code
-				&& 0 == $content['is_exists']
+				&& 0 == $content['is_success']
 				)
 				{
 					$params = array(
@@ -1983,8 +2006,17 @@ class UserController extends BaseController {
 							'mobile'=>$data['mobile'],
 							'pswd'=>$data['passwd'],
 						);
-						return $this->login(json_encode($params));
+						$re_back = $this->login(json_encode($params));
+						#修改头像
+						if($_r = $this->tmp_upload_head($re_back, $data))
+							return $_r;	
+						return $re_back;
 					}
+				}
+				else
+				{
+					$content['module'] = urlencode('注册模块');
+					return array($status_code,$content);
 				}
 			}
 			
@@ -3039,7 +3071,8 @@ class UserController extends BaseController {
 					'pswd'    =>$data['passwd'],
 					'nickname'=>$data['nickname'],
 				);
-				list($status_code, $content) = $this->register(json_encode($params));
+				list($status_code, $content) = $this->register(json_encode($params));				
+				
 				if(200 == $status_code
 				&& 0 == $content['is_success']
 				)
@@ -3053,13 +3086,18 @@ class UserController extends BaseController {
 					if(200 == $status_code
 					&& 0 == $content['is_success']
 					)
-					{
+					{			
+						
 						#登录
 						$params = array(
 							'mobile'=>$data['mobile'],
 							'pswd'=>$data['passwd'],
-						);
-						return $this->login(json_encode($params));
+						);						
+						$re_back = $this->login(json_encode($params));
+						#修改头像
+						if($_r = $this->tmp_upload_head($re_back, $data))
+							return $_r;	
+						return $re_back;
 					}
 				}
 			}
@@ -3200,7 +3238,11 @@ class UserController extends BaseController {
 							'mobile'=>$data['mobile'],
 							'pswd'=>$data['passwd'],
 						);
-						return $this->login(json_encode($params));
+						$re_back = $this->login(json_encode($params));
+						#修改头像
+						if($_r = $this->tmp_upload_head($re_back, $data))
+							return $_r;	
+						return $re_back;
 					}
 				}
 			}
@@ -3243,6 +3285,7 @@ class UserController extends BaseController {
 					'pswd'=>$data['passwd'],
 				);
 				return $this->login(json_encode($params));
+				
 			}
 			else
 			{
