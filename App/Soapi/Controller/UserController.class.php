@@ -1684,6 +1684,12 @@ class UserController extends BaseController {
 		$content = array();
 		if($this->call_RegisterByWeixinOpenid($data['openid'],$data['nickname'], &$content))
 		{
+			//同步用户信息
+			$user_info = array(
+				'user_id'=>$content['user_id'],
+				'nickname'=>$content['nickname'],
+			);
+			A('Soapi/Member')->add(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -2109,11 +2115,46 @@ class UserController extends BaseController {
 		$content = array();
 		if($this->call_ExistsUserInfoByLoginName($data['loginname'],$data['logintype'], &$content))
 		{
+			$re_back = array();
+			//登录
+			switch($data['logintype'])
+			{
+				case 4://微信
+					{
+						$param = array(
+							'openid'=>$data['loginname']
+						);
+						$re_back = $this->login_weixin(json_encode($param));
+					}				break;
+				case 5://qq
+					{
+						$param = array(
+							'openid'=>$data['loginname']
+						);
+						$re_back = $this->login_qq(json_encode($param));
+					}
+					break;
+				case 6://微博
+					{
+						$param = array(
+							'openid'=>$data['loginname']
+						);
+						$re_back = $this->login_weibo(json_encode($param));
+					}
+					break;
+			}
 			return array(
 				200,
 				array(
 					'is_exists'=>0,
 					'message'=>C('is_exists'),
+					'user_id'       => $re_back[1]['user_id'],
+					'head_portrait' => $re_back[1]['head_portrait'],
+					'nickname'      => $re_back[1]['nickname'],
+					'sex'           => $re_back[1]['sex'],
+					'cur_date'      => $re_back[1]['cur_date'],
+					
+					
 				),
 			);
 		}
@@ -2179,7 +2220,7 @@ class UserController extends BaseController {
 		$content = array();
 		if($this->call_CanelBingUserLogin($data['uid'],$data['logintype'], 
 		                                  $data['loginname'], &$content))
-		{
+		{			
 			return array(
 				200,
 				array(
@@ -2270,6 +2311,12 @@ class UserController extends BaseController {
 		$content = array();
 		if($this->call_RegisterByWeiboOpenid($data['openid'],$data['nickname'],$data['userip'], &$content))
 		{
+			//同步用户信息
+			$user_info = array(
+				'user_id'=>$content['user_id'],
+				'nickname'=>$content['nickname'],
+			);
+			A('Soapi/Member')->add(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -2392,6 +2439,12 @@ class UserController extends BaseController {
 		$content = array();
 		if($this->call_RegisterByQQOpenid($data['openid'],$data['nickname'],$data['userip'], &$content))
 		{
+			//同步用户信息
+			$user_info = array(
+				'user_id'=>$content['user_id'],
+				'nickname'=>$content['nickname'],
+			);
+			A('Soapi/Member')->add(json_encode($user_info));
 			return array(
 				200,
 				array(
@@ -3392,7 +3445,12 @@ class UserController extends BaseController {
 		 //$fp  = fopen($pic_path, "rb");
 		 //$buf = fread($fp, filesize($pic_path));
 		 //fclose($fp);
-		 $buf = file_get_contents($pic_path);
+		 $stime=microtime(true);
+		 $buf = $this->get_remote_data($pic_path);
+		 //var_dump($buf);
+		 //file_get_contents($pic_path);
+		 $sstime=microtime(true);
+		  
 	     $filename = "tmp.jpg";
 	     $varname  = "imageUpLoad";
 	     $key      = "$varname\";filename=\"$filename\"\r\n";
@@ -3401,6 +3459,8 @@ class UserController extends BaseController {
 		
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['head_photo_upload'];
 		$back_str = $this->post($url, $params);
+		$endtime = microtime(true);
+		file_put_contents(__PUBLIC__.'/log/diff.txt',$stime.','.$sstime.','.$endtime.','.($sstime-$stime).','.($endtime-$sstime).'\r\n', FILE_APPEND);
 		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
@@ -3479,10 +3539,37 @@ class UserController extends BaseController {
 		}
 	}
 	
+	#获取远程数据
+	private function get_remote_data($url)
+	{
+		$ch = curl_init ();  
+        curl_setopt ( $ch, CURLOPT_CUSTOMREQUEST, 'GET' );  
+        curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, false );  
+        curl_setopt ( $ch, CURLOPT_URL, $url );  
+        ob_start ();  
+        curl_exec ( $ch );  
+        $return_content = ob_get_contents ();  
+        ob_end_clean ();  
+          
+        $return_code = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );  
+        return $return_content;  
+	}
 	
-	
-	
-	
-	
+	/*
+	public function test_head($content)
+	{
+		$data = $this->fill($content);
+		$re_back = array(
+			200,
+			array(
+				'is_success'=>0,
+				'user_id'=>$data['user_id'],
+			)
+		);
+		
+		$r = $this->tmp_upload_head($re_back, $data);
+		var_dump($r);
+	}
+	*/
 	
 }

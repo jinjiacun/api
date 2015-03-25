@@ -121,6 +121,13 @@ public function delete
 @@output
 @param $is_success 0-成功操作,-1-操作失败
 ##--------------------------------------------------------##
+#批量删除
+public function delete_mul
+@@input
+@param $id 数组
+@@output
+@param $is_success 0-成功操作,-1-操作失败
+##--------------------------------------------------------##
 #更新评论人数统计
 private function set_com_amount
 @@input
@@ -139,6 +146,20 @@ private function has_child
 public function stat_re_comment
 @@output
 @param $is_success 0-操作成功,-1-操作失败
+##--------------------------------------------------------##
+#判定是否有祖父,存在返回对应的id
+private function check_exists_pparent_id
+@@input
+@param $parent_id 当前父类id
+@@output
+@param $pprent_id 祖父id
+##--------------------------------------------------------##
+#恢复
+public function recover
+@@input
+@param $id 当前id
+@@output
+@param $is_success 0-操作成功,-1-操作失败
 */
 class CommentController extends BaseController {
 	/**
@@ -147,6 +168,7 @@ class CommentController extends BaseController {
 	                              user_id int not null default 0 comment '用户id',
 	                              company_id int not null default 0 comment '企业id',
 	                              parent_id int not null default 0 comment '是否盖楼',
+	                              pparent_id int not null default 0 comment '祖父id',
 	                              type varchar(255) comment '评论类型',
 	                              content text comment '评论内容',
 	                              pic_1 int not null default 0 comment '图片1',
@@ -243,7 +265,15 @@ class CommentController extends BaseController {
 											'com_amount'));
 		}
 		*/
-								
+		
+		//判定是否是三级分类
+		$pparent_id = 0;
+		if(0< $data['parent_id'])
+		{
+			$pparent_id = $this->check_exists_pparent_id($data['parent_id']);
+		}
+		$data['pparent_id'] = $pparent_id;
+							
 		if(M($this->_module_name)->add($data))
 		{
 			return array(
@@ -619,7 +649,7 @@ class CommentController extends BaseController {
 		$content = array(
 			'id'=>array('in',implode(',',$data['id']))
 		);
-		$company_id = $data['company_id'];
+		$company_id = array_unique($data['company_id']);
 		unset($data);
 		$data = array(
 			'is_validate'=>1,
@@ -658,7 +688,7 @@ class CommentController extends BaseController {
 	@param $id
 	@param $company_id
 	@param $parent_id
-	@param $is_validte
+	@param $is_validate
 	@@output
 	@param $is_success 0-成功操作,-1-操作失败
 	*/
@@ -690,6 +720,7 @@ class CommentController extends BaseController {
 			//更新评论统计
 			$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
 			//删除为主评论，还需删除回复
+			/*
 			if(0 < $data['parent_id'])
 			{
 				$list = M()->query("select id 
@@ -716,6 +747,7 @@ class CommentController extends BaseController {
 				//统计评论
 				$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
 			}
+			*/
 			return array(
 				200,
 				array(
@@ -733,6 +765,70 @@ class CommentController extends BaseController {
 				),
 		);
 	}
+	
+	#批量删除
+	public function delete_mul($content)
+	/*
+	@@input
+	@param $id 数组
+	@@output
+	@param $is_success 0-成功操作,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		if(!is_array($data['id']))
+		{
+			return C('param_fmt_err');
+		}
+		
+		foreach($data['id'] as $v)
+		{
+			#查询一条信息
+			$param = array(
+				'id'=>$v
+			);
+			list(,$info) = $this->get_info(json_encode($param));
+			unset($param);
+			if(0<count($info))
+			{
+				$param = array(
+					'id'         => $info['id'],
+					'company_id' => $info['company_id'],
+					'parent_id'  => $info['parent_id'],
+					'is_validate' => $info['is_validate'],
+				);
+				list(,$content) = $this->delete(json_encode($param));
+				unset($param);
+				if(-1 == $content['is_success'])
+				{
+					return array(
+							200,
+							array(
+								'is_success'=>0,
+								'message'=>C('option_ok'),
+							),
+					);
+				}
+			}
+			unset($info);
+		}
+		unset($v, $data['id']);
+		
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'message'=>C('option_ok'),
+			),
+		);
+	}
+	
 	
 	#更新评论人数统计
 	private function set_com_amount($company_id, $sign=0, $is_validate=0)
@@ -842,19 +938,106 @@ class CommentController extends BaseController {
 		);
 	}
 	
+	#判定是否有祖父,存在返回对应的id
+	private function check_exists_pparent_id($parent_id)
+	/*
+	@@input
+	@param $parent_id 当前父类id
+	@@output
+	@param 祖父id
+	*/
+	{
+		if(0>= $parent_id)
+		{
+			return 0;
+		}
+		
+		$param = array(
+			'id'=>$parent_id
+		);
+		$re_back = M($this->_module_name)
+		              ->field("parent_id")
+		              ->where($param)->find();
+		return $re_back['parent_id'];
+	}	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	#恢复
+	public function recover($content)
+	/*
+	@@input
+	@param $id 当前id
+	@@output
+	@param $is_success 0-操作成功,-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$data['is_delete'] = 0;
+		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))->save(array('is_delete'=>0)))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_fail'),
+				)
+		);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ?>
