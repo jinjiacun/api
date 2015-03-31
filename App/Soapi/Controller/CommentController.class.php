@@ -1023,6 +1023,15 @@ class CommentController extends BaseController {
 		$data['is_delete'] = 0;
 		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))->save(array('is_delete'=>0)))
 		{
+			list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$data['id'])));			
+			//总数累计
+			$this->set_com_amount($tmp_content['company_id']);
+			//统计子回复总数
+			$this->update_re_child_amount(json_encode(array('id'=>$data['id'])));			
+			//统计父评论数
+			if(0< $tmp_content['parent_id'])
+				$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
+				
 			return array(
 				200,
 				array(
