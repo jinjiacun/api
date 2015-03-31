@@ -1098,6 +1098,26 @@ content={'company_id':xxx,'user_id':xxx}<br/>
 <br/><br/><br/><br/>
 </p>
 <hr>
+<p id="company_15">
+模块名称:Companyassist<br/>
+模块名称描述:企业点赞总数<br/>
+方法名称:add<br/>
+方法描述:未认证企业点赞<br/>
+输入参数格式:<br/>
+method=Companyassist.amount<br/>
+content={'company_id':xxx}<br/>
+@@input<br/>
+@param company_id 企业id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功操作,-1-操作失败<br/>
+@param $amount 企业点赞总数<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
 <hr>
 
 <p id="comment_1">
@@ -1191,7 +1211,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
                                'company_id':xxx,'parent_id':xxx,'type':'xxx',<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
-                               'is_anonymous':xxx,'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
+                               'is_anonymous':xxx,'top_num':xxx,'has_child':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
@@ -1207,6 +1227,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $pic_5<br/>
 @param $is_anonymous   //是否匿名<br/>
 @param $top_num        //顶数<br/>
+@param $has_child      //评论回复数字(已审核)
 @param $add_time       //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

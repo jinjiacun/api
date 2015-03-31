@@ -16,6 +16,14 @@ public function add
 @@output
 @param $is_success 0-操作成功，-1-操作失败,-2-不允许操作
 ##--------------------------------------------------------##
+#获取点赞总数
+public function amount
+@@input
+@param $company_id 企业id
+@@output
+@param $is_success 0-成功,-1-失败
+@param $amount  总数
+##--------------------------------------------------------##
 */
 class CompanyassistController extends BaseController {
 	/**
@@ -98,4 +106,71 @@ class CompanyassistController extends BaseController {
 		);
 	 }
 	 
+	 
+	 #获取点赞总数
+	public function amount($content)
+	/*
+	@@input
+	@param $company_id 企业id
+	@@output
+	@param $is_success 0-成功,-1-失败
+	@param $amount  总数
+	*/
+	{
+		$data = $this->fill($content);
+			
+		if(!isset($data['company_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['company_id'] = intval($data['company_id']);
+		
+		if(0>= $data['company_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$amount = 0;
+		
+		$amount = M($this->_module_name)->where($data)->count();
+		
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'message'=>C('option_ok'),
+				'amount'=>$amount,
+			)
+		);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
  }

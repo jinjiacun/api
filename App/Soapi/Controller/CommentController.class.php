@@ -160,6 +160,13 @@ public function recover
 @param $id 当前id
 @@output
 @param $is_success 0-操作成功,-1-操作失败
+##--------------------------------------------------------##
+#统计审核通过的回复数量
+public function update_re_child_amount
+@@input
+@param $id 评论id
+@@output
+@param $is_success 0-操作成功，-1-操作失败
 */
 class CommentController extends BaseController {
 	/**
@@ -184,6 +191,7 @@ class CommentController extends BaseController {
 	                              ip varchar(255) comment 'ip地址',
 	                              user_agent varchar(255) comment '来源',
 	                              childs int not null default 0 comment '未审核的回复数量',
+	                              has_child int not null default 0 comment '已审核的子回复数',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -357,7 +365,8 @@ class CommentController extends BaseController {
 						'top_num'      => intval($v['top_num']),
 						'is_delete'    => intval($v['is_delete']),
 						'ip'           => $v['ip'],
-						'has_child'    => $this->has_child($v['id']),
+						'has_child_ex' => $this->has_child($v['id']),
+						'has_child'    => intval($v['has_child']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -604,6 +613,13 @@ class CommentController extends BaseController {
 		{
 				//总数累计
 				$this->set_com_amount($company_id);
+				//统计子回复总数
+				$this->update_re_child_amount(json_encode(array('id'=>$data['id'])));
+				list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$data['id'])));
+				//统计父评论数
+				if(0< $tmp_content['parent_id'])
+					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
+				
 				return array(
 					200,
 					array(
@@ -662,6 +678,17 @@ class CommentController extends BaseController {
 				//审核评论时，记数
 				$this->set_com_amount($v);
 			}
+			unset($v);
+			
+			foreach($data['id'] as $v)
+			{
+				//统计子回复总数
+				$this->update_re_child_amount(json_encode(array('id'=>$v)));
+				list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$v)));
+				//统计父评论数
+				if(0< $tmp_content['parent_id'])
+					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
+			}
 			
 				return array(
 					200,
@@ -719,6 +746,14 @@ class CommentController extends BaseController {
 		{
 			//更新评论统计
 			$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
+			//总数累计
+			$this->set_com_amount($data['company_id']);
+			//统计子回复总数
+			$this->update_re_child_amount(json_encode(array('id'=>$data['id'])));
+			list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$data['id'])));
+			//统计父评论数
+			if(0< $tmp_content['parent_id'])
+				$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
 			//删除为主评论，还需删除回复
 			/*
 			if(0 < $data['parent_id'])
@@ -1006,8 +1041,62 @@ class CommentController extends BaseController {
 		);
 	}
 
-
-
+	#统计审核通过的回复数量
+	public function update_re_child_amount($content)
+	/*
+	@@input
+	@param $id 评论id
+	@@output
+	@param $is_success 0-操作成功，-1-操作失败
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$amount = 0;
+		$param = array(
+			'parent_id'=>$data['id'],
+			'is_delete'=>0,
+			'is_validate'=>1
+		);
+		$amount = M($this->_module_name)->where($param)->count();
+		unset($param);
+		$amount = intval($amount);
+		
+		$param = array(
+			'has_child'=>$amount
+		);		
+		if(false !== M($this->_module_name)
+		             ->where(array('id'=>$data['id']))
+		             ->save($param))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok')
+				)
+			);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail')
+				)
+			);
+	}
 
 
 
