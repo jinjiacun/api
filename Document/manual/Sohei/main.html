@@ -1179,12 +1179,13 @@ content={'user_id':xxx,'company_id':xxx,'news_id':xxx,'content':'xxx'}<br/>
 方法描述:添加<br/>
 输入参数格式:<br/>
 method=Comexposal.add<br/>
-content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx'}<br/>
+content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anonymous':xxx}<br/>
 @@input<br/>
-@param $user_id     会员id<br/>
-@param $exposal_id  企业入库id<br/>
-@param $parent_id   父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
-@param $content     内容<br/>
+@param $user_id      会员id<br/>
+@param $exposal_id   企业入库id<br/>
+@param $parent_id    父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
+@param $content      内容<br/>
+@param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -1277,17 +1278,18 @@ content={'where':{'exposal_id':xxx}}<br/>
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
                                'exposal_id':xxx,'parent_id':xxx<br/>
-                               'content':'xxx','is_validate':xxx,'validate_time':xxx,<br/>
+                               'content':'xxx','is_validate':xxx,'validate_time':xxx,'is_anonymous':xxx,<br/>
 			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
 @param $nickname        //用户昵称<br/>
 @param $exposal_id      //入库id*<br/>
-@param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)
+@param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
 @param $content         //评论内容*<br/>
-@param $is_validate     //是否审核(0-未审核,1-审核)
-@param $validate_time   //审核日期
+@param $is_validate     //是否审核(0-未审核,1-审核)<br/>
+@param $validate_time   //审核日期<br/>
+@param $is_anonymous    //是否匿名(0-不匿名,1-匿名,默认为0)<br/>
 @param $top_num         //顶数<br/>
 @param $add_time        //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

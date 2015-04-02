@@ -87,11 +87,16 @@ class CompanyassistController extends BaseController {
 			 $news_obj = A('Soapi/Company');
 			 if($news_obj->__assist(array('id'=>$data['company_id']),'assist_amount'))
 			 {
+				$tmp_param = array(
+					'id'=> $data['company_id'],
+				);
+				list(,$tmp_content) = A('Soapi/Company')->get_info(json_encode($tmp_param));
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=>C('option_ok'),
+						'amount'=>$tmp_content['assist_amount'],
 					),
 				); 
 			 }

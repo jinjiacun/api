@@ -30,6 +30,7 @@ class ComexposalController extends BaseController {
 	                              content text comment '内容',
 	                              is_validate int not null default 0 comment '是否审核',
 	                              validate_time int not null default 0  comment '审核时间',
+	                              is_anonymous int not null default 0 comment '是否匿名(0-不匿名,1-匿名,默认为0)',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -43,16 +44,18 @@ class ComexposalController extends BaseController {
 	 protected $is_validate;   #是否审核(0-未审核,1-审核)
 	 protected $validate_time; #审核日期
 	 protected $top_num;       #顶的数目
+	 protected $is_anonymous;  #是否匿名(0-不匿名,1-匿名,默认为0)
 	 protected $add_time;      #添加日期
 	 
 	 #添加
 	public function add($content)
 	/*
 	@@input
-	@param $user_id     会员id
-	@param $exposal_id  企业入库id
-	@param $parent_id   父类id(默认为0,当盖楼时为当前楼的评论id)
-	@param $content     内容 
+	@param $user_id      会员id
+	@param $exposal_id   企业入库id
+	@param $parent_id    父类id(默认为0,当盖楼时为当前楼的评论id)
+	@param $content      内容
+	@param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)
 	@@output
 	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
 	*/
@@ -62,18 +65,21 @@ class ComexposalController extends BaseController {
 		if(!isset($data['user_id'])
 		|| !isset($data['exposal_id'])
 		|| !isset($data['content'])
+		|| !isset($data['is_anonymous'])
 		)
 		{
 			return C('param_err');
 		}
 		
-		$data['user_id'] = intval($data['user_id']);
-		$data['exposal_id'] = intval($data['exposal_id']);
-		$data['content'] = htmlspecialchars(trim($data['content']));
+		$data['user_id']      = intval($data['user_id']);
+		$data['exposal_id']   = intval($data['exposal_id']);
+		$data['content']      = htmlspecialchars(trim($data['content']));
+		$data['is_anonymous'] = intval($data['is_anonymous']);
 		
 		if(0>= $data['user_id']
 		|| 0>= $data['exposal_id']
 		|| '' == $data['content']
+		|| (0 != $data['is_anonymous'] && 1 != $data['is_anonymous'])
 		)
 		{
 			return C('param_fmt_err');
@@ -133,6 +139,7 @@ class ComexposalController extends BaseController {
 						'content'      => urlencode($v['content']),
 						'is_validate'  => intval($v['is_validate']),
 						'validate_time'=> intval($v['validate_time']),
+						'is_anonymous' => intval($v['is_anonymous']),
 						'top_num'      => intval($v['top_num']),
 						'add_time'     => intval($v['add_time']),
 						

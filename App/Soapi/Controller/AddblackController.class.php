@@ -101,12 +101,17 @@ class AddblackController extends BaseController {
 			if(A('Soapi/Company')->__top(array('id'=>$data['company_id']),
 					'add_blk_amount'))
 			{
+				$tmp_param = array(
+					'id'=> $data['company_id'],
+				);
+				list(,$tmp_content) = A('Soapi/Company')->get_info(json_encode($tmp_param));
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=> C('option_ok'),
 						'id'=> M()->getLastInsID(),
+						'amount'=>$tmp_content['add_blk_amount'],
 					),
 				);
 			}
