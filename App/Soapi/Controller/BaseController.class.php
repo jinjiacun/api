@@ -184,9 +184,9 @@ class BaseController extends Controller {
 		else
 			$page_size  = 10;
 			
-		if(20<= $page_size)
+		if(30<= $page_size)
 		{
-			$page_size = 20;
+			$page_size = 30;
 		}
 		//$page_index = 1;
 		//$page_size  = 10;

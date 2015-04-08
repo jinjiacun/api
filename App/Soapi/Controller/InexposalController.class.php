@@ -157,6 +157,7 @@ class InexposalController extends BaseController {
 	                              is_delete int not null default 0 comment '是否删除(1-删除)',
 	                              user_agent varchar(255) comment '来源',
 	                              validate_time int not null default 0 comment '审核时间',
+	                              reason varchar(255) comment '删除原因',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */

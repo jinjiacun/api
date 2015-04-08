@@ -90,13 +90,18 @@ class ComtopController extends BaseController {
 			);
 			if($comment_obj->__top($content, $field_name))
 			{
-					return array(
-						200,
-						array(
-							'is_success'=>0,
-							'message'=>C('option_ok')
-						),
-					);
+				$tmp_param = array(
+					'id'=>$data['comment_id']
+				);
+				list(,$tmp_content) = A('Soapi/Comment')->get_info(json_encode($tmp_param));
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+						'amount'=>$tmp_content['top_num'],
+					),
+				);
 			}			
 		}
 		

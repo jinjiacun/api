@@ -40,7 +40,6 @@ class ExposaltopController extends BaseController {
 	@@input
 	@param $user_id     用户id
 	@param $exposal_id  入库企业id
-	@param $comment_id  入库评论id
 	@@output
 	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
 	*/
@@ -84,11 +83,16 @@ class ExposaltopController extends BaseController {
 								'id'=>$data['exposal_id']
 									),'top_num'))
 			{
+				$tmp_param = array(
+					'id'=>$data['exposal_id'],
+				);
+				//list(,$tmp_content) = A('Soapi/Inexposal')->get_info(json_encode($tmp_param));
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=>C('option_ok'),
+					//	'amount'=>$tmp_content['top_num'],
 					),
 				);
 			}
@@ -101,10 +105,5 @@ class ExposaltopController extends BaseController {
 					'message'=>C('option_fail'),
 				),
 			);
-	}
-	
-	public function get_list($content)
-	{
-		
 	}
 }

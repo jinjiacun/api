@@ -1179,13 +1179,19 @@ content={'user_id':xxx,'company_id':xxx,'news_id':xxx,'content':'xxx'}<br/>
 方法描述:添加<br/>
 输入参数格式:<br/>
 method=Comexposal.add<br/>
-content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anonymous':xxx}<br/>
+content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anonymous':xxx,'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'type':'xxx'}<br/>
 @@input<br/>
 @param $user_id      会员id<br/>
 @param $exposal_id   企业入库id<br/>
 @param $parent_id    父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
 @param $content      内容<br/>
 @param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)<br/>
+@param $pic_1 图片1<br/>
+@param $pic_2 图片2<br/>
+@param $pic_3 图片3<br/>
+@param $pic_4 图片4<br/>
+@param $pic_5 图片5<br/>
+@param $type  评论类型<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -1279,6 +1285,7 @@ content={'where':{'exposal_id':xxx}}<br/>
 {'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
                                'exposal_id':xxx,'parent_id':xxx<br/>
                                'content':'xxx','is_validate':xxx,'validate_time':xxx,'is_anonymous':xxx,<br/>
+							   'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'type':'xxx'
 			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
@@ -1291,6 +1298,13 @@ content={'where':{'exposal_id':xxx}}<br/>
 @param $validate_time   //审核日期<br/>
 @param $is_anonymous    //是否匿名(0-不匿名,1-匿名,默认为0)<br/>
 @param $top_num         //顶数<br/>
+@param $pic_1 图片1id<br/>
+@param $pic_2 图片2id<br/>
+@param $pic_3 图片3id<br/>
+@param $pic_4 图片4id<br/>
+@param $pic_5 图片5id<br/>
+@param $type 评论类型(和企业评论类型相同)<br/>
+@param $top_num 顶数<br/>
 @param $add_time        //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1404,11 +1418,12 @@ content={'user_id':xxx,'company_id':xxx,'comment_id':xxx}<br/>
 方法描述:添加<br/>
 输入参数格式:<br/>
 method=Comexposaltop.add<br/>
-content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx}<br/>
+content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx,'company_id':xxx}<br/>
 @@input<br/>
 @param $user_id     用户id<br/>
-@param $exposal_id  入库企业id<br/>
-@param $comment_id  入库评论id<br/>
+@param $exposal_id  曝光企业id<br/>
+@param $comment_id  曝光评论id<br/>
+@param $company_id  企业id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output
@@ -2175,6 +2190,9 @@ method:Company.get_list_com<br/>
 <b>企业列表查询(附带一条最近新审核过的曝光信息)</b><br/>
 method:Company.get_list_exposal<br/>
 对应字段名:sub_exposal<br/>
+<b>企业曝光评论(带2条回复)</b><br/>
+method:Comexposal.get_list_com_ex<br/>
+查询条件和参数与Comexposal.get_list相同<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

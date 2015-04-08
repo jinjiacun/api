@@ -890,7 +890,7 @@ class CommentController extends BaseController {
 		                  ->count();
 		if(false == M('Company')
 		            ->where(array('id'=>$company_id))
-		            ->save(array('com_amount')))
+		            ->save(array('com_amount'=>$comment_amount)))
 		{
 			return false;
 		}

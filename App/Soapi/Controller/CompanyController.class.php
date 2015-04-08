@@ -1083,6 +1083,7 @@ class CompanyController extends BaseController {
 			unset($tmp_id_list);
 			
 			//删除企业曝光评论
+			/*
 			if(false === M('Com_exposal')->
 			            where(array('exposal_id'=>array("in",$tmp_ids)))->
 			            delete())
@@ -1094,7 +1095,8 @@ class CompanyController extends BaseController {
 						'message'=>urlencode('删除企业曝光评论失败'),
 					),
 				);
-			}			
+			}
+			*/			
 			
 			//删除申请
 			if(false === M('In_exposal')->
@@ -1111,6 +1113,7 @@ class CompanyController extends BaseController {
 			}
 			
 			//删除评论
+			/*
 			if(false === M('Comment')->
 			            where(array('company_id'=>$data['id']))->
 			            delete())
@@ -1123,6 +1126,7 @@ class CompanyController extends BaseController {
 					),
 				);
 			}
+			*/
 			
 			//删除企业新闻评论
 			if(false === M('Com_news')->
