@@ -432,6 +432,7 @@ class CommentController extends BaseController {
 			{
 					$data['page_size'] = 2;
 					$data['page_index'] = 1;
+					if(isset($data['where']['pic_1']))unset($data['where']['pic_1']);
 			}
 			$data['where']['parent_id'] = intval($v['id']);			
 			list(, $sub) = $this->get_list(json_encode($data));			

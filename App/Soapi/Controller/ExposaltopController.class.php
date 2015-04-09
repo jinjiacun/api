@@ -86,13 +86,13 @@ class ExposaltopController extends BaseController {
 				$tmp_param = array(
 					'id'=>$data['exposal_id'],
 				);
-				//list(,$tmp_content) = A('Soapi/Inexposal')->get_info(json_encode($tmp_param));
+				list(,$tmp_content) = A('Soapi/Inexposal')->get_info(json_encode($tmp_param));
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=>C('option_ok'),
-					//	'amount'=>$tmp_content['top_num'],
+						'amount'=>$tmp_content['top_num'],
 					),
 				);
 			}

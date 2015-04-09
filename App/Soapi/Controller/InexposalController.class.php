@@ -111,7 +111,7 @@ private function set_exp_amount
 @param $company_id 企业id
 @@output
 @param true ,false
-
+##--------------------------------------------------------##
 #最新曝光
 public function last_exposal
 @@output
@@ -120,6 +120,14 @@ public function last_exposal
 @param $company_id
 @param $company_name
 @param $auth_level
+##--------------------------------------------------------##
+#作为新的企业测试
+public function save_as_company
+@@input
+@param $id 曝光或者合规申请id
+@param $type 类型(1-曝光,2-可信)
+@@output
+@param $is_success 0-成功,1-失败,-2-企业名称存在
 ##--------------------------------------------------------##
 */
 class InexposalController extends BaseController {
@@ -1061,8 +1069,83 @@ class InexposalController extends BaseController {
 	}
 
 
-
-
+	#作为新的企业测试
+	public function save_as_company($content)
+	/*
+	@@input
+	@param $id 曝光或者合规申请id
+	@param $type 类型(1-曝光,2-可信)
+	@@output
+	@param $is_success 0-成功,1-失败,-2-企业名称存在
+	*/
+	{
+		$data = $this->fill($content);
+		if(!isset($data['id'])
+		|| !isset($data['type'])
+		)
+		{
+			return C('param_err');
+		}
+		
+		$data['id']   = intval($data['id']);
+		$data['type'] = intval($data['type']);
+		
+		if(0>= $data['id']
+		|| 0>= $data['type']
+		)
+		{
+			return C('param_fmt_err');
+		}
+		
+		#查询此条曝光或者合规申请信息
+		$tmp_param = array(
+			'id'=>$data['id'],
+		);
+		$exposal_info = array();
+		if(1 == $data['type'])
+		{
+			list(,$exposal_info) = $this->get_info(json_encode($tmp_param));
+		}
+		elseif(2 == $data['type'])
+		{
+			list(,$exposal_info) = $this->get_info(json_encode($tmp_param));
+		}
+		
+		unset($tmp_param);
+		#检查企业名称是否存在
+		$company_name = $exposal_info['company_name'];
+		$tmp_param = array(
+			'company_name'=>$company_name,
+		);
+		list(,$tmp_content) = A('Soapi/Company')->exists_name(json_encode($tmp_param));
+		unset($tmp_param);
+		if($tmp_content
+		&& 0 == $tmp_content['is_exists'])
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-2,
+					'message'=>urlencode('此企业名称已存在'),
+				),
+			);
+		}
+		unset($tmp_content);
+		
+		#添加一条企业信息
+		$tmp_param = array(
+			'company_name'=> $exposal_info['company_name'],
+			'nature'      => $exposal_info['nature'],
+			'trade'       => $exposal_info['trade'],
+		);
+		
+		if(2 == $data['type'])
+		{
+			
+		}
+		
+		return A('Soapi/Company')->add(json_encode($tmp_param));
+	}
 
 
 

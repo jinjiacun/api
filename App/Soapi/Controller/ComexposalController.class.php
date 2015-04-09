@@ -207,6 +207,10 @@ class ComexposalController extends BaseController {
 				$data['where']['_string'] = "user_id=$user_id or is_validate=1";
 			elseif(0 == $user_id)
 				$data['where']['is_validate'] = 1;
+		    if(isset($data['where']['pic_1']))
+		    {
+				unset($data['where']['pic_1']);
+			}
 			$data['page_size'] = 2;
 			$data['page_index'] = 1;
 			list(, $sub) = $this->get_list(json_encode($data));
