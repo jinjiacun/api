@@ -698,7 +698,7 @@ class InexposalController extends BaseController {
 		if(isset($content)) unset($content);
 		
 		$content = array(
-			'company_id'=> $data['company_id']
+			'company_id'=> $data['company_id'],
 			'validate_time'=>time(),
 		);
 		if(M($this->_module_name)->where(array('id'=>$data['id']))
@@ -1140,11 +1140,70 @@ class InexposalController extends BaseController {
 		);
 		
 		if(2 == $data['type'])
+		/*
+		 企业性质(nature)         		-- 企业性质(nature)
+		 所属行业(trade)          		-- 所属行业
+		 公司全称(company_name)   		-- 公司名称
+		 公司简称(corporation)    		-- 公司别名(alias)
+		 联系地址(reg_address)    		-- 联系地址(reg_address)
+		 营业执照(busin_license)  		-- 营业执照(busin_license)
+		 机构代码证(code_certificate)  	-- 机构代码证(code_certificate)
+		 公司电话(telephone)   			-- 联系电话(telephone)
+		 官方网站(website)   			-- 官方网站(website)
+		 官网备案(record)   				-- 官网备案(record)
+		 
+		 会员编号(mem_sn)   				-- 会员编号(mem_sn)
+		 资质证明(certificate)   		-- 资质证明(certificate)
+		 * */
 		{
-			
+			$tmp_param = array(
+			'company_name'     => $exposal_info['company_name'],
+			'nature'           => $exposal_info['nature'],
+			'trade'            => $exposal_info['trade'],
+			'reg_address'      => $exposal_info['reg_address'],
+			'busin_license'    => $exposal_info['busin_license'],
+			'code_certificate' => $exposal_info['code_certificate'],
+			'telephone'        => $exposal_info['telephone'],
+			'website'          => $exposal_info['website'],
+			'record'           => $exposal_info['record'],
+			//'mem_sn'           => $exposal_info['mem_sn'],
+			'certificate'      => $exposal_info['certificate'],
+		);
 		}
 		
-		return A('Soapi/Company')->add(json_encode($tmp_param));
+		if(1 == $data['type'])
+			return A('Soapi/Company')->add(json_encode($tmp_param));
+			
+		$re_back = A('Soapi/Company')->add(json_encode($tmp_param));
+		if($re_back
+		&& 200 == $re_back[0]
+		&& 0 == $re_back[1]['is_success']
+		)
+		{
+			$company_id = $re_back[1]['id'];
+			if(isset($tmp_param))unset($tmp_param);
+			$tmp_param = array(
+				'company_id'=>$company_id,
+				'name'      =>$exposal_info['corporation'],
+			);
+			$tmp_re_back = A('Soapi/Companyalias')->add(json_encode($tmp_param));
+			if($tmp_re_back
+			&& 200 == $tmp_re_back[0]
+			&& 0 == $tmp_re_back[1]['is_success'])
+			{
+				return $re_back;
+			}
+			else
+			{
+				$re_back[1]['is_success'] = -3;
+				$re_back[1]['message'] = urlencode('别名添加失败');
+				return $re_back;
+			}
+		}
+		else
+		{
+			return $re_back;
+		}
 	}
 
 
