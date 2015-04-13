@@ -356,6 +356,7 @@ class InexposalController extends BaseController {
 				$data['where']['is_validate'] = 1;
 			$data['page_size'] = 2;
 			$data['page_index'] = 1;
+			if(isset($data['where']['type']))unset($data['where']['type']);
 			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
 				'list'=>$sub['list'],
@@ -1115,7 +1116,7 @@ class InexposalController extends BaseController {
 		#检查企业名称是否存在
 		$company_name = $exposal_info['company_name'];
 		$tmp_param = array(
-			'company_name'=>$company_name,
+			'company_name'=>urldecode($company_name),
 		);
 		list(,$tmp_content) = A('Soapi/Company')->exists_name(json_encode($tmp_param));
 		unset($tmp_param);
@@ -1134,7 +1135,7 @@ class InexposalController extends BaseController {
 		
 		#添加一条企业信息
 		$tmp_param = array(
-			'company_name'=> $exposal_info['company_name'],
+			'company_name'=> urldecode($exposal_info['company_name']),
 			'nature'      => $exposal_info['nature'],
 			'trade'       => $exposal_info['trade'],
 		);
@@ -1157,7 +1158,7 @@ class InexposalController extends BaseController {
 		 * */
 		{
 			$tmp_param = array(
-			'company_name'     => $exposal_info['company_name'],
+			'company_name'     => urldecode($exposal_info['company_name']),
 			'nature'           => $exposal_info['nature'],
 			'trade'            => $exposal_info['trade'],
 			'reg_address'      => $exposal_info['reg_address'],
@@ -1168,7 +1169,7 @@ class InexposalController extends BaseController {
 			'record'           => $exposal_info['record'],
 			//'mem_sn'           => $exposal_info['mem_sn'],
 			'certificate'      => $exposal_info['certificate'],
-		);
+			);
 		}
 		
 		if(1 == $data['type'])

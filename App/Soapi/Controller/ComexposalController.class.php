@@ -40,6 +40,7 @@ class ComexposalController extends BaseController {
 	                              is_delete int not null default 0 comment '删除',
 	                              top_num int not null default 0 comment '顶数',
 	                              has_child int not null default 0 comment '审核通过的回复数量',
+	                              childs int not null default 0 comment '未审核的回复数量',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -198,21 +199,44 @@ class ComexposalController extends BaseController {
 		
 		$data = $this->fill($content);
 		
-		$user_id = $data['user_id'];
-		if(isset($data['where']))unset($data['where']);		
+		$user_id = intval($data['user_id']);
+		//if(isset($data['where']))unset($data['where']);		
 		foreach($list as $k=> $v)
 		{
 			$data['where']['parent_id'] =  intval($v['id']);
-			if(0< $user_id)
-				$data['where']['_string'] = "user_id=$user_id or is_validate=1";
-			elseif(0 == $user_id)
-				$data['where']['is_validate'] = 1;
+			if(!isset($data['where']['_complex']))
+			{
+				if(0< $user_id)
+					$data['where']['_string'] = "user_id=$user_id or is_validate=1";
+				elseif(0 == $user_id)
+					$data['where']['is_validate'] = 1;
+			}
+			
 		    if(isset($data['where']['pic_1']))
 		    {
 				unset($data['where']['pic_1']);
 			}
-			$data['page_size'] = 2;
-			$data['page_index'] = 1;
+			
+			if(!isset($data['where']['_complex']))
+			{
+				if(0 >= $user_id)
+				{
+					$data['page_size'] = 10;
+					$data['page_index'] = 1;
+					$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
+					unset($data['where']['_complex']);
+				}
+				else
+				{
+					$data['page_size'] = 2;
+					$data['page_index'] = 1;
+				}
+			}
+			else
+			{
+				$data['page_size'] = 2;
+				$data['page_index'] = 1;
+			}
 			list(, $sub) = $this->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
 				'list'=>$sub['list'],
@@ -349,6 +373,49 @@ class ComexposalController extends BaseController {
 			);
 	}
 	
+	#触发评论中是否有未审核的回复
+	public function stat_re_comment($content)
+	/*
+	@@output
+	@param $is_success 0-操作成功,-1-操作失败
+	*/
+	{
+		//查询所有的主评论
+		$tmp_list = M($this->_module_name)
+		            ->field("id")
+		            ->where(array("parent_id"=>0,
+		                          "is_delete"=>0,))
+		            ->select();
+		if($tmp_list
+		&& 0<count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$tmp_count = M($this->_module_name)
+				->where(array('parent_id'=>$v['id'],
+						      'is_validate'=>0,
+				             ))->count();
+				if(0< $tmp_count)
+				{
+					$tmp_data = array("childs"=>$tmp_count);
+					M($this->_module_name)->where(array("id"=>$v["id"]))->save($tmp_data);
+					unset($tmp_data);
+				}
+			}
+			unset($v, $tmp_list);
+		}
+		
+		
+		
+		
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'message'=>C('option_ok'),
+			)
+		);
+	}
 	
 	
 	

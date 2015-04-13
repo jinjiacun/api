@@ -953,7 +953,7 @@ class CommentController extends BaseController {
 				$tmp_count = M($this->_module_name)
 				->where(array('parent_id'=>$v['id'],
 						      'is_validate'=>0,
-				             ));
+				             ))->count();
 				if(0< $tmp_count)
 				{
 					M($this->_module_name)->where(array("id"=>$v["id"]))->save(array("childs"=>$tmp_count));
