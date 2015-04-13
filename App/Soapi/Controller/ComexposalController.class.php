@@ -234,8 +234,15 @@ class ComexposalController extends BaseController {
 			}
 			else
 			{
-				$data['page_size'] = 2;
-				$data['page_index'] = 1;
+				if(-10000 == $user_id)
+				{
+						
+				}
+				else
+				{
+					$data['page_size'] = 2;
+					$data['page_index'] = 1;
+				}
 			}
 			list(, $sub) = $this->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
