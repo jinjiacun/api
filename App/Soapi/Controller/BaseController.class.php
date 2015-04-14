@@ -579,6 +579,17 @@ class BaseController extends Controller {
 		return true;
 	}
 	
+	#检查是否允许操作，是否存在
+	protected function __check_exists($content)
+	{	                          
+		if(M($this->_module_name)->where($content)->find())
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	#顶
 	public function __top($content, $field_name)
 	/*

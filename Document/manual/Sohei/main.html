@@ -697,6 +697,77 @@ content={'uid':xxx,'openid':'xxx','userip':'xxx'}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
+<p id="user_22">
+模块名称:Comment<br/>
+模块名称描述:评论<br/>
+方法名称:get_list<br/>
+方法描述:获取评论列表<br/>
+输入参数格式:<br/>
+method=Comment.get_list<br/>
+content={'where':{'user_id':xxx,'is_delete':0}}<br/>
+@@input<br/>
+@param $user_id 用户id(当前登录用户id)<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'list':{xxx},'record_count':xxx}}<br/>
+@@output<br/>
+@param $content 评论内容<br/>
+@param $company_name 企业名称<br/>
+@param $add_date 评论日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+
+<p id="user_24">
+模块名称:Inexposal<br/>
+模块名称描述:曝光<br/>
+方法名称:get_list<br/>
+方法描述:我的曝光<br/>
+输入参数格式:<br/>
+method=Inexposal.get_list<br/>
+content={'where':{'user_id':xxx}}<br/>
+@@input<br/>
+@param $user_id 用户id(当前登录用户id)<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'list':{xxx},'record_count':xxx}}<br/>
+@@output<br/>
+@param $user_id #用户id<br/>
+@param $nature #企业性质<br/>
+@param $trade #所属行业<br/>
+@param $company_name #公司名称<br/>
+@param $amount #涉及金额<br/>
+@param $website #公司网址<br/>
+@param $content #曝光内容<br/>
+@param $pic_1 #上传图片<br/>
+@param $pic_2<br/>
+@param $pic_3<br/>
+@param $pic_4<br/>
+@param $pic_5<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+<p id="user_25">
+模块名称:Attention<br/>
+模块名称描述:关注<br/>
+方法名称:get_list<br/>
+方法描述:我的关注<br/>
+输入参数格式:<br/>
+method=Attention.get_list<br/>
+content={'where':{'user_id':xxx}}<br/>
+@@input<br/>
+@param $user_id 用户id(当前登录用户id)<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'list':{xxx},'record_count':xxx}}<br/>
+@@output<br/>
+@param $user_id #用户id<br/>
+@param $company_id 公司id<br/>
+@param $company_name #公司名称<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+
 <hr>
 <p id="company_1">
 模块名称:Company<br/>
@@ -1113,6 +1184,26 @@ content={'company_id':xxx}<br/>
 @@output<br/>
 @param $is_success 0-成功操作,-1-操作失败<br/>
 @param $amount 企业点赞总数<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_16">
+模块名称:Attention<br/>
+模块名称描述:我的关注<br/>
+方法名称:add<br/>
+方法描述:对企业进行关注<br/>
+输入参数格式:<br/>
+method=Attention.add<br/>
+content={'user_id':xxx,'company_id':xxx,}<br/>
+@@input<br/>
+@param $user_id<br/>
+@param $company_id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}}<br/>
+@@output<br/>
+@param $is_success 0-成功,-1-失败,-2-不允许操作<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
