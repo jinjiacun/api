@@ -426,7 +426,7 @@ class CommentController extends BaseController {
 					$data['page_size'] = 10;
 					$data['page_index'] = 1;
 					$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
-					unset($data['where']['_complex']);
+					//unset($data['where']['_complex']);
 			}
 			else
 			{
@@ -943,21 +943,20 @@ class CommentController extends BaseController {
 		$tmp_list = M($this->_module_name)
 		            ->field("id")
 		            ->where(array("parent_id"=>0,
-		                          "is_delete"=>0,))
+		                          "is_delete"=>0))
 		            ->select();
 		if($tmp_list
 		&& 0<count($tmp_list))
 		{
 			foreach($tmp_list as $v)
 			{
+				$tmp_count = 0;
 				$tmp_count = M($this->_module_name)
 				->where(array('parent_id'=>$v['id'],
 						      'is_validate'=>0,
 				             ))->count();
-				if(0< $tmp_count)
-				{
-					M($this->_module_name)->where(array("id"=>$v["id"]))->save(array("childs"=>$tmp_count));
-				}
+				$tmp_count = intval($tmp_count);
+				M($this->_module_name)->where(array("id"=>$v["id"]))->save(array("childs"=>$tmp_count));
 			}
 			unset($v, $tmp_list);
 		}

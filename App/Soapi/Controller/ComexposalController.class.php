@@ -402,12 +402,12 @@ class ComexposalController extends BaseController {
 				->where(array('parent_id'=>$v['id'],
 						      'is_validate'=>0,
 				             ))->count();
-				if(0< $tmp_count)
-				{
+				//if(0< $tmp_count)
+				//{
 					$tmp_data = array("childs"=>$tmp_count);
 					M($this->_module_name)->where(array("id"=>$v["id"]))->save($tmp_data);
 					unset($tmp_data);
-				}
+				//}
 			}
 			unset($v, $tmp_list);
 		}

@@ -9,7 +9,7 @@ return array(
      'DB_PREFIX'     => 'so_',    // 数据库表前缀
      'DB_CHARSET'    => 'utf8',    // 字符集
      
-	 'DATA_CACHE_TYPE' => 'Memcache',
+	 //'DATA_CACHE_TYPE' => 'Memcache',
 	 'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
 	 'DATA_CACHE_TIME' => '3600',
 		
