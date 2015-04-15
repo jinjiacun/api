@@ -122,6 +122,11 @@ class ComexposalController extends BaseController {
 		
 		if(M($this->_module_name)->add($data))
 		{
+			//评论的回复，则改变父评论未审核childs数为1
+			if(0< $data['parent_id'])
+			{
+				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
+			}
 			return array(
 				200,
 				array(
@@ -280,7 +285,7 @@ class ComexposalController extends BaseController {
 		$data['id'] = intval($data['id']);
 		
 		if(0>= $data['id']
-		|| 0>= $data['company_id']
+	//	|| 0>= $data['company_id']
 		)
 		{
 			return C('param_fmt_err');
@@ -289,7 +294,7 @@ class ComexposalController extends BaseController {
 		$content = array(
 			'id'=>$data['id']
 		);
-		
+		$id = $data['id'];
 		unset($data);
 		$data = array(
 			'is_validate'=>1,
@@ -298,12 +303,16 @@ class ComexposalController extends BaseController {
 		if(M($this->_module_name)->where($content)->save($data))
 		{
 				//统计子回复总数
-				$this->update_re_child_amount(json_encode(array('id'=>$data['id'])));
-				list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$data['id'])));
+				$this->update_re_child_amount(json_encode(array('id'=>$id)));
+				//list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$id)));
+				$tmp_content = M($this->_module_name)->where(array('id'=>$id))->find();
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
+				{
 					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
-				
+					//减少父评论未审核子回复数
+					M($this->_module_name)->where(array('id', $tmp_content['parent_id']))->setDec("childs", 1);
+				}
 				return array(
 					200,
 					array(
@@ -387,6 +396,7 @@ class ComexposalController extends BaseController {
 	@param $is_success 0-操作成功,-1-操作失败
 	*/
 	{
+		/*
 		//查询所有的主评论
 		$tmp_list = M($this->_module_name)
 		            ->field("id")
@@ -422,6 +432,7 @@ class ComexposalController extends BaseController {
 				'message'=>C('option_ok'),
 			)
 		);
+		*/
 	}
 	
 	
