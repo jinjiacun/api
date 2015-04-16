@@ -132,6 +132,13 @@ public function get_pic_list
 @param $media_id  图片id
 @param $dict_sn   媒体类型编码
 @param $media_url 媒体url
+##--------------------------------------------------------##
+#通过企业名称(模糊)获取企业id
+public function get_id_by_name
+@@input
+@param $company_name
+@@output
+@param $id
 */
 class CompanyController extends BaseController {
 	    /**
@@ -1165,9 +1172,37 @@ class CompanyController extends BaseController {
 			);
 		}
 		
-		
-		
-		
+		#通过企业名称(模糊)获取企业id
+		public function get_id_by_name($content)
+		/*
+		@@input
+		@param $company_name
+		@@output
+		@param $id
+		*/
+		{
+			$data = $this->fill($content);
+			if(!isset($data['company_name']))
+			{
+				return C('param_err');
+			}
+			
+			$data['company_name'] = htmlspecialchars(trim($data['company_name']));
+			
+			if('' == $data['company_name'])
+			{
+				return C('param_fmt_err');
+			}
+			
+			$list = array();
+			$where['company_name'] = array("like", "%".$data['company_name']."%");
+			$list = M($this->_module_name)->field("id")->where($where)->select();
+			
+			return array(
+				200,
+				$list
+			);			
+		}
 		
 		
 		
