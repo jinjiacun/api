@@ -634,7 +634,19 @@ class CommentController extends BaseController {
 			'is_validate'=>1,
 			'validate_time'=>time(),
 		);
-		if(M($this->_module_name)->where($content)->save($data))
+		//检查这条信息是否审核
+		if(false == $this->__check_exists(array("id"=>$data['id'],'is_validate'=>1)))
+		{
+			return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					)
+				);
+		}
+		
+		if(false !== M($this->_module_name)->where($content)->save($data))
 		{
 				//总数累计
 				$this->set_com_amount($company_id);
@@ -647,7 +659,7 @@ class CommentController extends BaseController {
 				{
 					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
 					//减少父评论未审核子回复数
-					M($this->_module_name)->where(array('id', $tmp_content['parent_id']))->setDec("childs", 1);
+					M($this->_module_name)->where(array('id'=>$tmp_content['parent_id']))->setDec("childs", 1);
 					
 				}	
 				
