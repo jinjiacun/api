@@ -288,6 +288,11 @@ class CommentController extends BaseController {
 			if(0< $data['parent_id'])
 			{
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
+				//判定是否第三层
+				if(0< $data['pparent_id'])
+				{
+					M($this->_module_name)->where(array('id'=>$data['pparent_id']))->setInc('childs', 1);
+				}
 			}
 			return array(
 						200,
@@ -635,7 +640,10 @@ class CommentController extends BaseController {
 			'validate_time'=>time(),
 		);
 		//检查这条信息是否审核
-		if(false == $this->__check_exists(array("id"=>$data['id'],'is_validate'=>1)))
+		if(!$this->__check_exists(array(
+		                              "id"=>$id,
+		                              'is_validate'=>1)
+		                              ))
 		{
 			return array(
 					200,
@@ -645,14 +653,13 @@ class CommentController extends BaseController {
 					)
 				);
 		}
-		
 		if(false !== M($this->_module_name)->where($content)->save($data))
 		{
 				//总数累计
 				$this->set_com_amount($company_id);
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->field('parent_id')->where(array('id'=>$id))->find();
+				$tmp_content = M($this->_module_name)->field('pparent_id,parent_id')->where(array('id'=>$id))->find();
 				//$this->get_info(json_encode(array('id'=>$id)));
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
@@ -660,7 +667,11 @@ class CommentController extends BaseController {
 					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
 					//减少父评论未审核子回复数
 					M($this->_module_name)->where(array('id'=>$tmp_content['parent_id']))->setDec("childs", 1);
-					
+					//减少第一层未审核回复数
+					if(0 < $tmp_content['pparent_id'])
+					{
+						M($this->_module_name)->where(array('id'=>$tmp_content['pparent_id']))->setDec("childs", 1);
+					}
 				}	
 				
 				return array(

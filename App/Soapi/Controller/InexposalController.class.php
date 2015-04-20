@@ -1060,7 +1060,8 @@ class InexposalController extends BaseController {
 						'add_time'=>intval($v['add_time']),
 						'company_id'=>intval($v['company_id']),
 						'company_name'=>urlencode($v['company_name']),
-						'auth_level'=>$v['auth_level']
+						'auth_level'=>$v['auth_level'],
+						'user_id'=>$v['user_id'],
 			);
 		}
 		return array(

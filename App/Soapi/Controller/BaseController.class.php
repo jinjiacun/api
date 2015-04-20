@@ -586,7 +586,6 @@ class BaseController extends Controller {
 		{
 			return false;
 		}
-		
 		return true;
 	}
 	

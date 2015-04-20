@@ -311,7 +311,7 @@ class ComexposalController extends BaseController {
 				{
 					$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
 					//减少父评论未审核子回复数
-					M($this->_module_name)->where(array('id', $tmp_content['parent_id']))->setDec("childs", 1);
+					M($this->_module_name)->where(array('id'=>$tmp_content['parent_id']))->setDec("childs", 1);
 				}
 				return array(
 					200,
