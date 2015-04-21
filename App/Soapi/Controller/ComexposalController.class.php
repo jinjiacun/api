@@ -205,6 +205,7 @@ class ComexposalController extends BaseController {
 		$data = $this->fill($content);
 		
 		$user_id = intval($data['user_id']);
+		if(isset($data['where']['has_child']))  unset($data['where']['has_child']);		
 		//if(isset($data['where']))unset($data['where']);		
 		foreach($list as $k=> $v)
 		{
@@ -224,7 +225,7 @@ class ComexposalController extends BaseController {
 			
 			if(!isset($data['where']['_complex']))
 			{
-				if(0 >= $user_id)
+				if(0 > $user_id)
 				{
 					$data['page_size'] = 10;
 					$data['page_index'] = 1;
