@@ -271,7 +271,7 @@ class ComexposalController extends BaseController {
 	@@input
 	@param id
 	@@output
-	@param $is_success 0-成功操作,-1-操作失败
+	@param $is_success 0-成功操作,-1-操作失败,-2-不允许审核(父类未审核)
 	*/
 	{
 		$data = $this->fill($content);
@@ -300,12 +300,47 @@ class ComexposalController extends BaseController {
 			'is_validate'=>1,
 			'validate_time'=>time(),
 		);
+		
+		//检查父类是否审核
+		$t_one = M($this->_module_name)->field('parent_id')
+		                               ->where(array('id'=>$id))
+		                               ->find();
+		if(0 < $t_one['parent_id'])
+		{
+			if(!$this->__check_exists(array('id'=>$t_one['parent_id'],
+			                                'is_validate'=>0)))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'=>urlencode('不允许审核(父类未审核)'),
+					)
+				);
+			}
+		}
+		//检查此是否审核
+		if(!$this->__check_exists(array(
+									'id'=>$id,
+									'is_validate'=>1)
+										))
+		{
+			return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok'),
+					)
+				);
+		}
+		
+		
 		if(M($this->_module_name)->where($content)->save($data))
 		{
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
 				//list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->where(array('id'=>$id))->find();
+				$tmp_content = M($this->_module_name)->field('parent_id')->where(array('id'=>$id))->find();
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
 				{

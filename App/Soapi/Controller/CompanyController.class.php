@@ -622,8 +622,7 @@ class CompanyController extends BaseController {
 			#别名搜索
 			$tmp_list = M('Company_alias')->field("company_id")
 			                              ->where(array('name'=>array('like','%'.$data['name'].'%')))
-			                              ->select();
-			                              
+			                              ->select();                            
 			if($tmp_list
 			&& 0<count($tmp_list))
 			{

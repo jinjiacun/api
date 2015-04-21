@@ -249,8 +249,6 @@ class CommentController extends BaseController {
 		$data['type']         = htmlspecialchars(trim($data['type']));
 		$data['content']      = htmlspecialchars(trim($data['content']));
 		$data['is_anonymous'] = intval($data['is_anonymous']);
-		
-		
 		if(0>= $data['user_id']
 		|| 0>= $data['company_id']
 		|| ''==$data['type']
@@ -429,41 +427,76 @@ class CommentController extends BaseController {
 		$data = $this->fill($content);
 		$is_validate = $data['where']['_complex']['is_validate'];
 		
+		if(0 == $data['where']['parent_id'])
+		{
+			//登录-全部
+			if(0 < $data['user_id']
+			&& isset($data['where']['_string']))
+			{
+				$param_user_id = '';
+				$param_is_validate = '';
+				$param_type = '';
+				$_string = $data['where']['_string'];			
+				$tmp_str = explode('or', $_string);
+				$param_user_id = trim($tmp_str[0]);
+				$tmp_str = explode('and', $tmp_str[1]);
+				$param_is_validate = str_replace('(','',$tmp_str[0]);
+				$param_type = trim($tmp_str[1]);
+				if(isset($param_type)&& '' != $param_type)
+				{
+					$data['where']['_string'] = $param_user_id.' or '.$param_is_validate.'';
+				}
+			}
+			else
+			{
+				if(isset($data['where']['_string']))
+					unset($data['where']['_string']);
+			}
+		}
+		
 		foreach($list as $k=> $v)
 		{
 			if(isset($data['where']['_complex'])) 
 			{
-					$data['page_size'] = 10;
-					$data['page_index'] = 1;
-					if(0 == $is_validate)
-					{
-						//$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
+				    //if(-10000 == $data['user_id'])
+				    //{
+						$data['page_size'] = 10;
+						$data['page_index'] = 1;
+						if(0 == $is_validate)
+						{
+							//$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
+							$where['is_validate'] = 0;
+							$where['childs']  = array('gt', 0);
+							$where['_logic'] = 'or';
+							$data['where']['_complex'] = $where;
+						}
+						else
+						{
+							$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
+						}
+						/*
+						$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
 						$where['is_validate'] = 0;
 						$where['childs']  = array('gt', 0);
-						$where['_logic'] = 'or';
-						$data['where']['_complex'] = $where;
-					}
-					else
-					{
-						$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
-					}
-					/*
-					$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
-					$where['is_validate'] = 0;
-					$where['childs']  = array('gt', 0);
-					//$where['pparent_id'] = array('gt', 0);
-					*/
-					
-					//unset($data['where']['_complex']);
+						//$where['pparent_id'] = array('gt', 0);
+						*/
+						
+						//unset($data['where']['_complex']);
+					//}
+					//else
+					//{
+						
+					//}
 			}
 			else
 			{
 					$data['page_size'] = 2;
 					$data['page_index'] = 1;
-					if(isset($data['where']['pic_1']))unset($data['where']['pic_1']);
+					if(isset($data['where']['pic_1']))unset($data['where']['pic_1']);					
 			}
-			$data['where']['parent_id'] = intval($v['id']);			
-			list(, $sub) = $this->get_list(json_encode($data));			
+			$data['where']['parent_id'] = intval($v['id']);
+			
+			list(, $sub) = $this->get_list(json_encode($data));
 			$list[$k]['re_sub'] = array(
 				'list'=>$sub['list'],
 				'record_count'=>$sub['record_count']
@@ -607,7 +640,7 @@ class CommentController extends BaseController {
 	@param id
 	@param $company_id
 	@@output
-	@param $is_success 0-成功操作,-1-操作失败
+	@param $is_success 0-成功操作,-1-操作失败,-2-不允许审核(父级还未审核)
 	*/
 	{
 		$data = $this->fill($content);
@@ -639,6 +672,46 @@ class CommentController extends BaseController {
 			'is_validate'=>1,
 			'validate_time'=>time(),
 		);
+		
+		//检查父类是否审核
+		$t_one = M($this->_module_name)
+		         ->field('pparent_id,parent_id')
+		         ->where(array('id'=>$id))->find();
+		if(0< $t_one['pparent_id'])
+		{
+			if(!$this->__check_exists(array(
+									'id'=>$t_one['pparent_id'],
+									'is_validate'=>0)
+									))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'=>urlencode('不允许审核(父父级未审核)'),
+					)
+				);
+			}			
+		}
+		if(0< $t_one['parent_id'])
+		{
+			if(!$this->__check_exists(array(
+									'id'=>$t_one['parent_id'],
+									'is_validate'=>0)
+									))
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-2,
+						'message'=>urlencode('不允许审核(父级未审核)'),
+					)
+				);
+			}			
+		}
+		
+		
+		
 		//检查这条信息是否审核
 		if(!$this->__check_exists(array(
 		                              "id"=>$id,
