@@ -767,6 +767,25 @@ content={'where':{'user_id':xxx}}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
+<hr>
+<p id="user_26">
+模块名称:Attention<br/>
+模块名称描述:关注<br/>
+方法名称:delete<br/>
+方法描述:取消关注<br/>
+输入参数格式:<br/>
+method=Attention.delete<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param $id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':'xxx'}<br/>
+@@output<br/>
+@param $is_success 0-成功操作,-1-操作失败<br/>
+@param $message    <br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
 
 <hr>
 <p id="company_1">
@@ -1306,7 +1325,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
-                               'company_id':xxx,'parent_id':xxx,'type':'xxx',<br/>
+                               'company_id':xxx,'parent_id':xxx,'pparent_id':xxx,'type':'xxx',<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
                                'is_anonymous':xxx,'top_num':xxx,'has_child':xxx,'add_time':xxx},...,{...}]}<br/>
@@ -1316,6 +1335,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $nickname        //会员昵称<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
+@param $pparent_id      //祖父类id（在第三层时，这里的值才不为0)<br/>
 @param $type            //评论类型(点赞、提问、加黑)*<br/>
 @param $content         //评论内容*<br/>
 @param $pic_1           //图片5张<br/>
@@ -1523,6 +1543,76 @@ content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx,'company_id':xxx}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
 </p>
+<hr>
+<p id="comment_13">
+模块名称:Comment<br/>
+模块名称描述:评论<br/>
+方法名称:get_info<br/>
+方法描述:查询单条评论<br/>
+输入参数格式:<br/>
+method=Comment.get_info<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}<br/>
+@@output
+@param $id<br/>
+@param $user_id         //用户id<br/>
+@param $nickname        //会员昵称<br/>
+@param $company_id      //企业id*<br/>
+@param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
+@param $pparent_id      //祖父类id（在第三层时，这里的值才不为0)<br/>
+@param $type            //评论类型(点赞、提问、加黑)*<br/>
+@param $content         //评论内容*<br/>
+@param $pic_1           //图片5张<br/>
+@param $pic_2<br/>
+@param $pic_3<br/>
+@param $pic_4<br/>
+@param $pic_5<br/>
+@param $is_anonymous   //是否匿名<br/>
+@param $top_num        //顶数<br/>
+@param $has_child      //评论回复数字(已审核)
+@param $add_time       //添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="comment_14">
+模块名称:Comexposal<br/>
+模块名称描述:曝光评论<br/>
+方法名称:get_info<br/>
+方法描述:查询单条曝光评论<br/>
+输入参数格式:<br/>
+method=Comexposal.get_info<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}<br/>
+@@output<br/>
+@param $id<br/>
+@param $user_id         //用户id<br/>
+@param $nickname        //用户昵称<br/>
+@param $exposal_id      //入库id*<br/>
+@param $parent_id       //父类id(默认为0,当盖楼时为当前楼的评论id)<br/>
+@param $content         //评论内容*<br/>
+@param $is_validate     //是否审核(0-未审核,1-审核)<br/>
+@param $validate_time   //审核日期<br/>
+@param $is_anonymous    //是否匿名(0-不匿名,1-匿名,默认为0)<br/>
+@param $top_num         //顶数<br/>
+@param $pic_1 图片1id<br/>
+@param $pic_2 图片2id<br/>
+@param $pic_3 图片3id<br/>
+@param $pic_4 图片4id<br/>
+@param $pic_5 图片5id<br/>
+@param $type 评论类型(和企业评论类型相同)<br/>
+@param $top_num 顶数<br/>
+@param $add_time        //添加日期<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+
 <hr>
 <hr>
 <p id="addblack_1">
@@ -2244,10 +2334,124 @@ content:{"id":10}<br/>
 <b>企业评论附带两条回复纪录</b><br>
 method:Comment.get_list_ex<br/>
 附带字段名称:re_sub<br/>
-<br/>
+***<b>全部+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_deletie':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
+***<b>精彩评论+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'has_child':['neq',0]},'page_index':xxx,'page_size':xxx}<br/>
+***<b>有图有真相+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'pic_1':['neq',0]},'page_index':xxx,'page_size':xxx}<br/>
+***<b>楼主评论+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'page_index':xxx,'page_size':xxx}<br/>
+***<b>未认证企业+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
+***<b>黒平台+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'type':'005003'},'page_index':xxx,'page_size':xxx}<br/>
+***<b>合规平台+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'type':'005001'},'page_index':xxx,'page_size':xxx}<br/>
+***<b>全部评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>精彩评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'has_child':['neq',0],'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>有图有真相+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'pic_1':['neq',0],'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>楼主评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'user_id':xxx,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>未认证+登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
+***<b>黒平台+登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or (is_validate=1 and type='005003')'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
+***<b>合规+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or (is_validate=1 and type='005001')'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
 <b>企业曝光附带两条评论纪录</b><br>
 method:Inexposal.get_list_com<br/>
 附带字段名称:sub<br/>
+<b>企业曝光评论附带两条回覆纪录</b><br>
+method:Inexposal.get_list_com_ex<br/>
+附带字段名称:sub<br/>
+***<b>全部+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_deletie':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
+***<b>精彩评论+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'has_child':['neq',0]},'page_index':xxx,'page_size':xxx}<br/>
+***<b>有图有真相+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'pic_1':['neq',0]},'page_index':xxx,'page_size':xxx}<br/>
+***<b>楼主评论+未登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'page_index':xxx,'page_size':xxx}<br/>
+***<b>未认证企业+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
+***<b>黒平台+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'type':'005003'},'page_index':xxx,'page_size':xxx}<br/>
+***<b>合规平台+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'type':'005001'},'page_index':xxx,'page_size':xxx}<br/>
+***<b>全部评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>精彩评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'has_child':['neq',0],'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>有图有真相+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'pic_1':['neq',0],'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>楼主评论+登录:</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'user_id':xxx,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,','user_id':xxx}<br/>
+***<b>未认证+登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or is_validate=1'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
+***<b>黒平台+登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or (is_validate=1 and type='005003')'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
+***<b>合规+未登录</b><br/>
+****参数格式:<br/>
+****@@input:<br/>
+****content:{'where':{'exposal_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or (is_validate=1 and type='005001')'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
 <br/>
 <b>别名搜索企业带别名</b><br>
 method:Company.search<br/>

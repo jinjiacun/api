@@ -153,7 +153,7 @@ class AddblackController extends BaseController {
 				);
 	}
 	
-	#统计加黑人数
+#统计加黑人数
 	public function stat_user_all_amount($content)
 	/*
 	@@input

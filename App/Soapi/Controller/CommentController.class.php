@@ -354,6 +354,7 @@ class CommentController extends BaseController {
 						'company_id'   => intval($v['company_id']),
 						'company_name' => A('Soapi/Company')->get_name_by_id($v['company_id']),
 						'parent_id'    => intval($v['parent_id']),
+                                                'pparent_id'   => intval($v['pparent_id']),
 						'parent_content' => urlencode($this->get_parent_content($v['parent_id'])),
 						'type'         => $v['type'],
 						'content'      => urlencode($v['content']),
