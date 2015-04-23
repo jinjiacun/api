@@ -724,8 +724,8 @@ content={'where':{'user_id':xxx,'is_delete':0}}<br/>
 方法名称:get_list<br/>
 方法描述:我的曝光<br/>
 输入参数格式:<br/>
-method=Inexposal.get_list<br/>
-content={'where':{'user_id':xxx}}<br/>
+method=Inexposal.get_list_com<br/>
+content={'where':{'user_id':xxx},'where_ex':{'_string':'user_id=xxx or is_validate=1'}}<br/>
 @@input<br/>
 @param $user_id 用户id(当前登录用户id)<br/>
 示例输出:<br/>
@@ -743,6 +743,8 @@ content={'where':{'user_id':xxx}}<br/>
 @param $pic_3<br/>
 @param $pic_4<br/>
 @param $pic_5<br/>
+注:list里面的sub里面record_count为附带的曝光回复数<br/>
+where_ex为带回复条件参数<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -2390,12 +2392,15 @@ method:Comment.get_list_ex<br/>
 ****参数格式:<br/>
 ****@@input:<br/>
 ****content:{'where':{'company_id':xxx,parent_id':xxx,'is_delete':0,'is_validate':1,'_string':'user_id=xxx or (is_validate=1 and type='005001')'},'page_index':xxx,'page_size':xxx,'user_id':xxx}<br/>
+<br/>
 <b>企业曝光附带两条评论纪录</b><br>
 method:Inexposal.get_list_com<br/>
 附带字段名称:sub<br/>
+<br/>
 <b>企业曝光评论附带两条回覆纪录</b><br>
 method:Inexposal.get_list_com_ex<br/>
 附带字段名称:sub<br/>
+<br/>
 ***<b>全部+未登录:</b><br/>
 ****参数格式:<br/>
 ****@@input:<br/>

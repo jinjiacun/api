@@ -346,18 +346,29 @@ class InexposalController extends BaseController {
 		
 		$user_id = $data['user_id'];
 		if(isset($data['where']))unset($data['where']);
-		
+	
 		foreach($list as $k=> $v)
-		{
-			$data['where']['exposal_id'] = intval($v['id']);
-			if(0< $user_id)
-				$data['where']['_string'] = "user_id=$user_id or is_validate=1";
-			elseif(0 == $user_id)
-				$data['where']['is_validate'] = 1;
-            $data['where']['parent_id'] = 0;
-			$data['page_size'] = 2;
-			$data['page_index'] = 1;
-			if(isset($data['where']['type']))unset($data['where']['type']);
+		{   
+            if(isset($data['where_ex']))
+			{
+				$data['where'] = $data['where_ex'];
+                $data['where']['exposal_id'] = intval($v['id']);
+				$data['page_index'] = 1;
+				$data['page_size'] = 2;
+				$data['where']['parent_id'] = 0;
+			}
+			else
+			{
+				$data['where']['exposal_id'] = intval($v['id']);
+				if(0< $user_id)
+					$data['where']['_string'] = "user_id=$user_id or is_validate=1";
+				elseif(0 == $user_id)
+					$data['where']['is_validate'] = 1;
+        	   	$data['where']['parent_id'] = 0;
+				$data['page_size'] = 2;
+				$data['page_index'] = 1;
+				if(isset($data['where']['type']))unset($data['where']['type']);
+			}			
 			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
 				'list'=>$sub['list'],
