@@ -474,7 +474,7 @@ class CompanyController extends BaseController {
 				{
 					$param['where'] = array(
 						'company_id'=>$v['id'],
-						//'type'=>0,
+						'type'=>0,
 					);
 					$param['order']['validate_time'] = "desc";
 					$param['page_index']=1;
