@@ -1027,6 +1027,7 @@ class InexposalController extends BaseController {
 		$tmp_amount = M()->query("select count(user_id) as tp_count
 								  from so_in_exposal 
 								  where is_delete=0
+                                  and type=0
 								  and company_id=".$company_id);
 								   
 		 $exp_amount = $tmp_amount[0]['tp_count'];
