@@ -456,6 +456,7 @@ class CommentController extends BaseController {
 		}
 		
 		if(isset($data['where']['has_child'])) unset($data['where']['has_child']);
+        if(isset($data['where']['type'])) unset($data['where']['type']);
 		
 		foreach($list as $k=> $v)
 		{
