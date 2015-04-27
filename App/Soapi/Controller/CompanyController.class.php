@@ -607,6 +607,7 @@ class CompanyController extends BaseController {
 			//纪录查询信息
 			$content = array(
 			//	'user_id' => $data['user_id'],
+                'user_id' => 0,
 				'keyword' => $data['name'],
 			);
 			A('Soapi/Querylog')->add(json_encode($content));

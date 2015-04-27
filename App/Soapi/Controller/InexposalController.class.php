@@ -934,6 +934,15 @@ class InexposalController extends BaseController {
 		{
 			foreach($tmp_list as $v)
 			{
+				#查询回复数
+                $re_amount = 0;
+                $tmp_param = array(
+					'exposal_id'=>$v['id'],
+                    'parent_id'=>0,
+                    'is_validate'=>1,
+                    'is_delete'=>0,
+				); 
+                $re_amount = M('Com_exposal')->where($tmp_param)->count();
 				$list[] = array(
 					'id'           =>intval($v['id']),
 					'company_id'   =>intval($v['company_id']),
@@ -943,6 +952,9 @@ class InexposalController extends BaseController {
 					'company_name' => urlencode($v['company_name']),
 					'auth_level'   => $v['auth_level'],
 					'content' => urlencode($v['content']),
+                    'pic_1'   => intval($v['pic_1']),
+                    'pic_1_url' => $this->get_pic_url($v['pic_1']),
+                    're_amount' => $re_amount,
 				);
 			}
 			unset($v, $tmp_list);

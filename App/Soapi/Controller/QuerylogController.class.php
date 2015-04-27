@@ -52,9 +52,7 @@ class QuerylogController extends BaseController {
 		$data['user_id'] = intval($data['user_id']);
 		$data['keyword'] = htmlspecialchars(trim($data['keyword']));
 		
-		if(0>= $data['user_id']
-		|| '' == $data['keyword']
-		)		
+		if('' == $data['keyword'])		
 		{
 			return C('param_fmt_err');
 		}
