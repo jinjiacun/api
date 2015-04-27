@@ -871,6 +871,8 @@ class CompanyController extends BaseController {
 			{
 				foreach($list as $k=>$v)
 				{
+					
+				    $list[$k]['alias_list'] = urlencode(A('Soapi/Companyalias')->get_name($v['id'])); #企业别名
 					$content = array(
 						'company_id'=> intval($v['id'])
 					);
