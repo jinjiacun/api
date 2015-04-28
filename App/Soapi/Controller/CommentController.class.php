@@ -192,6 +192,9 @@ class CommentController extends BaseController {
 	                              user_agent varchar(255) comment '来源',
 	                              childs int not null default 0 comment '未审核的回复数量',
 	                              has_child int not null default 0 comment '已审核的子回复数',
+                                  last_child_time int not null default 0 comment '最新回复评论时间',
+                                  last_cchild_time int not null default 0 comment '最新再回复时间',
+                                  last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -258,8 +261,9 @@ class CommentController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		
-		$data['add_time'] = time();
+	    $now = time();		
+        $data['last_time'] = $now;
+		$data['add_time'] = $now;
 		$data['ip']       = $this->get_real_ip();
 		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		/*
@@ -286,10 +290,16 @@ class CommentController extends BaseController {
 			if(0< $data['parent_id'])
 			{
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
+                //更新父评论里面最新的子评论时间
+                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
+                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
 				//判定是否第三层
 				if(0< $data['pparent_id'])
 				{
 					M($this->_module_name)->where(array('id'=>$data['pparent_id']))->setInc('childs', 1);
+                    //更新祖父评论里面最新评论的再回复时间
+                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_cchild_time'=>$now));
+                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_time'=>$now));
 				}
 			}
 			return array(
@@ -428,56 +438,68 @@ class CommentController extends BaseController {
 		$data = $this->fill($content);
 		$is_validate = $data['where']['_complex']['is_validate'];
 		
-		if(0 == $data['where']['parent_id'])
+        if(!isset($data['where_ex']))
 		{
-			//登录-全部
-			if(0 < $data['user_id']
-			&& isset($data['where']['_string']))
+			if(0 == $data['where']['parent_id'])
 			{
-				$param_user_id = '';
-				$param_is_validate = '';
-				$param_type = '';
-				$_string = $data['where']['_string'];			
-				$tmp_str = explode('or', $_string);
-				$param_user_id = trim($tmp_str[0]);
-				$tmp_str = explode('and', $tmp_str[1]);
-				$param_is_validate = str_replace('(','',$tmp_str[0]);
-				$param_type = trim($tmp_str[1]);
-				if(isset($param_type)&& '' != $param_type)
+				//登录-全部
+				if(0 < $data['user_id']
+				&& isset($data['where']['_string']))
 				{
-					$data['where']['_string'] = $param_user_id.' or '.$param_is_validate.'';
+					$param_user_id = '';
+					$param_is_validate = '';
+					$param_type = '';
+					$_string = $data['where']['_string'];			
+					$tmp_str = explode('or', $_string);
+					$param_user_id = trim($tmp_str[0]);
+					$tmp_str = explode('and', $tmp_str[1]);
+					$param_is_validate = str_replace('(','',$tmp_str[0]);
+					$param_type = trim($tmp_str[1]);
+					if(isset($param_type)&& '' != $param_type)
+					{
+						$data['where']['_string'] = $param_user_id.' or '.$param_is_validate.'';
+					}
+				}
+				else
+				{
+					if(isset($data['where']['_string']))
+						unset($data['where']['_string']);
 				}
 			}
-			else
-			{
-				if(isset($data['where']['_string']))
-					unset($data['where']['_string']);
-			}
+		}
+		else
+		{
+			$data['where'] = $data['where_ex'];
 		}
 		
-		if(isset($data['where']['has_child'])) unset($data['where']['has_child']);
-        if(isset($data['where']['type'])) unset($data['where']['type']);
-		
+		if(!isset($data['where_ex']))
+		{
+			if(isset($data['where']['has_child'])) unset($data['where']['has_child']);
+        	if(isset($data['where']['type'])) unset($data['where']['type']);
+		}		
+
 		foreach($list as $k=> $v)
 		{
-			if(isset($data['where']['_complex'])) 
+			if(!isset($data['where_ex']))
 			{
-				    //if(-10000 == $data['user_id'])
-				    //{
-						$data['page_size'] = 10;
-						$data['page_index'] = 1;
-						if(0 == $is_validate)
-						{
-							//$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
-							$where['is_validate'] = 0;
-							$where['childs']  = array('gt', 0);
-							$where['_logic'] = 'or';
-							$data['where']['_complex'] = $where;
-						}
-						else
-						{
-							$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
-						}
+				if(isset($data['where']['_complex'])) 
+				{
+					    //if(-10000 == $data['user_id'])
+				   		//{
+							$data['page_size'] = 10;
+							$data['page_index'] = 1;
+							if(0 == $is_validate)
+							{
+								//$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
+								$where['is_validate'] = 0;
+								$where['childs']  = array('gt', 0);
+								$where['_logic'] = 'or';
+								$data['where']['_complex'] = $where;
+							}
+							else
+							{
+								$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
+							}
 						/*
 						$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];					
 						$where['is_validate'] = 0;
@@ -491,14 +513,21 @@ class CommentController extends BaseController {
 					//{
 						
 					//}
+				}
+				else
+				{
+						$data['page_size'] = 2;
+						$data['page_index'] = 1;
+						if(isset($data['where']['pic_1']))unset($data['where']['pic_1']);					
+				}
+				$data['where']['parent_id'] = intval($v['id']);
 			}
 			else
 			{
-					$data['page_size'] = 2;
-					$data['page_index'] = 1;
-					if(isset($data['where']['pic_1']))unset($data['where']['pic_1']);					
+						$data['where']['parent_id']	= intval($v['id']);
+						$data['page_size'] = 2;
+						$data['page_index'] = 1;
 			}
-			$data['where']['parent_id'] = intval($v['id']);
 			
 			list(, $sub) = $this->get_list(json_encode($data));
 			$list[$k]['re_sub'] = array(

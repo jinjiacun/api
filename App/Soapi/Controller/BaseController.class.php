@@ -197,6 +197,7 @@ class BaseController extends Controller {
 		            
 		            
 		//echo M()->getlastSql();
+		//die;
 		#
 		$record_count = 0;
 		$record_count = $obj->where($data['where'])->count();

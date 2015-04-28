@@ -41,6 +41,8 @@ class ComexposalController extends BaseController {
 	                              top_num int not null default 0 comment '顶数',
 	                              has_child int not null default 0 comment '审核通过的回复数量',
 	                              childs int not null default 0 comment '未审核的回复数量',
+                                  last_child_time int not null default 0 comment '最近回复时间',                                   
+                                  last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -62,6 +64,7 @@ class ComexposalController extends BaseController {
 	 protected $pic_5;         #图片id
 	 protected $type;          #评论类型
 	 protected $has_child;     #审核评论回复数
+     protected $last_child_time; #最近回复时间
 	 protected $add_time;      #添加日期
 	 
 	 #添加
@@ -118,7 +121,9 @@ class ComexposalController extends BaseController {
 			);
 		}
 		*/
-	    $data['add_time'] = time();
+        $now = time();
+        $data['last_time'] = $now;
+	    $data['add_time'] = $now;
 		
 		if(M($this->_module_name)->add($data))
 		{
@@ -126,6 +131,8 @@ class ComexposalController extends BaseController {
 			if(0< $data['parent_id'])
 			{
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
+                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
+                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
 			}
 			return array(
 				200,
@@ -205,49 +212,59 @@ class ComexposalController extends BaseController {
 		$data = $this->fill($content);
 		
 		$user_id = intval($data['user_id']);
-		if(isset($data['where']['has_child']))  unset($data['where']['has_child']);		
+		if(!isset($data['where_ex'])) 
+		{
+			if(isset($data['where']['has_child']))  unset($data['where']['has_child']);		
+		}
+		else
+		{
+			$data['where'] = $data['where_ex'];
+		}
 		//if(isset($data['where']))unset($data['where']);		
 		foreach($list as $k=> $v)
 		{
 			$data['where']['parent_id'] =  intval($v['id']);
-			if(!isset($data['where']['_complex']))
+			if(!isset($data['where_ex']))
 			{
-				if(0< $user_id)
-					$data['where']['_string'] = "user_id=$user_id or is_validate=1";
-				elseif(0 == $user_id)
-					$data['where']['is_validate'] = 1;
-			}
-			
-		    if(isset($data['where']['pic_1']))
-		    {
-				unset($data['where']['pic_1']);
-			}
-			
-			if(!isset($data['where']['_complex']))
-			{
-				if(0 > $user_id)
+				if(!isset($data['where']['_complex']))
 				{
-					$data['page_size'] = 10;
-					$data['page_index'] = 1;
-					$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
-					unset($data['where']['_complex']);
+					if(0< $user_id)
+						$data['where']['_string'] = "user_id=$user_id or is_validate=1";
+					elseif(0 == $user_id)
+						$data['where']['is_validate'] = 1;
+				}	
+			
+		    	if(isset($data['where']['pic_1']))
+		    	{
+					unset($data['where']['pic_1']);
+				}
+			
+				if(!isset($data['where']['_complex']))
+				{	
+					if(0 > $user_id)
+					{
+						$data['page_size'] = 10;
+						$data['page_index'] = 1;
+						$data['where']['is_validate'] = $data['where']['_complex']['is_validate'];
+						unset($data['where']['_complex']);
+					}
+					else
+					{
+						$data['page_size'] = 2;
+						$data['page_index'] = 1;
+					}
 				}
 				else
 				{
-					$data['page_size'] = 2;
-					$data['page_index'] = 1;
-				}
-			}
-			else
-			{
-				if(-10000 == $user_id)
-				{
+					if(-10000 == $user_id)
+					{
 						
-				}
-				else
-				{
-					$data['page_size'] = 2;
-					$data['page_index'] = 1;
+					}
+					else
+					{
+						$data['page_size'] = 2;
+						$data['page_index'] = 1;
+					}
 				}
 			}
 			list(, $sub) = $this->get_list(json_encode($data));

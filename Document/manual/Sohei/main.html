@@ -2085,6 +2085,51 @@ content={'id':xxx}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 </p>
 <hr><hr>
+<p id="share_1">
+模块名称:Sharecount<br/>
+模块名称描述:分享计数<br/>
+方法名称:add<br/>
+方法描述:新增<br/>
+输入参数格式:<br/>
+method=Sharecount.add<br/>
+content={'type':‘xxx’,'value_id':xxx}<br/>
+@@input<br/>
+@param $type  (007001-企业分享,007002-评论分享,007003-曝光分享)<br/>
+@param $value_id    上面type对应的id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':'xxx','amount':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+@param $amount 当前条件下的总数<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr>
+<p id="share_2">
+模块名称:Sharecount<br/>
+模块名称描述:分享计数<br/>
+方法名称:get_info<br/>
+方法描述:查询<br/>
+输入参数格式:<br/>
+method=Sharecount.get_info<br/>
+content={'type':‘xxx’,'value_id':xxx}<br/>
+@@input<br/>
+@param $type  (007001-企业分享,007002-评论分享,007003-曝光分享)<br/>
+@param $value_id    上面type对应的id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'id':xxx,'type':'xxx','value_id':xxx,'times':xxx,'add_time':xxx}}<br/>
+@@output<br/>
+@param $id <br/>
+@param $type  (007001-企业分享,007002-评论分享,007003-曝光分享)<br/>
+@param $value_id    上面type对应的id<br/>
+@param $times 分享次数<br/>
+@param $add_time<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
 <p id="pic_1">
 模块名称:Media<br/>
 模块名称描述:媒体<br/>
@@ -2320,6 +2365,28 @@ content={'media':xxx}<br/>
 			<td></td>
 		</tr>
 		<tr>
+			<td>007001</td>
+			<td>7</td>
+			<td>分享</td>
+			<td>企业分享</td>
+			<td></td>
+		</tr>
+	<tr>
+			<td>007002</td>
+			<td>7</td>
+			<td>分享</td>
+			<td>评论分享</td>
+			<td></td>
+		</tr>
+	<tr>
+			<td>007003</td>
+			<td>7</td>
+			<td>分享</td>
+			<td>曝光分享</td>
+			<td></td>
+		</tr>
+
+		<tr>
 		<td colspan="3">允许的图片格式类型</td>
 		<td colspan="2">jpg,gif,jpeg,png</td>
 		
@@ -2355,7 +2422,7 @@ method:Comment.get_list_ex<br/>
 ***<b>楼主评论+未登录:</b><br/>
 ****参数格式:<br/>
 ****@@input:<br/>
-****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'page_index':xxx,'page_size':xxx}<br/>
+****content:{'where':{'company_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'where_ex':{'company_id':xxx,'is_delete':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
 ***<b>未认证企业+未登录</b><br/>
 ****参数格式:<br/>
 ****@@input:<br/>
@@ -2420,7 +2487,7 @@ method:Inexposal.get_list_com_ex<br/>
 ***<b>楼主评论+未登录:</b><br/>
 ****参数格式:<br/>
 ****@@input:<br/>
-****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'page_index':xxx,'page_size':xxx}<br/>
+****content:{'where':{'exposal_id':xxx,'parent_id':xxx,'is_delete':0,'is_validate':1,'user_id':xxx},'where_ex':{'exposal_id':xxx,'is_delete':0,'is_validate':1},'page_index':xxx,'page_size':xxx}<br/>
 ***<b>未认证企业+未登录</b><br/>
 ****参数格式:<br/>
 ****@@input:<br/>
@@ -2476,6 +2543,8 @@ $map["company_id"]=9;<br/>
 $map["parent_id"]=0;<br/>
 echo json_encode($map);<br/>
 <br/>
+
+
 <b>下载地址接口</b>
 method:Down.index<br/>
 返回:content里面的url<br/>
