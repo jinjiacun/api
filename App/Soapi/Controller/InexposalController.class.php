@@ -137,6 +137,7 @@ class InexposalController extends BaseController {
 	 * create table so_in_exposal(id int primary key auto_increment,
 	                              user_id int not null default 0 comment '用户id',
 	                              company_id int not null default 0 comment '关联企业',
+								  auth_level varchar(10) comment '认证级别',
 	                              type    varchar(10) comment '类别(0-曝光，1-申请可信企业)',
 	                              nature  varchar(10) comment '企业性质',
 	                              trade   varchar(10) comment '所属行业',
@@ -175,6 +176,7 @@ class InexposalController extends BaseController {
 	var $id;
 	var $user_id;          #用户id
 	var $type;             #类型
+	var $auth_level;       #认证级别
 	var $nature;           #企业性质
 	var $trade;            #所属行业
 	var $company_name;     #公司名称(企业全称)
@@ -710,8 +712,13 @@ class InexposalController extends BaseController {
 		
 		if(isset($content)) unset($content);
 		
+		#查询企业认证等级
+		$tmp_info = M('Company')->field('auth_level')->find($data['company_id']);		
+	    
+
 		$content = array(
 			'company_id'=> $data['company_id'],
+			'auth_level'=>$tmp_info['auth_level'],
 			'validate_time'=>time(),
 		);
 		if(M($this->_module_name)->where(array('id'=>$data['id']))

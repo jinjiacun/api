@@ -728,7 +728,7 @@ content={'where':{'user_id':xxx,'is_delete':0}}<br/>
 方法描述:我的曝光<br/>
 输入参数格式:<br/>
 method=Inexposal.get_list_com<br/>
-content={'where':{'user_id':xxx},'where_ex':{'_string':'user_id=xxx or is_validate=1'}}<br/>
+content={'where':{'user_id':xxx,'auth_level':['in','006001,006002']},'where_ex':{'_string':'user_id=xxx or is_validate=1'}}<br/>
 @@input<br/>
 @param $user_id 用户id(当前登录用户id)<br/>
 示例输出:<br/>
@@ -2130,6 +2130,29 @@ content={'type':‘xxx’,'value_id':xxx}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 </p>
 <hr><hr>
+<p id="ad_1">
+模块名称:Ad<br/>
+模块名称描述:广告<br/>
+方法名称:get_list<br/>
+方法描述:查询<br/>
+输入参数格式:<br/>
+method=Ad.get_list<br/>
+content={}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'id':xxx,'title':'xxx','url':xxx,'pic':xxx,'pic_url':'xxx','add_time':xxx}}<br/>
+@@output<br/>
+@param $id <br/>
+@param $title <br/>
+@param $url <br/>
+@param $pic<br/>
+@param $pic_url<br/>
+@param $add_time<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
 <p id="pic_1">
 模块名称:Media<br/>
 模块名称描述:媒体<br/>
@@ -2255,6 +2278,14 @@ content={'media':xxx}<br/>
 			<td>意见反馈</td>
 			<td><400k</td>
 		</tr>
+        <tr>
+			<td>001011</td>
+			<td>1</td>
+			<td>图片</td>
+			<td>广告</td>
+			<td></td>
+		</tr>
+
 		<tr>
 			<td>002001</td>
 			<td>2</td>

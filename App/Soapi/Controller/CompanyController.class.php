@@ -1206,7 +1206,43 @@ class CompanyController extends BaseController {
 			);			
 		}
 		
-		
+		#修改	
+		public function update($content)
+		/**
+		@@input
+		@param $where 条件
+		@param $data  要更新的数据
+		@@output
+		@param $is_success 0-成功操作，-1-操作失败
+		*/
+		{
+			list($status_code,$r_content) = parent::update($content);
+			$data = $this->fill($content);
+			if(500 == $status_code)
+			{
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			if(200 == $status_code
+			&& 0 == $r_content['is_success'])
+			{
+				#更新曝光中企业等级	
+				M('In_exposal')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level']));
+				
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			return array(
+					$status_code,
+					$r_content
+			);
+		}
 		
 		
 		
