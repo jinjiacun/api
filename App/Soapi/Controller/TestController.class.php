@@ -20,7 +20,37 @@ class TestController extends BaseController {
 		echo $this->post($url, $params);
 	}
 	
-		
+    public function comment_auth_map()
+	{
+		#查询企业id和认证等级映射
+		$map_auth = array();
+		$tmp_list = M('Company')->field("id,auth_level")->select();
+		foreach($tmp_list as $k=>$v)
+		{
+			$map_auth[intval($v['id'])] = $v['auth_level'];
+		}
+		unset($tmp_list, $k, $v);
+	
+		$tmp_list = M('Comment')->field('id,company_id')->select();
+		foreach($tmp_list as $k=>$v)
+		{	
+			$id = intval($v['id']);
+			$company_id = intval($v['company_id']);
+			$auth_level = $map_auth[$company_id];
+			$_where = array(
+				'id'=>$id,
+			);
+			M('Comment')->where($_where)->save(array('auth_level'=>$auth_level));
+		}
+		unset($tmp_list, $v, $k);
+		return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+		);		
+	}		
 	
 	
 }

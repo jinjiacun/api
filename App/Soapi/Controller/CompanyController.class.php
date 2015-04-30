@@ -614,6 +614,7 @@ class CompanyController extends BaseController {
 			unset($data['user_id']);
 			
 			$list = array();
+			$where = '';
 			$record_count = 0;
 			#通过别名查询company_id集合
 			$company_id_list = array();
@@ -623,7 +624,8 @@ class CompanyController extends BaseController {
 			#别名搜索
 			$tmp_list = M('Company_alias')->field("company_id")
 			                              ->where(array('name'=>array('like','%'.$data['name'].'%')))
-			                              ->select();                            
+		     	                          ->select();                            
+            $company_id_list = array();
 			if($tmp_list
 			&& 0<count($tmp_list))
 			{
@@ -633,6 +635,31 @@ class CompanyController extends BaseController {
 				}
 				unset($tmp_list, $k, $v);
 			}
+
+			#企业名称或者网址
+			$tmp_list = M('Company')->field("id")
+                                    ->where(array('_string'=>"company_name like '%".$data['name'].
+                                                  "%' or website like '%".$data['name'].
+                                                  "%'"))->select();			
+		    if($tmp_list
+			&& 0<count($tmp_list)
+			)
+			{
+				foreach($tmp_list as $k=>$v)
+				{
+					$company_id_list[] = $v['id'];	
+				}
+				unset($tmp_list, $k, $v);
+			}
+			
+			if($company_id_list
+			&& 0< count($company_id_list)
+			)
+			{
+				$company_ids = implode(',', $company_id_list);
+				$where['id'] = array("in", $company_ids);
+			}	
+  		    /*		
 			$company_ids = implode(',', $company_id_list);
 			$tmp_list = array();			
 			
@@ -701,7 +728,14 @@ class CompanyController extends BaseController {
 				$record_count = M($this->_module_name)->where($where)->count();
 				M($this->_module_name)->where($where)->setInc('select_amount', 1);
 			} 
-			
+            */
+            if('' != $where)
+			{
+				$tmp_list     = M($this->_module_name)->where($where)->select();
+				$record_count = M($this->_module_name)->where($where)->count();
+				M($this->_module_name)->where($where)->setInc('select_amount', 1);		
+			}
+	
 			if($tmp_list
 			&& 0< count($tmp_list))
 			{
@@ -1231,7 +1265,8 @@ class CompanyController extends BaseController {
 			{
 				#更新曝光中企业等级	
 				M('In_exposal')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level']));
-				
+		        #更新评论中企业等级
+				M('Comment')->where(array('company_id'=>$$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level'])); 		
 				return array(
 					$status_code,
 					$r_content

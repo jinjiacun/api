@@ -174,6 +174,7 @@ class CommentController extends BaseController {
 	 * create table so_comment(id int primary key auto_increment,
 	                              user_id int not null default 0 comment '用户id',
 	                              company_id int not null default 0 comment '企业id',
+								  auth_level varchar(10) comment '企业认证等级',
 	                              parent_id int not null default 0 comment '是否盖楼',
 	                              pparent_id int not null default 0 comment '祖父id',
 	                              type varchar(255) comment '评论类型',
@@ -266,6 +267,10 @@ class CommentController extends BaseController {
 		$data['add_time'] = $now;
 		$data['ip']       = $this->get_real_ip();
 		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		#查询企业等级
+		$tmp_info = M('Company')->field('auth_level')->find($data['company_id']);
+		$data['auth_level'] = $tmp_info['auth_level'];
+		unset($tmp_info);
 		/*
 		$parent_id = intval($data['parent_id']);
 		if(0== $parent_id)

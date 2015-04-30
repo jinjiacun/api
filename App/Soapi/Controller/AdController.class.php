@@ -26,6 +26,7 @@ class AdController extends BaseController {
 	                      title varchar(255) comment '标题',
                           url varchar(255) comment '链接',
                           pic int not null default 0 comment '图片',
+						  intro varchar(255) comment '简介',
 	                      add_time int not null default 0 comment '添加日期'
 	                      )charset=utf8;
 	 * */
@@ -34,6 +35,7 @@ class AdController extends BaseController {
 	protected $title;
 	protected $url;
 	protected $pic;
+	protected $intro;
 	protected $add_time;   #添加日期
 	
 	#添加加黑
@@ -43,6 +45,7 @@ class AdController extends BaseController {
 	@param $title
 	@param $url
 	@param $pic
+	@param $intro
 	@@output
 	@param $is_success 0-操作成功，-1-操作失败，-2-超过了加黒条数
 	*/
@@ -51,16 +54,19 @@ class AdController extends BaseController {
 		
 		if(!isset($data['title'])
 		|| !isset($data['pic'])
+		|| !isset($data['intro']) 
 		)
 		{
 			return C('param_err');
 		}
 		
-	    $data['title'] = htmlentities(trim($data['title']));
+	    $data['title'] = htmlspecialchars(trim($data['title']));
 		$data['pic']   = intval($data['pic']);
+        $data['intro'] = htmlspecialchars(trim($data['intro']));
 		
 		if('' == $data['title']
 		|| 0>= $data['pic']
+        || '' == $data['intro']
 		)
 		{
 			return C('param_fmt_err');
@@ -103,6 +109,7 @@ class AdController extends BaseController {
 	                    'url'        => urlencode($v['url']),
 						'pic'        => intval($v['pic']),
                         'pic_url'    => $this->get_pic_url($v['pic']),
+                        'intro'      => urlencode($v['intro']),
 						'add_time'   => intval($v['add_time']),
 						
 					);	
@@ -127,6 +134,7 @@ class AdController extends BaseController {
 	@param $title
 	@param $url
 	@param $pic
+	@param $intro
 	@param $add_time 
 	*/
 	{
@@ -154,6 +162,7 @@ class AdController extends BaseController {
 				'url'         => urlencode($tmp_one['url']),
 				'pic'         => intval($tmp_one['pic']),
 				'pic_url'     => $this->get_pic_url($tmp_one['pic']),
+                'intro'       => urlencode($tmp_one['intro']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}
