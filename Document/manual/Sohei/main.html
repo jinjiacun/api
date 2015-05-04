@@ -67,7 +67,9 @@ method=Inexposal.get_list<br/>
 content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
                   "nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
-	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}}<br/>
+	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx,"top_num":xxx,"last_time":xxx,"last_user_id':xxx,"last_nickname":xxx,<br/>
+		 "v_last_time":xxx,"v_last_user_id":xxx,"v_last_nickname":"xxx"<br/>
+		 }}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
@@ -86,6 +88,12 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
 @param $pic_4<br/>       
 @param $pic_5<br/>
 @param $top_num 顶的数目<br/>
+@param $last_time //最新时间(当前或者回复或者再回复时间)<br/>
+@param $last_user_id //上面对应的用户id<br/>
+@param $last_nickname //上面用户id对应的昵称<br/>
+@param $v_last_time //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_user_id //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_nickname //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $add_time 添加日期<br/>
 示例输出:
 {'status_code':200,'content':{'is_success':xxx}}<br/>
@@ -704,10 +712,10 @@ content={'uid':xxx,'openid':'xxx','userip':'xxx'}<br/>
 模块名称:Comment<br/>
 模块名称描述:评论<br/>
 方法名称:get_list<br/>
-方法描述:获取评论列表<br/>
+方法描述:我的评论<br/>
 输入参数格式:<br/>
 method=Comment.get_list<br/>
-content={'where':{'user_id':xxx,'is_delete':0}}<br/>
+content={'where':{'user_id':xxx,'is_delete':0,'_string':'(auth_level="006001" and type="005003") or (auth_level="006003" and type="005001") or auth_level="006002" '}}<br/>
 @@input<br/>
 @param $user_id 用户id(当前登录用户id)<br/>
 示例输出:<br/>
@@ -1334,7 +1342,9 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
                                'company_id':xxx,'parent_id':xxx,'pparent_id':xxx,'type':'xxx',<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
-                               'is_anonymous':xxx,'top_num':xxx,'has_child':xxx,'add_time':xxx},...,{...}]}<br/>
+                               'is_anonymous':xxx,'top_num':xxx,'has_child':xxx,'last_time':xxx,'last_user_id':xxx,'last_nickname':'xxx',<br/>
+							   'last_time':xxx,'last_user_id':xxx,'last_nickname':'xxx',<br/>
+							   'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
@@ -1351,7 +1361,13 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $pic_5<br/>
 @param $is_anonymous   //是否匿名<br/>
 @param $top_num        //顶数<br/>
-@param $has_child      //评论回复数字(已审核)
+@param $has_child      //评论回复数字(已审核)<br/>
+@param $last_time      //最新时间(当前或者回复或者再回复时间)<br/>
+@param $last_user_id   //上面对应的用户id<br/>
+@param $last_nickname  //上面用户id对应的昵称<br/>
+@param $v_last_time      //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_user_id   //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_nickname  //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $add_time       //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1403,7 +1419,7 @@ content={'where':{'exposal_id':xxx}}<br/>
                                'exposal_id':xxx,'parent_id':xxx<br/>
                                'content':'xxx','is_validate':xxx,'validate_time':xxx,'is_anonymous':xxx,<br/>
 							   'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'type':'xxx'
-			       'top_num':xxx,'add_time':xxx},...,{...}]}<br/>
+			       'top_num':xxx,'last_time':xxx,'last_user_id':xxx,'last_nickname':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $user_id         //用户id<br/>
@@ -1422,6 +1438,9 @@ content={'where':{'exposal_id':xxx}}<br/>
 @param $pic_5 图片5id<br/>
 @param $type 评论类型(和企业评论类型相同)<br/>
 @param $top_num 顶数<br/>
+@param $last_time      //最新时间(当前或者回复或者再回复时间)<br/>
+@param $last_user_id   //上面对应的用户id<br/>
+@param $last_nickname  //上面用户id对应的昵称<br/>
 @param $add_time        //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

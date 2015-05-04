@@ -167,6 +167,8 @@ class InexposalController extends BaseController {
 	                              user_agent varchar(255) comment '来源',
 	                              validate_time int not null default 0 comment '审核时间',
 	                              reason varchar(255) comment '删除原因',
+							      last_time int not null default 0 comment '',
+								  last_user_id int not null default 0 comment '',								  
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -321,6 +323,12 @@ class InexposalController extends BaseController {
 						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
 						'top_num'      => intval($v['top_num']),
 						'is_delete'    => intval($v['is_delete']),
+						'last_time'    => intval($v['last_time']),
+						'last_user_id' => intval($v['last_user_id']),
+						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
+						'v_last_time'    => intval($v['v_last_time']),
+						'v_last_user_id' => intval($v['v_last_user_id']),
+						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}

@@ -731,7 +731,18 @@ class CompanyController extends BaseController {
             */
             if('' != $where)
 			{
-				$tmp_list     = M($this->_module_name)->where($where)->select();
+				if(isset($data['nature'])
+				&& '' != $data['nature'])
+				{
+					$where['nature'] = $data['nature'];
+				}
+				if(isset($data['trade'])
+				&& '' != $data['trade'])
+				{
+					$where['trade'] = $data['trade'];
+			    }
+			
+    			$tmp_list     = M($this->_module_name)->where($where)->select();
 				$record_count = M($this->_module_name)->where($where)->count();
 				M($this->_module_name)->where($where)->setInc('select_amount', 1);		
 			}

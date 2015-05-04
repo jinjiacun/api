@@ -167,6 +167,11 @@ public function update_re_child_amount
 @param $id 评论id
 @@output
 @param $is_success 0-操作成功，-1-操作失败
+##--------------------------------------------------------##
+#更新最新审核通过的评论的最新时间和用户id
+public function update_v_last
+@@input
+@param $id 评论id
 */
 class CommentController extends BaseController {
 	/**
@@ -196,6 +201,7 @@ class CommentController extends BaseController {
                                   last_child_time int not null default 0 comment '最新回复评论时间',
                                   last_cchild_time int not null default 0 comment '最新再回复时间',
                                   last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间',
+								  last_user_id int not null default 0 comment '最新回复或者再回复用户或者当前用户id'
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -264,6 +270,8 @@ class CommentController extends BaseController {
 		
 	    $now = time();		
         $data['last_time'] = $now;
+        $user_id = $data['user_id'];
+		$data['last_user_id'] = $user_id;
 		$data['add_time'] = $now;
 		$data['ip']       = $this->get_real_ip();
 		$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
@@ -298,6 +306,7 @@ class CommentController extends BaseController {
                 //更新父评论里面最新的子评论时间
                 M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
                 M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
+                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
 				//判定是否第三层
 				if(0< $data['pparent_id'])
 				{
@@ -305,6 +314,7 @@ class CommentController extends BaseController {
                     //更新祖父评论里面最新评论的再回复时间
                     M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_cchild_time'=>$now));
                     M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_time'=>$now));
+                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_user_id'=>$user_id));  
 				}
 			}
 			return array(
@@ -391,6 +401,12 @@ class CommentController extends BaseController {
 						'ip'           => $v['ip'],
 						'has_child_ex' => $this->has_child($v['id']),
 						'has_child'    => intval($v['has_child']),
+						'last_time'    => intval($v['last_time']),
+						'last_user_id' => intval($v['last_user_id']),
+						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
+						'v_last_time'    => intval($v['v_last_time']),
+						'v_last_user_id' => intval($v['v_last_user_id']),
+						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -784,6 +800,8 @@ class CommentController extends BaseController {
 						M($this->_module_name)->where(array('id'=>$tmp_content['pparent_id']))->setDec("childs", 1);
 					}
 				}	
+				#统计最新审核的评论时间和user_id(当前或者回复或者再回复的)
+				$this->update_v_last($id);
 				
 				return array(
 					200,
@@ -1273,8 +1291,60 @@ class CommentController extends BaseController {
 			);
 	}
 
+	#更新最新审核通过的评论的最新时间和用户id
+	private function update_v_last($id)
+	{
+		#查询当前评论
+		$comment_info = M($this->_module_name)->find($id);
+		$v_last_time = $v_last_user_id = 0;
+		$mast_comment_id = 0;
+		
 
+		#如果是主评论		
+		if(0 == $comment_info['parent_id'])
+		{
+			$mast_comment_id = $comment_info['id'];
+			$v_last_time     = $comment_info['add_time'];
+			$v_last_user_id  = $comment_info['user_id'];
+		}
+		#如果是回复
+		elseif(0 == $comment_info['pparent_id']
+		&& 0 != $comment_info['parent_id'])
+		{
+			$mast_comment_id = $comment_info['parent_id'];
+			$tmp_param = array(
+				'is_validate'=>1,
+				'is_delete'=>0,
+				'_string'=>"parent_id=$mast_comment_id or pparent_id=$mast_comment_id",
+			);
+			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
+			$v_last_time    = $tmp_info['add_time'];
+			$v_last_user_id = $tmp_info['user_id']; 
+		}
+		#如果是再回复
+		elseif(0 != $comment_info['parent_id']
+		&& 0 != $comment_info['pparent_id'])
+		{
+			$mast_comment_id = $comment_info['pparent_id'];
+			$tmp_param = array(
+				'is_validate'=>1,
+				'is_delete'=>0,
+				'_string'=>"parent_id=$mast_comment_id or pparent_id=$mast_comment_id",
+			);
+			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
+			$v_last_time    = $tmp_info['add_time'];
+			$v_last_user_id = $tmp_info['user_id']; 
+		}
 
+		#更新主评论最新审核的时间和用户id(主评论或者回复或者再回复)
+		if(false !== M($this->_module_name)->where(array('id'=>$mast_comment_id))
+		                                   ->save(array('v_last_time'=>$v_last_time,'v_last_user_id'=>$v_last_user_id)))
+		{
+			return true;
+		}
+		
+		return false;
+	}
 
 
 

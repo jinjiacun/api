@@ -43,6 +43,7 @@ class ComexposalController extends BaseController {
 	                              childs int not null default 0 comment '未审核的回复数量',
                                   last_child_time int not null default 0 comment '最近回复时间',                                   
                                   last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间',
+								  last_user_id int not null default 0 comment '最新回复或者再回复用户或者当前用户id',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -123,8 +124,11 @@ class ComexposalController extends BaseController {
 		*/
         $now = time();
         $data['last_time'] = $now;
+		$user_id = $data['user_id'];
 	    $data['add_time'] = $now;
-		
+	    #更新曝光回复时间和用户id
+		M('In_exposal')->where(array('id'=>$data['exposal_id']))->save(array('last_time'=>$now,'last_user_id'=>$user_id));
+	
 		if(M($this->_module_name)->add($data))
 		{
 			//评论的回复，则改变父评论未审核childs数为1
@@ -133,6 +137,7 @@ class ComexposalController extends BaseController {
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
                 M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
                 M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
+				M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
 			}
 			return array(
 				200,
@@ -186,6 +191,9 @@ class ComexposalController extends BaseController {
 						'type'         => urlencode($v['type']),
 						'top_num'      => intval($v['top_num']),
 						'has_child'    => intval($v['has_child']),
+						'last_time'    => intval($v['last_time']),
+						'last_user_id' => intval($v['last_user_id']),
+						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
 						'add_time'     => intval($v['add_time']),
 						
 					);	
@@ -366,6 +374,8 @@ class ComexposalController extends BaseController {
 					//减少父评论未审核子回复数
 					M($this->_module_name)->where(array('id'=>$tmp_content['parent_id']))->setDec("childs", 1);
 				}
+				#统计最新审核的评论时间和user_id(当前或者回复)
+				$this->update_v_last($id);
 				return array(
 					200,
 					array(
@@ -487,9 +497,47 @@ class ComexposalController extends BaseController {
 		);
 		*/
 	}
-	
-	
-	
+		
+	#更新最新审核通过的评论的最新时间和用户id
+	private function update_v_last($id)
+	{
+		#查询当前评论
+		$comment_info = M($this->_module_name)->find($id);
+		$exposal_id      = $comment_info['exposal_id'];
+		$v_last_time = $v_last_user_id = 0;
+		$mast_comment_id = 0;
+		
+		#如果是主回复
+		if(0 == $comment_info['parent_id']		 
+		)
+		{
+			$mast_comment_id = $comment_info['id'];
+			$v_last_time     = $comment_info['add_time'];
+			$v_last_user_id  = $comment_info['user_id'];
+		}
+		#如果再回复
+		elseif(0 != $comment_info['parent_id'])
+		{
+			$mast_comment_id = $comment_info['parent_id'];
+			$tmp_param = array(
+				'is_validate'=>1,
+				'is_delete'=>0,
+				'parent_id'=>$mast_comment_id,
+			);
+			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
+			$v_last_time    = $tmp_info['add_time'];
+			$v_last_user_id = $tmp_info['user_id']; 
+		}
+		
+		#更新主评论最新审核的时间和用户id(主评论或者回复或者再回复)
+		if(false !== M('In_exposal')->where(array('id'=>$exposal_id))
+		                                   ->save(array('v_last_time'=>$v_last_time,'v_last_user_id'=>$v_last_user_id)))
+		{
+			return true;
+		}
+		
+		return false;
+	}
 	
 	
 	
