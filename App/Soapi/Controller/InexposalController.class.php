@@ -329,6 +329,7 @@ class InexposalController extends BaseController {
 						'v_last_time'    => intval($v['v_last_time']),
 						'v_last_user_id' => intval($v['v_last_user_id']),
 						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
+						'v_last_is_anonymous'=> intval($v['v_last_is_anonymous']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}

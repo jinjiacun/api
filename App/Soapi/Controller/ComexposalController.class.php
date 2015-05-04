@@ -194,6 +194,10 @@ class ComexposalController extends BaseController {
 						'last_time'    => intval($v['last_time']),
 						'last_user_id' => intval($v['last_user_id']),
 						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
+						'v_last_time'    => intval($v['v_last_time']),
+						'v_last_user_id' => intval($v['v_last_user_id']),
+						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
+						'v_last_is_anonymous'=> intval($v['v_last_is_anonymous']),
 						'add_time'     => intval($v['add_time']),
 						
 					);	
@@ -504,7 +508,7 @@ class ComexposalController extends BaseController {
 		#查询当前评论
 		$comment_info = M($this->_module_name)->find($id);
 		$exposal_id      = $comment_info['exposal_id'];
-		$v_last_time = $v_last_user_id = 0;
+		$v_last_time = $v_last_user_id = $v_last_is_anonymous = 0;
 		$mast_comment_id = 0;
 		
 		#如果是主回复
@@ -514,6 +518,7 @@ class ComexposalController extends BaseController {
 			$mast_comment_id = $comment_info['id'];
 			$v_last_time     = $comment_info['add_time'];
 			$v_last_user_id  = $comment_info['user_id'];
+			$v_last_is_anonymous = $comment_info['is_anonymous'];
 		}
 		#如果再回复
 		elseif(0 != $comment_info['parent_id'])
@@ -527,11 +532,15 @@ class ComexposalController extends BaseController {
 			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
 			$v_last_time    = $tmp_info['add_time'];
 			$v_last_user_id = $tmp_info['user_id']; 
+			$v_last_is_anonymous = $comment_info['is_anonymous'];
 		}
 		
 		#更新主评论最新审核的时间和用户id(主评论或者回复或者再回复)
 		if(false !== M('In_exposal')->where(array('id'=>$exposal_id))
-		                                   ->save(array('v_last_time'=>$v_last_time,'v_last_user_id'=>$v_last_user_id)))
+		                                   ->save(array('v_last_time'=>$v_last_time,
+		                                                'v_last_user_id'=>$v_last_user_id,
+		                                                'v_last_is_anonymous' =>$v_last_is_anonymous,
+		                                                )))
 		{
 			return true;
 		}

@@ -68,7 +68,7 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
                   "nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx,"top_num":xxx,"last_time":xxx,"last_user_id':xxx,"last_nickname":xxx,<br/>
-		 "v_last_time":xxx,"v_last_user_id":xxx,"v_last_nickname":"xxx"<br/>
+		 "v_last_time":xxx,"v_last_user_id":xxx,"v_last_nickname":"xxx","v_last_is_anonymous":xxx<br/>
 		 }}<br/>
 @@input<br/>
 @@@where<br/>
@@ -94,6 +94,7 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
 @param $v_last_time //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $v_last_user_id //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $v_last_nickname //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_is_anonymous //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $add_time 添加日期<br/>
 示例输出:
 {'status_code':200,'content':{'is_success':xxx}}<br/>
@@ -1343,7 +1344,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
                                'is_anonymous':xxx,'top_num':xxx,'has_child':xxx,'last_time':xxx,'last_user_id':xxx,'last_nickname':'xxx',<br/>
-							   'last_time':xxx,'last_user_id':xxx,'last_nickname':'xxx',<br/>
+							   'last_time':xxx,'last_user_id':xxx,'last_nickname':'xxx','v_last_is_anonymous':xxx,<br/>
 							   'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
@@ -1368,6 +1369,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $v_last_time      //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $v_last_user_id   //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $v_last_nickname  //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_is_anonymous //去掉v的上面字段内容(加强审核通过的)<br/>
 @param $add_time       //添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

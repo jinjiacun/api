@@ -201,7 +201,10 @@ class CommentController extends BaseController {
                                   last_child_time int not null default 0 comment '最新回复评论时间',
                                   last_cchild_time int not null default 0 comment '最新再回复时间',
                                   last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间',
-								  last_user_id int not null default 0 comment '最新回复或者再回复用户或者当前用户id'
+								  last_user_id int not null default 0 comment '最新回复或者再回复用户或者当前用户id',
+								  v_last_time int not null default 0 comment '最新回复或者再回复时间或者当前时间(审核)',
+								  v_last_user_id int not null default 0 comment '最新回复或者再回复用户或者当前用户id(审核)',
+								  v_last_is_anonymous int not null default 0 comment '最新是否匿名',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -407,6 +410,7 @@ class CommentController extends BaseController {
 						'v_last_time'    => intval($v['v_last_time']),
 						'v_last_user_id' => intval($v['v_last_user_id']),
 						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
+						'v_last_is_anonymous'=> intval($v['v_last_is_anonymous']),
 						'add_time'     => intval($v['add_time']),
 					);	
 			}
@@ -1296,16 +1300,17 @@ class CommentController extends BaseController {
 	{
 		#查询当前评论
 		$comment_info = M($this->_module_name)->find($id);
-		$v_last_time = $v_last_user_id = 0;
+		$v_last_time = $v_last_user_id = $v_last_is_anonymous = 0;
 		$mast_comment_id = 0;
 		
 
 		#如果是主评论		
 		if(0 == $comment_info['parent_id'])
 		{
-			$mast_comment_id = $comment_info['id'];
-			$v_last_time     = $comment_info['add_time'];
-			$v_last_user_id  = $comment_info['user_id'];
+			$mast_comment_id     = $comment_info['id'];
+			$v_last_time         = $comment_info['add_time'];
+			$v_last_user_id      = $comment_info['user_id'];
+			$v_last_is_anonymous = $comment_info['is_anonymous'];
 		}
 		#如果是回复
 		elseif(0 == $comment_info['pparent_id']
@@ -1320,6 +1325,7 @@ class CommentController extends BaseController {
 			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
 			$v_last_time    = $tmp_info['add_time'];
 			$v_last_user_id = $tmp_info['user_id']; 
+			$v_last_is_anonymous = $tmp_info['is_anonymous'];
 		}
 		#如果是再回复
 		elseif(0 != $comment_info['parent_id']
@@ -1334,11 +1340,15 @@ class CommentController extends BaseController {
 			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
 			$v_last_time    = $tmp_info['add_time'];
 			$v_last_user_id = $tmp_info['user_id']; 
+			$v_last_is_anonymous = $tmp_info['is_anonymous'];
 		}
 
 		#更新主评论最新审核的时间和用户id(主评论或者回复或者再回复)
 		if(false !== M($this->_module_name)->where(array('id'=>$mast_comment_id))
-		                                   ->save(array('v_last_time'=>$v_last_time,'v_last_user_id'=>$v_last_user_id)))
+		                                   ->save(array('v_last_time'=>$v_last_time,
+		                                                'v_last_user_id'=>$v_last_user_id,
+		                                                'v_last_is_anonymous' =>$v_last_is_anonymous,
+		                                                )))
 		{
 			return true;
 		}
