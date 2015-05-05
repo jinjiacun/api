@@ -547,12 +547,17 @@ class UserController extends BaseController {
 			'userip'   => ''==$content['userip']?$this->get_real_ip():$content['userip'],
 		);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login'];
+		$begin_time = microtime(true);
 		$back_str = $this->post($url, $params);
 		
 		$re_json = json_decode($back_str, true);
+		$end_time = microtime(true);
 		if($re_json
 		&& 1 == $re_json['State'])
 		{
+			$diff_time = $end_time - $begin_time;
+			$log_content = sprintf("mobile:%s	pswd:%s	user_time:%s	now:%s\n",$mobile, $pswd, $diff_time, time());
+			file_put_contents(__PUBLIC__."log/user_login_time.log", $log_content,  FILE_APPEND);
 			$back_content = $re_json['Descr'];
 			$r_list = explode('|', $back_content);
 			$index=0;
@@ -562,13 +567,15 @@ class UserController extends BaseController {
 			$content['sex']      = $r_list[$index++];
 			$content['cur_date'] = $r_list[$index++];
 			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
-			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);			
 			//添加登录日志
+			/*
 			A('Soapi/Memlog')->add(json_encode(array(
 												'user_id'=>$content['user_id'],
 												'userip'=>$params['userip'],
 												'add_time'=>time()
 			)));
+			*/
 			return true;
 		}
 		elseif(-3 == $re_json['State'])
