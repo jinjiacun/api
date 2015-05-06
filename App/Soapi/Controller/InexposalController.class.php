@@ -379,6 +379,7 @@ class InexposalController extends BaseController {
 				$data['page_size'] = 2;
 				$data['page_index'] = 1;
 				if(isset($data['where']['type']))unset($data['where']['type']);
+				if(isset($data['order']['v_last_time']))unset($data['order']['v_last_time']);
 			}			
 			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
 			$list[$k]['sub'] = array(
