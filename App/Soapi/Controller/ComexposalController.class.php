@@ -509,31 +509,34 @@ class ComexposalController extends BaseController {
 		$comment_info = M($this->_module_name)->find($id);
 		$exposal_id      = $comment_info['exposal_id'];
 		$v_last_time = $v_last_user_id = $v_last_is_anonymous = 0;
-		$mast_comment_id = 0;
+		//$mast_comment_id = 0;
 		
 		#如果是主回复
-		if(0 == $comment_info['parent_id']		 
-		)
+		/*		
+		if(0 == $comment_info['parent_id'])
 		{
 			$mast_comment_id = $comment_info['id'];
 			$v_last_time     = $comment_info['add_time'];
 			$v_last_user_id  = $comment_info['user_id'];
 			$v_last_is_anonymous = $comment_info['is_anonymous'];
 		}
+		*/
 		#如果再回复
-		elseif(0 != $comment_info['parent_id'])
-		{
-			$mast_comment_id = $comment_info['parent_id'];
+		//if(0 != $comment_info['parent_id'])
+		//{
+			//$mast_comment_id = $comment_info['parent_id'];
 			$tmp_param = array(
-				'is_validate'=>1,
-				'is_delete'=>0,
-				'parent_id'=>$mast_comment_id,
+				'is_validate' =>1,
+				'is_delete'   =>0,
+				'exposal_id'  =>$exposal_id,
+				//'_string'     => "id=$id or parent_id=$id",
+				//'parent_id'=>$mast_comment_id,
 			);
 			$tmp_info = M($this->_module_name)->where($tmp_param)->order(array('add_time'=>'desc'))->find();
 			$v_last_time    = $tmp_info['add_time'];
 			$v_last_user_id = $tmp_info['user_id']; 
 			$v_last_is_anonymous = $comment_info['is_anonymous'];
-		}
+		//}
 		
 		#更新主评论最新审核的时间和用户id(主评论或者回复或者再回复)
 		if(false !== M('In_exposal')->where(array('id'=>$exposal_id))
