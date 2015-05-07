@@ -715,12 +715,35 @@ class BaseController extends Controller {
 		$content = array(
 			'uid'=>$user_id
 		);
-		list(,$list) = A('Soapi/User')->get_info(json_encode($content));
+		$nickname = '';
 		
-		if(isset($list[0]['UI_NickName']))
-			return $list[0]['UI_NickName'];	
-			
-		return '';
+		#检查本地nickname是否存在		
+		$tmp_param = array(
+			'user_id'=>$user_id
+		);
+		list(,$tmp_info) = A('Soapi/Usernickname')->get_nickname_by_id(json_encode($tmp_param));
+		unset($tmp_param);
+		if($tmp_info)
+		{
+				$nickname = $tmp_info['nickname'];
+		}
+		else
+		{
+			#不存在查询远程数据
+			list(,$list) = A('Soapi/User')->get_info(json_encode($content));
+			if(isset($list[0]['UI_NickName']))
+			{
+				$nickname = $list[0]['UI_NickName'];
+				$tmp_param = array(
+					'user_id'  =>$user_id,
+					'nickname' =>$nickname
+				);	
+				A('Soapi/Usernickname')->add(json_encode($tmp_param));
+				unset($tmp_param);
+			}
+		}
+		
+		return $nickname;
 	}
 	
 	#最大值

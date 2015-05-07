@@ -174,21 +174,37 @@ class CompanyaliasController extends BaseController {
 			return C('param_err');
 			
 		$names = '';
-		$list = array();
-		$tmp_list = M($this->_module_name)->field('name')
-		                                  ->where(array('company_id'=>$company_id))
-		                                  ->select();
-		if($tmp_list
-		&& 0<count($tmp_list))                       
+		$company_alias_list = S('company_alias_list');
+		if(empty($company_alias_list))
 		{
-			foreach($tmp_list as $v)
+			$list = array();
+			$tmp_list = M($this->_module_name)->field('company_id, name')
+											 // ->where(array('company_id'=>$company_id))
+											  ->select();
+			if($tmp_list
+			&& 0<count($tmp_list))                       
 			{
-				$list[] = $v['name'];
+				foreach($tmp_list as $v)
+				{
+					//$list[] = $v['name'];
+					$company_id = intval($v['company_id']);
+					if(isset($list[$company_id]))
+					{
+						$list[$company_id] .= ','.$v['name'];
+					}
+					else
+					{
+						$list[$company_id] = $v['name'];
+					}
+				}
+				unset($v, $tmp_list);
 			}
-			unset($v, $tmp_list);
+				
+			S('company_alias_list', $list);
 		}
-			
-		$names = implode(',', $list);
+		
+		if(isset($company_alias_list[$company_id]))
+			$names = $company_alias_list[$company_id];
 		
 		return $names;		
 	}

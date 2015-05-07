@@ -349,45 +349,52 @@ class InexposalController extends BaseController {
 		$list         = array();
 		$record_count = 0;
 		
-		list(,$old_list) = $this->get_list($content);
-		$list = $old_list['list'];
-		$record_count = $old_list['record_count'];
+		$_cache = S($content);
+		if(empty($_cache))
+		{
+			list(,$old_list) = $this->get_list($content);
+			$list = $old_list['list'];
+			$record_count = $old_list['record_count'];
+			
+			$data = $this->fill($content);
+			
+			$user_id = $data['user_id'];
+			if(isset($data['where']))unset($data['where']);
 		
-		$data = $this->fill($content);
-		
-		$user_id = $data['user_id'];
-		if(isset($data['where']))unset($data['where']);
-	
-		foreach($list as $k=> $v)
-		{   
-            if(isset($data['where_ex']))
-			{
-				$data['where'] = $data['where_ex'];
-                $data['where']['exposal_id'] = intval($v['id']);
-				$data['page_index'] = 1;
-				$data['page_size'] = 2;
-				$data['where']['parent_id'] = 0;
+			foreach($list as $k=> $v)
+			{   
+				if(isset($data['where_ex']))
+				{
+					$data['where'] = $data['where_ex'];
+					$data['where']['exposal_id'] = intval($v['id']);
+					$data['page_index'] = 1;
+					$data['page_size'] = 2;
+					$data['where']['parent_id'] = 0;
+				}
+				else
+				{
+					$data['where']['exposal_id'] = intval($v['id']);
+					if(0< $user_id)
+						$data['where']['_string'] = "user_id=$user_id or is_validate=1";
+					elseif(0 == $user_id)
+						$data['where']['is_validate'] = 1;
+					$data['where']['parent_id'] = 0;
+					$data['page_size'] = 2;
+					$data['page_index'] = 1;
+					if(isset($data['where']['type']))unset($data['where']['type']);
+					if(isset($data['order']['v_last_time']))unset($data['order']['v_last_time']);
+				}			
+				list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
+				$list[$k]['sub'] = array(
+					'list'=>$sub['list'],
+					'record_count'=>intval($sub['record_count'])
+				);
 			}
-			else
-			{
-				$data['where']['exposal_id'] = intval($v['id']);
-				if(0< $user_id)
-					$data['where']['_string'] = "user_id=$user_id or is_validate=1";
-				elseif(0 == $user_id)
-					$data['where']['is_validate'] = 1;
-        	   	$data['where']['parent_id'] = 0;
-				$data['page_size'] = 2;
-				$data['page_index'] = 1;
-				if(isset($data['where']['type']))unset($data['where']['type']);
-				if(isset($data['order']['v_last_time']))unset($data['order']['v_last_time']);
-			}			
-			list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
-			$list[$k]['sub'] = array(
-				'list'=>$sub['list'],
-				'record_count'=>intval($sub['record_count'])
-			);
+			unset($k, $v);
+			$_cache = array('list'=>$list, 'record_count'=>$record_count);
+			S($content, $_cache);
 		}
-		unset($k, $v);
+		
 		return array(
 			200,
 			array(
@@ -804,8 +811,11 @@ class InexposalController extends BaseController {
 			$data['company_id'] = array('neq', 0);
 			$data['type'] = 0;
 			$data['is_delete'] = 0;
-			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
-			$amount = count($tmp_list);
+			//$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
+			//$amount = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->count();
+			$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
+			//$amount = count($tmp_list);
+			$amount = $tmp_info['tp_count'];
 		}
 		
 		return array(

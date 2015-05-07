@@ -7,6 +7,7 @@ class IndexController extends Controller {
 	  protected $method      = "" ; //方法名称
     protected $in_content  = "" ; //输入参数
     protected $handler     = null;//资源处理句柄
+    protected $is_mul      = false;
 
     public function __constract__()
     {
@@ -68,7 +69,6 @@ class IndexController extends Controller {
         {
             $this->handler = I('post.handler');
         }
-
         if(!isset($this->method)
         || !isset($this->in_content))
         {
@@ -77,12 +77,24 @@ class IndexController extends Controller {
                             );
             return;
         }
+        if(I('post.is_mul'))
+        {
+          $this->is_mul = true;
+        }
 
         if('' == $this->method)
         {
            return $this->call_back(500,
                             array('message'=>urlencode('方法名不为空'))
                             );
+        }
+
+        if($this->method)
+        {
+           $this->method = str_replace("\\", '', $this->method);
+           $this->method = str_replace("&quot;",'"', $this->method);
+           $this->method = str_replace("&amp;", '', $this->method);
+           $this->method = str_replace("'", '"', $this->method);
         }
 
         if($this->in_content)
@@ -93,6 +105,9 @@ class IndexController extends Controller {
            $this->in_content = str_replace("'", '"', $this->in_content);
         }     
 
+        
+
+
         #访问日志
         $log_str = sprintf("begin   ip:%s   date:%s method:%s  content:%s   type:%s\r\n", 
                           $this->getIP(),
@@ -101,14 +116,10 @@ class IndexController extends Controller {
                           $this->in_content,
                           $this->type);
         file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
-
-        list($class_name, $method)= explode('.', $this->method);
-        $class_name = 'Soapi/'.$class_name;
-    	  $obj = A($class_name);
-    	if(!in_array($this->type,array('text','resource')))
-    	{
-			$this->type = 'text';
-		}
+    	  if(!in_array($this->type,array('text','resource')))
+    	  {
+			     $this->type = 'text';
+		    }
         switch($this->type)
         {
             case 'resource':
@@ -120,6 +131,9 @@ class IndexController extends Controller {
                         $data = file_get_contents("php://input");
                     }
                     */
+                    list($class_name, $method)= explode('.', $this->method);
+                    $class_name = 'Soapi/'.$class_name;        
+                    $obj = A($class_name);
                     list($status_code, $out_content) = $obj->{$method}($this->in_content, $handler);#处理带有资源的数据信息
                     $etime=microtime(true);//获取程序执行结束的时间
                     $total=$etime-$stime;   //计算差值
@@ -135,39 +149,78 @@ class IndexController extends Controller {
                                       urldecode(json_encode($out_content))
                                       );
                     file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
-					
-					A('Soapi/Apistat')->add(json_encode(array(
-							'name'=>$this->method,
-							'run_time'=>$total,
-							'type'=>1
-					)));
+					           /*
+					           A('Soapi/Apistat')->add(json_encode(array(
+							         'name'=>$this->method,
+							         'run_time'=>$total,
+							         'type'=>1
+					           )));
+                     */
                     self::call_back($status_code, $out_content);
                 }
                   break;
             case 'text':
                 {
-                    list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据
-                    $etime=microtime(true);//获取程序执行结束的时间
-                    $total=$etime-$stime;   //计算差值
-                    #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s	use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
-                                      $this->getIP(),
-                                      date("Y-m-d H:i:s"), 
-                                      $total,
-                                      $this->method,
-                                      $this->in_content,
-                                      $this->type,
-                                      $status_code,
-                                      urldecode(json_encode($out_content))
-                                      );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
-                    				
-					A('Soapi/Apistat')->add(json_encode(array(
-							'name'=>$this->method,
-							'run_time'=>$total,
-							'type'=>0
-					)));
-                    self::call_back($status_code, $out_content);
+                    if($this->is_mul)
+                    {
+                      $this->method = json_decode($this->method);
+                    }                    
+                    if($this->is_mul)
+                    {                      
+                      $status_code_list = $out_content_list = array();
+                      $in_content_list = json_decode($this->in_content, true);
+                      foreach($this->method as $k=>$cur_method)
+                      {
+                         $stime=microtime(true); 
+                         $tmp_content =  $in_content_list[$k];
+                         $cur_content = json_encode($tmp_content);
+                         unset($tmp_content);
+                         list($class_name, $method)= explode('.', $cur_method);
+                         $class_name = 'Soapi/'.$class_name;        
+                         $obj = A($class_name);
+                         list($status_code, $out_content) = $obj->{$method}($cur_content);//,&$this->status, &$this->out_content);#处理普通数据
+                         $etime=microtime(true);//获取程序执行结束的时间
+                         $total=$etime-$stime;   //计算差值
+                         #访问日志
+                         $log_str = sprintf("end   ip:%s   date:%s use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
+                                        $this->getIP(),
+                                        date("Y-m-d H:i:s"), 
+                                        $total,
+                                        $cur_method,
+                                        $cur_content,
+                                        $this->type,
+                                        $status_code,
+                                        urldecode(json_encode($out_content))
+                        );
+                        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                        //self::call_back($status_code, $out_content);
+                        $status_code_list[] = $status_code;
+                        $out_content_list[] = $out_content;
+                      }
+                      self::call_back($status_code_list, $out_content_list);
+                    }
+                    else
+                    {
+                      list($class_name, $method)= explode('.', $this->method);
+                      $class_name = 'Soapi/'.$class_name;        
+                      $obj = A($class_name);
+                      list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据
+                      $etime=microtime(true);//获取程序执行结束的时间
+                      $total=$etime-$stime;   //计算差值
+                      #访问日志
+                      $log_str = sprintf("end   ip:%s   date:%s use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
+                                        $this->getIP(),
+                                        date("Y-m-d H:i:s"), 
+                                        $total,
+                                        $this->method,
+                                        $this->in_content,
+                                        $this->type,
+                                        $status_code,
+                                        urldecode(json_encode($out_content))
+                      );
+                      file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      self::call_back($status_code, $out_content);
+                    }                    
                 }
                 break;
             default:

@@ -52,5 +52,20 @@ class TestController extends BaseController {
 		);		
 	}		
 	
-	
+	public function test_cache()
+	{
+		$list = S('list');
+		if(empty($list))
+		{
+			$list = array(
+				1,2,3
+			);
+		
+			S('list', $list);
+			var_dump($list);
+		}
+		
+		
+		//var_dump(S('list'));
+	}
 }
