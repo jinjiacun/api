@@ -177,6 +177,7 @@ class CommentController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_comment(id int primary key auto_increment,
+								  title varchar(255) comment '标题',
 	                              user_id int not null default 0 comment '用户id',
 	                              company_id int not null default 0 comment '企业id',
 								  auth_level varchar(10) comment '企业认证等级',
@@ -349,6 +350,7 @@ class CommentController extends BaseController {
 	@param $order              //里面需要排序的字段(默认id倒排序)
 	@@output
 	@param $id
+	@param $title       //标题
 	@param $user_id     //会员id
 	@param $nickname    //会员昵称
 	@param $company_id; //企业id
@@ -377,6 +379,7 @@ class CommentController extends BaseController {
 			{
 				$list[] = array(
 						'id'           => intval($v['id']),
+						'title'        => urlencode($v['title']),
 						'user_id'      => intval($v['user_id']),
 						'nickname'     => $this->_get_nickname($v['user_id']),
 						'company_id'   => intval($v['company_id']),
@@ -659,6 +662,7 @@ class CommentController extends BaseController {
 		{
 			$list = array(
 						'id'           => intval($v['id']),
+						'title'        => urlencode($v['title']),
 						'user_id'      => intval($v['user_id']),
 						'nickname'     => $this->_get_nickname($v['user_id']),
 						'company_id'   => intval($v['company_id']),

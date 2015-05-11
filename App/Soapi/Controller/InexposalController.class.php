@@ -135,6 +135,7 @@ class InexposalController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_in_exposal(id int primary key auto_increment,
+								  title varchar(255) comment '标题',
 	                              user_id int not null default 0 comment '用户id',
 	                              company_id int not null default 0 comment '关联企业',
 								  auth_level varchar(10) comment '认证级别',
@@ -302,6 +303,7 @@ class InexposalController extends BaseController {
 			{
 				$list[] = array(
 				        'id'           => intval($v['id']),
+						'title'        => urlencode($v['title']),
 				        'company_id'   => intval($v['company_id']),
 						'user_id'      => intval($v['user_id']),
 						'nickname'     => $this->_get_nickname($v['user_id']),
@@ -601,6 +603,7 @@ class InexposalController extends BaseController {
 		{
 			$list = array(
 						'id'           => intval($tmp_one['id']),
+						'title'        => urlencode($tmp_one['title']),
 				        'company_id'   => intval($tmp_one['company_id']),
 						'user_id'      => intval($tmp_one['user_id']),
 						'nickname'     => $this->_get_nickname($tmp_one['user_id']),
@@ -812,8 +815,10 @@ class InexposalController extends BaseController {
 			$data['type'] = 0;
 			$data['is_delete'] = 0;
 			//$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
-			//$amount = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->count();
+			//$amount = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->count();			
 			$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
+			
+			
 			//$amount = count($tmp_list);
 			$amount = $tmp_info['tp_count'];
 		}

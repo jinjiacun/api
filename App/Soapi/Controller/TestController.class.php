@@ -68,4 +68,21 @@ class TestController extends BaseController {
 		
 		//var_dump(S('list'));
 	}
+	
+	public function test_api()
+	{
+		$begin = microtime(true);
+		$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
+		$end = microtime(true);
+		$result_str = sprintf("数据库查询时间:%s",$end - $begin);
+		
+		return array(
+			200,
+			array(
+				$result_str
+			),
+		);			
+	}	
+
+
 }

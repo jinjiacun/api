@@ -33,10 +33,11 @@ content={'id':'xxx'}<br/>
 方法描述:提交曝光<br/>
 输入参数格式:<br/>
 method=Inexposal.add<br/>
-content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+content={"title":"xxx","user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}<br/>
 @@input<br/>
+@param $title            #标题<br/>
 @param $user_id          #用户id<br/>
 @param $nature           #企业性质<br/>
 @param $trade            #所属行业<br/>
@@ -64,7 +65,7 @@ content={"user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 方法描述:曝光查询<br/>
 输入参数格式:<br/>
 method=Inexposal.get_list<br/>
-content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
+content={'where':{'id':xxx,'title':'xxx','company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
                   "nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx,"top_num":xxx,"last_time":xxx,"last_user_id':xxx,"last_nickname":xxx,<br/>
@@ -73,6 +74,7 @@ content={'where':{'id':xxx,'company_id':xxx,"user_id":xxx,'nickname':'xxx',<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
+@param $title            #标题<br/>
 @param $company_id       关联企业id<br/>
 @param $user_id          #用户id<br/>
 @param $nickname         #用户昵称<br/>
@@ -1252,9 +1254,10 @@ content={'user_id':xxx,'company_id':xxx,}<br/>
 方法描述:添加评论<br/>
 输入参数格式:<br/>
 method=Comment.add<br/>
-content={'user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx',<br/>
+content={'title':'xxx','user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xxx','content':'xxx',<br/>
          'pic_1':xxx,'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,'is_anonymous':xxx}<br/>
 @@input<br/>
+@param $title           //标题<br/>
 @param $user_id         //用户id<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
@@ -1339,7 +1342,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 @param $company_id      //企业id*<br/>
 @param $parent_id       //盖楼评论(默认0,盖楼为基层的id)<br/>
 示例输出:<br/>
-{'status_code':200,'content':[{'id':xxx,'user_id':xxx,'nickname':'xxx',<br/>
+{'status_code':200,'content':[{'id':xxx,'title':'xxx','user_id':xxx,'nickname':'xxx',<br/>
                                'company_id':xxx,'parent_id':xxx,'pparent_id':xxx,'type':'xxx',<br/>
                                'content':'xxx','pic_1':xxx,<br/>
                                'pic_2':xxx,'pic_3':xxx,'pic_4':xxx,'pic_5':xxx,<br/>
@@ -1348,6 +1351,7 @@ content={'where':{'company_id':xxx,'parent_id':xxx}}<br/>
 							   'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
+@param $title           //标题(只是主评论需要)<br/>
 @param $user_id         //用户id<br/>
 @param $nickname        //会员昵称<br/>
 @param $company_id      //企业id*<br/>
