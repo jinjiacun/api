@@ -82,7 +82,6 @@ class TestController extends BaseController {
 				$result_str
 			),
 		);			
-	}	
-
+	}
 
 }

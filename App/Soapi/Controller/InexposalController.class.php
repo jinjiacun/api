@@ -396,6 +396,7 @@ class InexposalController extends BaseController {
 			$_cache = array('list'=>$list, 'record_count'=>$record_count);
 			S($content, $_cache);
 		}
+		S($content, NULL);
 		
 		return array(
 			200,
