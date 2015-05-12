@@ -521,6 +521,21 @@ class BaseController extends Controller {
 	protected function get_pic_url($id)
 	{
 		if(0 == $id) return '';
+		$pc_cache_pic_info = S('pc_cache_pic_info');
+		$app_cache_pic_info = $('app_cache_pic_info');
+		if(!empty($pc_cache_pic_info))
+		{
+			if(isset($pc_cache_pic_info[$id])
+			&& !is_mobile_request()
+			)
+			{	
+				return C('media_url_pre').$pc_cache_pic_info[$id];
+			}
+			elseif(isset($app_cache_pic_info[$id]))
+			{
+				return C('media_url_pre').$app_cache_pic_info[$id];
+			}
+		}
 		$pic_info = M('Media')->find($id);
 		if($pic_info)
 		{
@@ -554,13 +569,20 @@ class BaseController extends Controller {
                         $res = img2thumb($pic_pc, __PUBLIC__.$pic_app, $width, $height);
                         if($res)
                         {
+							$app_cache_pic_info[$id] = $pic_app;
+							S('app_cache_pic_info', $app_cache_pic_info);
 							return C('media_url_pre').$pic_app;
 						}
 					}	
-					else
+					else{
+						$app_cache_pic_info[$id] = $pic_app;
+						S('app_cache_pic_info', $app_cache_pic_info);
 						return C('media_url_pre').$pic_app;
+					}
 				}
 			}
+			$pc_cache_pic_info[$id] = $pic_info['media_url'];
+			S('pc_cache_pic_info', $pc_cache_pic_info);
 			return C('media_url_pre').$pic_info['media_url'];
 		}
 	}
