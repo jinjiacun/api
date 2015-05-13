@@ -192,7 +192,7 @@ class IndexController extends Controller {
                                         $status_code,
                                         urldecode(json_encode($out_content))
                         );
-                        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                        #file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                         //self::call_back($status_code, $out_content);
                         $status_code_list[] = $status_code;
                         $out_content_list[] = $out_content;
@@ -218,7 +218,7 @@ class IndexController extends Controller {
                                         $status_code,
                                         urldecode(json_encode($out_content))
                       );
-                      file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      #file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                       self::call_back($status_code, $out_content);
                     }                    
                 }

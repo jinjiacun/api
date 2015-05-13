@@ -83,5 +83,37 @@ class TestController extends BaseController {
 			),
 		);			
 	}
+	
+	public function run_script_company_exp_user()
+	{
+		 $list = M('Company')->field('id')->select();
+		 
+		 foreach($list as $v)
+		 {
+			  $data['company_id'] = intval($v['id']);
+			  //更新最新三个用户和最新曝光时间
+			    $tmp_param = array(
+					'company_id'=>$data['company_id'],
+			    );
+			    list(,$min_time) = A('Soapi/Inexposal')                                                                                   
+                                        ->stat_user_min_date(json_encode($tmp_param));
+			    
+			    list(,$tmp_user_list) = A('Soapi/Inexposal')                                                                              
+                                        ->stat_user_top(json_encode($tmp_param));
+                $tmp_data = array(
+					'where'=>array(
+						'id'=>$data['company_id']
+					),
+					'data'=> array(
+						'user_id_1'=>isset($tmp_user_list[0])?intval($tmp_user_list[0]):0,
+						'user_id_2'=>isset($tmp_user_list[1])?intval($tmp_user_list[1]):0,
+						'user_id_3'=>isset($tmp_user_list[2])?intval($tmp_user_list[2]):0,
+						'last_time'=>$min_time
+					)
+                );
+			    A('Soapi/Company')->update(json_encode($tmp_data));
+		 }
+		echo 'success';
+	}
 
 }

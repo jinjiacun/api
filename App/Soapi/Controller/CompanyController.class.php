@@ -168,6 +168,10 @@ class CompanyController extends BaseController {
 		   		                     exp_amount int not null default 0 comment '曝光人数',
 		   		                     com_amount int not null default 0 comment '评论人数',
 		   		                     select_amount int not null default 0 comment '查询次数',
+		   		                     user_id_1 int not null default 0 comment '曝光用户id',
+		   		                     user_id_2 int not null default 0 comment '曝光用户id',
+		   		                     user_id_3 int not null default 0 comment '曝光用户id',
+		   		                     last_time int not null default 0 comment '最新曝光时间',
 									 add_time int not null default 0 comment '添加日期'
 									 )charset=utf8;
 		 * */
@@ -359,6 +363,10 @@ class CompanyController extends BaseController {
 						'exp_amount'        => intval($tmp_one['exp_amount']),	
 						'com_amount'        => intval($tmp_one['com_amount']),		
 						'select_amount'	    => intval($tmp_one['select_amount']),
+						'user_id_1'         => intval($tmp_one['user_id_1']),
+						'user_id_2'         => intval($tmp_one['user_id_2']),
+						'user_id_3'         => intval($tmp_one['user_id_3']),
+						'last_time'         => intval($tmp_one['last_time']),
 						'add_time'          => intval($tmp_one['add_time']),
 				);
 			}
@@ -410,6 +418,10 @@ class CompanyController extends BaseController {
 							'exp_amount'        => intval($v['exp_amount']),
 							'com_amount'        => intval($v['com_amount']),
 							'select_amount'     => intval($v['select_amount']),
+							'user_id_1'         => intval($v['user_id_1']),
+							'user_id_2'         => intval($v['user_id_2']),
+							'user_id_3'         => intval($v['user_id_3']),
+							'last_time'         => intval($v['last_time']),
 							'add_time'          => intval($v['add_time']),							
 						);	
 				}
@@ -911,21 +923,29 @@ class CompanyController extends BaseController {
 			$list 			= $data['list'];
 			$record_count 	= $data['record_count'];
 			
+			$_map = array();//企业id-list索引值:
+			$id= 0;
 			if($list
 			&& 0< count($list))
 			{
 				foreach($list as $k=>$v)
 				{
-				    $list[$k]['alias_list'] = urlencode(A('Soapi/Companyalias')->get_name($v['id'])); #企业别名
-					$content = array(
-						'company_id'=> intval($v['id'])
-					);
+					$id = intval($v['id']);
+				    //$list[$k]['alias_list'] = urlencode(A('Soapi/Companyalias')->get_name($v['id'])); #企业别名
 					/*
 					list(,$amount) = A('Soapi/Inexposal')
 					                ->stat_user_amount(json_encode($content));
 					*/
 					$amount = $v['add_blk_amount'];
 					$list[$k]['amount'] = $amount;
+					
+					/*
+					$content = array(
+						'company_id'=> $id,
+					);
+					*/
+					//$_map[$id] = $k;
+					/*					
 					list(,$tmp_user_list) = A('Soapi/Inexposal')
 					                    ->stat_user_top(json_encode($content));
 					if($tmp_user_list
@@ -942,11 +962,62 @@ class CompanyController extends BaseController {
 					}
 					$list[$k]['user_list'] = $user_list;
 					unset($user_list);
+					*/
+					if(0 < $v['user_id_1'])
+					{
+						$list[$k]['user_list'][] = array(
+							'user_id'=>$v['user_id_1'],
+							'nickname'=>$this->_get_nickname($v['user_id_1']),
+						);
+					}
+					
+					if(0 < $v['user_id_2'])
+					{
+						$list[$k]['user_list'][] = array(
+							'user_id'=>$v['user_id_2'],
+							'nickname'=>$this->_get_nickname($v['user_id_2']),
+						);
+					}
+					
+					if(0 < $v['user_id_3'])
+					{
+						$list[$k]['user_list'][] = array(
+							'user_id'=>$v['user_id_3'],
+							'nickname'=>$this->_get_nickname($v['user_id_3']),
+						);
+					}
+					
+					
+					
+					/*
 					list(,$min_time) = A('Soapi/Inexposal')
 					                   ->stat_user_min_date(json_encode($content));
 					$list[$k]['last_time'] = $min_time;
+					*/
+					
 				}
 				unset($k, $v);
+				
+				#计算最新用户曝光时间-begin
+				/*
+				$company_id_list = array_keys($_map);
+				if(is_array($company_id_list)
+				&& 0<count($company_id_list)
+				)
+				{
+					if(isset($content)) unset($content);
+					$content['company_id'] = array('in', implode($company_id_list));
+					list(,$min_time_list) = A('Soapi/Inexposal')
+					                        ->stat_user_min_date(json_encode($content));
+					foreach($min_time_list as $v)
+					{
+						
+					}
+					unset($min_time_list, $v);
+				}
+				*/
+				#计算最新用户曝光时间-end
+				
 			}
 				
 			return array(

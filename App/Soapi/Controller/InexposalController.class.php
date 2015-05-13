@@ -759,6 +759,28 @@ class InexposalController extends BaseController {
 			            //~ set exp_amount=$exp_amount 
 			            //~ where id=".$data['company_id']);
 			    $this->set_exp_amount($data['company_id']);
+			    //更新最新三个用户和最新曝光时间
+			    $tmp_param = array(
+					'company_id'=>$data['company_id'],
+			    );
+			    list(,$min_time) = A('Soapi/Inexposal')                                                                                   
+                                        ->stat_user_min_date(json_encode($tmp_param));
+			    
+			    list(,$tmp_user_list) = A('Soapi/Inexposal')                                                                              
+                                        ->stat_user_top(json_encode($tmp_param));
+                $tmp_data = array(
+					'where'=>array(
+						'id'=>$data['company_id']
+					),
+					'data'=> array(
+						'user_id_1'=>isset($tmp_user_list[0])?intval($tmp_user_list[0]):0,
+						'user_id_2'=>isset($tmp_user_list[1])?intval($tmp_user_list[1]):0,
+						'user_id_3'=>isset($tmp_user_list[2])?intval($tmp_user_list[2]):0,
+						'last_time'=>$min_time,
+					)
+                );
+			    A('Soapi/Company')->update(json_encode($tmp_data));
+			    
 				return array(
 					200,
 					array(
@@ -807,8 +829,14 @@ class InexposalController extends BaseController {
 		&& 0< $data['company_id'])
 		{
 			$data['is_delete'] = 0;
-			$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
-			$amount   = count($tmp_list);
+			#$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
+            $tmp_list = M()->query("select count(distinct(user_id)) as tp_count 
+                                    from so_in_exposal 
+                                    where type=0 
+                                    and is_delete=0 
+                                    and company_id=$data[company_id]"); 
+			#$amount   = count($tmp_list);
+			$amount = $tmp_list[0]['tp_count'];
 		}
 		else
 		{
@@ -817,11 +845,13 @@ class InexposalController extends BaseController {
 			$data['is_delete'] = 0;
 			//$tmp_list = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->select();
 			//$amount = M($this->_module_name)->distinct(true)->field('user_id')->where($data)->count();			
-			$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
-			
-			
+			$tmp_info = M()->query("select count(distinct(user_id)) as tp_count 
+                                    from so_in_exposal 
+                                    where type=0 
+								    and is_delete=0 
+                                    and company_id>0");
 			//$amount = count($tmp_list);
-			$amount = $tmp_info['tp_count'];
+			$amount = $tmp_info[0]['tp_count'];
 		}
 		
 		return array(
@@ -883,15 +913,29 @@ class InexposalController extends BaseController {
 			return C('param_err');
 		}
 		
-		$data['company_id'] = intval($data['company_id']);
+			$data['company_id'] = intval($data['company_id']);
 		
+		/*
 		if(0>= $data['company_id'])
 		{
 			return C('param_fmt_err');
 		}
+		*/
 		
 		$last_time = 0;
+		
+		
 		$last_time = M($this->_module_name)->where($data)->min('add_time');
+		/*
+		else
+		{
+        	$last_time = M()->query("select company_id,min(add_time)
+									 from so_in_exposal
+									 where company_id in ($data[company_id][1])
+                                     group by company_id
+									");
+		}
+		*/
 		
 		return array(
 			200,
@@ -917,6 +961,37 @@ class InexposalController extends BaseController {
 		
 		$data = $this->fill($content);
 		
+		if(isset($data['_tag'])
+		&& 'flat_form_count' == $data['_tag'])
+		{
+			$flat_form_count = 0;
+			//曝光平台数
+			$ttmp = M()->query("
+				select count(id) as tp_count
+				from `so_company`
+				");
+				/*
+				where 
+				id in(
+				select company_id
+				from `so_in_exposal`
+				where type=0
+				)
+				and  			
+				exp_amount >0
+				and auth_level<>'006003'
+				*/
+			//");
+			//$flat_form_count = count($ttmp);
+			$flat_form_count = $ttmp[0]['tp_count'];
+			return array(
+				200,
+				array(
+					'flat_form_count'=>$flat_form_count,
+				)
+			);
+		}
+		
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
 		$data['order']      = isset($data['order'])?$data['order']:array('id'=>'desc');
@@ -935,32 +1010,16 @@ class InexposalController extends BaseController {
 		$data['where']['type'] = 0;
 		$data['where']['is_delete'] = 0;
 		
-		$tmp_list = D('InexposalcompanyView')
+		$D = D('InexposalcompanyView');
+		$tmp_list = $D
 		            ->page($data['page_index'], $data['page_size'])
 		            ->order($data['order'])
 		            ->where($data['where'])->select();
 		$record_count = D('InexposalcompanyView')->where($data['where'])->count();
 		
-		$flat_form_count = 0;
-		//曝光平台数
-		$ttmp = M()->query("
-			select count(id) as tp_count
-			from `so_company`
-			");
-			/*
-			where 
-			id in(
-			select company_id
-			from `so_in_exposal`
-			where type=0
-			)
-			and  			
-			exp_amount >0
-			and auth_level<>'006003'
-			*/
-		//");
-		//$flat_form_count = count($ttmp);
-		$flat_form_count = $ttmp[0]['tp_count'];
+		$tmp_obj = M('Com_exposal');
+		
+		
 		
 		if($tmp_list
 		&& 0< count($tmp_list))
@@ -975,7 +1034,7 @@ class InexposalController extends BaseController {
                     'is_validate'=>1,
                     'is_delete'=>0,
 				); 
-                $re_amount = M('Com_exposal')->where($tmp_param)->count();
+                $re_amount = $tmp_obj->where($tmp_param)->count();
 				$list[] = array(
 					'id'           =>intval($v['id']),
 					'company_id'   =>intval($v['company_id']),
@@ -990,7 +1049,7 @@ class InexposalController extends BaseController {
                     're_amount' => $re_amount,
 				);
 			}
-			unset($v, $tmp_list);
+			unset($v, $tmp_list, $tmp_obj);
 		}
 		
 		return array(

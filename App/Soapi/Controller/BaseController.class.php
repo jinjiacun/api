@@ -522,7 +522,7 @@ class BaseController extends Controller {
 	{
 		if(0 == $id) return '';
 		$pc_cache_pic_info = S('pc_cache_pic_info');
-		$app_cache_pic_info = $('app_cache_pic_info');
+		$app_cache_pic_info = S('app_cache_pic_info');
 		if(!empty($pc_cache_pic_info))
 		{
 			if(isset($pc_cache_pic_info[$id])
