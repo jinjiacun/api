@@ -190,11 +190,21 @@ class BaseController extends Controller {
 		}
 		//$page_index = 1;
 		//$page_size  = 10;
-		$list = $obj->page($page_index, $page_size)
+		if(isset($data['group']))
+		{
+				$list = $obj->page($page_index, $page_size)
+					->group($data['group'])
 		            ->where($data['where'])
 		            ->order($data['order'])
 		            ->select();
-		            
+		}
+		else
+		{
+			$list = $obj->page($page_index, $page_size)
+				->where($data['where'])
+				->order($data['order'])
+				->select();
+		}           
 		            
 		//echo M()->getlastSql();
 		//die;

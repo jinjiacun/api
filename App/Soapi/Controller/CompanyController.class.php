@@ -172,6 +172,12 @@ class CompanyController extends BaseController {
 		   		                     user_id_2 int not null default 0 comment '曝光用户id',
 		   		                     user_id_3 int not null default 0 comment '曝光用户id',
 		   		                     last_time int not null default 0 comment '最新曝光时间',
+		   		                     logo_url varchar(255) ,
+		   		                     alias_list varchar(255) ,
+		   		                     busin_license_url varchar(255) ,
+		   		                     code_certificate_url varchar(255) ,
+		   		                     certificate_url varchar(255) ,
+		   		                     agent_platform_n  varchar(255) ,
 									 add_time int not null default 0 comment '添加日期'
 									 )charset=utf8;
 		 * */
@@ -256,15 +262,42 @@ class CompanyController extends BaseController {
 				return C('param_fmt_err');
 			}
 			
-			$data['add_time'] = time();
-			if(M($this->_module_name)->add($data))
+			#更新logo_url,busin_license_url
+			#           ,code_certificate_url,certificate_url
+			#           agent_platform_n
+			$tmp_list = array(
+				'logo_url'            =>intval($data['logo']),
+				'busin_license_url'   =>intval($data['busin_license']),
+				'code_certificate_url'=>intval($data['code_certificate']),
+				'certificate_url'     =>intval($data['certificate']),
+			//	'agent_platform_n'    =>intval($data['agent_platform']),
+			);
+			foreach($tmp_list as $k=>$v)
 			{
+				if(0< $v)
+				{
+					$data[$k] = $this->get_pic_url($v);
+				}
+			}
+			unset($k, $v);
+			$agent_platform = intval($data['agent_platform']);
+			if(0< $agent_platform)
+			{
+				$data['agent_platform_n'] = $this->get_name_by_id($agent_platform);
+			}	
+			
+			$data['add_time'] = time();
+			$obj = M($this->_module_name);
+			if($obj->add($data))
+			{
+				$LastInsID = $obj->getLastInsID();
+				
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=>C('option_ok'),
-						'id'=> M()->getLastInsID(),
+						'id'=> $LastInsID,
 					)
 				);
 			}
@@ -389,18 +422,22 @@ class CompanyController extends BaseController {
 					$list[] = array(
 							'id'                => intval($v['id']),
 							'logo'              => intval($v['logo']),
-							'logo_url'          => $this->get_pic_url($v['logo']),
+							'logo_url'          => $v['logo_url'],
+							//$this->get_pic_url($v['logo']),
 							'nature'            => urlencode($v['nature']),
 							'trade'             => urlencode($v['trade']),
 							'company_name'      => urlencode($v['company_name']),
-							'alias_list'        => urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
+							'alias_list'        => urlencode($v['alias_list']),
+							//urlencode(A('Soapi/Companyalias')->get_name($v['id'])), #企业别名
 							'auth_level'        => urlencode($v['auth_level']),
 							'reg_address'       => urlencode($v['reg_address']),
 							'busin_license'     => intval($v['busin_license']),
-							'busin_license_url' => $this->get_pic_url($v['busin_license']),
+							'busin_license_url' => $v['busin_license_url'],
+							//$this->get_pic_url($v['busin_license']),
 							'control_busin_license' => intval($v['control_busin_license']),
-							'code_certificate'  => intval($v['code_certificate']),
-							'code_certificate_url' => $this->get_pic_url($v['code_certificate']),
+							'code_certificate'      => intval($v['code_certificate']),
+							'code_certificate_url'  => $v['code_certificate_url'],
+							//$this->get_pic_url($v['code_certificate']),
 							'control_code_certificate'=> intval($v['control_code_certificate']),
 							'telephone'         => urlencode($v['telephone']),
 							'website'           => $v['website'],
@@ -408,10 +445,12 @@ class CompanyController extends BaseController {
 							'regulators_id'     => intval($v['regulators_id']),
 							'find_website'      => $v['find_website'],
 							'agent_platform'    => urlencode($v['agent_platform']),
-							'agent_platform_n'  => urlencode($this->get_name_by_id($v['agent_platform'])),
+							'agent_platform_n'  => urlencode($v['agent_platform_n']),
+							// urlencode($this->get_name_by_id($v['agent_platform'])),
 							'mem_sn'            => urlencode($v['mem_sn']),
 							'certificate'       => intval($v['certificate']),
-							'certificate_url'   => $this->get_pic_url($v['certificate']),
+							'certificate_url'   => $v['certificate_url'],
+							//$this->get_pic_url($v['certificate']),
 							'control_certificate'=> intval($v['control_certificate']),
 							'assist_amount'     => intval($v['assist_amount']),
 							'add_blk_amount'    => intval($v['add_blk_amount']),
@@ -441,6 +480,9 @@ class CompanyController extends BaseController {
 		{
 			list($status_code, $content) = $this->get_list($content);
 			
+			$_map_k = array();
+			$_id_list = array();
+			$id = 0;
 			if($content
 			&& $content['list']
 			&& 0< $content['record_count']
@@ -448,18 +490,45 @@ class CompanyController extends BaseController {
 			{
 				foreach($content['list'] as $k=>$v)
 				{
-					$param['where'] = array(
-						'company_id'=>$v['id'],
+					$id = intval($v['id']);
+					$_map_k[$id] = $k;
+					$_id_list[] = $id;
+					//list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
+					$content['list'][$k]['sub_com'] = array();
+					//$sub_com['list'][0];
+				}
+				unset($k, $v);
+				
+				$param['where'] = array(
+						'company_id'=>array('in',implode(',',$_id_list)),
 						'parent_id'=>0,
 						'is_delete'=>0,
 						'is_validate'=>1,
-					);
-					$param['order']['validate_time'] = "desc";
-					$param['page_index']=1;
-					$param['page_size'] = 1;
-					list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
-					$content['list'][$k]['sub_com'] = $sub_com['list'][0];
+				);
+				$param['order']['validate_time'] = "desc";
+				$param['page_index']=1;
+				//$param['page_size'] = 1;
+				$param['group'] = 'company_id';
+				
+				$company_id = 0;
+				$sub_com = M('Comment')->field('company_id,content')
+				                       ->page(1,10)
+				                       ->group($param['group'])
+				                       ->where($param['where'])
+				                       ->order($param['order'])
+				                       ->select();
+				if($sub_com
+				&& 0< count($sub_com))
+				{
+					foreach($sub_com as $k=>$v)
+					{
+						$company_id = intval($v['company_id']);
+						$v['content']      = urlencode($v['content']);
+						$content['list'][$_map_k[$company_id]]['sub_com'] = $v;
+					}
+					unset($k, $v);
 				}
+				unset($sub_com);
 			}
 			
 			return array(
@@ -477,6 +546,9 @@ class CompanyController extends BaseController {
 		{
 			list($status_code, $content) = $this->get_list($content);
 			
+			$_map_k = array();
+			$_id_list = array();
+			$id = 0;
 			if($content
 			&& $content['list']
 			&& 0< $content['record_count']
@@ -484,17 +556,41 @@ class CompanyController extends BaseController {
 			{
 				foreach($content['list'] as $k=>$v)
 				{
-					$param['where'] = array(
-						'company_id'=>$v['id'],
+					$id = intval($v['id']);
+					$_id_list[] = $id;
+					$_map_k[$id] = $k;
+					//list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
+					$content['list'][$k]['sub_exposal'] = array();//$sub_com['list'][0];
+				}
+				unset($k, $v);
+				
+				$param['where'] = array(
+						'company_id'=>array('in',implode(',', $_id_list)),
 						'type'=>0,
-					);
-					$param['order']['validate_time'] = "desc";
-					$param['page_index']=1;
-					$param['page_size'] = 1;
-					list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
-					$content['list'][$k]['sub_exposal'] = $sub_com['list'][0];
+				);
+				$param['group'] = 'company_id';
+				$param['order']['validate_time'] = "desc";
+				$param['page_index']=1;
+				$sub_com = M('In_exposal')->field('company_id,content')
+				                       ->page(1,10)
+				                       ->group($param['group'])
+				                       ->where($param['where'])
+				                       ->order($param['order'])
+				                       ->select();
+				if($sub_com
+				&& 0< count($sub_com))
+				{
+					foreach($sub_com as $k=>$v)
+					{
+						$company_id = intval($v['company_id']);
+						$v['content']      = urlencode($v['content']);
+						$content['list'][$_map_k[$company_id]]['sub_exposal'] = $v;
+					}
+					unset($k, $v);
 				}
 			}
+			
+			
 			
 			return array(
 				200,
@@ -1073,8 +1169,33 @@ class CompanyController extends BaseController {
 			if(0>= $id)
 				return '';
 				
-			$tmp = M($this->_module_name)->field('company_name')->find($id);
-			return $tmp['company_name'];
+			$company_name = '';
+			$company_plat_list = S("company_plat_list");	
+			if(empty($company_plat_list))
+			{
+				$_tmp_list = M($this->_module_name)->field('id,company_name')
+				                                   ->where(array('nature'=>'003002'))
+													->select();
+				if($_tmp_list
+				&& 0<count($_tmp_list)
+				)
+				{
+					foreach($_tmp_list as $v)
+					{
+						$company_id = intval($v['id']);
+						$company_plat_list[$company_id] = $v['company_name'];
+					}
+					unset($_tmp_list, $v);
+					S('company_plat_list', $company_plat_list);
+				}
+			}
+			if(isset($company_plat_list[$id]))
+			{
+				return $company_plat_list[$id];
+			}
+			
+			$tmp_info = M($this->_module_name)->field('company_name')->find($id);
+			return $tmp_info['company_name'];
 		}
 		
 		#通过id查询名称
@@ -1331,6 +1452,31 @@ class CompanyController extends BaseController {
 		@param $is_success 0-成功操作，-1-操作失败
 		*/
 		{
+			$data = $this->fill($content);
+			#更新logo_url,busin_license_url
+			#           ,code_certificate_url,certificate_url
+			#           agent_platform_n
+			$tmp_list = array(
+				'logo_url'            =>intval($data['logo']),
+				'busin_license_url'   =>intval($data['busin_license']),
+				'code_certificate_url'=>intval($data['code_certificate']),
+				'certificate_url'     =>intval($data['certificate']),
+			//	'agent_platform_n'    =>intval($data['agent_platform']),
+			);
+			foreach($tmp_list as $k=>$v)
+			{
+				if(0< $v)
+				{
+					$data[$k] = $this->get_pic_url($v);
+				}
+			}
+			unset($k, $v);
+			$agent_platform = intval($data['agent_platform']);
+			if(0< $agent_platform)
+			{
+				$data['agent_platform_n'] = $this->get_name_by_id($agent_platform);
+			}	
+			$content = json_encode($data);
 			list($status_code,$r_content) = parent::update($content);
 			$data = $this->fill($content);
 			if(500 == $status_code)

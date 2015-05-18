@@ -72,14 +72,22 @@ class CompanyaliasController extends BaseController {
 		}
 		
 		$data['add_time'] = time();
-		if(M($this->_module_name)->add($data))
+		$obj = M($this->_module_name);
+		if($obj->add($data))
 		{
+			$LastInsID = $obj->getLastInsID();
+			#更新企业别名
+			$company_id = intval($data['company_id']);
+			$alias_list = $this->get_name($company_id);
+			M('Company')->where(array('id'=>$company_id))
+			            ->save(array('alias_list'=>$alias_list));
+			
 			return array(
 				200,
 				array(
 					'is_success'=>0,
 					'messsage'=>C('option_ok'),
-					'id'=> M()->getLastInsID(),
+					'id'=> $LastInsID,
 				)
 			);
 		}
@@ -201,6 +209,7 @@ class CompanyaliasController extends BaseController {
 			}
 				
 			S('company_alias_list', $list);
+			$company_alias_list = $list;
 		}
 		
 		if(isset($company_alias_list[$company_id]))

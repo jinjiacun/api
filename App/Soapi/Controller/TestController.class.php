@@ -115,5 +115,34 @@ class TestController extends BaseController {
 		 }
 		echo 'success';
 	}
+	
+	public function run_script_company_pic_ex()
+	{
+		#logo_url,alias_list,
+		#busin_license_url,code_certificate_url,
+		#agent_platform_n,certificate_url
+		
+		$obj = M('Company');
+		$list = $obj->field('id,logo,busin_license,code_certificate,agent_platform,certificate')->select();
+		foreach($list as $v)
+		{
+				$id = intval($v['id']);
+				$tmp_data = array(
+					'data'=>array(
+						'logo_url'             => $this->get_pic_url(intval($v['logo'])),
+						'alias_list'           => A('Soapi/Companyalias')->get_name($id),
+						'busin_license_url'    => $this->get_pic_url(intval($v['busin_license'])),
+						'code_certificate_url' => $this->get_pic_url(intval($v['code_certificate'])),	
+						'agent_platform_n'	   => A('Soapi/Company')->get_name_by_id($id),
+						'certificate_url'	   => $this->get_pic_url(intval($v['certificate'])),
+					),
+					'where'=>array(
+						'id'=>$id
+					),
+				);
+				$obj->where($tmp_data['where'])->save($tmp_data['data']);
+				unset($tmp_data);
+		}
+	}
 
 }
