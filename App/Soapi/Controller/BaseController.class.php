@@ -744,6 +744,8 @@ class BaseController extends Controller {
 	#通过用户id获取昵称
 	protected function _get_nickname($user_id)
 	{
+		if(0>= $user_id)
+			return '';
 		$content = array(
 			'uid'=>$user_id
 		);

@@ -306,7 +306,7 @@ class InexposalController extends BaseController {
 						'title'        => urlencode($v['title']),
 				        'company_id'   => intval($v['company_id']),
 						'user_id'      => intval($v['user_id']),
-						'nickname'     => $this->_get_nickname($v['user_id']),
+						'nickname'     => urlencode($this->_get_nickname($v['user_id'])),
 						'nature'       => $v['nature'],  
 						'trade'        => $v['trade'],  
 						'company_name' => urlencode($v['company_name']),  
@@ -327,10 +327,10 @@ class InexposalController extends BaseController {
 						'is_delete'    => intval($v['is_delete']),
 						'last_time'    => intval($v['last_time']),
 						'last_user_id' => intval($v['last_user_id']),
-						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
+						'last_nickname'=> urlencode($this->_get_nickname($v['last_user_id'])),
 						'v_last_time'    => intval($v['v_last_time']),
 						'v_last_user_id' => intval($v['v_last_user_id']),
-						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
+						'v_last_nickname'=> urlencode($this->_get_nickname($v['v_last_user_id'])),
 						'v_last_is_anonymous'=> intval($v['v_last_is_anonymous']),
 						'add_time'     => intval($v['add_time']),
 					);	
@@ -362,7 +362,7 @@ class InexposalController extends BaseController {
 			
 			$user_id = $data['user_id'];
 			if(isset($data['where']))unset($data['where']);
-		
+		    $obj = M('Com_exposal');
 			foreach($list as $k=> $v)
 			{   
 				if(isset($data['where_ex']))
@@ -386,7 +386,19 @@ class InexposalController extends BaseController {
 					if(isset($data['where']['type']))unset($data['where']['type']);
 					if(isset($data['order']['v_last_time']))unset($data['order']['v_last_time']);
 				}			
-				list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
+				//list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
+				$sub['list'] = $obj->page(intval($data['page_index']),intval($data['page_size']))
+				                   ->where($data['where'])
+				                   ->order($data['order'])
+				                   ->select();
+				$sub['record_count'] = $obj->where($data['where'])
+				                           ->count();
+				if(null == $sub['list']){$sub['list'] = array(); $sub['record_count'] = 0;}
+				if(isset($sub['list'][0]['user_id'])){$sub['list'][0]['nickname'] = $this->_get_nickname($sub['list'][0]['user_id']);}
+				if(isset($sub['list'][1]['user_id'])){$sub['list'][1]['nickname'] = $this->_get_nickname($sub['list'][1]['user_id']);}
+				if(isset($sub['list'][0]['content'])){$sub['list'][0]['content'] = urlencode($sub['list'][0]['content']);}
+				if(isset($sub['list'][1]['content'])){$sub['list'][1]['content'] = urlencode($sub['list'][1]['content']);}
+
 				$list[$k]['sub'] = array(
 					'list'=>$sub['list'],
 					'record_count'=>intval($sub['record_count'])
@@ -913,29 +925,15 @@ class InexposalController extends BaseController {
 			return C('param_err');
 		}
 		
-			$data['company_id'] = intval($data['company_id']);
+		$data['company_id'] = intval($data['company_id']);
 		
-		/*
 		if(0>= $data['company_id'])
 		{
 			return C('param_fmt_err');
 		}
-		*/
 		
 		$last_time = 0;
-		
-		
 		$last_time = M($this->_module_name)->where($data)->min('add_time');
-		/*
-		else
-		{
-        	$last_time = M()->query("select company_id,min(add_time)
-									 from so_in_exposal
-									 where company_id in ($data[company_id][1])
-                                     group by company_id
-									");
-		}
-		*/
 		
 		return array(
 			200,

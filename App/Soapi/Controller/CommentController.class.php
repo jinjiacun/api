@@ -506,6 +506,7 @@ class CommentController extends BaseController {
         	if(isset($data['where']['type'])) unset($data['where']['type']);
 		}		
 
+		$obj = M($this->_module_name);
 		foreach($list as $k=> $v)
 		{
 			if(!isset($data['where_ex']))
@@ -557,7 +558,12 @@ class CommentController extends BaseController {
 						$data['page_index'] = 1;
 			}
 			
-			list(, $sub) = $this->get_list(json_encode($data));
+			//list(, $sub) = $this->get_list(json_encode($data));
+			$sub['list'] = $obj->page(intval($data['page_index']),intval($data['page_size']))
+			           ->where($data['where'])
+			           ->select();
+			$sub['record_count'] = $obj->where($data['where'])->count();
+			if(null == $sub['list']) { $sub['list'] = array(); $sub['record_count']=0; }
 			$list[$k]['re_sub'] = array(
 				'list'=>$sub['list'],
 				'record_count'=>$sub['record_count']
