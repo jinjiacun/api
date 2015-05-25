@@ -133,7 +133,7 @@ class TestController extends BaseController {
 						'alias_list'           => A('Soapi/Companyalias')->get_name($id),
 						'busin_license_url'    => $this->get_pic_url(intval($v['busin_license'])),
 						'code_certificate_url' => $this->get_pic_url(intval($v['code_certificate'])),	
-						'agent_platform_n'	   => A('Soapi/Company')->get_name_by_id($id),
+						'agent_platform_n'	   => A('Soapi/Company')->get_name_by_id($v['agent_platform']),
 						'certificate_url'	   => $this->get_pic_url(intval($v['certificate'])),
 					),
 					'where'=>array(

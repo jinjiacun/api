@@ -562,6 +562,17 @@ class CommentController extends BaseController {
 			$sub['list'] = $obj->page(intval($data['page_index']),intval($data['page_size']))
 			           ->where($data['where'])
 			           ->select();
+			if(isset($sub['list'][0]['user_id']))$sub['list'][0]['nickname'] = $this->_get_nickname($sub['list'][0]['user_id']);
+			if(isset($sub['list'][1]['user_id']))$sub['list'][1]['nickname'] = $this->_get_nickname($sub['list'][1]['user_id']);
+			if(isset($sub['list'][2]['user_id']))$sub['list'][2]['nickname'] = $this->_get_nickname($sub['list'][2]['user_id']);
+			if(isset($sub['list'][3]['user_id']))$sub['list'][3]['nickname'] = $this->_get_nickname($sub['list'][3]['user_id']);
+			if(isset($sub['list'][4]['user_id']))$sub['list'][4]['nickname'] = $this->_get_nickname($sub['list'][4]['user_id']);
+			if(isset($sub['list'][5]['user_id']))$sub['list'][5]['nickname'] = $this->_get_nickname($sub['list'][5]['user_id']);
+			if(isset($sub['list'][6]['user_id']))$sub['list'][6]['nickname'] = $this->_get_nickname($sub['list'][6]['user_id']);
+			if(isset($sub['list'][7]['user_id']))$sub['list'][7]['nickname'] = $this->_get_nickname($sub['list'][7]['user_id']);
+			if(isset($sub['list'][8]['user_id']))$sub['list'][8]['nickname'] = $this->_get_nickname($sub['list'][8]['user_id']);
+			if(isset($sub['list'][9]['user_id']))$sub['list'][9]['nickname'] = $this->_get_nickname($sub['list'][9]['user_id']);           
+			           
 			$sub['record_count'] = $obj->where($data['where'])->count();
 			if(null == $sub['list']) { $sub['list'] = array(); $sub['record_count']=0; }
 			$list[$k]['re_sub'] = array(

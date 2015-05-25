@@ -497,32 +497,52 @@ class CompanyController extends BaseController {
 				foreach($content['list'] as $k=>$v)
 				{
 					$id = intval($v['id']);
+					/*
 					$_map_k[$id] = $k;
 					$_id_list[] = $id;
-					//list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
-					$content['list'][$k]['sub_com'] = array();
-					//$sub_com['list'][0];
+					*/
+					$param['where'] = array(
+						'company_id'=>$id,
+						'parent_id'=>0,
+						'is_delete'=>0,
+						'is_validate'=>1,
+				);
+				$param['order']['validate_time'] = "desc";
+				//$param['order']['add_time'] = "desc";
+				$param['page_index']=1;
+				
+					list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
+					//$content['list'][$k]['sub_com'] = array();
+					$content['list'][$k]['sub_com'] = $sub_com['list'][0];
 				}
 				unset($k, $v);
 				
+				/*
 				$param['where'] = array(
 						'company_id'=>array('in',implode(',',$_id_list)),
 						'parent_id'=>0,
 						'is_delete'=>0,
 						'is_validate'=>1,
 				);
-				$param['order']['validate_time'] = "desc";
+				//$param['order']['validate_time'] = "desc";
+				$param['order']['add_time'] = "desc";
 				$param['page_index']=1;
 				//$param['page_size'] = 1;
 				$param['group'] = 'company_id';
 				
 				$company_id = 0;
-				$sub_com = M('Comment')->field('company_id,content')
+				$sub_com = M('Comment')->field('id,max(validate_time) as max_va_time,company_id,content')
+															 ->alias('tt')
 				                       ->page(1,10)
 				                       ->group($param['group'])
+				                       ->having("validate_time=max_va_time")
 				                       ->where($param['where'])
-				                       ->order($param['order'])
-				                       ->select();
+				                       //->order($param['order'])
+				                       ->select();			  
+			  $sub_com = M()
+			  echo M()->getLastSql();
+				die;
+				
 				if($sub_com
 				&& 0< count($sub_com))
 				{
@@ -535,6 +555,7 @@ class CompanyController extends BaseController {
 					unset($k, $v);
 				}
 				unset($sub_com);
+				*/
 			}
 			
 			return array(
@@ -565,11 +586,22 @@ class CompanyController extends BaseController {
 					$id = intval($v['id']);
 					$_id_list[] = $id;
 					$_map_k[$id] = $k;
-					//list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
-					$content['list'][$k]['sub_exposal'] = array();//$sub_com['list'][0];
+					
+					$param['where'] = array(
+							'company_id'=>$id,
+							'type'=>0,
+					);
+					//$param['group'] = 'company_id';
+					$param['order']['validate_time'] = "desc";
+					$param['page_index']=1;
+				
+					list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
+					//$content['list'][$k]['sub_exposal'] = array();//$sub_com['list'][0];
+					$content['list'][$k]['sub_exposal'] = $sub_com['list'][0];
 				}
 				unset($k, $v);
 				
+				/*
 				$param['where'] = array(
 						'company_id'=>array('in',implode(',', $_id_list)),
 						'type'=>0,
@@ -594,6 +626,7 @@ class CompanyController extends BaseController {
 					}
 					unset($k, $v);
 				}
+				*/
 			}
 			
 			
