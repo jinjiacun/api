@@ -495,53 +495,55 @@ class CompanyController extends BaseController {
 			)
 			{
 				foreach($content['list'] as $k=>$v)
-				{
+				{					
 					$id = intval($v['id']);
-					/*
 					$_map_k[$id] = $k;
 					$_id_list[] = $id;
-					*/
+					/*#--version:old--					
 					$param['where'] = array(
 						'company_id'=>$id,
 						'parent_id'=>0,
 						'is_delete'=>0,
 						'is_validate'=>1,
-				);
-				$param['order']['validate_time'] = "desc";
-				//$param['order']['add_time'] = "desc";
-				$param['page_index']=1;
+					);
+					$param['order']['validate_time'] = "desc";
+					$param['page_index']=1;
+
 				
 					list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
-					//$content['list'][$k]['sub_com'] = array();
 					$content['list'][$k]['sub_com'] = $sub_com['list'][0];
+					*/
+
+					$content['list'][$k]['sub_com'] = array();					
 				}
 				unset($k, $v);
 				
-				/*
+				
 				$param['where'] = array(
 						'company_id'=>array('in',implode(',',$_id_list)),
 						'parent_id'=>0,
 						'is_delete'=>0,
 						'is_validate'=>1,
 				);
-				//$param['order']['validate_time'] = "desc";
-				$param['order']['add_time'] = "desc";
+				$param['order']['validate_time'] = "desc";
 				$param['page_index']=1;
-				//$param['page_size'] = 1;
-				$param['group'] = 'company_id';
+				$param['page_size'] = 1;
+				$param['group'] = 'company_id';				
 				
 				$company_id = 0;
-				$sub_com = M('Comment')->field('id,max(validate_time) as max_va_time,company_id,content')
-															 ->alias('tt')
-				                       ->page(1,10)
-				                       ->group($param['group'])
-				                       ->having("validate_time=max_va_time")
-				                       ->where($param['where'])
+				//$sub_com = //M('Comment')->field('company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content')									   
+				           //            ->page(1,10)
+				            //           ->group($param['group'])
+				                       //->having("validate_time=max(validate_time)")
+				            //           ->where($param['where'])
 				                       //->order($param['order'])
-				                       ->select();			  
-			  $sub_com = M()
-			  echo M()->getLastSql();
-				die;
+				            //           ->select();
+				$sub_com = M()->query("SELECT company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content
+									   FROM so_comment 
+									   where company_id in(".implode(',', $_id_list).") 
+									   AND `parent_id` = 0 AND `is_delete` = 0 AND `is_validate` = 1 group by company_id");
+			  //echo M()->getLastSql();
+			  //die;
 				
 				if($sub_com
 				&& 0< count($sub_com))
@@ -555,7 +557,6 @@ class CompanyController extends BaseController {
 					unset($k, $v);
 				}
 				unset($sub_com);
-				*/
 			}
 			
 			return array(
@@ -584,24 +585,27 @@ class CompanyController extends BaseController {
 				foreach($content['list'] as $k=>$v)
 				{
 					$id = intval($v['id']);
+
+					
 					$_id_list[] = $id;
 					$_map_k[$id] = $k;
 					
+					/*#--version:old--
 					$param['where'] = array(
 							'company_id'=>$id,
 							'type'=>0,
 					);
-					//$param['group'] = 'company_id';
 					$param['order']['validate_time'] = "desc";
 					$param['page_index']=1;
 				
 					list(,$sub_com) = A('Soapi/Inexposal')->get_list(json_encode($param));
-					//$content['list'][$k]['sub_exposal'] = array();//$sub_com['list'][0];
 					$content['list'][$k]['sub_exposal'] = $sub_com['list'][0];
+					*/
+					$content['list'][$k]['sub_exposal'] = array();//$sub_com['list'][0];					
 				}
 				unset($k, $v);
 				
-				/*
+				
 				$param['where'] = array(
 						'company_id'=>array('in',implode(',', $_id_list)),
 						'type'=>0,
@@ -609,12 +613,19 @@ class CompanyController extends BaseController {
 				$param['group'] = 'company_id';
 				$param['order']['validate_time'] = "desc";
 				$param['page_index']=1;
+				/*
 				$sub_com = M('In_exposal')->field('company_id,content')
 				                       ->page(1,10)
 				                       ->group($param['group'])
 				                       ->where($param['where'])
 				                       ->order($param['order'])
 				                       ->select();
+				*/
+				$sub_com = M()->query("SELECT company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content
+									   FROM so_in_exposal 
+									   where company_id in(".implode(',', $_id_list).") 
+									   AND type=0  group by company_id");
+
 				if($sub_com
 				&& 0< count($sub_com))
 				{
@@ -625,8 +636,7 @@ class CompanyController extends BaseController {
 						$content['list'][$_map_k[$company_id]]['sub_exposal'] = $v;
 					}
 					unset($k, $v);
-				}
-				*/
+				}				
 			}
 			
 			
@@ -783,6 +793,7 @@ class CompanyController extends BaseController {
 				unset($tmp_list, $k, $v);
 			}
 
+			/*
 			#企业名称或者网址
 			$tmp_list = M('Company')->field("id")
                                     ->where(array('_string'=>"company_name like '%".$data['name'].
@@ -798,6 +809,7 @@ class CompanyController extends BaseController {
 				}
 				unset($tmp_list, $k, $v);
 			}
+			*/
 			
 			if($company_id_list
 			&& 0< count($company_id_list)
