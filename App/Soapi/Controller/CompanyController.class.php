@@ -484,80 +484,94 @@ class CompanyController extends BaseController {
 		//filter:评论审核时间最新
 		public function get_list_com($content)
 		{
-			list($status_code, $content) = $this->get_list($content);
-			
-			$_map_k = array();
-			$_id_list = array();
-			$id = 0;
-			if($content
-			&& $content['list']
-			&& 0< $content['record_count']
-			)
+			$_key = $content;
+			//$_cache_get_list_com = S('cache_get_list_com');
+			$_cache_get_list_com = null;
+			if(empty($_cache_get_list_com)
+			||!isset($_cache_get_list_com[$key]))
 			{
-				foreach($content['list'] as $k=>$v)
-				{					
-					$id = intval($v['id']);
-					$_map_k[$id] = $k;
-					$_id_list[] = $id;
-					/*#--version:old--					
-					$param['where'] = array(
-						'company_id'=>$id,
-						'parent_id'=>0,
-						'is_delete'=>0,
-						'is_validate'=>1,
-					);
-					$param['order']['validate_time'] = "desc";
-					$param['page_index']=1;
-
+					list($status_code, $content) = $this->get_list($content);
+			
+					$_map_k = array();
+					$_id_list = array();
+					$id = 0;
+					if($content
+					&& $content['list']
+					&& 0< $content['record_count']
+					)
+					{
+						foreach($content['list'] as $k=>$v)
+						{					
+							$id = intval($v['id']);
+							$_map_k[$id] = $k;
+							$_id_list[] = $id;
+							/*#--version:old--					
+							$param['where'] = array(
+								'company_id'=>$id,
+								'parent_id'=>0,
+								'is_delete'=>0,
+								'is_validate'=>1,
+							);
+							$param['order']['validate_time'] = "desc";
+							$param['page_index']=1;
+		
+						
+							list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
+							$content['list'][$k]['sub_com'] = $sub_com['list'][0];
+							*/
+	
+							$content['list'][$k]['sub_com'] = array();					
+						}
+						unset($k, $v);
 				
-					list(,$sub_com) = A('Soapi/Comment')->get_list(json_encode($param));
-					$content['list'][$k]['sub_com'] = $sub_com['list'][0];
-					*/
-
-					$content['list'][$k]['sub_com'] = array();					
-				}
-				unset($k, $v);
 				
+						$param['where'] = array(
+							'company_id'=>array('in',implode(',',$_id_list)),
+							'parent_id'=>0,
+							'is_delete'=>0,
+							'is_validate'=>1,
+						);
+						$param['order']['validate_time'] = "desc";
+						$param['page_index']=1;
+						$param['page_size'] = 1;
+						$param['group'] = 'company_id';				
 				
-				$param['where'] = array(
-						'company_id'=>array('in',implode(',',$_id_list)),
-						'parent_id'=>0,
-						'is_delete'=>0,
-						'is_validate'=>1,
-				);
-				$param['order']['validate_time'] = "desc";
-				$param['page_index']=1;
-				$param['page_size'] = 1;
-				$param['group'] = 'company_id';				
-				
-				$company_id = 0;
-				//$sub_com = //M('Comment')->field('company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content')									   
+						$company_id = 0;
+						//$sub_com = //M('Comment')->field('company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content')									   
 				           //            ->page(1,10)
 				            //           ->group($param['group'])
 				                       //->having("validate_time=max(validate_time)")
 				            //           ->where($param['where'])
 				                       //->order($param['order'])
 				            //           ->select();
-				$sub_com = M()->query("SELECT company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content
+						$sub_com = M()->query("SELECT company_id,max(validate_time),substring_index(group_concat(content order by validate_time desc),',',1) as content
 									   FROM so_comment 
 									   where company_id in(".implode(',', $_id_list).") 
 									   AND `parent_id` = 0 AND `is_delete` = 0 AND `is_validate` = 1 group by company_id");
-			  //echo M()->getLastSql();
-			  //die;
+			  		//echo M()->getLastSql();
+			  		//die;
 				
-				if($sub_com
-				&& 0< count($sub_com))
-				{
-					foreach($sub_com as $k=>$v)
+					if($sub_com
+					&& 0< count($sub_com))
 					{
-						$company_id = intval($v['company_id']);
-						$v['content']      = urlencode($v['content']);
-						$content['list'][$_map_k[$company_id]]['sub_com'] = $v;
+						foreach($sub_com as $k=>$v)
+						{
+							$company_id = intval($v['company_id']);
+							$v['content']      = urlencode($v['content']);
+							$content['list'][$_map_k[$company_id]]['sub_com'] = $v;
+						}
+						unset($k, $v);
 					}
-					unset($k, $v);
+					unset($sub_com);
 				}
-				unset($sub_com);
+				$_cache_get_list_com[$key] = $content;
+				S('cache_get_list_com',$_cache_get_list_com);
 			}
+			else
+			{
+				$content = $_cache_get_list_com[$key];
+			}
+			
 			
 			return array(
 				200,
@@ -901,7 +915,22 @@ class CompanyController extends BaseController {
 					$where['trade'] = $data['trade'];
 			    }
 			
-    			$tmp_list     = M($this->_module_name)->where($where)->select();
+			$page_index = 1;
+			$page_size = 10;
+			if(isset($data['page_index']))
+			{
+				$page_index = intval($data['page_index']);
+				if(0>= $page_index)
+					$page_index = 1;
+			}
+			if(isset($data['page_size']))
+			{
+				$page_size = intval($data['page_size']);
+				if(0>= $page_size)
+					$page_size = 10;
+			}
+			
+    		$tmp_list     = M($this->_module_name)->page($page_index,$page_size)->where($where)->select();
 				$record_count = M($this->_module_name)->where($where)->count();
 				M($this->_module_name)->where($where)->setInc('select_amount', 1);		
 			}
