@@ -807,12 +807,12 @@ class CompanyController extends BaseController {
 				unset($tmp_list, $k, $v);
 			}
 
-			/*
+			$Company = M('Company');
 			#企业名称或者网址
-			$tmp_list = M('Company')->field("id")
-                                    ->where(array('_string'=>"company_name like '%".$data['name'].
-                                                  "%' or website like '%".$data['name'].
-                                                  "%'"))->select();			
+			$tmp_list = $Company->field("id")
+                                    ->where(array('_string'=>"company_name like '%".$data['name']."'"
+                                                 // "%' or website like '%".$data['name']."%'"
+                                                  ))->select();			
 		    if($tmp_list
 			&& 0<count($tmp_list)
 			)
@@ -823,7 +823,6 @@ class CompanyController extends BaseController {
 				}
 				unset($tmp_list, $k, $v);
 			}
-			*/
 			
 			if($company_id_list
 			&& 0< count($company_id_list)
@@ -930,8 +929,8 @@ class CompanyController extends BaseController {
 					$page_size = 10;
 			}
 			
-    		$tmp_list     = M($this->_module_name)->page($page_index,$page_size)->where($where)->select();
-				$record_count = M($this->_module_name)->where($where)->count();
+    		$tmp_list     = $Company->page($page_index,$page_size)->where($where)->select();
+				$record_count = $Company->where($where)->count();
 				M($this->_module_name)->where($where)->setInc('select_amount', 1);		
 			}
 	
