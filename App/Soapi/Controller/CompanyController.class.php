@@ -810,9 +810,9 @@ class CompanyController extends BaseController {
 			$Company = M('Company');
 			#企业名称或者网址
 			$tmp_list = $Company->field("id")
-                                    ->where(array('_string'=>"company_name like '%".$data['name']."'"
+                                    ->where(array('_string'=>"company_name like '%".$data['name']."%'"
                                                  // "%' or website like '%".$data['name']."%'"
-                                                  ))->select();			
+                                                  ))->select();		
 		    if($tmp_list
 			&& 0<count($tmp_list)
 			)
@@ -1572,7 +1572,7 @@ class CompanyController extends BaseController {
 				#更新曝光中企业等级	
 				M('In_exposal')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level']));
 		        #更新评论中企业等级
-				M('Comment')->where(array('company_id'=>$$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level'])); 		
+				M('Comment')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level'])); 		
 				return array(
 					$status_code,
 					$r_content

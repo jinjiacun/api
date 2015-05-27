@@ -63,6 +63,7 @@ class NewsController extends BaseController {
 	                              content text comment '内容',
 	                              pic int not null default 0 comment '配图(pc)',
 	                              assist_num int not null default 0 comment '点赞数', 
+	                              show_time int not null default 0 comment '显示日期',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -77,6 +78,7 @@ class NewsController extends BaseController {
 	protected $content;
 	protected $pic;
 	protected $assist_num;
+	protected $show_time;
 	protected $add_time;
 
 	#添加
@@ -98,26 +100,29 @@ class NewsController extends BaseController {
 		$data = $this->fill($content);
 		
 		if(!isset($data['title'])
-		|| !isset($data['source'])
-		|| !isset($data['author'])
+		//|| !isset($data['source'])
+		//|| !isset($data['author'])
 		|| !isset($data['content'])
 		|| !isset($data['pic'])
+		|| !isset($data['show_time'])
 		)
 		{
 			return C('param_err');
 		}
 		
 		$data['title']   = htmlspecialchars(trim($data['title']));
-		$data['source']  = htmlspecialchars(trim($data['source']));
-		$data['author']  = htmlspecialchars(trim($data['author']));
+		//$data['source']  = htmlspecialchars(trim($data['source']));
+		//$data['author']  = htmlspecialchars(trim($data['author']));
 		$data['content'] = htmlspecialchars(trim($data['content']));
 		$data['pic']     = intval($data['pic']);
+		$data['show_time'] = intval($data['show_time']);
 		
 		if('' == $data['title']
-		|| '' == $data['source']
-		|| '' == $data['author']
+		//|| '' == $data['source']
+		//|| '' == $data['author']
 		|| '' == $data['content']
 		|| 0  >= $data['pic']
+		|| 0  >= $data['show_time']
 		)
 		{
 			return C('param_fmt_err');
@@ -169,6 +174,7 @@ class NewsController extends BaseController {
 						'pic'         => intval($v['pic']),
 						'pic_url'     => $this->get_pic_url($v['pic']),
 						'assist_num'  => intval($v['assist_num']),
+						'show_time'   => intval($v['show_time']),
 						'add_time'    => intval($v['add_time']),
 						
 					);	
@@ -228,6 +234,7 @@ class NewsController extends BaseController {
 	@param $content  内容
 	@param $pic      图片
 	@param $assist_num 点赞数
+	@param $show_time 显示时间
 	@param $add_time 
 	*/
 	{
@@ -261,6 +268,7 @@ class NewsController extends BaseController {
 				'pic'         => intval($tmp_one['pic']),
 				'pic_url'     => $this->get_pic_url($tmp_one['pic']),
 				'assist_num'  => intval($tmp_one['assist_num']),
+				'show_time'   => intval($tmp_one['show_time']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}

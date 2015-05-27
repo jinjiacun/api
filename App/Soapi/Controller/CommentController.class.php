@@ -917,7 +917,37 @@ class CommentController extends BaseController {
 	}
 	
 	#删除
-	public function delete($content)
+	/**
+	 * 删除逻辑关系:
+	 * a.删除主评论(同时删除其对应的二、三级评论)
+	 * * 已审核的主评论影响:
+	 * * * 1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+	 * 
+	 * 
+	 * b.删除二级评论(同时其对应的删除三级评论)
+	 * * 已审核的二级评论影响:
+	 * * * 1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+	 * * * 2.对应主评论的未审核子回复数(childs)、已审核子回复数(has_child)、
+	 * * * * * * * * * 最新回复(或再回复)时间(last_time)、
+	 * * * * * * * * * 最新审核回复(或再回复)时间(v_last_time)+人(v_last_user_id)+是否匿名(v_last_is_anonymous)
+	 * 
+	 * 未审核的二级评论影响:
+	 * * * 1.对应主评论的未审核子回复数(childs)、最新回复(或再回复)时间(last_time)
+	 * 
+	 * 
+	 * c.删除三级评论
+	 * * 已审核的三级评论影响:
+	 * * * 1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+	 * * * 2.对应主评论的未审核子回复数(childs)、已审核子回复数(has_child)、
+	 * * * * * * * * * 最新回复(或再回复)时间(last_time)、
+	 * * * * * * * * * 最新审核回复(或再回复)时间(v_last_time)+人(v_last_user_id)+是否匿名(v_last_is_anonymous)
+	 * * * 3.对应父评论的未审核子回复数(childs)、已审核回复数(has_child)、
+	 *                   
+	 * 未审核的三级评论影响:
+	 * * * 1.对应主评论的未审核子回复数(childs)、最新回复(或再回复)时间(last_time)
+	 * * * 2.对应父评论的未审核子回复数(childs)、最新回复(或再回复)时间(last_time)
+	 * */
+	public function delete($content)	
 	/*
 	@@input
 	@param $id
@@ -949,12 +979,192 @@ class CommentController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		//检查是否删除，如果已经删除则跳过
+		$info = M($this->_module_name)->field("is_validate,parent_id,pparent_id,is_delete")
+		                              ->find($data['id']);
+		if(1 == $info['is_delete'])
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>C('option_ok'),
+				),
+			);
+		}
+		$_com_level = 1;
+		if(0 == $info['parent_id']
+		&& 0 == $info['pparent_id'])
+		{
+			$_com_level = 1;
+		}
+		else if(0 != $info['parent_id']
+		&& 0 == $info['pparent_id'])
+		{
+			$_com_level = 2;
+		}
+		elseif(0 != $info['parent_id']
+		&& 0 != $info['pparent_id'])
+		{
+			$_com_level = 3;
+		}
+		
+		switch($_com_level)
+		{
+			case 1:
+				 /*
+				 * a.删除主评论(同时删除其对应的二、三级评论)
+				 * * 已审核的主评论影响:
+				 * * * 1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+				 */
+				{
+					//删除对应的三级评论
+					M($this->_module_name)->where(array("pparent_id"=>$data['id']))
+					                      ->save(array("is_delete"=>1));
+					//删除对应的二级评论
+					M($this->_module_name)->where(array("parent_id"=>$data['id']))
+					                      ->save(array("is_delete"=>1));
+					//删除主评论
+					if(false !== M($this->_module_name)->where(array("id"=>$data['id']))
+					                                   ->save(array("is_delete"=>1)))
+					{
+						if(1 == $info['is_validate'])//此条评论为已审核的主评论
+						{
+							$this->set_com_amount($data['company_id']);
+						}
+						return array(
+							200,
+							array(
+								'is_success'=>0,
+								'message'=>C('option_ok'),
+							),
+						);
+					}					
+				}
+				break;
+			case 2:
+				/*
+				 * b.删除二级评论(同时其对应的删除三级评论)
+				 * * 已审核的二级评论影响:
+				 * * * 1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+				 * * * 2.对应主评论的未审核子回复数(childs)、已审核子回复数(has_child)、
+				 * * * * * * * * * 最新回复(或再回复)时间(last_time)、
+				 * * * * * * * * * 最新审核回复(或再回复)时间(v_last_time)+人(v_last_user_id)+是否匿名(v_last_is_anonymous)
+				 * * * 3.此条评论本身的未审核回复数(childs)、已审核子回复数(has_child)
+				 * 
+				 * 未审核的二级评论影响:
+				 * * * 1.对应主评论的未审核子回复数(childs)、最新回复(或再回复)时间(last_time)
+				 */
+				{
+					//删除对应的三级评论
+					M($this->_module_name)->where(array("parent_id"=>$data['id']))
+					                      ->save(array("is_delete"=>1));
+					if(false !== M($this->_module_name)->where(array("id"=>$data['id']))
+					                                   ->save(array("is_delete"=>1)))
+					{
+						if(1 == $info['is_validate'])//此条评论已审核的二级评论
+						{
+							#1.对应企业(Comment.company_id-Company.id)的评论总数(com_amount)
+							$this->set_com_amount($data['company_id']);
+							
+							
+							#2.对应主评论的未审核子回复数(childs)、已审核子回复数(has_child)、
+				            #* * * 最新回复(或再回复)时间(last_time)、
+				            #* * * 最新审核回复(或再回复)时间(v_last_time)+人(v_last_user_id)+是否匿名(v_last_is_anonymous)
+				            $childs    = M($this->_module_name)->where(array(
+				                                                        'is_delete'  =>0,
+				                                                        'is_validate'=>0,
+				                                                        '_string'=>"parent_id=$info[parent_id] 
+																				 or pparent_id=$info[parent_id]",	
+				                                                       ))->count();
+				            $has_child = M($this->_module_name)->where(array(
+																		'is_delete' => 0,
+																		'is_validate'=>1,
+																		'_string'=>"parent_id=$info[parent_id] 
+																		         or pparent_id=$info[parent_id]",	
+																		))->count();
+				            $tmp_info  = M($this->_module_name)->field("last_time")
+				                                               ->where(array(
+																		'is_delete'=>0,
+																		'_string'=>"parent_id=$info[parent_id] 
+																		         or pparent_id=$info[parent_id]",
+																	   ))
+															   ->order(array("add_time"=>"desc"))
+				                                               ->find();
+				            $last_time = $tmp_info["last_time"];
+				            $tmp_info  = M($this->_module_name)->field("last_time,user_id,is_anonymous")
+				                                               ->where(array(
+																		'is_delete'   =>0,
+																		'is_validate' =>1,
+																		'_string'=>"parent_id=$info[parent_id] 
+																		         or pparent_id=$info[parent_id]",
+				                                                      ))
+				                                               ->order(array("add_time"=>"desc"))
+				                                               ->find(); 
+				            $v_last_time         = $tmp_info['last_time'];
+				            $v_last_user_id      = $tmp_info['user_id']; 
+				            $v_last_is_anonymous = $tmp_info['is_anonymous'];
+				            if(false ! == M($this->_module_name)->where(array("id"=>$info['parent_id']))
+				                                                ->save(array(
+																	'childs'              => $childs,
+				                                                    'has_child'           => $has_child,
+				                                                    'last_time'           => $last_time,
+				                                                    'v_last_time'         => $v_last_time,
+				                                                    'v_last_user_id'      => $v_last_user_id,
+				                                                    'v_last_is_anonymous' => $v_last_is_anonymous,
+				                                                )))
+				            {
+								#3.此条评论本身的未审核回复数(childs)、已审核子回复数(has_child)
+								$childs    = M($this->_module_name)->where(array(
+																			'is_delete'=>0,
+																			'parent_id'=>$data['id'],
+																			'is_validate'=>0,
+																		))
+								                                   ->count();
+								$has_child = M($this->_module_name)->where(array(
+																			'is_delete'=>0,
+																			'is_validate'=>1,
+																			'parent_id'=>$data['id'],
+																		))
+								                                   ->count(); 
+								if(false !== M($this->_module_name)->where(array(
+																'id'=>$data['id']
+															))
+								                      ->save(array(
+															'childs'    =>$childs,
+															'has_child' =>$has_child
+								                      ))
+								{
+								
+									return array(
+										200,
+										array(
+											'is_success'=>0,
+											'message'=>C('option_ok'),
+										),
+									);
+								}
+							}
+						}
+						else#此条评论未审核的二级评论
+						{
+							#1.对应主评论的未审核子回复数(childs)、最新回复(或再回复)时间(last_time)
+							
+						}
+					}
+				}
+				break;
+			case 3:
+				break;
+			default:
+				break;
+		}
+		
+		/*
 		if(false !== M($this->_module_name)->where(array('id'=>$data['id']))
 		                                   ->save(array('is_delete'=>1)))
 		{
-			//更新评论统计
-			$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
-			//总数累计
+			//企业评论总数累计
 			$this->set_com_amount($data['company_id']);
 			//统计子回复总数
 			$this->update_re_child_amount(json_encode(array('id'=>$data['id'])));
@@ -963,6 +1173,7 @@ class CommentController extends BaseController {
 			if(0< $tmp_content['parent_id'])
 				$this->update_re_child_amount(json_encode(array('id'=>$tmp_content['parent_id'])));
 			//删除为主评论，还需删除回复
+			*/
 			/*
 			if(0 < $data['parent_id'])
 			{
@@ -991,6 +1202,7 @@ class CommentController extends BaseController {
 				$this->set_com_amount($data['company_id'],-1, $data['is_validate']);
 			}
 			*/
+			/*
 			return array(
 				200,
 				array(
@@ -999,6 +1211,7 @@ class CommentController extends BaseController {
 				),
 			);
 		}
+		*/
 		
 		return array(
 				200,

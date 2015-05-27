@@ -748,7 +748,6 @@ class InexposalController extends BaseController {
 		#查询企业认证等级
 		$tmp_info = M('Company')->field('auth_level')->find($data['company_id']);		
 	    
-
 		$content = array(
 			'company_id'=> $data['company_id'],
 			'auth_level'=>$tmp_info['auth_level'],
@@ -791,7 +790,8 @@ class InexposalController extends BaseController {
 						'last_time'=>$min_time,
 					)
                 );
-			    A('Soapi/Company')->update(json_encode($tmp_data));
+			    //A('Soapi/Company')->update(json_encode($tmp_data));
+			    M('Company')->where($tmp_data['where'])->save($tmp_data['data']);
 			    
 				return array(
 					200,

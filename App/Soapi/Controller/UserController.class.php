@@ -296,13 +296,15 @@ class UserController extends BaseController {
 							 'bind_qq'			 => "BindUserLoginByQQOpenid",	   #绑定qq的openid
 							 'head_photo_upload' => "SetUserAvatarByUid",          #上传头像
 							 );
+							 
 	#通过手机注册
 	public function register($content)
 	/**
 	@@input
 	@param mobile       手机号码
 	@param pswd         密码
-	@param $nickname     昵称(不设为自动生成)
+	@param $nickname    昵称(不设为自动生成)
+	@param $sem         是否推广用户(默认0,1为推广用户)
 	@@output
 	@param $is_success 0-成功,-1-失败
 	*/
@@ -318,12 +320,14 @@ class UserController extends BaseController {
 		
 		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
 		$data['pswd']   = htmlspecialchars(trim($data['pswd']));
+		$data['sem']    = intval($data['sem']);
 		
 		$content = array(
 			'user_id'  =>0,
 			'nickname' =>isset($data['nickname'])?$data['nickname']:'',
 			'sex'      =>-1,
 			'cur_date' =>'',
+			'sem'      => $data['sem'],
 		);
 		
 		
@@ -384,6 +388,7 @@ class UserController extends BaseController {
 			'userip'   => $this->get_real_ip(),
 		);
 		$params['nickname'] = urlencode($params['nickname']);
+		$params['sem'] = $content['sem'];
 		//var_dump($params);		
 		$params['safekey']  = $this->mk_passwd($params);
 		//var_dump($params);
@@ -1936,6 +1941,7 @@ class UserController extends BaseController {
 	@param $passwd   密码
 	@param $nickname 昵称
 	@param $head_photo 头像
+	@param $sem      是否推广用户(默认0，1-为推广用户)
 	@@output
 	@param $is_success  是否成功(0-成功,-1-操作失败，-2-密码错误)
 	@param $user_info   用户信息
@@ -1954,11 +1960,12 @@ class UserController extends BaseController {
 		{
 			return C('param_err');
 		}		
-		$data['openid'] = htmlspecialchars(trim($data['openid']));
-		$data['mobile'] = htmlspecialchars(trim($data['mobile']));
-		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
-		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
+		$data['openid']     = htmlspecialchars(trim($data['openid']));
+		$data['mobile']     = htmlspecialchars(trim($data['mobile']));
+		$data['passwd']     = htmlspecialchars(trim($data['passwd']));
+		$data['nickname']   = htmlspecialchars(trim($data['nickname']));
 		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		$data['sem']        = intval(trim($data['sem']));
 		
 		if('' == $data['openid'])
 		{
@@ -1997,6 +2004,7 @@ class UserController extends BaseController {
 					'mobile'  =>$data['mobile'],
 					'pswd'    =>$data['passwd'],
 					'nickname'=>$data['nickname'],
+					'sem'     =>$data['sem'],
 				);
 				list($status_code, $content) = $this->register(json_encode($params));
 				//var_dump($content);
@@ -2266,6 +2274,7 @@ class UserController extends BaseController {
 		$params['safekey']  = $this->mk_passwd($params, 11);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['cancel_bind'];
 		$back_str = $this->post($url, $params);
+		//print_r($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 <= $re_json['State'])
@@ -3080,6 +3089,7 @@ class UserController extends BaseController {
 	@param $mobile   手机号码
 	@param $passwd   密码
 	@param $nickname 昵称
+	@param $sem      是否推广用户(默认0，1-为推广用户)
 	*/
 	{
 		$data = $this->fill($content);
@@ -3092,6 +3102,7 @@ class UserController extends BaseController {
 		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
 		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
 		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		$data['sem']        = intval(trim($data['sem']));
 		
 		if('' == $data['openid'])
 		{
@@ -3130,6 +3141,7 @@ class UserController extends BaseController {
 					'mobile'  =>$data['mobile'],
 					'pswd'    =>$data['passwd'],
 					'nickname'=>$data['nickname'],
+					'sem'     =>$data['sem'],
 				);
 				list($status_code, $content) = $this->register(json_encode($params));				
 				
@@ -3227,6 +3239,7 @@ class UserController extends BaseController {
 	@param $mobile   手机号码
 	@param $passwd   密码
 	@param $nickname 昵称
+	@param $sem      是否推广用户(默认0，1-为推广用户)
 	*/
 	{
 		$data = $this->fill($content);
@@ -3239,6 +3252,7 @@ class UserController extends BaseController {
 		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
 		$data['nickname'] = htmlspecialchars(trim($data['nickname']));
 		$data['head_photo'] = htmlspecialchars(trim($data['head_photo']));
+		$data['sem']        = intval(trim($data['sem']));
 		
 		if('' == $data['openid'])
 		{
@@ -3277,6 +3291,7 @@ class UserController extends BaseController {
 					'mobile'  =>$data['mobile'],
 					'pswd'    =>$data['passwd'],
 					'nickname'=>$data['nickname'],
+					'sem'     =>$data['sem'],
 				);
 				list($status_code, $content) = $this->register(json_encode($params));
 				if(200 == $status_code

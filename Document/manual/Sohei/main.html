@@ -231,20 +231,22 @@ content={'company_id':xxx}<br/>
 方法描述:注册<br/>
 输入参数格式:<br/>
 method=User.register<br/>
-content={'mobile':'xxx','pswd':'xxx'}<br/>
+content={'mobile':'xxx','pswd':'xxx','sem':xxx}<br/>
 @@input<br/>
 @param $mobile       手机号码<br/>
 @param $pswd         密码<br/>
 @param $nickname     昵称(不设为自动生成)<br/>
+@param $sem          是否推广用户(默认0，1-为推广用户)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx,'user_id':xxx,'nickname':'xxx',<br/>
-                             'sex':xxx,'cur_date':'xxx'}}<br/>
+                             'sex':xxx,'UI_IntBak1':xxx,'cur_date':'xxx'}}<br/>
 @@output<br/>
 @param $is_sucess 0-成功，-1-失败,-2-手机号码已存在<br/>
 @param $user_id  用户id<br/>
 @param $nickname 用户昵称<br/>
 @param $sex      用户性别<br/>
 @param $cur_date 当前日期<br/>
+@param $UI_IntBak1 是否推广用户(0-普通，1-推广)<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -462,13 +464,14 @@ content={'loginname':xxx,'logintype':'xxx'}<br/>
 方法描述:微信入口<br/>
 输入参数格式:<br/>
 method=User.entry_weixin<br/>
-content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx','sem':xxx}<br/>
 @@input<br/>
 @param $openid  	微信openid<br/>
 @param $mobile  	手机号码<br/>
 @param $passwd		密码<br/>
 @param $nickname    昵称<br/>
 @param $head_photo  用户头像<br/>
+@param $sem 是否推广用户(默认0，1-为推广用户)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
 @@output<br/>
@@ -563,13 +566,14 @@ content={'uid':xxx,'openid':'xxx'}<br/>
 方法描述:微博入口<br/>
 输入参数格式:<br/>
 method=User.entry_weibo<br/>
-content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx','sem':xxx}<br/>
 @@input<br/>
 @param $openid 微博openid<br/>
 @param $mobile 手机号码<br/>
 @param $passwd	 密码<br/>
 @param $nickname 昵称<br/>
 @param $head_photo 用户头像<br/>
+@param $sem 是否推广用户(默认0，1-为推广用户)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
 @@output<br/>
@@ -642,13 +646,14 @@ content={'uid':xxx,'openid':'xxx','userip':'xxx'}<br/>
 方法描述:qq入口<br/>
 输入参数格式:<br/>
 method=User.entry_qq<br/>
-content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx'}<br/>
+content={'openid':xxx,'mobile':'xxx','passwd':'xxx','nickname':'xxx','head_photo':'xxx','sem':xxx}<br/>
 @@input<br/>
 @param $openid qq的openid<br/>
 @param $mobile 手机号码<br/>
 @param $passwd	 密码<br/>
 @param $nickname 昵称<br/>
 @param $head_photo 用户头像<br/>
+@param $sem 是否推广用户(默认0，1-为推广用户)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':'xxx','user_info':{xxx}}}<br/>
 @@output<br/>
@@ -1240,6 +1245,23 @@ content={'user_id':xxx,'company_id':xxx,}<br/>
 {'status_code':200,'content':{xxx}}<br/>
 @@output<br/>
 @param $is_success 0-成功,-1-失败,-2-不允许操作<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
+</p>
+<hr>
+<p id="company_17">
+模块名称:Company<br/>
+模块名称描述:企业<br/>
+方法名称:get_list_exposal<br/>
+方法描述:最新曝光<br/>
+输入参数格式:<br/>
+method=Company.get_list_exposal<br/>
+content={}<br/>
+@@input<br/>
+示例输出:<br/>
+{'status_code':200,'content':{xxx}}<br/>
+@@output<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1871,7 +1893,7 @@ content={'where':{'id':xxx},'data':{'company_id':xxx,'title':‘xxx’,'source':
 方法描述:查询<br/>
 输入参数格式:<br/>
 method=News.get_list<br/>
-content={'where':{'id':xxx,'company_id':xxx,'sign':xxx,'title':‘xxx’,'source':'xxx','author':'xxx'}}<br/>
+content={'where':{'id':xxx,'company_id':xxx,'sign':xxx,'title':‘xxx’,'source':'xxx','author':'xxx','show_time':xxx}}<br/>
 @@input<br/>
 @@@where<br/>
 @param $id<br/>
@@ -1883,9 +1905,10 @@ content={'where':{'id':xxx,'company_id':xxx,'sign':xxx,'title':‘xxx’,'source
 @param $content    内容<br/>
 @param $pic        图片<br/>
 @param $assist_num 点赞数<br/>
+@param $show_time 显示日期<br/>
 示例输出:<br/>
 {'status_code':200,'content':[{'id':xxx,'company_id':xxx,'sign':xxx,'title':'xxx','source':'xxx','author':'xxx'
-                               'content':'xxx','pic':xxx,'assist_num':xxx,'add_time':xxx},...,{...}]}<br/>
+                               'content':'xxx','pic':xxx,'assist_num':xxx,'show_time':xxx,'add_time':xxx},...,{...}]}<br/>
 @@output<br/>
 @param $id<br/>
 @param $company_id 企业id<br/>
@@ -1897,6 +1920,7 @@ content={'where':{'id':xxx,'company_id':xxx,'sign':xxx,'title':‘xxx’,'source
 @param $pic     图片(pc)<br/>
 @param $pic_app 图片(app)<br/>
 @param $assist_num 点赞数<br/>
+@param $show_time 显示日期<br/>
 @param $add_time  添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1916,7 +1940,7 @@ content={'id':xxx}<br/>
 @param $id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'id':xxx,'company_id':xxx,'sign':xxx,'title':'xxx','source':'xxx','author':'xxx',<br/>
-                              'content':'xxx','pic':xxx,'pic_app':xxx,'assist_num':xxx,'add_time':xxx}}<br/>
+                              'content':'xxx','pic':xxx,'pic_app':xxx,'assist_num':xxx,'show_time':xxx,'add_time':xxx}}<br/>
 @@output<br/>
 @param $id<br/>
 @param $company_id 企业id<br/>
@@ -1928,6 +1952,7 @@ content={'id':xxx}<br/>
 @param $pic      图片(pc)<br/>
 @param $pic_app  图片(app)<br/>
 @param $assist_num 点赞数<br/>
+@param $show_time 显示日期<br/>
 @param $add_time 添加日期<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

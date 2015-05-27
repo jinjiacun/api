@@ -78,6 +78,10 @@ class CompanyaliasController extends BaseController {
 			$LastInsID = $obj->getLastInsID();
 			#更新企业别名
 			$company_id = intval($data['company_id']);
+			//清楚此企业别名缓存
+			$company_alias_list = S('company_alias_list');
+			$company_alias_list[$company_id] = null;
+			S('company_alias_list', $company_alias_list);
 			$alias_list = $this->get_name($company_id);
 			M('Company')->where(array('id'=>$company_id))
 			            ->save(array('alias_list'=>$alias_list));
@@ -183,6 +187,7 @@ class CompanyaliasController extends BaseController {
 			
 		$names = '';
 		$company_alias_list = S('company_alias_list');
+		
 		if(empty($company_alias_list))
 		{
 			$list = array();
@@ -214,6 +219,27 @@ class CompanyaliasController extends BaseController {
 		
 		if(isset($company_alias_list[$company_id]))
 			$names = $company_alias_list[$company_id];
+		else
+		{
+			//单独查询此企业的别名
+			$r_list = S('company_alias_list');
+			$list =$tmp_list= array();
+			$tmp_list = M($this->_module_name)->field('name')
+											  ->where(array('company_id'=>$company_id))
+											  ->select();
+			if($tmp_list
+			&& 0<count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$list[] = $v['name'];
+				}
+				unset($tmp_list, $v);
+				$names = implode(',', $list);
+				$r_list[$company_id] = $names;
+				S('company_alias_list', $r_list);
+			}			
+		}
 		
 		return $names;		
 	}
