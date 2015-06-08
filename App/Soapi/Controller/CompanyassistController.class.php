@@ -46,7 +46,7 @@ class CompanyassistController extends BaseController {
 		@param $company_id 新闻id
 		@param $user_id 用户id
 		@@output
-		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作
+		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作,-3-此企业不存在
 	 */
 	 {
 		 $data = $this->fill($content);
@@ -75,6 +75,17 @@ class CompanyassistController extends BaseController {
 				array(
 					'is_success'=>-2,
 					'message'=>urlencode('不允许操作'),
+				),
+			 );
+		 }
+		 
+		 if(!M('Company')->find($data['company_id']))
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=> -3,
+					'message' => urlencode('此企业不存在'),
 				),
 			 );
 		 }

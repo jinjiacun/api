@@ -79,7 +79,7 @@ class ComexposalController extends BaseController {
 	@param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)
 	@param $type         评论类型
 	@@output
-	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
+	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除
 	*/
 	{
 		$data = $this->fill($content);
@@ -122,6 +122,78 @@ class ComexposalController extends BaseController {
 			);
 		}
 		*/
+		
+		//检查曝光是否存在
+		if(!M('In_exposal')->find($data['exposal_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success' => -2,
+					'message'    => urlencode('此条曝光不存在'),
+				),
+			);
+		}
+		
+		//曝光是否删除
+		if(M('In_exposal')->where(array(
+										'id'=>$data['exposal_id'],
+										'is_delete'=>1,
+		                                ))
+		                  ->find())
+		{
+			return array(
+				200,
+				array(
+					'is_success' => -3,
+					'message'    => urlencode('此条曝光已删除'),
+				),
+			);
+		}
+		
+		$tmp_info = M('In_exposal')->field('company_id')
+		                           ->find($data['exposal_id']);
+		$company_id = $tmp_info['company_id'];
+		//检查企业是否存在
+		if(!M('Company')->find($data['company_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success' => -4,
+					'message'    => urlencode('此企业不存在'),
+				),
+			);
+		}
+		
+		//检查父评论是否存在
+		if(!M('Com_exposal')->find($data['parent_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success' => -5,
+					'message'    => urlencode('上级评论不存在'),
+				),
+			);
+		}
+		
+		//检查父评论是否删除
+		if(!M('Com_exposal')->where(array(
+									'id'        => $data['exposal_id'],
+									'is_delete' =>1,
+								))
+		                    ->find())
+		{
+			return array(
+				200,
+				array(
+					'is_success' => -6,
+					'message'    => urlencode('父评论已删除'),
+				),
+			);
+		}
+		
         $now = time();
         $data['last_time'] = $now;
 		$user_id = $data['user_id'];

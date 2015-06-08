@@ -38,7 +38,7 @@ class NewsassistController extends BaseController {
 		@param $news_id 新闻id
 		@param $user_id 用户id
 		@@output
-		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作
+		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作,-3-此新闻不存在
 	 */
 	 {
 		 $data = $this->fill($content);
@@ -69,6 +69,18 @@ class NewsassistController extends BaseController {
 					'message'=>urlencode('不允许操作'),
 				),
 			 );
+		 }
+		 
+		 //检查新闻是否存在
+		 if(!M('News')->find($data['news_id']))
+		 {
+				return array(
+					200,
+					array(
+						'is_success' => -3,
+						'message' => urlencode('此新闻不存在'),
+					),
+				);
 		 }
 		 
 		 $data['add_time'] = time();

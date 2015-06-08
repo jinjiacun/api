@@ -42,7 +42,7 @@ class ComtopController extends BaseController {
 	@param $company_id
 	@param $comment_id
 	@@output
-	@param $is_success 0-成功操作,-1-操作失败,
+	@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作 ,-3-此评论已删除 ,-4-此评论不存在 ,-5-此评论的企业不存在或者已删除
 	*/
 	{
 		$data = $this->fill($content);
@@ -77,6 +77,50 @@ class ComtopController extends BaseController {
 				)
 			);
 		}
+		
+		//检查评论是否被删除
+		if(M('Comment')->where(array(
+								'id'=>$data['comment_id'],
+								'is_delete'=>1,
+								))
+		               ->find())
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-3,
+					'message'=>urlencode('此评论已删除'),
+				)
+			);
+		}
+		
+		//检查评论不存在
+		if(!M('Comment')->find($data['comment_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-4,
+					'message'=>urlencode('此评论不存在'),
+				)
+			);
+		}
+		
+		//检查企业是否存在
+		if(!M($this->_module_name)->where(array(
+											'id'=>$data['company_id']
+											))
+									->find())
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-5,
+					'message'=>urlencode('此评论的企业不存在或者已删除'),
+				),
+			);
+		}
+		
 		
 		$data['add_time'] = time();
 		if(M($this->_module_name)->add($data))

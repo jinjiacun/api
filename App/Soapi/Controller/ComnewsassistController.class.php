@@ -90,6 +90,7 @@ class ComnewsassistController extends BaseController {
 			 );
 			}
 			
+			
 			$data['add_time'] = time();
 			
 			if(M($this->_module_name)->add($data))

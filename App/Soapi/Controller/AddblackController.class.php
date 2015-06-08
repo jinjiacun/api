@@ -57,7 +57,7 @@ class AddblackController extends BaseController {
 	@param $user_id
 	@param $company_id
 	@@output
-	@param $is_success 0-操作成功，-1-操作失败，-2-超过了加黒条数
+	@param $is_success 0-操作成功，-1-操作失败，-2-超过了加黒条数,-3-企业不存在或者被删除
 	*/
 	{
 		$data = $this->fill($content);
@@ -90,6 +90,18 @@ class AddblackController extends BaseController {
 					'is_success'=> -2,
 					'message'   => urlencode('24小时之内只能一次加黑'),
 				)
+			);
+		}
+		
+		//企业不存在
+		if(!M('Company')->find($data['company_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=> -3,
+					'message'   => urlencode('企业不存在或者被删除'),
+				),
 			);
 		}
 		

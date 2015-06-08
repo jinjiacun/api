@@ -47,7 +47,7 @@ class AdController extends BaseController {
 	@param $pic
 	@param $intro
 	@@output
-	@param $is_success 0-操作成功，-1-操作失败，-2-超过了加黒条数
+	@param $is_success 0-操作成功，-1-操作失败，-2-此图片不存在
 	*/
 	{
 		$data = $this->fill($content);
@@ -70,6 +70,21 @@ class AdController extends BaseController {
 		)
 		{
 			return C('param_fmt_err');
+		}
+		
+		//检查图片是否存在
+		if(0<$data['pic'])
+		{
+			if(!M('Media')->find($data['pic']))
+			{
+				return array(
+					200,
+					array(
+						'is_success' => -2,
+						'message'    => urlencode('此图片不存在'),
+					),
+				);
+			}
 		}
 			
 		$data['add_time'] = time();

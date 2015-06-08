@@ -1,4 +1,4 @@
-<html>
+:<html>
 	<head></head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
@@ -1204,7 +1204,7 @@ content={'company_id':xxx,'user_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{xxx}}<br/>
 @@output<br/>
-@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作<br/>
+@param $is_success 0-成功操作,-1-操作失败,-2-不允许操作,-3-此企业不存在<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1294,7 +1294,7 @@ content={'title':'xxx','user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xx
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-成功操作,-1-操作失败<br/>
+@param $is_success 0-成功操作,-1-操作失败,-2-父评论已删除,-3-父评论不存在 ,-4-祖父评论已删除 ,-5-祖父评论不存在 ,-6-企业不存在或者已删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1345,7 +1345,7 @@ content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anon
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1569,7 +1569,7 @@ content={'user_id':xxx,'company_id':xxx,'comment_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output
-@param $is_success 0-操作成功,-1-操作失败
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作 ,-3-此评论已删除 ,-4-此评论不存在 ,-5-此评论的企业不存在或者已删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1591,7 +1591,7 @@ content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx,'company_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output
-@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1682,7 +1682,7 @@ content={'user_id':xxx,'company_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-操作成功,-1-操作失败,-2-超过了加黒条数
+@param $is_success 0-操作成功,-1-操作失败,-2-超过了加黒条数,-3-企业不存在或者被删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1998,7 +1998,7 @@ content={'news_id':xxx,'user_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-操作成功,-1-操作失败<br/>
+@param $is_success 0-操作成功,-1-操作失败,-3-此新闻不存在<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>

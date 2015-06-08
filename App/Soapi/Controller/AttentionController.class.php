@@ -55,6 +55,8 @@ class AttentionController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		
+		
 		$data['add_time'] = time();
 		
 		if(!$this->__check_exists(array('company_id'=>$data['company_id'],
@@ -66,6 +68,18 @@ class AttentionController extends BaseController {
 					'is_success'=>-2,
 					'message'=>urlencode('不允许操作'),
 				)
+			);
+		}
+		
+		//检查是否存在企业
+		if(!M('Company')->find($data['company_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=> -3,
+					'message'   => urlencode('此企业不存在'),
+				),
 			);
 		}
 		

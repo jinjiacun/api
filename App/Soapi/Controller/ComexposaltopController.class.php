@@ -44,7 +44,7 @@ class ComexposaltopController extends BaseController {
 		@param $exposal_id 曝光id
 		@param $user_id 用户id
 		@@output
-		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作
+		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在
 	 */
 	 {
 		 $data = $this->fill($content);
@@ -80,6 +80,46 @@ class ComexposaltopController extends BaseController {
 				array(
 					'is_success'=>-2,
 					'message'=>urlencode('不允许操作'),
+				),
+			 );
+		 }
+		 
+		 //检查曝光是否存在
+		 if(!M('In_exposal')->find($data['exposal_id']))
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=>-3,
+					'message'=>urlencode('此曝光不存在'),
+				),
+			 );
+		 }
+		 
+		 //检查曝光是否删除
+		 if(M('In_exposal')->where(array(
+									'id'       => $data['exposal_id'],
+									'is_delete'=>1,
+								))
+		                    ->find())
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=>-4,
+					'message'=>urlencode('此曝光已删除'),
+				),
+			 );
+		 }
+		 
+		 //检查企业
+		 if(!M('Company')->find($data['company_id']))
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=>-5,
+					'message'=>urlencode('此企业不存在'),
 				),
 			 );
 		 }

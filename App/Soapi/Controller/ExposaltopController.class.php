@@ -74,6 +74,49 @@ class ExposaltopController extends BaseController {
 			);
 		}
 		
+		//检查曝光是否存在
+		if(!M('In_exposal')->find($data['exposal_id']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-3,
+					'message'=>urlencode('此曝光不存在'),
+				)
+			);
+		}
+		
+		//检查曝光是否删除
+		if(M('In_exposal')->where(array(
+								'id' => $data['exposal_id'],
+								'is_delete' => 1,
+								))
+		                  ->find())
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-4,
+					'message'=>urlencode('此曝光已删除'),
+				)
+			);
+		}
+		
+		$tmp_info = M('In_exposal')->filed('company_id')
+		                           ->find($data['exposal_id']);
+		$company_id = $tmp_info['company_id'];
+		//检查曝光企业是否存在
+		if(!M('Company')->find($company_id))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-5,
+					'message'=>urlencode('此企业不存在'),
+				)
+			);
+		}
+		
 		$data['add_time'] = time();
 		
 		if(M($this->_module_name)->add($data))
