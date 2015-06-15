@@ -42,9 +42,10 @@ class ComexposaltopController extends BaseController {
 		@@input
 		@param $company_id 企业id
 		@param $exposal_id 曝光id
+		@param $comment_id 曝光回复id
 		@param $user_id 用户id
 		@@output
-		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在
+		@param $is_success 0-操作成功，-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在 ,-6-此回复不存在 ,-7-此回复已删除
 	 */
 	 {
 		 $data = $this->fill($content);
@@ -123,6 +124,35 @@ class ComexposaltopController extends BaseController {
 				),
 			 );
 		 }
+		 
+		 //检查评论是否存在
+		 if(!M('Com_exposal')->find($data['comment_id']))
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=>-6,
+					'message'=>urlencode('此回复不存在'),
+				),
+			 );
+		 }
+		 
+		 //检查评论是否删除
+		 if(M('Com_exposal')->where(array(
+									'id'=>$data['comment_id'],
+									'is_delete'=>1,
+								))
+		                    ->find())
+		 {
+			 return array(
+				200,
+				array(
+					'is_success'=>-7,
+					'message'=>urlencode('此回复已删除'),
+				),
+			 );
+		 }
+		 
 		 
 		 $data['add_time'] = time();
 		 

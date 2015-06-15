@@ -201,7 +201,7 @@ content={'user_id':xxx,'exposal_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_sucess 0-成功，-1-失败, -2-不允许操作<br/>
+@param $is_sucess 0-成功，-1-失败, -2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在<br/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -1345,7 +1345,7 @@ content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anon
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
-@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-此条曝光不存在,-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>
@@ -1591,7 +1591,7 @@ content={'user_id':xxx,'exposal_id':xxx,'comment_id':xxx,'company_id':xxx}<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output
-@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在<br/>
+@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在,-6-此回复不存在 ,-7-此回复已删除<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/>

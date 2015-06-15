@@ -41,7 +41,7 @@ class ExposaltopController extends BaseController {
 	@param $user_id     用户id
 	@param $exposal_id  入库企业id
 	@@output
-	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作
+	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此曝光不存在 ,-4-此曝光已删除 ,-5-此企业不存在
 	*/
 	{
 		$data = $this->fill($content);
@@ -102,7 +102,7 @@ class ExposaltopController extends BaseController {
 			);
 		}
 		
-		$tmp_info = M('In_exposal')->filed('company_id')
+		$tmp_info = M('In_exposal')->field('company_id')
 		                           ->find($data['exposal_id']);
 		$company_id = $tmp_info['company_id'];
 		//检查曝光企业是否存在

@@ -79,7 +79,7 @@ class ComexposalController extends BaseController {
 	@param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)
 	@param $type         评论类型
 	@@output
-	@param $is_success 0-操作成功,-1-操作失败,-2-不允许操作,-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除
+	@param $is_success 0-操作成功,-1-操作失败,-2-此条曝光不存在,-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除
 	*/
 	{
 		$data = $this->fill($content);
