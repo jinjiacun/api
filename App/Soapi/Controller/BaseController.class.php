@@ -860,7 +860,18 @@ class BaseController extends Controller {
 	}
 	
 	
-	
+	public function _amount()
+	{
+		$record_count = 0;
+
+		$record_count = M($this->_module_name)->count();
+		return array(
+				200,
+				array(
+					'record_count'=>$record_count
+				),
+		);
+	}
 	
 	
 	

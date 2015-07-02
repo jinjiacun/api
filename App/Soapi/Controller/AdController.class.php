@@ -18,6 +18,12 @@ public function add
 @param $is_success 0-操作成功，-1-操作失败
 ##--------------------------------------------------------##
 public function get_list
+##--------------------------------------------------------##
+public function make_json
+##--------------------------------------------------------##
+public function re_make_json($function_name, $key_value)
+##--------------------------------------------------------##
+public function get_json($file_name)
 */
 class AdController extends BaseController {
 	/**
@@ -31,12 +37,21 @@ class AdController extends BaseController {
 	                      )charset=utf8;
 	 * */
 	protected $_module_name = "ad";
+	protected $_json        = array('record_count'=>'', 'list'=>'');
 	protected $id;
 	protected $title;
 	protected $url;
 	protected $pic;
 	protected $intro;
 	protected $add_time;   #添加日期
+
+	public function __construct()
+	{
+		$this->_json        = array(
+								'record_count'=>__PUBLIC__.'json/Ad/ad_amount.json',
+								'list'        =>__PUBLIC__.'json/Ad/ad_list.json',
+								);
+	}
 	
 	#添加加黑
 	public function add($content)
@@ -111,32 +126,77 @@ class AdController extends BaseController {
 	
 	public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
-
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+		$param = json_decode($content, true);
+		if(file_exists($this->_json['list']) && !isset($param['where']))
+		{			
+			$list = array();
+			$tmp_list = json_decode($this->get_json($this->_json['list']), true);
+			$i=0;
+			foreach($tmp_list['list'] as $v)
 			{
-				$list[] = array(
-						'id'         => intval($v['id']),
-					    'title'      => urlencode($v['title']),
-	                    'url'        => urlencode($v['url']),
-						'pic'        => intval($v['pic']),
-                        'pic_url'    => $this->get_pic_url($v['pic']),
-                        'intro'      => urlencode($v['intro']),
-						'add_time'   => intval($v['add_time']),
-						
-					);	
-			}
-		}
+				if($i>10)break;
 
-		return array(200, 
+				$list[] = $v;
+				$i++;
+			}
+			$record_count = json_decode($this->get_json($this->_json['record_count']), true);
+			return array(
+				200,
 				array(
-					'list'=>$list,
-					'record_count'=> $record_count,
-					)
-				);
+					'list'        => $list,
+					'record_count'=> $record_count['record_count'],
+				),
+			);
+		}
+		else if(!isset($param['where']))
+		{
+			$this->make_json();
+			$list = array();			             
+			$tmp_list = $this->get_json($this->_json['list']);
+			$i=0;
+			foreach($tmp_list as $v)
+			{
+				if($i>10)break;
+
+				$list[] = $v;
+				$i++;
+			}
+			$record_count = $this->get_json($this->_json['record_count']);
+			return array(200, 
+					array(
+						'list'=>$list,
+						'record_count'=> $record_count,
+						)
+			);
+		}	
+		else
+		{
+			list($data, $record_count) = parent::get_list($content);
+
+			$list = array();
+			if($data)
+			{
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'         => intval($v['id']),
+							'title'      => urlencode($v['title']),
+							'url'        => urlencode($v['url']),
+							'pic'        => intval($v['pic']),
+							'pic_url'    => $this->get_pic_url($v['pic']),
+							'intro'      => urlencode($v['intro']),
+							'add_time'   => intval($v['add_time']),							
+						);	
+				}
+			}
+				             
+			return array(200, 
+					array(
+						'list'=>$list,
+						'record_count'=> $record_count,
+						)
+			);
+		}	
 	}
 
 	#通过id查询一条信息
@@ -188,4 +248,60 @@ class AdController extends BaseController {
 		);
 	}
 
+    #-------------------------------------------------------------------#
+	public function make_json()
+	{
+		$record_count = 0;		
+		$list = array();
+		$record_count = M($this->_module_name)->count();
+		
+		$tmp_list = M($this->_module_name)->order(array('id'=>'desc'))->select();
+		if($tmp_list)
+		{
+			foreach($tmp_list as $v)
+			{
+				$list[intval($v['id'])] = array(				
+							'id'          => intval($v['id']),
+							'title'       => urlencode($v['title']),
+							'url'         => urlencode($v['url']),
+							'pic'         => intval($v['pic']),
+							'pic_url'     => $this->get_pic_url($v['pic']),
+							'intro'       => urlencode($v['intro']),
+							'add_time'    => intval($v['add_time']),
+							);
+			}
+		}
+		
+		file_put_contents($this->_json['list'], json_encode(array('list'=>$list)));
+		file_put_contents($this->_json['record_count'], json_encode(array('record_count'=>$record_count)));
+	}
+	
+	public function re_make_json($function_name, $key_value)
+	{
+		$info = $this->get_info(json_encode(array('id'=>$key_value)));
+		switch($function_name)
+		{
+			case 'add':
+				{
+					$old_list         = file_get_contents($this->_json['list']);
+					$old_record_count = file_get_contents($this->_json['record_count']);
+					$old_record_count++;
+					$old_list[$key_value] = $info;					
+					file_put_contents($this->_json['record_count'], json_encode(array('record_count'=>$record_count)));
+				}
+			break;
+			case 'update':
+				{
+					$old_list         = file_get_contents($this->_json['list']);					
+					$old_list[$key_value] = $info;
+				}
+			break;
+		}
+		file_put_contents($this->_json['list'], json_encode(array('list'=>sort($list))));
+	}
+	
+	public function get_json($file_name)
+	{
+		return file_get_contents($file_name);
+	}	
 }

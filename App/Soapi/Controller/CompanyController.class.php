@@ -1586,7 +1586,18 @@ class CompanyController extends BaseController {
 		}
 		
 		
-		
+		#总条数
+		public function get_amount()
+		{
+			$record_amount = 0;
+			$record_amount = M($this->_module_name)->count();
+			return array(
+				200,
+				array(
+					'record_count'=>$record_amount,
+				),
+			);
+		}		
 		
 		
 		

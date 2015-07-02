@@ -167,20 +167,23 @@ class ComexposalController extends BaseController {
 		}
 		
 		//检查父评论是否存在
-		if(!M('Com_exposal')->find($data['parent_id']))
+		if(0< $data['parent_id'])
 		{
-			return array(
-				200,
-				array(
-					'is_success' => -5,
-					'message'    => urlencode('上级评论不存在'),
-				),
-			);
+			if(!M('Com_exposal')->find($data['parent_id']))
+			{
+				return array(
+					200,
+					array(
+						'is_success' => -5,
+						'message'    => urlencode('上级评论不存在'),
+					),
+				);
+			}
 		}
 		
 		//检查父评论是否删除
-		if(!M('Com_exposal')->where(array(
-									'id'        => $data['exposal_id'],
+		if(M('Com_exposal')->where(array(
+									'id'        => $data['parent_id'],
 									'is_delete' =>1,
 								))
 		                    ->find())

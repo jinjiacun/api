@@ -81,6 +81,10 @@ class IndexController extends Controller {
         {
           $this->is_mul = true;
         }
+        if(I('get.is_mul'))
+        {
+          $this->is_mul = true;
+        }
 
         if('' == $this->method)
         {
@@ -103,6 +107,7 @@ class IndexController extends Controller {
            $this->in_content = str_replace("&quot;",'"', $this->in_content);
            $this->in_content = str_replace("&amp;", '', $this->in_content);
            $this->in_content = str_replace("'", '"', $this->in_content);
+           $this->in_content = str_replace("$", '%', $this->in_content);
         }     
 
         
@@ -218,7 +223,7 @@ class IndexController extends Controller {
                                         $status_code,
                                         urldecode(json_encode($out_content))
                       );
-                      #file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                       self::call_back($status_code, $out_content);
                     }                    
                 }
