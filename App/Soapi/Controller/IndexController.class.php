@@ -4,8 +4,9 @@ use Think\Controller;
 class IndexController extends Controller {
 
     protected $type        = "" ; //数据类型
-	  protected $method      = "" ; //方法名称
+    protected $method      = "" ; //方法名称
     protected $in_content  = "" ; //输入参数
+    protected $token       = "" ; //加密验证
     protected $handler     = null;//资源处理句柄
     protected $is_mul      = false;
 
@@ -40,7 +41,8 @@ class IndexController extends Controller {
 
 
     public function index(){//($type, $method=null, $content=null, $handler=null){
-      header("Content-Type: text/html;charset=utf-8");
+      header("Content-Type: text/html;charset=utf-8");      
+      $obj_des = new \Org\Util\DES();
       $stime=microtime(true);
         ##get
     	if(I('get.method'))
@@ -51,6 +53,10 @@ class IndexController extends Controller {
     	{
     		$this->in_content = I('get.content');
     	}
+    	if(I('get.token'))
+    	{
+			$this->token = I('get.token');
+		}
 
         ##post
         if(I('post.type'))
@@ -69,14 +75,29 @@ class IndexController extends Controller {
         {
             $this->handler = I('post.handler');
         }
+        if(I('post.token'))
+        {
+			$this->token = I('post.token');
+		}
         if(!isset($this->method)
-        || !isset($this->in_content))
+        || !isset($this->in_content)
+        || !isset($this->token))
         {
            return $this->call_back(500, 
                             array('message'=>urlencode('参数输入不合法'))
                             );
             return;
         }
+        
+        if(empty($this->token))
+        {
+			return $this->call_back(500, 
+                            array('message'=>urlencode('token为空'))
+                            );
+            return;
+		}
+        
+        
         if(I('post.is_mul'))
         {
           $this->is_mul = true;
@@ -99,6 +120,15 @@ class IndexController extends Controller {
            $this->method = str_replace("&quot;",'"', $this->method);
            $this->method = str_replace("&amp;", '', $this->method);
            $this->method = str_replace("'", '"', $this->method);
+        }
+
+        //验证参数合法性
+        if($this->token !=  $obj_des->encrypt($this->method.date("Y-m-d")))
+        {
+          return $this->call_back(501, 
+                            array('message'=>urlencode('no authorization'))
+                            );
+            return; 
         }
 
         if($this->in_content)
