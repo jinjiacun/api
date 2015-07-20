@@ -1022,10 +1022,12 @@ class InexposalController extends BaseController {
 		if($tmp_list
 		&& 0< count($tmp_list))
 		{
+			#查询回复数
+			$re_amount = 0;			
+			$exposal_id_list = array();
 			foreach($tmp_list as $v)
-			{
-				#查询回复数
-                $re_amount = 0;
+			{   
+                /*
                 $tmp_param = array(
 					'exposal_id'=>$v['id'],
                     'parent_id'=>0,
@@ -1033,6 +1035,8 @@ class InexposalController extends BaseController {
                     'is_delete'=>0,
 				); 
                 $re_amount = $tmp_obj->where($tmp_param)->count();
+                */
+                $exposal_id_list[] = $v['id'];
 				$list[] = array(
 					'id'           =>intval($v['id']),
 					'company_id'   =>intval($v['company_id']),
@@ -1045,9 +1049,38 @@ class InexposalController extends BaseController {
                     'pic_1'   => intval($v['pic_1']),
                     'pic_1_url' => $this->get_pic_url($v['pic_1']),
                     're_amount' => $re_amount,
-				);
+				);				
 			}
-			unset($v, $tmp_list, $tmp_obj);
+			unset($v, $tmp_list);
+			
+			$re_amount_list = array();
+			$tmp_param = array(
+					'exposal_id'=>array('in', implode(',', $exposal_id_list)),
+                    'parent_id'=>0,
+                    'is_validate'=>1,
+                    'is_delete'=>0,
+			); 
+			$re_amount_list_tmp = $tmp_obj->field('exposal_id, count(1) as re_amount')
+			                              ->where($tmp_param)
+			                              ->group("exposal_id")
+			                              ->select();
+			if($re_amount_list_tmp
+			&& 0<count($re_amount_list_tmp))
+			{
+				foreach($re_amount_list_tmp as $v)
+				{
+					$re_amount_list[$v['exposal_id']] = $v['re_amount'];
+				}
+			}
+			unset($re_amount_list_tmp, $v, $tmp_obj);
+			
+			//查询回复数
+			foreach($list as $k=>$v)
+			{
+				if(isset($re_amount_list[$v['id']]))
+					$list[$k]['re_amount'] = $re_amount_list[$v['id']];
+			}
+			unset($re_amount_list, $k, $v);
 		}
 		
 		return array(

@@ -584,6 +584,11 @@ class CommentController extends BaseController {
 		}		
 
 		$obj = M($this->_module_name);
+		$_sql_list = array();
+		$has_make = false;
+		$template_sql = "";
+		$template_sql1 = "";
+		$parent_id_list = array();
 		foreach($list as $k=> $v)
 		{
 			if(!isset($data['where_ex']))
@@ -635,12 +640,32 @@ class CommentController extends BaseController {
 						$data['page_size'] = 2;
 						$data['page_index'] = 1;
 			}
-			
+			unset($data['where']['parent_id']);
+			$parent_id_list[] = intval($v['id']);
+
 			//list(, $sub) = $this->get_list(json_encode($data));
-			$sub['list'] = $obj->page(intval($data['page_index']),intval($data['page_size']))
+			if(!$has_make)
+			{
+				$sub['list'] = $obj->field("*")
+			           //->page(intval($data['page_index']),intval($data['page_size']))
 			           ->where($data['where'])
-			           ->order(array('add_time'=>'desc'))
-			           ->select();
+			           //->order(array('add_time'=>'desc'))
+			           ->find();
+				//print_r($obj->getLastSql());
+				$template_sql = $obj->getLastSql();
+				$template_sql = str_replace("LIMIT 1", '', $template_sql);
+				$template_sql1 = $template_sql;
+				$template_sql1 = str_replace("SELECT *", "SELECT parent_id, count(1) as sub_amount", $template_sql1);
+				$_sql_list[] = '('.$template_sql." and parent_id=".$v['id']." order by add_time desc limit 0,".$data['page_size'].')';
+				$has_make = true;			
+			}
+			else
+			{
+				$_sql_list[] = '('.$template_sql." and parent_id=".$v['id']." order by add_time desc limit 0,".$data['page_size'].')';
+			}
+			
+			//echo M()->getLastSql();
+			/*
 			if(isset($sub['list'][0]['user_id']))$sub['list'][0]['nickname'] = $this->_get_nickname($sub['list'][0]['user_id']);
 			if(isset($sub['list'][1]['user_id']))$sub['list'][1]['nickname'] = $this->_get_nickname($sub['list'][1]['user_id']);
 			if(isset($sub['list'][2]['user_id']))$sub['list'][2]['nickname'] = $this->_get_nickname($sub['list'][2]['user_id']);
@@ -651,15 +676,66 @@ class CommentController extends BaseController {
 			if(isset($sub['list'][7]['user_id']))$sub['list'][7]['nickname'] = $this->_get_nickname($sub['list'][7]['user_id']);
 			if(isset($sub['list'][8]['user_id']))$sub['list'][8]['nickname'] = $this->_get_nickname($sub['list'][8]['user_id']);
 			if(isset($sub['list'][9]['user_id']))$sub['list'][9]['nickname'] = $this->_get_nickname($sub['list'][9]['user_id']);           
+			*/
 			           
-			$sub['record_count'] = $obj->where($data['where'])->count();
-			if(null == $sub['list']) { $sub['list'] = array(); $sub['record_count']=0; }
+			//$sub['record_count'] = $obj->where($data['where'])->count();
+			//if(null == $sub['list']) { $sub['list'] = array(); $sub['record_count']=0; }
 			$list[$k]['re_sub'] = array(
-				'list'=>$sub['list'],
-				'record_count'=>$sub['record_count']
+				'list'=>array(),//$sub['list'],
+				'record_count'=>0, //$sub['record_count']
 			);
 		}
 		unset($k, $v);
+
+		$sql_str = implode(" union ", $_sql_list);
+		$tmp_list = M()->query($sql_str);
+		$sub_list = array();
+		$parent_id = 0;
+		if($tmp_list && 0<count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$parent_id = intval($v['parent_id']);
+				//if(isset($sub_list[$parent_id]))
+				$v['nickname'] = $this->_get_nickname($v['user_id']);
+				$sub_list[$parent_id][] = $v;
+			}
+		}
+		unset($tmp_list, $v, $sql_str, $template_sql);
+
+		//分别计算总数
+		$parent_id = 0;
+		$sql_str = $template_sql1." and parent_id in (".implode(",", $parent_id_list).') group by parent_id';
+		$tmp_list = M()->query($sql_str);
+		$sub_amount_list = array();
+		if($tmp_list && 0<count($tmp_list))
+		{
+			foreach($tmp_list as $v)
+			{
+				$parent_id = intval($v['parent_id']);
+				$sub_amount_list[$parent_id] = $v['sub_amount'];
+			}
+		}
+		unset($tmp_list, $v, $sql_str, $template_sql1, $pparent_id);
+
+		$id = 0;
+		if($list && 0<count($list))
+		{
+			foreach($list as $k=>$v)
+			{
+				$id = intval($v['id']);
+				if($sub_list[$id])
+				{
+					$list[$k]['re_sub']['list'] = $sub_list[$id];
+					$list[$k]['re_sub']['record_count'] = $sub_amount_list[$id];
+				}
+			}
+			unset($k, $v, $sub_list, $sub_amount_list);
+		}
+
+		//计算下一级总数
+		//print_r($_sql_list);
+//		print_r($sql_str);
 		return array(
 			200,
 			array(
