@@ -351,9 +351,9 @@ class InexposalController extends BaseController {
 		$list         = array();
 		$record_count = 0;
 		
-		$_cache = S($content);
-		if(empty($_cache))
-		{
+		//$_cache = S($content);
+		//if(empty($_cache))
+		//{
 			list(,$old_list) = $this->get_list($content);
 			$list = $old_list['list'];
 			$record_count = $old_list['record_count'];
@@ -363,6 +363,11 @@ class InexposalController extends BaseController {
 			$user_id = $data['user_id'];
 			if(isset($data['where']))unset($data['where']);
 		    $obj = M('Com_exposal');
+		    $_sql_list = array();
+		    $template_sql = $template_sql1 ='';		    
+		    $exposal_id_list = array();
+		    $sub_list = $sub_amount_list = array();
+		    $has_make = false;
 			foreach($list as $k=> $v)
 			{   
 				if(isset($data['where_ex']))
@@ -387,17 +392,36 @@ class InexposalController extends BaseController {
 					if(isset($data['order']['v_last_time']))unset($data['order']['v_last_time']);
 				}			
 				//list(, $sub) = A('Soapi/Comexposal')->get_list(json_encode($data));
-				$sub['list'] = $obj->page(intval($data['page_index']),intval($data['page_size']))
+				if(!$has_make)
+				{
+					$obj->page(intval($data['page_index']),intval($data['page_size']))
 				                   ->where($data['where'])
 				                   ->order($data['order'])
-				                   ->select();
+				                   ->find();
+				    $template_sql = M()->_sql();
+				    $template_sql = str_replace('LIMIT 1', '', $template_sql);
+				    $template_sql = str_replace('`exposal_id` = '.$v['id'], '<EXPOSAL_WHERE>', $template_sql);
+				    $template_sql1 = $template_sql;
+				    $template_sql1 = str_replace("SELECT *", "SELECT exposal_id, count(1) as sub_amount", $template_sql1);
+				    $_sql_list[] = '('.sprintf("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
+				}
+				else
+				{
+					$_sql_list[] = '('.sprintf("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
+				}
+				$exposal_id_list[] = intval($v['exposal_id']);
+				                  
+				$sub['list'] = array(); $sub['record_count'] = 0;
+				/*                   
 				$sub['record_count'] = $obj->where($data['where'])
 				                           ->count();
 				if(null == $sub['list']){$sub['list'] = array(); $sub['record_count'] = 0;}
+				
 				if(isset($sub['list'][0]['user_id'])){$sub['list'][0]['nickname'] = $this->_get_nickname($sub['list'][0]['user_id']);}
 				if(isset($sub['list'][1]['user_id'])){$sub['list'][1]['nickname'] = $this->_get_nickname($sub['list'][1]['user_id']);}
 				if(isset($sub['list'][0]['content'])){$sub['list'][0]['content'] = urlencode($sub['list'][0]['content']);}
 				if(isset($sub['list'][1]['content'])){$sub['list'][1]['content'] = urlencode($sub['list'][1]['content']);}
+				*/
 
 				$list[$k]['sub'] = array(
 					'list'=>$sub['list'],
@@ -405,10 +429,55 @@ class InexposalController extends BaseController {
 				);
 			}
 			unset($k, $v);
-			$_cache = array('list'=>$list, 'record_count'=>$record_count);
-			S($content, $_cache);
-		}
-		S($content, NULL);
+			
+			//获取回复
+			$sql_str = implode(" union ", $_sql_list);
+			$tmp_list = M()->query($sql_str);
+			$exposal_id = 0;
+			if($tmp_list && 0<count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$exposal_id = intval($v['exposal_id']);
+					$v['nickname'] = $this->_get_nickname($v['user_id']);
+					$sub_list[$exposal_id][] = $v;
+				}
+			}
+			unset($tmp_list, $v, $sql_str, $template_sql);
+			
+			//分别计算回复总数
+			$exposal_id = 0;
+			$sql_str = sprintf('<EXPOSAL_WHERE>', 'parent_id in('.implode(",", $exposal_id_list).')', $template_sql1).' group by exposal_id';
+			$tmp_list = M()->query($sql_str);
+			$sub_amount_list = array();
+			if($tmp_list && 0<count($tmp_list))
+			{
+				foreach($tmp_list as $v)
+				{
+					$exposal_id = intval($v['exposal_id']);
+					$sub_amount_list[$parent_id] = $v['sub_amount'];
+				}
+			}
+			unset($tmp_list, $v, $sql_str, $template_sql1, $exposal_id);
+			
+			$id = 0;
+			if($list && 0<count($list))
+			{
+				foreach($list as $k=>$v)
+				{
+					$id = intval($v['id']);
+					if($sub_list[$id])
+					{
+						$list[$k]['re_sub']['list'] = $sub_list[$id];
+						$list[$k]['re_sub']['record_count'] = $sub_amount_list[$id];
+					}
+				}
+				unset($k, $v, $sub_list, $sub_amount_list);
+			}
+		//	$_cache = array('list'=>$list, 'record_count'=>$record_count);
+		//	S($content, $_cache);
+		//}
+		//S($content, NULL);
 		
 		return array(
 			200,
