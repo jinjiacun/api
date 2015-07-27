@@ -1078,12 +1078,12 @@ class InexposalController extends BaseController {
 		$data['where']['is_delete'] = 0;
 		
 		$D = D('InexposalcompanyView');
+		//$D = M('In_exposal');
 		$tmp_list = $D
 		            ->page($data['page_index'], $data['page_size'])
 		            ->order($data['order'])
 		            ->where($data['where'])->select();
-		$record_count = D('InexposalcompanyView')->where($data['where'])->count();
-		
+		$record_count = $D->where($data['where'])->count();
 		$tmp_obj = M('Com_exposal');
 		
 		
@@ -1109,6 +1109,7 @@ class InexposalController extends BaseController {
 				$list[] = array(
 					'id'           =>intval($v['id']),
 					'company_id'   =>intval($v['company_id']),
+					'nature'       =>$v['nature'],
 					'user_id'      =>intval($v['user_id']),
 					'nickname'     =>$this->_get_nickname($v['user_id']),
 					'add_time'     =>intval($v['add_time']),
