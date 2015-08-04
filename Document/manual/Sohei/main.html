@@ -2,7 +2,10 @@
 	<head></head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <body>
-url:http://192.168.1.131/yms_api/index.php?m=Soapi
+url:http://192.168.1.131/yms_api/index.php?m=Soapi<br/>
+测试ios推动:http://192.168.1.131/phpmquttclient/ios_push.php<br/>
+测试android推动:http://192.168.1.131/phpmquttclient/index.php<br/>
+查看android连接及其发送接受相关日志信息:http://192.168.1.131/phpmquttclient/info.php<br/>
 <p id="version_1">
 模块名称:Version<br/>
 模块名称描述:版本更新<br/>
@@ -2227,7 +2230,7 @@ content={'type':'xxx','token':'xxx','user_id':xxx}<br/>
 <hr><hr>
 <p id="push_2">
 消息格式:<br/>
-&nbsp;&nbsp;android:{'comment':'<font color="red">[COMMENT_PARAM_LIST]</font>'}<br/>
+&nbsp;&nbsp;android:{'content':'<font color="red">[CONTENT]</font>','comment':'<font color="red">[COMMENT_PARAM_LIST]</font>'}<br/>
 &nbsp;&nbsp;ios:{‘alert’:'<font color="red">[CONTENT]</font>','badge':1,'sound':'default',
                 'comment':'<font color="red">[COMMENT_PARAM_LIST]</font>'}<br/><br/>
 				
@@ -2238,7 +2241,7 @@ client_id:user_id+token(即为android采集的user_id和本机token的组合)<br
 				
 推送类型和对应参数:<br/>
 <table>
-<tr><th>类型(type)</th><th>命令参数格式([COMMENT_PARAM_LIST])</th><th>描述</th></tr>
+<tr><th>类型(TYPE)</th><th>命令参数格式([COMMENT_PARAM_LIST])</th><th>描述</th></tr>
 <tr>
 <td>010001</td><td>type:[TYPE],comment_id:[COMMENT_ID]</td><td>主贴回复,[COMMENT_ID]为主贴的id</td>
 </tr>

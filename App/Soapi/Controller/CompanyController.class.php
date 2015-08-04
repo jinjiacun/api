@@ -1542,6 +1542,19 @@ class CompanyController extends BaseController {
 				'certificate_url'     =>intval($data['certificate']),
 			//	'agent_platform_n'    =>intval($data['agent_platform']),
 			);
+			
+			
+			#检查是否有企业评级改变
+			$has_level_change = true;
+			$cur_auth_level = $data['data']['auth_level'];
+			$_info = M($this->_module_name)->field('auth_level')->find($data['where']['id']);
+			if($_info['auth_level'] == $cur_auth_level)
+			{
+				$has_level_change = false;
+			}
+			unset($_info);
+			#检查是否有企业评级改变
+			
 			foreach($tmp_list as $k=>$v)
 			{
 				if(0< $v)
@@ -1566,13 +1579,26 @@ class CompanyController extends BaseController {
 				);
 			}
 			
+			
 			if(200 == $status_code
 			&& 0 == $r_content['is_success'])
 			{
 				#更新曝光中企业等级	
 				M('In_exposal')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level']));
 		        #更新评论中企业等级
-				M('Comment')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level'])); 		
+				M('Comment')->where(array('company_id'=>$data['where']['id']))->save(array('auth_level'=>$data['data']['auth_level'])); 	
+				
+				#企业评级改变:begin
+				if($has_level_change)
+				{
+					$_tempalte_param = C('push_event_type');
+					$src_event_param = $_tempalte_param['010003']['src_event_param'];
+					$src_event_param = str_replace("<COMPANY_ID>", $data['id'], $src_event_param);
+					$src_event_param = str_replace("<NATURE>", $data['nature'], $src_event_param);
+					A('Soapi/Pushmessage')->push_event('010003', $src_event_param, sprintf("%s 发生评级改变", $data['data']['company_name']));
+				}
+				#企业评级改变:end
+					
 				return array(
 					$status_code,
 					$r_content

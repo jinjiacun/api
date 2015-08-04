@@ -130,14 +130,34 @@ class NewsController extends BaseController {
 		
 		$data['add_time'] = time();
 		
+		#判定是否负面新闻:begin
+		$_push_has_validate = false;
+		if(0< $data['company_id']
+		&& 1 == $data['sign'])
+		{
+			$_push_has_validate = true;
+		}
+		#判定是否负面新闻:end
+		
 		if(M($this->_module_name)->add($data))
 		{
+			$id = M()->getLastInsID();
+			
+			if($_push_has_validate)
+			{
+				$_tempalte_param = C('push_event_type');
+					$src_event_param = $_tempalte_param['010004']['src_event_param'];
+					$src_event_param = str_replace("<COMPANY_ID>", $data['company_id'], $src_event_param);
+					$src_event_param = str_replace("<NEWS_ID>", $id, $src_event_param);
+					A('Soapi/Pushmessage')->push_event('010004', $src_event_param, sprintf("负面新闻 %s", $data['title']));
+			}
+			
 			return array(
 				200,
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
-					'id'=> M()->getLastInsID(),
+					'id'=> $id,
 				)
 			);
 		}
