@@ -2204,6 +2204,60 @@ content={}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 </p>
 <hr><hr>
+<p id="push_1">
+模块名称:Token<br/>
+模块名称描述:移动设备token<br/>
+方法名称:add<br/>
+方法描述:查询<br/>
+输入参数格式:<br/>
+method=Token.add<br/>
+content={'type':'xxx','token':'xxx','user_id':xxx}<br/>
+@@input<br/>
+@param $type    设备类型(008001:(ios,默认),008002:android)<br/>
+@param $token   设备对应的token(注意，android可能有重复，使用uid+token组合模式,格式为:xxx_xxxxx)<br/>
+@param $user_id 用户id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
+<p id="push_2">
+消息格式:<br/>
+&nbsp;&nbsp;android:{'comment':'<font color="red">[COMMENT_PARAM_LIST]</font>'}<br/>
+&nbsp;&nbsp;ios:{‘alert’:'<font color="red">[CONTENT]</font>','badge':1,'sound':'default',
+                'comment':'<font color="red">[COMMENT_PARAM_LIST]</font>'}<br/><br/>
+				
+关于android的说明：<br/>
+测试服务连接地址及其端口:192.168.1.131:1883<br/>
+topic:souhei<br/>
+client_id:user_id+token(即为android采集的user_id和本机token的组合)<br/><br/>
+				
+推送类型和对应参数:<br/>
+<table>
+<tr><th>类型(type)</th><th>命令参数格式([COMMENT_PARAM_LIST])</th><th>描述</th></tr>
+<tr>
+<td>010001</td><td>type:[TYPE],comment_id:[COMMENT_ID]</td><td>主贴回复,[COMMENT_ID]为主贴的id</td>
+</tr>
+<tr>
+<td>010002</td><td>type:[TYPE],comment_id:[COMMENT_ID]</td><td>更贴回复,[COMMENT_ID]为跟贴的id</td>
+</tr>
+<tr>
+<td>010003</td><td>type:[TYPE],company_id:[COMPANY_ID],nature:[NATURE]</td><td>企业评级改变,[COMPANY_ID]为企业id,[NATURE]为企业性质(详情查看字典)</td>
+</tr>
+<tr>
+<td>010004</td><td>type:[TYPE],news_id:[NEWS_ID]</td><td>负面新闻,[NEWS_ID]为新闻id</td>
+</tr>
+</table>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
+
 <p id="pic_1">
 模块名称:Media<br/>
 模块名称描述:媒体<br/>
@@ -2465,6 +2519,70 @@ content={'media':xxx}<br/>
 			<td>7</td>
 			<td>分享</td>
 			<td>曝光分享</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>008001</td>
+			<td>8</td>
+			<td>设备类型</td>
+			<td>ios</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>008002</td>
+			<td>8</td>
+			<td>设备类型</td>
+			<td>android</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>009001</td>
+			<td>9</td>
+			<td>推送类型</td>
+			<td>点推</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>009002</td>
+			<td>9</td>
+			<td>推送类型</td>
+			<td>全推</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>009003</td>
+			<td>9</td>
+			<td>推送类型</td>
+			<td>组推</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>010001</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>回复评论主帖</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>010002</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>回复评论跟帖</td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>010003</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>我的关注-企业评级改变</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>010004</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>我的关注-负面新闻</td>
 			<td></td>
 		</tr>
 

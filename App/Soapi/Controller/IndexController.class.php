@@ -122,9 +122,15 @@ class IndexController extends Controller {
            $this->method = str_replace("'", '"', $this->method);
         }
 
+        $_arr = array(
+          'Test.get_des',
+    //      'Inexposal.dynamic',
+        );
+
         //验证参数合法性
-        if($this->token !=  $obj_des->encrypt($this->method.date("Y-m-d")))
+        if($this->token !=  $obj_des->encrypt($this->method.date("Y-m-d")) && !in_array($this->method, $_arr))
         {
+		  file_put_contents(__PUBLIC__."log/error".date("Y-m-d").'_'.$this->getIP().".log", sprintf("method:%s,content:%s,token:%s\r\n",$this->method,$this->in_content,$this->token), FILE_APPEND);	
           return $this->call_back(501, 
                             array('message'=>urlencode('no authorization'))
                             );

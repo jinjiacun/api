@@ -29,5 +29,25 @@ return array(
      'api_user_photo_url' => 'http://192.168.1.31:8310',
      'api_user_photo_def_url' => 'http://192.168.1.31:8310/useravatar.jpg',
      'KEY'                => 'souh*e_i#2?0>1&5',
+     
+     #推送事件类型
+     'push_event_type' =>array(
+                           #回复主贴评论推送
+		                   'comment_master'=> array('value'=>'010001', 
+		                                            'src_event_param'=>'comment_id:<COMMENT_ID>,parent_id:<PARENT_ID>,content:<CONTENT>',
+		                                            'des_event_param'=>'type:010001,comment_id:<COMMENT_ID>'),
+		                   #回复跟帖评论推送                         
+		                   'comment'       => array('value'=>'010002',
+		                                            'src_event_param'=>'parent_id:<COMMENT_ID>,parent_id:<PARENT_ID>,content:<CONTENT>',
+		                                            'des_event_param'=>'type:010002,comment_id:<COMMENT_ID>'),
+		                   #企业评级改变推送 
+		                   'company'       => array('value'=>'010003',
+		                                            'src_event_param'=>'company_id:<COMPANY_ID>,nature:<NATURE>',
+		                                            'des_event_param'=>'type:010003,company_id:<COMPANY_ID>,nature:<NATURE>'),
+		                   #负面新闻推送
+		                   'company_news'  => array('value'=>'010004',
+		                                            'src_event_param'=>'news_id:<NEWS_ID>,company_id:<COMPANY_ID>',
+		                                            'des_event_param'=>'type:010004,news_id:<NEWS_ID>'), 
+	 ),
 	//'配置项'=>'配置值'
 );

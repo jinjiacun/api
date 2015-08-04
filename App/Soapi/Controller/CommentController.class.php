@@ -983,6 +983,49 @@ class CommentController extends BaseController {
 				#统计最新审核的评论时间和user_id(当前或者回复或者再回复的)
 				$this->update_v_last($id);
 				
+				#推送信息:begin
+				if(0< $tmp_content['parent_id']
+				&& 0 == $tmp_content['pparent_id'])
+				{
+					#推送主贴
+					##判定不是同一个用户
+					$user_id_list = M($this->_module_name)->field('user_id, content ')
+					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+					                ->order(array('id'=>'desc'))
+					                ->select();
+					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					{
+						$content = $user_id_list[0]['content'];
+						$param_template  = C('push_event_type');
+						$src_event_param = $param_template['comment_master']['src_event_param'];
+						$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
+						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
+						$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010001', $src_event_param ,$content);
+					}
+				}
+				elseif(0< $tmp_content['parent_id']
+				&& 0< $tmp_content['pparent_id'])
+				{
+					#推送跟贴
+					##判定不是同一个用户
+					$user_id_list = M($this->_module_name)->field('user_id, content ')
+					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+					                ->order(array('id'=>'desc'))
+					                ->select();
+					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					{
+						$content = $user_id_list[0]['content'];
+						$param_template  = C('push_event_type');
+						$src_event_param = $param_template['comment_master']['src_event_param'];
+						$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
+						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
+						$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010002', $src_event_param ,$content);
+					}
+				}
+				#推送信息:end
+				
 				return array(
 					200,
 					array(
