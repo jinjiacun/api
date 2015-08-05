@@ -1593,8 +1593,9 @@ class CompanyController extends BaseController {
 				{
 					$_tempalte_param = C('push_event_type');
 					$src_event_param = $_tempalte_param['010003']['src_event_param'];
-					$src_event_param = str_replace("<COMPANY_ID>", $data['id'], $src_event_param);
-					$src_event_param = str_replace("<NATURE>", $data['nature'], $src_event_param);
+					$src_event_param = str_replace("<COMPANY_ID>", $data['data']['id'],         $src_event_param);
+					$src_event_param = str_replace("<NATURE>",     $data['data']['nature'],     $src_event_param);
+					$src_event_param = str_replace("<AUTH_LEVEL>", $data['data']['auth_level'], $src_event_param);
 					A('Soapi/Pushmessage')->push_event('010003', $src_event_param, sprintf("%s 发生评级改变", $data['data']['company_name']));
 				}
 				#企业评级改变:end

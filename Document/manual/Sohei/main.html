@@ -2236,7 +2236,7 @@ content={'type':'xxx','token':'xxx','user_id':xxx}<br/>
 				
 关于android的说明：<br/>
 测试服务连接地址及其端口:192.168.1.131:1883<br/>
-topic:souhei<br/>
+topic:souhei/client_id(下面的值)<br/>
 client_id:user_id+token(即为android采集的user_id和本机token的组合)<br/><br/>
 				
 推送类型和对应参数:<br/>
@@ -2249,7 +2249,7 @@ client_id:user_id+token(即为android采集的user_id和本机token的组合)<br
 <td>010002</td><td>type:[TYPE],comment_id:[COMMENT_ID]</td><td>更贴回复,[COMMENT_ID]为跟贴的id</td>
 </tr>
 <tr>
-<td>010003</td><td>type:[TYPE],company_id:[COMPANY_ID],nature:[NATURE]</td><td>企业评级改变,[COMPANY_ID]为企业id,[NATURE]为企业性质(详情查看字典)</td>
+<td>010003</td><td>type:[TYPE],company_id:[COMPANY_ID],nature:[NATURE],auth_level:[AUTH_LEVEL]</td><td>企业评级改变,[COMPANY_ID]为企业id,[NATURE]为企业性质(详情查看字典),[AUTH_LEVEL]为企业评级(详细查看字典)</td>
 </tr>
 <tr>
 <td>010004</td><td>type:[TYPE],news_id:[NEWS_ID]</td><td>负面新闻,[NEWS_ID]为新闻id</td>

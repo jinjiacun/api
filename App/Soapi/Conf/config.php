@@ -42,8 +42,8 @@ return array(
 		                                            'des_event_param'=>'type:010002,comment_id:<COMMENT_ID>'),
 		                   #企业评级改变推送 
 		                   'company'       => array('value'=>'010003',
-		                                            'src_event_param'=>'company_id:<COMPANY_ID>,nature:<NATURE>',
-		                                            'des_event_param'=>'type:010003,company_id:<COMPANY_ID>,nature:<NATURE>'),
+		                                            'src_event_param'=>'company_id:<COMPANY_ID>,nature:<NATURE>,auth_level:<AUTH_LEVEL>',
+		                                            'des_event_param'=>'type:010003,company_id:<COMPANY_ID>,nature:<NATURE>,auth_level:<AUTH_LEVEL>'),
 		                   #负面新闻推送
 		                   'company_news'  => array('value'=>'010004',
 		                                            'src_event_param'=>'news_id:<NEWS_ID>,company_id:<COMPANY_ID>',
