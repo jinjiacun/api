@@ -199,7 +199,7 @@ class PushmessageController extends BaseController {
 					{
 						foreach($user_id_device_token_l as $v)
 						{
-							$tmp_info = explode('_', $v);
+							$tmp_info = explode('-', $v);
 							#获取设备
 							$user_id      = $tmp_info[0];
 							$device       = $tmp_info[1];
@@ -222,7 +222,7 @@ class PushmessageController extends BaseController {
 															$push_info['content'],
 															$token,
 															1,
-															$rule_message;
+															$rule_message);
 									}
 									break;
 								default:
