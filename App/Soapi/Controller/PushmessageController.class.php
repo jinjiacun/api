@@ -220,9 +220,9 @@ class PushmessageController extends BaseController {
 									{
 										$this->push_android($push_info['title'],
 															$push_info['content'],
-															$user_id,
+															$token,
 															1,
-															$rule_message);
+															$rule_message;
 									}
 									break;
 								default:
@@ -252,7 +252,7 @@ class PushmessageController extends BaseController {
 	}
 		
 		#android push
-		private function push_android($title, $content, $user_ids, $user_id_len,$rule_message)
+		private function push_android($title, $content, $tokens, $user_id_len,$rule_message)
 		/*
 		@@input
 		@param $title   标题
@@ -271,16 +271,16 @@ class PushmessageController extends BaseController {
 			}
 			else
 			{
-				$user_id_list = explode(',', $user_ids);
-				foreach($user_id_list as $v)
+				$token_list = explode(',', $tokens);
+				foreach($token_list as $v)
 				{
 					$this->post('http://192.168.1.131/phpmquttclient/send_mqtt.php', 
-					            array('target'=>'souhei/',
+					            array('target'=>'souhei/'.$v,
 					                  'message'=>$rule_message,
 					                  )
 					);
 				}
-				unset($user_id_list, $v);
+				unset($token_list, $v);
 			}
 		}
 
@@ -399,7 +399,7 @@ class PushmessageController extends BaseController {
 						
 						$collect_param['token']           = $token_info['token'];
 						
-						$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $collect_param['user_id'], 
+						$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
 						                                                             $token_info['type'],
 						                                                             $token_info['token']);
 					}
@@ -437,7 +437,7 @@ class PushmessageController extends BaseController {
 						
 						$collect_param['token']           = $token_info['token'];
 						
-						$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $collect_param['user_id'], 
+						$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
 						                                                             $token_info['type'],
 						                                                             $token_info['token']);
 					}
@@ -494,7 +494,7 @@ class PushmessageController extends BaseController {
 						
 								$collect_param['token']           = $token_info['token'];
 						
-								$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $collect_param['user_id'], 
+								$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
 						                                                             $token_info['type'],
 						                                                             $token_info['token']);
 						    }
@@ -513,7 +513,7 @@ class PushmessageController extends BaseController {
 						        {
 									if(isset($collect_param['user_id_device_token']))
 									{
-										$collect_param['user_id_device_token'] = $collect_param['user_id_device_token'].','.sprintf("%s_%s_%s", $v['user_id'], 
+										$collect_param['user_id_device_token'] = $collect_param['user_id_device_token'].','.sprintf("%s-%s-%s", $v['user_id'], 
 						                                                             $v['type'],
 						                                                             $v['token']);
 									}
@@ -521,7 +521,7 @@ class PushmessageController extends BaseController {
 									{
 									
 						
-											$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $v['user_id'], 
+											$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $v['user_id'], 
 						                                                             $v['type'],
 						                                                             $v['token']);
 									}
@@ -580,7 +580,7 @@ class PushmessageController extends BaseController {
 						
 								$collect_param['token']           = $token_info['token'];
 						
-								$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $collect_param['user_id'], 
+								$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
 																							 $token_info['type'],
 																							 $token_info['token']);
 							}
@@ -598,13 +598,13 @@ class PushmessageController extends BaseController {
 									if(isset($collect_param['user_id_device_token']))
 									{
 										$collect_param['user_id_device_token'] = 
-										 $collect_param['user_id_device_token'].','.sprintf("%s_%s_%s", $v['user_id'], 
+										 $collect_param['user_id_device_token'].','.sprintf("%s-%s-%s", $v['user_id'], 
 						                                                             $v['type'],
 						                                                             $v['token']);
 									}
 									else
 									{
-										$collect_param['user_id_device_token'] = sprintf("%s_%s_%s", $v['user_id'], 
+										$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $v['user_id'], 
 																							 $v['type'],
 																							 $v['token']);
 									}
