@@ -91,11 +91,13 @@ class NewsassistController extends BaseController {
 			 $news_obj = A('Soapi/News');
 			 if($news_obj->__assist(array('id'=>$data['news_id']),'assist_num'))
 			 {
+				$news_info = M('News')->field('assist_num')->find($data['news_id']);
 				return array(
 					200,
 					array(
 						'is_success'=>0,
 						'message'=>C('option_ok'),
+						'amount'=>$news_info['assist_num'],
 					),
 				); 
 			 }
