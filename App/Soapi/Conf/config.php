@@ -48,6 +48,15 @@ return array(
 		                   'company_news'  => array('value'=>'010004',
 		                                            'src_event_param'=>'news_id:<NEWS_ID>,company_id:<COMPANY_ID>',
 		                                            'des_event_param'=>'type:010004,news_id:<NEWS_ID>'), 
+		                   #曝光回复推送
+		                   'exposal_re'    => array('value'=>'010005',
+		                                            'src_event_param'=>'comment_id:<COMMENT_ID>,exposal_id:<EXPOSAL_ID>,user_id:<USER_ID>,content:<CONTENT>',
+		                                            'des_event_param'=>'type:010005,exposal_id:<EXPOSAL_ID>'), 
+		                   #曝光回复的推送
+		                   'exposal_rre'   => array('value'=>'010006',
+		                                            'src_event_param'=>'comment_id:<COMMENT_ID>,exposal_id:<EXPOSAL_ID>,user_id:<USER_ID>,content:<CONTENT>',
+		                                            'des_event_param'=>'type:010006,comment_id:<COMMENT_ID>'), 
+		                                            
 	 ),
 	//'配置项'=>'配置值'
 );

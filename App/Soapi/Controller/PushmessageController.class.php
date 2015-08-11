@@ -614,6 +614,105 @@ class PushmessageController extends BaseController {
 						}						
 					}
 					break;		
+					case '010005':
+					{
+						#采集信息并检测是否符合推送
+						//::todo
+						$collect_param['title']    = '曝光回复';
+						
+						$collect_param['content']  = $content;
+						
+						$collect_param['event']    = '010005';
+						
+						$collect_param['src_event_param'] = $src_event_param;
+						
+						preg_match_all('#(\w+):(\w+)#', $src_event_param ,$_tmp_set);
+						$exposal_id = $_tmp_set[2][1];
+						$user_id    = $_tmp_set[2][2];
+						unset($_tmp_list);
+						
+						$_current_template = $_event_template['exposal_re']['des_event_param'];
+						$des_event_param = str_replace('<EXPOSAL_ID>', $exposal_id, $_current_template);
+						
+						$collect_param['des_event_param'] = $des_event_param;
+						
+						$collect_param['type']            = '009001';
+						
+						$exposal_info = M('In_exposal')->field('user_id')->find($exposal_id);
+						
+						$collect_param['user_id']         = $exposal_info['user_id'];
+						if($user_id == $exposal_info['user_id'])
+						{
+							$is_validate = false;
+							break;
+						}
+						
+						$token_info = M('Token')->field('token,type')
+						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->find();
+						if($token_info)
+						{	
+							$collect_param['token']           = $token_info['token'];
+						
+							$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
+																							$token_info['type'],
+																							$token_info['token']);
+						}
+						else
+						{
+							$is_validate = false;
+						}
+					}
+					break;
+					case '010006':
+					{
+						#采集信息并检测是否符合推送
+						//::todo
+						$collect_param['title']    = '曝光回复的回复';
+						
+						$collect_param['content']  = $content;
+						
+						$collect_param['event']    = '010006';
+						
+						$collect_param['src_event_param'] = $src_event_param;
+						
+						preg_match_all('#(\w+):(\w+)#', $src_event_param ,$_tmp_set);
+						$comment_id = $_tmp_set[2][2];
+						unset($_tmp_list);
+						
+						$_current_template = $_event_template['exposal_rre']['des_event_param'];
+						$des_event_param = str_replace('<COMMENT_ID>', $exposal_id, $_current_template);
+						
+						$collect_param['des_event_param'] = $des_event_param;
+						
+						$collect_param['type']            = '009001';
+						
+						$exposal_info = M('Com_exposal')->field('user_id')->find($exposal_id);
+						
+						$collect_param['user_id']         = $exposal_info['user_id'];
+						
+						$token_info = M('Token')->field('token,type')
+						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->find();
+						if($token_info)
+						{	
+							$collect_param['token']           = $token_info['token'];
+						
+							$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
+																							$token_info['type'],
+																							$token_info['token']);
+						}
+						else
+						{
+							$is_validate = false;
+						}
+					}
+					break;
+					case '':
+					{
+						
+					}
+					break;
 			}
 			
 			if($is_validate)

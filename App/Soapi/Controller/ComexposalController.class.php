@@ -445,7 +445,7 @@ class ComexposalController extends BaseController {
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
 				//list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->field('parent_id')->where(array('id'=>$id))->find();
+				$tmp_content = M($this->_module_name)->field('parent_id,exposal_id')->where(array('id'=>$id))->find();
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
 				{
@@ -455,6 +455,51 @@ class ComexposalController extends BaseController {
 				}
 				#统计最新审核的评论时间和user_id(当前或者回复)
 				$this->update_v_last($id);
+				
+				#推送:begin
+				$_template_push = C('push_event_type');
+				if(0< $tmp_content['parent_id'])//推送曝光回复
+				{
+					##判定不是同一个用户
+					$user_id_list = M($this->_module_name)->field('user_id, content')
+					                ->where(array('id'=>array("in",$id)))
+					                ->order(array('id'=>'desc'))
+					                ->select();
+					//if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					//{
+						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
+						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
+						$param_template  = C('push_event_type');
+						$src_event_param = $param_template['exposal_re']['src_event_param'];
+						$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
+						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
+						$src_event_param = str_replace("<USER_ID>",    $user_id_list['user_id'],   $src_event_param);
+						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010005', $src_event_param,             $content);
+					}
+				}
+				else//推送曝光回复的回复
+				{
+					##判定不是同一个用户
+					$user_id_list = M($this->_module_name)->field('user_id, content')
+					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+					                ->order(array('id'=>'desc'))
+					                ->select();
+					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					{
+						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
+						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
+						$param_template  = C('push_event_type');
+						$src_event_param = $param_template['exposal_rre']['src_event_param'];
+						$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
+						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
+						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'],  $src_event_param);
+						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010006',   $src_event_param ,$content);
+					}
+				}
+				#推送:end
+				
 				return array(
 					200,
 					array(

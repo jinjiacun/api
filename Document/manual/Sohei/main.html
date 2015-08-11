@@ -226,6 +226,54 @@ content={'company_id':xxx}<br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr>
+<p id="in_8">
+模块名称:Inexposal<br/>
+模块名称描述:入库<br/>
+方法名称:get_info<br/>
+方法描述:查看单条曝光<br/>
+输入参数格式:<br/>
+method=Inexposal.get_info<br/>
+content={'id':xxx}<br/>
+@@input<br/>
+@param $id 曝光id<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'list':{'id':xxx,'title':'xxx','company_id':xxx,"user_id":xxx,'nickname':'xxx',
+"nature":"xxx","trade":"xxx","company_name":"xxx",
+"amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,
+"pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx,"top_num":xxx,"last_time":xxx,"last_user_id':xxx,"last_nickname":xxx,
+"v_last_time":xxx,"v_last_user_id":xxx,"v_last_nickname":"xxx","v_last_is_anonymous":xxx
+},'record_count':xxx}}
+<br/>
+@@output<br/>
+@param $id<br/>
+@param $title #标题<br/>
+@param $company_id 关联企业id<br/>
+@param $user_id #用户id<br/>
+@param $nickname #用户昵称<br/>
+@param $nature #企业性质<br/>
+@param $trade #所属行业<br/>
+@param $company_name #公司名称<br/>
+@param $amount #涉及金额<br/>
+@param $website #公司网址<br/>
+@param $content #曝光内容<br/>
+@param $pic_1 #图片<br/>
+@param $pic_2<br/>
+@param $pic_3<br/>
+@param $pic_4<br/>
+@param $pic_5<br/>
+@param $top_num 顶的数目<br/>
+@param $last_time //最新时间(当前或者回复或者再回复时间)<br/>
+@param $last_user_id //上面对应的用户id<br/>
+@param $last_nickname //上面用户id对应的昵称<br/>
+@param $v_last_time //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_user_id //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_nickname //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $v_last_is_anonymous //去掉v的上面字段内容(加强审核通过的)<br/>
+@param $add_time 添加日期<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
 <hr>
 <p id="user_1">
 模块名称:User<br/>
@@ -2254,6 +2302,12 @@ client_id:user_id+token(即为android采集的user_id和本机token的组合)<br
 <tr>
 <td>010004</td><td>type:[TYPE],news_id:[NEWS_ID]</td><td>负面新闻,[NEWS_ID]为新闻id</td>
 </tr>
+<tr>
+<td>010005</td><td>type:[TYPE],exposal_id:[EXPOSAL_ID]</td><td>曝光回复,[EXPOSAL_ID]为曝光id</td>
+</tr>
+<tr>
+<td>010006</td><td>type:[TYPE],comment_id:[COMMENT_ID]</td><td>曝光回复的回复,[COMMENT_ID]为曝光回复id</td>
+</tr>
 </table>
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <br/><br/><br/><br/><br/><br/><br/><br/>
@@ -2588,6 +2642,22 @@ content={'media':xxx}<br/>
 			<td>我的关注-负面新闻</td>
 			<td></td>
 		</tr>
+		<tr>
+			<td>010005</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>曝光回复</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>010006</td>
+			<td>10</td>
+			<td>推送触发类型</td>
+			<td>曝光回复的回复</td>
+			<td></td>
+		</tr>
+		
+		
 
 		<tr>
 		<td colspan="3">允许的图片格式类型</td>
