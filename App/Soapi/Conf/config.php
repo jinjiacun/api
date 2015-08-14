@@ -54,7 +54,7 @@ return array(
 		                                            'des_event_param'=>'type:010005,exposal_id:<EXPOSAL_ID>'), 
 		                   #曝光回复的推送
 		                   'exposal_rre'   => array('value'=>'010006',
-		                                            'src_event_param'=>'comment_id:<COMMENT_ID>,exposal_id:<EXPOSAL_ID>,user_id:<USER_ID>,content:<CONTENT>',
+		                                            'src_event_param'=>'comment_id:<COMMENT_ID>,parent_id:<PARENT_ID>,exposal_id:<EXPOSAL_ID>,content:<CONTENT>',
 		                                            'des_event_param'=>'type:010006,comment_id:<COMMENT_ID>'), 
 		                                            
 	 ),

@@ -1019,7 +1019,7 @@ class CommentController extends BaseController {
 						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
 						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
 						$param_template  = C('push_event_type');
-						$src_event_param = $param_template['comment_master']['src_event_param'];
+						$src_event_param = $param_template['comment']['src_event_param'];
 						$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
 						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
 						$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);

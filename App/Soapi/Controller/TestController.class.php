@@ -54,6 +54,7 @@ class TestController extends BaseController {
 	
 	public function test_cache()
 	{
+		/*
 		$list = S('list');
 		if(empty($list))
 		{
@@ -64,7 +65,7 @@ class TestController extends BaseController {
 			S('list', $list);
 			var_dump($list);
 		}
-		
+		*/
 		
 		//var_dump(S('list'));
 	}
@@ -72,10 +73,13 @@ class TestController extends BaseController {
 	public function test_api()
 	{
 		$begin = microtime(true);
-		$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
+		//$tmp_info = M()->query("select count(distinct(user_id)) as tp_count from so_inexposal where type=0 and is_delete=0 and compan_id>0");
+		$obj = M('Ad')->select();
 		$end = microtime(true);
-		$result_str = sprintf("数据库查询时间:%s",$end - $begin);
+		$result_str = sprintf("time:%s",$end - $begin);
 		
+		echo $result_str;
+
 		return array(
 			200,
 			array(
@@ -145,4 +149,28 @@ class TestController extends BaseController {
 		}
 	}
 
+
+	public function get_des($content)
+	{
+		$obj_des = new \Org\Util\DES();
+		//for($i=1; $i<10; $i++)
+		//{
+		//	M('Comment')->page(1,10)->where(array())->select();
+		//}		
+		echo $obj_des->encrypt($content.date('Y-m-d'));
+	}
+
+	//测试安卓推动
+	public function test_android_push()
+	{
+		$obj = A('Soapi/Pushmessage');
+		$obj->push_android('test', 'test', 1, 1,'test android');
+	}
+	
+	//android下载
+	public function android_down()
+	{
+		Header("HTTP/1.1 301 Moved Permanently");
+		Header("Location: http://www.souhei.com.cn/Public/down/android/souhei.apk");
+	}
 }

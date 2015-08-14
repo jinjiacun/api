@@ -420,7 +420,7 @@ class PushmessageController extends BaseController {
 						$comment_id = $_tmp_set[2][1];
 						unset($_tmp_list);
 						
-						$_current_template = $_event_template['comment_master']['des_event_param'];
+						$_current_template = $_event_template['comment']['des_event_param'];
 						$des_event_param = str_replace('<COMMENT_ID>', $comment_id, $_current_template);
 						
 						$collect_param['des_event_param'] = $des_event_param;
@@ -455,12 +455,12 @@ class PushmessageController extends BaseController {
 						$collect_param['src_event_param'] = $src_event_param;
 						
 						preg_match_all('#(\w+):(\w+)#', $src_event_param ,$_tmp_set);
-						$company_id = $_tmp_set[2][1];
-						$nature     = $_tmp_set[2][2];
-						$auth_level = $_tmp_set[2][3];
+						$company_id = $_tmp_set[2][0];
+						$nature     = $_tmp_set[2][1];
+						$auth_level = $_tmp_set[2][2];
 						unset($_tmp_list);
 						
-						$_current_template = $_event_template['comment_master']['des_event_param'];
+						$_current_template = $_event_template['comment']['des_event_param'];
 						$des_event_param = str_replace('<COMPANY_ID>', $comment_id, $_current_template);
 						$des_event_param = str_replace('<NATURE>',     $nature,     $_current_template);
 						$des_event_param = str_replace('<AUTH_LEVEL>', $auth_level, $_current_template);
@@ -545,10 +545,10 @@ class PushmessageController extends BaseController {
 						
 						preg_match_all('#(\w+):(\w+)#', $src_event_param ,$_tmp_set);
 						$news_id    = $_tmp_set[2][0];
-						$comment_id = $_tmp_set[2][1];
+						$company_id = $_tmp_set[2][1];
 						unset($_tmp_list);
 						
-						$_current_template = $_event_template['comment_master']['des_event_param'];
+						$_current_template = $_event_template['company_news']['des_event_param'];
 						$des_event_param = str_replace('<NEWS_ID>', $news_id, $_current_template);
 						
 						$collect_param['des_event_param'] = $des_event_param;
@@ -614,7 +614,7 @@ class PushmessageController extends BaseController {
 						}						
 					}
 					break;		
-					case '010005':
+				case '010005':
 					{
 						#采集信息并检测是否符合推送
 						//::todo
@@ -677,7 +677,7 @@ class PushmessageController extends BaseController {
 						$collect_param['src_event_param'] = $src_event_param;
 						
 						preg_match_all('#(\w+):(\w+)#', $src_event_param ,$_tmp_set);
-						$comment_id = $_tmp_set[2][2];
+						$commet_id = $_tmp_set[2][1];
 						unset($_tmp_list);
 						
 						$_current_template = $_event_template['exposal_rre']['des_event_param'];
@@ -687,13 +687,14 @@ class PushmessageController extends BaseController {
 						
 						$collect_param['type']            = '009001';
 						
-						$exposal_info = M('Com_exposal')->field('user_id')->find($exposal_id);
+						$comment_info = M('Com_exposal')->field('user_id')->find($commet_id);
 						
-						$collect_param['user_id']         = $exposal_info['user_id'];
+						$collect_param['user_id']         = $comment_info['user_id'];
 						
 						$token_info = M('Token')->field('token,type')
 						                        ->where(array('user_id'=>$collect_param['user_id']))
 						                        ->find();
+						$this->__debug(sprintf("user_id:%s,token:%s\n", $collect_param['user_id'], $token_info['token']));                        
 						if($token_info)
 						{	
 							$collect_param['token']           = $token_info['token'];

@@ -450,7 +450,7 @@ class ComexposalController extends BaseController {
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
 				//list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->field('parent_id,exposal_id')->where(array('id'=>$id))->find();
+				$tmp_content = M($this->_module_name)->field('parent_id,exposal_id')->find($id);
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
 				{
@@ -463,13 +463,11 @@ class ComexposalController extends BaseController {
 				
 				#推送:begin
 				$_template_push = C('push_event_type');
-				if(0< $tmp_content['parent_id'])//推送曝光回复
+				if(0== $tmp_content['parent_id'])//推送曝光回复
 				{
 					##判定不是同一个用户
 					$user_id_list = M($this->_module_name)->field('user_id, content')
-					                ->where(array('id'=>array("in",$id)))
-					                ->order(array('id'=>'desc'))
-					                ->select();
+					                ->find($id);
 					//if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
 					//{
 						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
@@ -480,8 +478,9 @@ class ComexposalController extends BaseController {
 						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
 						$src_event_param = str_replace("<USER_ID>",    $user_id_list['user_id'],   $src_event_param);
 						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+						$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
 						A('Soapi/Pushmessage')->push_event('010005', $src_event_param,             $content);
-					}
+					//}
 				}
 				else//推送曝光回复的回复
 				{
@@ -500,6 +499,7 @@ class ComexposalController extends BaseController {
 						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
 						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'],  $src_event_param);
 						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+						$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
 						A('Soapi/Pushmessage')->push_event('010006',   $src_event_param ,$content);
 					}
 				}

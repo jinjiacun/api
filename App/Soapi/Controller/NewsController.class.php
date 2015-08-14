@@ -146,7 +146,7 @@ class NewsController extends BaseController {
 			if($_push_has_validate)
 			{
 				$_tempalte_param = C('push_event_type');
-					$src_event_param = $_tempalte_param['010004']['src_event_param'];
+					$src_event_param = $_tempalte_param['company_news']['src_event_param'];
 					$src_event_param = str_replace("<COMPANY_ID>", $data['company_id'], $src_event_param);
 					$src_event_param = str_replace("<NEWS_ID>", $id, $src_event_param);
 					A('Soapi/Pushmessage')->push_event('010004', $src_event_param, sprintf("负面新闻 %s", $data['title']));

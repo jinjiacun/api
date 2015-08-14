@@ -875,7 +875,10 @@ class BaseController extends Controller {
 	
 	
 	
-	
+	public function __debug($str)
+	{
+		#file_put_contents(__PUBLIC__.'log/debug_'.date('Y-m-d').'.log', $str, FILE_APPEND);
+	}
 	
 	
 	
