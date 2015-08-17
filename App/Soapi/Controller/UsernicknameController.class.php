@@ -88,9 +88,18 @@ class UsernicknameController extends BaseController {
 	}
 	
 	#遍历更新所有昵称
-	public function item_update($content)
+	public function item_update($user_id, $nickname)
 	{
+		if(false !== M($this->_module_name)->where(array('user_id'=>$user_id))
+		                                   ->save(array('nickname'=>$nickname)))
+		{
+			$user_nickname_list = S('user_nickname_list');
+			$user_nickname_list[$user_id] = $nickname;
+			S('user_nickname_list', $user_nickname_list);
+			return true;
+		}
 		
+		return false;
 	}
 	
 	#添加一条纪录

@@ -931,6 +931,7 @@ class UserController extends BaseController {
 			);
 			$user_info['where']['user_id'] = $data['uid'];
 			A('Soapi/Member')->update(json_encode($user_info));
+			A('Soapi/Usernickname')->item_update($data['uid'], $data['nickname']);
 			return array(
 				200,
 				array(

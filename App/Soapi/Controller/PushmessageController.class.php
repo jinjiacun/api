@@ -459,11 +459,11 @@ class PushmessageController extends BaseController {
 						$nature     = $_tmp_set[2][1];
 						$auth_level = $_tmp_set[2][2];
 						unset($_tmp_list);
-						
-						$_current_template = $_event_template['comment']['des_event_param'];
-						$des_event_param = str_replace('<COMPANY_ID>', $comment_id, $_current_template);
-						$des_event_param = str_replace('<NATURE>',     $nature,     $_current_template);
-						$des_event_param = str_replace('<AUTH_LEVEL>', $auth_level, $_current_template);
+						$this->__debug(sprintf("company_id:%s,nature:%s,auth_level:%s\n", $company_id, $nature, $auth_level));
+						$_current_template = $_event_template['company']['des_event_param'];
+						$des_event_param = str_replace('<COMPANY_ID>', $company_id, $_current_template);
+						$des_event_param = str_replace('<NATURE>',     $nature,     $des_event_param);
+						$des_event_param = str_replace('<AUTH_LEVEL>', $auth_level, $des_event_param);
 						
 						$collect_param['des_event_param'] = $des_event_param;
 						

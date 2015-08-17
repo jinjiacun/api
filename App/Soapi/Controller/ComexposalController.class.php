@@ -287,6 +287,79 @@ class ComexposalController extends BaseController {
 				);
 	}
 	
+	#通过id查询一条信息
+	public function get_info($content)
+	/*
+	@@input
+	@param $id
+	@@output
+	@param $id
+	@param $title
+	@param $url
+	@param $pic
+	@param $intro
+	@param $add_time 
+	*/
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['id'] = intval($data['id']);
+		
+		if(0>= $data['id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$list = array();
+		$v = M($this->_module_name)->find($data['id']);
+		if($v)
+		{
+			$list = array(
+						'id'           => intval($v['id']),
+						'user_id'      => intval($v['user_id']),
+						'nickname'     => $this->_get_nickname($v['user_id']),
+						'exposal_id'   => intval($v['exposal_id']),
+						'parent_id'    => intval($v['parent_id']),
+						'parent_content' => urlencode($this->get_parent_content($v['parent_id'])),
+						'content'      => urlencode($v['content']),
+						'is_validate'  => intval($v['is_validate']),
+						'validate_time'=> intval($v['validate_time']),
+						'is_anonymous' => intval($v['is_anonymous']),
+						'top_num'      => intval($v['top_num']),
+						'pic_1'        => intval($v['pic_1']),
+						'pic_1_url'    => $this->get_pic_url($v['pic_1']),
+						'pic_2'        => intval($v['pic_2']),
+						'pic_2_url'    => $this->get_pic_url($v['pic_2']),
+						'pic_3'        => intval($v['pic_3']),
+						'pic_3_url'    => $this->get_pic_url($v['pic_3']),
+						'pic_4'        => intval($v['pic_4']),
+						'pic_4_url'    => $this->get_pic_url($v['pic_4']),
+						'pic_5'        => intval($v['pic_5']),
+						'pic_5_url'    => $this->get_pic_url($v['pic_5']),
+						'type'         => urlencode($v['type']),
+						'top_num'      => intval($v['top_num']),
+						'has_child'    => intval($v['has_child']),
+						'last_time'    => intval($v['last_time']),
+						'last_user_id' => intval($v['last_user_id']),
+						'last_nickname'=> $this->_get_nickname($v['last_user_id']),
+						'v_last_time'    => intval($v['v_last_time']),
+						'v_last_user_id' => intval($v['v_last_user_id']),
+						'v_last_nickname'=> $this->_get_nickname($v['v_last_user_id']),
+						'v_last_is_anonymous'=> intval($v['v_last_is_anonymous']),
+						'add_time'     => intval($v['add_time']),			);
+		}
+		
+		return array(
+			200,
+			$list
+		);
+	}
+	
 	public function get_list_com_ex($content)
 	{
 		$list         = array();

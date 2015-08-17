@@ -145,7 +145,7 @@ class NewsController extends BaseController {
 			
 			if($_push_has_validate)
 			{
-				$_tempalte_param = C('push_event_type');
+					$_tempalte_param = C('push_event_type');
 					$src_event_param = $_tempalte_param['company_news']['src_event_param'];
 					$src_event_param = str_replace("<COMPANY_ID>", $data['company_id'], $src_event_param);
 					$src_event_param = str_replace("<NEWS_ID>", $id, $src_event_param);
@@ -299,7 +299,68 @@ class NewsController extends BaseController {
 		);
 	}
 
+	#修改	
+		public function update($content)
+		/**
+		@@input
+		@param $where 条件
+		@param $data  要更新的数据
+		@@output
+		@param $is_success 0-成功操作，-1-操作失败
+		*/
+		{
+			$data = $this->fill($content);
 
+			$content = json_encode($data);
+			#判定是否从正面:begin
+			$has_validate = false;
+			if(1 == $data['data']['sign'])
+			{
+					$tmp_info = M($this->_module_name)->field('sign')->find($data['where']['id']);
+					if(0 == $tmp_info['sign'])
+					{
+						$has_validate = true;
+					}
+			}
+			
+			
+			#判定是否从正面:end			
+			list($status_code,$r_content) = parent::update($content);
+			$data = $this->fill($content);
+			if(500 == $status_code)
+			{
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			
+			if(200 == $status_code
+			&& 0 == $r_content['is_success'])
+			{
+				#新闻从正面到负面:begin
+				if($_push_has_validate)
+				{
+						$_tempalte_param = C('push_event_type');
+						$src_event_param = $_tempalte_param['company_news']['src_event_param'];
+						$src_event_param = str_replace("<COMPANY_ID>", $data['data']['company_id'], $src_event_param);
+						$src_event_param = str_replace("<NEWS_ID>", $data['where']['id'], $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010004', $src_event_param, sprintf("负面新闻 %s", $data['title']));
+				}
+				#新闻从正面到负面:end
+					
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			return array(
+					$status_code,
+					$r_content
+			);
+		}
 
 
 
