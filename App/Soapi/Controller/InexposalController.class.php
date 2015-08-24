@@ -400,14 +400,16 @@ class InexposalController extends BaseController {
 				                   ->find();
 				    $template_sql = M()->_sql();
 				    $template_sql = str_replace('LIMIT 1', '', $template_sql);
+				    $template_sql = str_replace('LIMIT 0,2', '', $template_sql);
 				    $template_sql = str_replace('`exposal_id` = '.$v['id'], '<EXPOSAL_WHERE>', $template_sql);
 				    $template_sql1 = $template_sql;
+				    $template_sql1 = str_replace('ORDER BY `add_time` DESC', '', $template_sql1);
 				    $template_sql1 = str_replace("SELECT *", "SELECT exposal_id, count(1) as sub_amount", $template_sql1);
-				    $_sql_list[] = '('.sprintf("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
+				    $_sql_list[] = '('.str_replace("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
 				}
 				else
 				{
-					$_sql_list[] = '('.sprintf("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
+					$_sql_list[] = '('.str_replace("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
 				}
 				$exposal_id_list[] = intval($v['exposal_id']);
 				                  
@@ -447,15 +449,16 @@ class InexposalController extends BaseController {
 			
 			//分别计算回复总数
 			$exposal_id = 0;
-			$sql_str = sprintf('<EXPOSAL_WHERE>', 'parent_id in('.implode(",", $exposal_id_list).')', $template_sql1).' group by exposal_id';
+			$sql_str = str_replace('<EXPOSAL_WHERE>', 'exposal_id in('.implode(",", $exposal_id_list).')', $template_sql1).' group by exposal_id';
 			$tmp_list = M()->query($sql_str);
+			$this->__debug(sprintf("sql:%s\n", M()->getLastSql()));
 			$sub_amount_list = array();
 			if($tmp_list && 0<count($tmp_list))
 			{
 				foreach($tmp_list as $v)
 				{
 					$exposal_id = intval($v['exposal_id']);
-					$sub_amount_list[$parent_id] = $v['sub_amount'];
+					$sub_amount_list[$exposal_id] = $v['sub_amount'];
 				}
 			}
 			unset($tmp_list, $v, $sql_str, $template_sql1, $exposal_id);
@@ -468,8 +471,8 @@ class InexposalController extends BaseController {
 					$id = intval($v['id']);
 					if($sub_list[$id])
 					{
-						$list[$k]['re_sub']['list'] = $sub_list[$id];
-						$list[$k]['re_sub']['record_count'] = $sub_amount_list[$id];
+						$list[$k]['sub']['list'] = $sub_list[$id];
+						$list[$k]['sub']['record_count'] = $sub_amount_list[$id];
 					}
 				}
 				unset($k, $v, $sub_list, $sub_amount_list);

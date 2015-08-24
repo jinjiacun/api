@@ -194,6 +194,7 @@ class CommentController extends BaseController {
 	                              validate_time int not null default 0  comment '审核时间',
 	                              is_anonymous int not null default 0 comment '是否匿名,默认0,不匿名',
 	                              top_num int not null default 0 comment '顶的数目',
+	                              is_depth  int not null default 0 comment '是否超过第三层(0-没,1-超过)',
 	                              is_delete int not null default 0 comment '0-未删除,1-已删除',
 	                              ip varchar(255) comment 'ip地址',
 	                              user_agent varchar(255) comment '来源',
@@ -224,6 +225,7 @@ class CommentController extends BaseController {
 	protected $pic_4;
 	protected $pic_5;
 	protected $is_validate; //是否审核
+	protected $is_depth;    
 	protected $is_delete;
 	protected $add_time;    //添加日期
 	
@@ -236,6 +238,7 @@ class CommentController extends BaseController {
 	@param $parent_id  //盖楼评论(默认0,盖楼为基层的id)
 	@param $type       //*评论类型(点赞、提问、加黑)*
 	@param $content    //评论内容*
+	@param $is_depth   //是否是超过第三层评论(默认0，1-为对第三层或者更多后的评论)
 	@param $pic_1      //*图片5张
 	@param $pic_2
 	@param $pic_3
@@ -966,7 +969,7 @@ class CommentController extends BaseController {
 				$this->set_com_amount($company_id);
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->field('pparent_id,parent_id')->where(array('id'=>$id))->find();
+				$tmp_content = M($this->_module_name)->field('is_depth, pparent_id,parent_id')->where(array('id'=>$id))->find();
 				//$this->get_info(json_encode(array('id'=>$id)));
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
@@ -984,48 +987,51 @@ class CommentController extends BaseController {
 				$this->update_v_last($id);
 				
 				#推送信息:begin
-				if(0< $tmp_content['parent_id']
-				&& 0 == $tmp_content['pparent_id'])
+				if(0 == $tmp_content['is_depth'])
 				{
-					#推送主贴
-					##判定不是同一个用户
-					$user_id_list = M($this->_module_name)->field('user_id, content')
-					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
-					                ->order(array('id'=>'desc'))
-					                ->select();
-					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					if(0< $tmp_content['parent_id']
+					&& 0 == $tmp_content['pparent_id'])
 					{
-						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
-						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
-						$param_template  = C('push_event_type');
-						$src_event_param = $param_template['comment_master']['src_event_param'];
-						$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
-						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
-						$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
-						A('Soapi/Pushmessage')->push_event('010001', $src_event_param ,$content);
+						#推送主贴
+						##判定不是同一个用户
+						$user_id_list = M($this->_module_name)->field('user_id, content')
+										->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+										->order(array('id'=>'desc'))
+										->select();
+						if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+						{
+							$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
+							$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
+							$param_template  = C('push_event_type');
+							$src_event_param = $param_template['comment_master']['src_event_param'];
+							$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
+							$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
+							$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
+							A('Soapi/Pushmessage')->push_event('010001', $src_event_param ,$content);
+						}
 					}
-				}
-				elseif(0< $tmp_content['parent_id']
-				&& 0< $tmp_content['pparent_id'])
-				{
-					#推送跟贴
-					##判定不是同一个用户
-					$user_id_list = M($this->_module_name)->field('user_id, content ')
-					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
-					                ->order(array('id'=>'desc'))
-					                ->select();
-					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					elseif(0< $tmp_content['parent_id']
+					&& 0< $tmp_content['pparent_id'])
 					{
-						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
-						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
-						$param_template  = C('push_event_type');
-						$src_event_param = $param_template['comment']['src_event_param'];
-						$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
-						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
-						$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
-						A('Soapi/Pushmessage')->push_event('010002', $src_event_param ,$content);
+						#推送跟贴
+						##判定不是同一个用户
+						$user_id_list = M($this->_module_name)->field('user_id, content ')
+										->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+										->order(array('id'=>'desc'))
+										->select();
+						if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+						{
+							$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
+							$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
+							$param_template  = C('push_event_type');
+							$src_event_param = $param_template['comment']['src_event_param'];
+							$src_event_param = str_replace("<COMMENT_ID>", $id, $src_event_param);
+							$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'], $src_event_param);
+							$src_event_param = str_replace("<CONTENT>",    $content, $src_event_param);
+							A('Soapi/Pushmessage')->push_event('010002', $src_event_param ,$content);
+						}
 					}
-				}
+				}				
 				#推送信息:end
 				
 				return array(

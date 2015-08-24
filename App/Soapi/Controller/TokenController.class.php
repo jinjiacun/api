@@ -26,6 +26,7 @@ class TokenController extends BaseController {
                                   type varchar(255) default '008001' comment '设备类型(008001-ios,008002-android)',
 	                              token varchar(255),
 	                              user_id int not null default 0 comment '用户id',
+	                              is_offline int not null default 0 comment '是否离线(0-在线,1-离线)',
                                   last_time int not null default 0 comment '最后更新时间',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
@@ -36,6 +37,7 @@ class TokenController extends BaseController {
      protected $type;          #设备类型
      protected $token;         #token值
      protected $user_id;       #用户id
+     protected $is_offline;    #是否离线(0-在线,1-离线)
 	 protected $last_time;     #最新更新时间
      protected $add_time;      #添加日期
 	
@@ -59,10 +61,10 @@ class TokenController extends BaseController {
 		{
 			return C('param_err');
 		}
-		
 		$data['type']         = htmlspecialchars(trim($data['type']));
 		$data['token']        = htmlspecialchars(trim($data['token']));
 		$data['user_id']      = intval(trim($data['user_id']));
+		
 			
 		if('' == $data['type']
 		|| '' == $data['token']
@@ -71,6 +73,11 @@ class TokenController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
+         
+        //删除存在的token
+        M($this->_module_name)->where(array('token'=>$data['token']))->delete();
+         
+        $data['is_offline'] = 0;
          
         $tmp_param = array(
             'user_id'=>$data['user_id'],
@@ -83,6 +90,7 @@ class TokenController extends BaseController {
 			                                   ->save(array(
 														'token'     =>$data['token'],
 														'type'      =>$data['type'],
+														'is_offline'=>$data['is_offline'],
 														'last_time' =>$now,
 			)))
 			{
@@ -155,8 +163,48 @@ class TokenController extends BaseController {
 		);
 	}
 
-
-
+	//下线
+	public function offline($content)
+	/**
+	 * @@intput
+	 * @param $user_id
+	 * @@output
+	 * @param $is_success 0-操作成功,-1-操作失败
+	 * */
+	{
+		$data = $this->fill($content);
+		if(!isset($data['user_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['user_id']      = intval(trim($data['user_id']));
+			
+		if(0>= $data['user_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		if(false !== M($this->_module_name)->where(array('user_id'=>$data['user_id']))
+		                                   ->save(array('is_offline'=>1)))
+		{
+				return array(
+					200,
+					array(
+						'is_success'=>0,
+						'message'=>C('option_ok')
+					),
+				);
+		}
+		
+		return array(
+				200,
+				array(
+					'is_success'=>-1,
+					'message'=>C('option_fail'),
+				),
+		);
+	}
 
 
 

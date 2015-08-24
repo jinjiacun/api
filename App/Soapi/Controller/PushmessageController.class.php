@@ -274,9 +274,10 @@ class PushmessageController extends BaseController {
 				$token_list = explode(',', $tokens);
 				foreach($token_list as $v)
 				{
+					$message = json_encode(array('content'=>$content,'comment'=>$rule_message));
 					$this->post('http://192.168.1.131/phpmquttclient/send_mqtt.php', 
-					            array('target'=>'souhei/'.$v,
-					                  'message'=>$rule_message,
+					            array('target'=>$v,
+					                  'message'=>$message,
 					                  )
 					);
 				}
@@ -394,14 +395,22 @@ class PushmessageController extends BaseController {
 						$collect_param['user_id']         = $comment_info['user_id'];
 						
 						$token_info = M('Token')->field('token,type')
-						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->where(array('user_id'=>$collect_param['user_id'],
+						                                      'is_offline'=>0
+						                        ))
 						                        ->find();
-						
-						$collect_param['token']           = $token_info['token'];
-						
-						$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
-						                                                             $token_info['type'],
-						                                                             $token_info['token']);
+						if($token_info)
+						{
+							$collect_param['token']           = $token_info['token'];
+							
+							$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
+																						 $token_info['type'],
+																						 $token_info['token']);
+						}
+						else
+						{
+							$is_validate = false;
+						}
 					}
 					break;
 				case '010002':
@@ -432,14 +441,20 @@ class PushmessageController extends BaseController {
 						$collect_param['user_id']         = $comment_info['user_id'];
 						
 						$token_info = M('Token')->field('token,type')
-						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->where(array('user_id'=>$collect_param['user_id'],'is_offline'=>0))
 						                        ->find();
-						
+						if($token)
+						{
 						$collect_param['token']           = $token_info['token'];
 						
 						$collect_param['user_id_device_token'] = sprintf("%s-%s-%s", $collect_param['user_id'], 
 						                                                             $token_info['type'],
 						                                                             $token_info['token']);
+						}
+						else
+						{
+							$is_validate = false;
+						}
 					}
 					break;
 				case '010003':#企业评级改变
@@ -489,7 +504,7 @@ class PushmessageController extends BaseController {
 								$collect_param['user_id']         = $user_id_list[0];
 						
 								$token_info = M('Token')->field('token,type')
-						                            ->where(array('user_id'=>$collect_param['user_id']))
+						                            ->where(array('user_id'=>$collect_param['user_id'],'is_offline'=>0))
 						                            ->find();
 						
 								$collect_param['token']           = $token_info['token'];
@@ -505,7 +520,7 @@ class PushmessageController extends BaseController {
 								$user_ids = implode(',', $user_id_list);
 						
 								$token_list = M('Token')->field('token,type,user_id')
-						                            ->where(array('user_id'=>array('in',$user_ids)))
+						                            ->where(array('user_id'=>array('in',$user_ids),'is_offline'=>0))
 						                            ->select();
 						                            
 						        $collect_param['token']           = '';
@@ -575,7 +590,7 @@ class PushmessageController extends BaseController {
 								$collect_param['user_id']         = $user_id_list[0];
 						
 								$token_info = M('Token')->field('token,type')
-														->where(array('user_id'=>$collect_param['user_id']))
+														->where(array('user_id'=>$collect_param['user_id'],'is_offline'=>0))
 														->find();
 						
 								$collect_param['token']           = $token_info['token'];
@@ -588,7 +603,7 @@ class PushmessageController extends BaseController {
 							{
 								$user_ids = implode(',', $user_id_list);
 								$token_list = M('Token')->field('token,type,user_id')
-														->where(array('user_id'=>array('in', $user_ids)))
+														->where(array('user_id'=>array('in', $user_ids),'is_offline'=>0))
 														->select();
 						
 								$collect_param['token']           = '';
@@ -648,7 +663,7 @@ class PushmessageController extends BaseController {
 						}
 						
 						$token_info = M('Token')->field('token,type')
-						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->where(array('user_id'=>$collect_param['user_id'],'is_offline'=>0))
 						                        ->find();
 						if($token_info)
 						{	
@@ -681,7 +696,7 @@ class PushmessageController extends BaseController {
 						unset($_tmp_list);
 						
 						$_current_template = $_event_template['exposal_rre']['des_event_param'];
-						$des_event_param = str_replace('<COMMENT_ID>', $exposal_id, $_current_template);
+						$des_event_param = str_replace('<COMMENT_ID>', $commet_id, $_current_template);
 						
 						$collect_param['des_event_param'] = $des_event_param;
 						
@@ -692,7 +707,7 @@ class PushmessageController extends BaseController {
 						$collect_param['user_id']         = $comment_info['user_id'];
 						
 						$token_info = M('Token')->field('token,type')
-						                        ->where(array('user_id'=>$collect_param['user_id']))
+						                        ->where(array('user_id'=>$collect_param['user_id'],'is_offline'=>0))
 						                        ->find();
 						$this->__debug(sprintf("user_id:%s,token:%s\n", $collect_param['user_id'], $token_info['token']));                        
 						if($token_info)

@@ -37,6 +37,7 @@ class ComexposalController extends BaseController {
 	                              pic_4 int not null default 0 comment '图片id',
 	                              pic_5 int not null default 0 comment '图片id',
 	                              type varchar(255) comment '评论类型', 
+	                              is_depth int not null default 0 comment '是否超过第二层(0-没,1-超过)',
 	                              is_delete int not null default 0 comment '删除',
 	                              top_num int not null default 0 comment '顶数',
 	                              has_child int not null default 0 comment '审核通过的回复数量',
@@ -78,6 +79,7 @@ class ComexposalController extends BaseController {
 	@param $content      内容
 	@param $is_anonymous 是否匿名(0-不匿名,1-匿名,默认为0)
 	@param $type         评论类型
+	@param $is_depth     是否超过第二层(0-没,1-超过)
 	@@output
 	@param $is_success 0-操作成功,-1-操作失败,-2-此条曝光不存在,-3-此条曝光已删除 ,-4-此企业不存在 ,-5-上级评论不存在 ,-6-父评论已删除
 	*/
@@ -523,7 +525,7 @@ class ComexposalController extends BaseController {
 				//统计子回复总数
 				$this->update_re_child_amount(json_encode(array('id'=>$id)));
 				//list(,$tmp_content) = $this->get_info(json_encode(array('id'=>$id)));
-				$tmp_content = M($this->_module_name)->field('parent_id,exposal_id')->find($id);
+				$tmp_content = M($this->_module_name)->field('is_depth, parent_id,exposal_id')->find($id);
 				//统计父评论数
 				if(0< $tmp_content['parent_id'])
 				{
@@ -535,47 +537,50 @@ class ComexposalController extends BaseController {
 				$this->update_v_last($id);
 				
 				#推送:begin
-				$_template_push = C('push_event_type');
-				if(0== $tmp_content['parent_id'])//推送曝光回复
+				if(0 == $tmp_content['is_depth'])
 				{
-					##判定不是同一个用户
-					$user_id_list = M($this->_module_name)->field('user_id, content')
-					                ->find($id);
-					//if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
-					//{
-						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
-						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
-						$param_template  = C('push_event_type');
-						$src_event_param = $param_template['exposal_re']['src_event_param'];
-						$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
-						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
-						$src_event_param = str_replace("<USER_ID>",    $user_id_list['user_id'],   $src_event_param);
-						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
-						$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
-						A('Soapi/Pushmessage')->push_event('010005', $src_event_param,             $content);
-					//}
-				}
-				else//推送曝光回复的回复
-				{
-					##判定不是同一个用户
-					$user_id_list = M($this->_module_name)->field('user_id, content')
-					                ->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
-					                ->order(array('id'=>'desc'))
-					                ->select();
-					if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+					$_template_push = C('push_event_type');
+					if(0== $tmp_content['parent_id'])//推送曝光回复
 					{
-						$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
-						$content = sprintf("%s 回复了您的评论：%s", $user_nickname,$user_id_list[0]['content']);
-						$param_template  = C('push_event_type');
-						$src_event_param = $param_template['exposal_rre']['src_event_param'];
-						$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
-						$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
-						$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'],  $src_event_param);
-						$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
-						$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
-						A('Soapi/Pushmessage')->push_event('010006',   $src_event_param ,$content);
+						##判定不是同一个用户
+						$user_id_list = M($this->_module_name)->field('user_id, content')
+										->find($id);
+						//if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+						//{
+							$user_nickname = $this->_get_nickname($user_id_list['user_id']);
+							$content = sprintf("%s 回复了您的曝光评论：%s", $user_nickname,$user_id_list['content']);
+							$param_template  = C('push_event_type');
+							$src_event_param = $param_template['exposal_re']['src_event_param'];
+							$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
+							$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
+							$src_event_param = str_replace("<USER_ID>",    $user_id_list['user_id'],   $src_event_param);
+							$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+							$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
+							A('Soapi/Pushmessage')->push_event('010005', $src_event_param,             $content);
+						//}
 					}
-				}
+					else//推送曝光回复的回复
+					{
+						##判定不是同一个用户
+						$user_id_list = M($this->_module_name)->field('user_id, content')
+										->where(array('id'=>array("in",$id.",".$tmp_content['parent_id'])))
+										->order(array('id'=>'desc'))
+										->select();
+						if($user_id_list[0]['user_id'] != $user_id_list[1]['user_id'])
+						{
+							$user_nickname = $this->_get_nickname($user_id_list[0]['user_id']);
+							$content = sprintf("%s 回复了您的曝光评论：%s", $user_nickname,$user_id_list[0]['content']);
+							$param_template  = C('push_event_type');
+							$src_event_param = $param_template['exposal_rre']['src_event_param'];
+							$src_event_param = str_replace("<COMMENT_ID>", $id,                        $src_event_param);
+							$src_event_param = str_replace("<EXPOSAL_ID>", $tmp_content['exposal_id'], $src_event_param);
+							$src_event_param = str_replace("<PARENT_ID>",  $tmp_content['parent_id'],  $src_event_param);
+							$src_event_param = str_replace("<CONTENT>",    $content,                   $src_event_param);
+							$this->__debug(sprintf("src_event_param:%s\n", $src_event_param));
+							A('Soapi/Pushmessage')->push_event('010006',   $src_event_param ,$content);
+						}
+					}
+				}				
 				#推送:end
 				
 				return array(

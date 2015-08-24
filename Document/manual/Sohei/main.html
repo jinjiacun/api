@@ -1342,6 +1342,7 @@ content={'title':'xxx','user_id':xxx,'company_id':xxx,'parent_id':xxx,'type':'xx
 @param $pic_4<br/>
 @param $pic_5<br/>
 @param $is_anonymous   //是否匿名<br/>
+@param $is_depth       是否超过第三层(0-没[默认],1-超过)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -1393,6 +1394,7 @@ content={'user_id':xxx,'exposal_id':xxx,'parent_id':xxx,'content':'xxx','is_anon
 @param $pic_4 图片4<br/>
 @param $pic_5 图片5<br/>
 @param $type  评论类型<br/>
+@param $is_depth       是否超过第三层(0-没[默认],1-超过)<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx}}<br/>
 @@output<br/>
@@ -2259,13 +2261,33 @@ content={}<br/>
 模块名称:Token<br/>
 模块名称描述:移动设备token<br/>
 方法名称:add<br/>
-方法描述:查询<br/>
+方法描述:新增<br/>
 输入参数格式:<br/>
 method=Token.add<br/>
-content={'type':'xxx','token':'xxx','user_id':xxx}<br/>
+content={'type':'xxx','token':'xxx','user_id':xxx,'is_offline':xxx}<br/>
 @@input<br/>
 @param $type    设备类型(008001:(ios,默认),008002:android)<br/>
 @param $token   设备对应的token(注意，android可能有重复，使用uid+token组合模式,格式为:xxx_xxxxx)<br/>
+@param $user_id 用户id<br/>
+@param $is_offline 是否离线(0-在线,1-离线)<br/>
+示例输出:<br/>
+{'status_code':200,'content':{'is_success':xxx,'message':xxx}}<br/>
+@@output<br/>
+@param $is_success 0-操作成功,-1-操作失败<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+</p>
+<hr><hr>
+<p id="push_3">
+模块名称:Token<br/>
+模块名称描述:移动设备token<br/>
+方法名称:offline<br/>
+方法描述:离线<br/>
+输入参数格式:<br/>
+method=Token.offline<br/>
+content={'user_id':xxx}<br/>
+@@input<br/>
 @param $user_id 用户id<br/>
 示例输出:<br/>
 {'status_code':200,'content':{'is_success':xxx,'message':xxx}}<br/>

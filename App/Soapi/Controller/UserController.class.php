@@ -769,6 +769,7 @@ class UserController extends BaseController {
 		$params['safekey']  = $this->mk_passwd($params, 3);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['get_info'];
 		$back_str = $this->post($url, $params);
+		$this->__debug(sprintf("user_info:%s\n", $back_str));
 		$re_json = json_decode($back_str, true);
 		if($re_json)
 		{	
