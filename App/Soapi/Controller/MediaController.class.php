@@ -201,7 +201,7 @@ class MediaController extends BaseController {
 						),
 					);
 				}
-				$file_dir  = 'media/'.'ad'.'/'.date("Y-m-d").'/';
+				$file_dir  = 'media/'.'bander'.'/'.date("Y-m-d").'/';
 			}
 			break;
 		}

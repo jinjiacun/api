@@ -403,7 +403,7 @@ class InexposalController extends BaseController {
 				    $template_sql = str_replace('LIMIT 0,2', '', $template_sql);
 				    $template_sql = str_replace('`exposal_id` = '.$v['id'], '<EXPOSAL_WHERE>', $template_sql);
 				    $template_sql1 = $template_sql;
-				    $template_sql1 = str_replace('ORDER BY `add_time` DESC', '', $template_sql1);
+				    $template_sql1 = str_replace('ORDER BY `add_time` DESC', '', $template_sql1);				    
 				    $template_sql1 = str_replace("SELECT *", "SELECT exposal_id, count(1) as sub_amount", $template_sql1);
 				    $_sql_list[] = '('.str_replace("<EXPOSAL_WHERE>", " exposal_id = $v[id] ", $template_sql).' limit 0,2'.')';
 				}

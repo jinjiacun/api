@@ -1466,6 +1466,20 @@ class CompanyController extends BaseController {
 				);
 			}
 			
+			//删除我的关注
+			if(false === M('Attention')->
+			            where(array('company_id'=>$data['id']))->
+			            delete())
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-7,
+						'message'=>urlencode('删除我的关注失败'),
+					),
+				);
+			}
+			
 			//删除企业
         	if(false === M($this->_module_name)->
 			            where(array('id'=>$data['id']))->
@@ -1536,10 +1550,10 @@ class CompanyController extends BaseController {
 			#           ,code_certificate_url,certificate_url
 			#           agent_platform_n
 			$tmp_list = array(
-				'logo_url'            =>intval($data['logo']),
-				'busin_license_url'   =>intval($data['busin_license']),
-				'code_certificate_url'=>intval($data['code_certificate']),
-				'certificate_url'     =>intval($data['certificate']),
+				'logo_url'            =>intval($data['data']['logo']),
+				'busin_license_url'   =>intval($data['data']['busin_license']),
+				'code_certificate_url'=>intval($data['data']['code_certificate']),
+				'certificate_url'     =>intval($data['data']['certificate']),
 			//	'agent_platform_n'    =>intval($data['agent_platform']),
 			);
 			
@@ -1559,15 +1573,17 @@ class CompanyController extends BaseController {
 			{
 				if(0< $v)
 				{
-					$data[$k] = $this->get_pic_url($v);
+					$data['data'][$k] = $this->get_pic_url($v);
 				}
 			}
 			unset($k, $v);
 			$agent_platform = intval($data['agent_platform']);
 			if(0< $agent_platform)
 			{
-				$data['agent_platform_n'] = $this->get_name_by_id($agent_platform);
+				$data['data']['agent_platform_n'] = $this->get_name_by_id($agent_platform);
 			}	
+
+
 			$content = json_encode($data);
 			list($status_code,$r_content) = parent::update($content);
 			$data = $this->fill($content);
