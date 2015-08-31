@@ -450,6 +450,33 @@ class CommentController extends BaseController {
 	@param $add_time;   //添加日期
 	*/
 	{
+		//添加已删除企业过滤
+		$company_id_list = array();
+		$pre_param = json_decode($content, true);
+		
+		$company_id_list_tmp = M('Company')->field('id')->select();
+		$company_ids = '';
+		if(isset($pre_param['_tag']))
+		{
+			if($company_id_list_tmp)
+			{
+				foreach($company_id_list_tmp as $v)
+				{
+					$company_id_list[] = $v['id'];
+				}
+				unset($v);
+				$company_ids = implode(',', $company_id_list);
+				if('' != $company_ids)
+				{				
+					if(isset($pre_param['where']['_string']))
+					{
+						$pre_param['where']['company_id'] = array('in', $company_ids);
+						$content = json_encode($pre_param);	
+					}				
+				}			
+			}
+		}
+		
 		list($data, $record_count) = parent::get_list($content);
 
 		$list = array();
