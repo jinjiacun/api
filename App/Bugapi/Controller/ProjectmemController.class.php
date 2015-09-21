@@ -31,8 +31,8 @@ class ProjectmemController extends BaseController {
 	 public $_module_name = 'Project_mem';
 	 public $id;
 	 public $project_id;
-     public $position_id;
-     public $admin_id;
+        public $position_id;
+        public $admin_id;
 	 public $add_time;      //注册时间
          
      public function add($content)

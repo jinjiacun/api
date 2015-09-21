@@ -9,15 +9,16 @@ function of api:
 
 public function add
 @@input
-@param string $title       标题
-@param int    $project     项目名称
-@param int    $put_member  bug提出者
-@param int    $get_member  bug接受者
-@param int    $do_member1  bug执行者，多个之间用逗号隔开
-@param int    $problem_level 问题等级(越大越严重)
-@param int    $time_level    时间等级(越大越紧急)
-@param int    $status        状态(0-提出,1-分配,2-执行,3-完成)
-@param int    $close_time    关闭时间
+@param string $number           编号
+@param int    $project_id       项目id
+@param int    $project_mod_id   项目模块id
+@param int    $put_member       bug提出者
+@param int    $get_member       bug接受者
+@param string $description      项目模块
+@param int    $level            优先级
+@param int    $status           状态(0-提出,1-分配,2-执行,3-完成)
+@param int    $last_update      最后更新人
+@param int    $last_update_time 最后更新日期
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -26,43 +27,50 @@ class BugController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_bug(id int primary key auto_increment,
-	                                title varchar(255) comment '标题',
-                                     project int not null default 0 comment '项目',
+	                             title varchar(255) comment '标题，简要描述',
+	                             number varchar(255) comment '编号',
+                                     project_id int not null default 0 comment '项目id',
+                                     project_mod_id int not null default 0 comment '项目模块id',
                                      put_member int not null default 0 comment '提出者',
                                      get_member int not null default 0 comment '接受者',
-                                     do_member varchar(255) not null default 0 comment '执行者,多个之间用逗号隔开',
-                                     problem_level int not null default 0 comment '问题等级,越大越严重',
-                                     time_level int not null default 0 comment '时间紧迫等级，越大越紧急',
-	                                 status int not null default 0 comment '状态(0-提出,1-分配,2-执行,3-完成)',
-                                     close_time int not null default 0 comment '关闭日期',
-	                                 add_time int not null default 0 comment '添加日期'
-	                                 )charset=utf8;
+                                     description text comment '描述',
+                                     level int not null default 0 comment '优先级',
+	                              status int not null default 0 comment '状态(0-提出,1-分配,2-执行,3-完成)',
+	                              last_update int not null default 0 comment '最后更新人',
+	                              last_update_time int not null default 0 comment '最后更新日期',
+	                              add_time int not null default 0 comment '添加日期'
+	                              )charset=utf8;
 	 * */
 	 
 	 public $_module_name = 'Bug';
 	 public $id;
-	 public $project;
+	 public $title;
+	 public $number;
+	 public $project_id;
+	 public $project_mod_id;
 	 public $put_member;
 	 public $get_member;
-	 public $do_member;
-	 public $problem_level;
-	 public $time_level;
+	 public $description;
+	 public $level;
 	 public $status;
-	 public $close_time;
+	 public $last_update;
+	 public $last_update_time;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
      @@input
-	 @param string $title       标题
-	 @param int    $project     项目名称
-	 @param int    $put_member  bug提出者
-	 @param int    $get_member  bug接受者
-	 @param int    $do_member1  bug执行者，多个之间用逗号隔开
-	 @param int    $problem_level 问题等级(越大越严重)
-	 @param int    $time_level    时间等级(越大越紧急)
-	 @param int    $status        状态(0-提出,1-分配,2-执行,3-完成)
-	 @param int    $close_time    关闭时间
+        @param string $title           标题
+	 @param string $number          编号
+	 @param int    $project_id      项目id
+	 @param int    $project_mod_id   项目模块id
+	 @param int    $put_member       bug提出者
+	 @param int    $get_member       bug接受者
+	 @param string $description      描述
+	 @param int    $level            优先级
+	 @param int    $status           状态(0-提出,1-分配,2-执行,3-完成)
+	 @param int    $last_update      最后更新人
+	 @param int    $last_update_time 最后更新日期
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
      */
@@ -70,29 +78,44 @@ class BugController extends BaseController {
 		 $data = $this->fill($content);
 		
 		if(!isset($data['title'])
-		|| !isset($data['project'])
+		|| !isset($data['number'])
+		|| !isset($data['project_id'])
+		|| !isset($data['project_mod_id'])
 		|| !isset($data['put_member'])
 		|| !isset($data['get_member'])
-		|| !isset($data['problem_level'])
-		|| !isset($data['time_level'])
+		|| !isset($data['description'])
+		|| !isset($data['level'])
+		|| !isset($data['status'])
+		|| !isset($data['last_update'])
+		|| !isset($data['last_update_time'])
 		)
 		{
 				return C('param_err');
 		}
 	
-		$data['title']         = htmlspecialchars(trim($data['title']));
-		$data['project']       = intval(trim($data['project']));
-		$data['put_member']    = intval(trim($data['put_member']));
-		$data['get_member']    = intval(trim($data['get_member']));
-		$data['problem_level'] = intval(trim($data['problem_level']));
-		$data['time_level']    = intval(trim($data['time_level']));
+	       $data['title']           = htmlspecialchars(trim($data['title']));
+		$data['number']          = htmlspecialchars(trim($data['number']));
+		$data['project_id']      = intval(trim($data['project_id']));
+		$data['project_mod_id']  = intval(trim($data['project_mod_id']));
+		$data['put_member']      = intval(trim($data['put_member']));
+		$data['get_member']      = intval(trim($data['get_member']));
+		$data['description']     = htmlspecialchars(trim($data['description']));
+		$data['level']           = intval(trim($data['level']));
+		$data['status']          = intval(trim($data['status']));
+		$data['last_update']     = intval(trim($data['last_update']));
+		$data['last_update_time']= intval(trim($data['last_update_time']));
 		
 		if('' == $data['title']
-		|| 0 >= $data['project']
+		|| '' == $data['number']
+		|| 0 >= $data['project_id']
+		|| 0 >= $data['project_mod_id']
 		|| 0 >= $data['put_member']
 		|| 0 >= $data['get_member']
-		|| 0 > $data['problem_level']
-		|| 0 > $data['time_level']
+		|| '' == $data['description']
+		|| 0 > $data['level']
+		|| 0 > $data['status']
+		|| 0 > $data['last_update']
+		|| 0 > $data['last_update_time']
 		)
 		{
 				return C('param_fmt_err');
@@ -130,17 +153,19 @@ class BugController extends BaseController {
 				foreach($data as $v)
 				{
 						$list[] = array(
-										'id'            => intval($v['id']),
-										'title'         => urlencode($v['title']),
-										'project'       => intval($v['project']),
-										'put_member'    => intval($v['put_member']),
-										'get_member'    => intval($v['get_member']),
-										'do_member'     => $v['do_member'],
-										'problem_level' => intval($v['problem_level']),
-										'time_level'    => intval($v['time_level']),
-										'status'        => intval($v['status']),
-										'close_time'    => intval($v['close_time']),
-										'add_time'      => intval($v['add_time']),
+										'id'               => intval($v['id']),
+										'title'            => urlencode($v['title']),
+										'number'           => urlencode($v['number']),
+										'project_id'       => intval($v['project_id']),
+										'project_mod_id'   => intval($v['project_mod_id']),
+										'put_member'       => intval($v['put_member']),
+										'get_member'       => intval($v['get_member']),
+										'description'      => urlencode($v['description']),
+										'level'            => intval($v['level']),
+										'status'           => intval($v['status']),
+										'last_update'      => intval($v['last_update']),
+										'last_update_time' => intval($v['last_update_time']),
+										'add_time'         => intval($v['add_time']),
 										
 								);	
 				}
@@ -175,16 +200,18 @@ class BugController extends BaseController {
 		if($tmp_one)
 		{
 			$list = array(
-				'id'          => intval($tmp_one['id']),
-				'title'         => urlencode($tmp_one['title']),
-				'project'       => intval($tmp_one['project']),
-				'put_member'    => intval($tmp_one['put_member']),
-				'get_member'    => intval($tmp_one['get_member']),
-				'do_member'     => $tmp_one['do_member'],
-				'problem_level' => intval($tmp_one['problem_level']),
-				'time_level'    => intval($tmp_one['time_level']),
-				'status'        => intval($tmp_one['status']),
-				'close_time'    => intval($tmp_one['close_time']),
+				'id'              => intval($tmp_one['id']),
+				'title'           => urlencode($tmp_one['title']),
+				'number'          => urlencode($tmp_one['number']),
+				'project_id'      => intval($tmp_one['project_id']),
+				'project_mod_id'  => intval($tmp_one['project_mod_id']),
+				'put_member'      => intval($tmp_one['put_member']),
+				'get_member'      => intval($tmp_one['get_member']),
+				'description'     => urlencode($tmp_one['description']),
+				'level'           => intval($tmp_one['level']),
+				'status'          => intval($tmp_one['status']),
+				'last_update'     => intval($tmp_one['last_update']),
+				'last_update_time'=> intval($tmp_one['last_update_time']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}
