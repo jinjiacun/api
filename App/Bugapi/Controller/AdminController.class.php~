@@ -25,24 +25,28 @@ class AdminController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_admin(id int primary key auto_increment,
+	                         number varchar comment '编号',
 	                         admin_name varchar(255) comment '管理员名称',
 	                         passwd varchar(255) comment '管理员密码',
 	                         name varchar(255) comment '姓名',
 	                         status int not null default 0 comment '状态',
 				   part int not null default 0 comment '部门', 
 	                         role int not null default 0 comment '角色',
+	                         position int not null default 0 comment '岗位',
 	                         add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
 	 * */
 	 
 	 protected $_module_name = 'admin';
 	 protected $id;         
+	 protected $number;
 	 protected $admin_name; #管理员用户名
 	 protected $passwd;     #管理员密码
 	 protected $name;       #姓名
 	 protected $status;     #状态
 	 protected $part;       #部门
 	 protected $role;       #角色
+	 protected $position;   #岗位
 	 protected $add_time;   #新增日期
 	 #登录
 	 public function login($content)
@@ -120,43 +124,51 @@ class AdminController extends BaseController {
 	public function add($content)
 	/*
 	 @@input
+	 @param string $number      编号
 	 @param string $admin_name  名称
 	 @param string $passwd      密码
 	 @param string $name        姓名
 	 @param string $status      状态
 	 @param int    $part        部门
 	 @param int    $role        角色
+	 @param int    $position    岗位
 	 @@output
 	 @param $is_success 0-成功,-1-失败
 	 */
 	{
 		$data = $this->fill($content);
 		
-		if(!isset($data['admin_name'])
+		if(!isset($data['number'])
+		|| !isset($data['admin_name'])
 		|| !isset($data['passwd'])
 		|| !isset($data['name'])
 		|| !isset($data['status'])
 		|| !isset($data['part'])
 		|| !isset($data['role'])
+		|| !isset($data['position'])
 		)
 		{
 			return C('param_err');
 		}
 		
+		$data['number']     = htmlspecialchars(trim($data['number'])); 
 		$data['admin_name'] = htmlspecialchars(trim($data['admin_name']));
 		$data['passwd']     = htmlspecialchars(trim($data['passwd']));
 		$data['name']       = htmlspecialchars(trim($data['name']));
 		$data['status']      = htmlspecialchars(trim($data['status']));
 		$data['part']       = intval(trim($data['part']));
 		$data['role']       = intval(trim($data['role']));
+		$data['position']   = intval(trim($data['position']));
 		
 		
-		if('' == $data['admin_name']
+		if('' == $data['number']
+		|| '' == $data['admin_name']
 		|| '' == $data['passwd']
 		|| '' == $data['name']
 		|| '' == $data['status']
 		|| 0 >= $data['part']
 		|| 0 >= $data['role']
+		|| 0 >= $data['position']
 		)
 		{
 			return C('param_fmt_err');
@@ -245,11 +257,13 @@ class AdminController extends BaseController {
 			{
 				$list[] = array(
 						'id'          => intval($v['id']),
+						'number'      => urlencode($v['number']),
 						'admin_name'  => urlencode($v['admin_name']),
 						'name'        => urlencode($v['name']),
 						'status'      => $v['status'],
 						'part'        => intval($v['part']),
 						'role'        => intval($v['role']),
+						'position'    => intval($v['position']),
 						'add_time'    => intval($v['add_time']),
 						
 					);	
