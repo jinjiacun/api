@@ -13,6 +13,7 @@ public function add
 @param string $name         资源名称
 @param int    $status       状态(默认0，开启)
 @param string $description  资源描述
+@param string $create       创建人
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -26,6 +27,7 @@ class PositionhrController extends BaseController {
                                      status int not null default 0 comment '状态(默认0，开启)',
                                      description varchar(255) comment '描述',
                                      start_time int not null default 0 comment '开启日期',
+                                     create int not null default 0 comment '创建人',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -37,6 +39,7 @@ class PositionhrController extends BaseController {
         public $status;
         public $description;
         public $start_time;
+        public $create;
 	 public $add_time;     
          
 	 public function add($content)
@@ -46,6 +49,7 @@ class PositionhrController extends BaseController {
 	 @param string $name         资源名称
 	 @param string $status       状态(默认0,开启)
 	 @param string $description  资源描述
+	 
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
 	 */
@@ -57,6 +61,7 @@ class PositionhrController extends BaseController {
 		|| !isset($data['status'])
 		|| !isset($data['description'])
 		|| !isset($data['start_time'])
+		|| !isset($data['create'])
 		)
 		{
 				return C('param_err');
@@ -66,11 +71,13 @@ class PositionhrController extends BaseController {
 		$data['name']         = htmlspecialchars(trim($data['name']));
 		$data['status']       = htmlspecialchars(trim($data['status']));
 		$data['description']  = htmlspecialchars(trim($data['description']));
+		$data['create']       = htmlspecialchars(trim($data['create']));
 	
 		if('' == $data['name']
 		|| '' == $data['url']
 		|| '' == $data['description']
 		|| 0 > $data['is_partition']
+		|| 0 > $data['create']
 		)
 		{
 				return C('param_fmt_err');
@@ -114,6 +121,7 @@ class PositionhrController extends BaseController {
 											'status'      => urlencode($v['status']),
 											'description' => urlencode($v['description']),
 											'start_time'  => intval($v['start_time']),
+											'create'      => intval($v['create']),
 											'add_time'    => intval($v['add_time']),
 											
 									);	
@@ -155,6 +163,7 @@ class PositionhrController extends BaseController {
 					'status'      => urlencode($tmp_one['status']),
 					'description' => urlencode($tmp_one['description']),
 					'start_time'  => intval($tmp_one['start_time']),
+					'create'      => intval($tmp_one['create']),
 					'add_time'    => intval($tmp_one['add_time']), 
 				);
 			}

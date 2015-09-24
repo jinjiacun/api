@@ -16,6 +16,7 @@ public function add
 @param int    $part_id      部门
 @param string $accessories  附件
 @param string $remartk      备注
+@param int    $create       创建人
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -33,7 +34,9 @@ class ResumeController extends BaseController {
 	                             accessories varchar(255) comment '附件',
                                     remartk varchar(255) comment '备注',
                                     stage int not null default 1 comment '阶段',
+                                    stage_time int not null default 0 comment '阶段时间',
                                     close int not null default 0 comment '关闭(默认0，未关闭)',
+                                    create int not null default 0 comment '创建人',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -49,6 +52,9 @@ class ResumeController extends BaseController {
         public $accessories;
         public $remartk;
         public $stage;
+        public $stage_time;
+        public $close;
+        public $create;
 	 public $add_time;     
          
 	 public function add($content)
@@ -61,6 +67,7 @@ class ResumeController extends BaseController {
 	 @param int    $part_id      部门
 	 @param string $accessories  附件
 	 @param string $remartk      备注
+	 @param int    $create       创建人
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
 	 */
@@ -74,6 +81,7 @@ class ResumeController extends BaseController {
 		|| !isset($data['part_id'])
 		|| !isset($data['accessories'])
 		|| !isset($data['remartk'])
+		|| !isset($data['create'])
 		)
 		{
 				return C('param_err');
@@ -85,7 +93,8 @@ class ResumeController extends BaseController {
 	       $data['position_id']  = intval(trim($data['position_id']));
 	       $data['part_id']      = intval(trim($data['part_id']));
 	       $data['accessories']  = htmlspecialchars(trim($data['accessories']));
-		$data['remartk']      = htmlspecialchars(trim($data['remartk']));
+	       $data['remartk']      = htmlspecialchars(trim($data['remartk']));
+	       $data['create']       = intval(trim($data['create']));
 	
 		if('' == $data['number']
 		|| '' == $data['candidates']
@@ -94,6 +103,7 @@ class ResumeController extends BaseController {
 		|| 0  > $data['part_id']
 		|| '' == $data['accessories']
 		|| '' == $data['remartk']
+		|| 0 > $data['create']
 		)
 		{
 				return C('param_fmt_err');
@@ -141,7 +151,9 @@ class ResumeController extends BaseController {
 											'accessories' => urlencode($v['accessories']),
 											'remartk'     => urlencode($v['remartk']),
 											'stage'       => intval($v['stage']),
-											‘close’       => intval($v['close']),
+											'stage_time'  => intval($v['stage_time']),
+											'close'       => intval($v['close']),
+											'create'      => intval($v['create']),
 											'add_time'    => intval($v['add_time']),
 											
 									);	
@@ -187,7 +199,9 @@ class ResumeController extends BaseController {
 					'accessories' => urlencode($tmp_one['accessories']),
 					'remartk'     => urlencode($tmp_one['remartk']),
 					'stage'       => intval($tmp_one['stage']),
+					'stage_time'  => intval($tmp_one['stage_time']),
 					'close'       => intval($tmp_one['close']),
+					'create'      => intval($tmp_one['create']),
 					'add_time'    => intval($tmp_one['add_time']), 
 				);
 			}
