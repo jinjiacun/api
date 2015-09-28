@@ -17,8 +17,6 @@ public function add
 @param string $description      项目模块
 @param int    $level            优先级
 @param int    $status           状态(0-提出,1-分配,2-执行,3-完成)
-@param int    $last_update      最后更新人
-@param int    $last_update_time 最后更新日期
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -69,8 +67,6 @@ class BugController extends BaseController {
 	 @param string $description      描述
 	 @param int    $level            优先级
 	 @param int    $status           状态(0-提出,1-分配,2-执行,3-完成)
-	 @param int    $last_update      最后更新人
-	 @param int    $last_update_time 最后更新日期
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
      */
@@ -86,8 +82,6 @@ class BugController extends BaseController {
 		|| !isset($data['description'])
 		|| !isset($data['level'])
 		|| !isset($data['status'])
-		|| !isset($data['last_update'])
-		|| !isset($data['last_update_time'])
 		)
 		{
 				return C('param_err');
@@ -102,8 +96,6 @@ class BugController extends BaseController {
 		$data['description']     = htmlspecialchars(trim($data['description']));
 		$data['level']           = intval(trim($data['level']));
 		$data['status']          = intval(trim($data['status']));
-		$data['last_update']     = intval(trim($data['last_update']));
-		$data['last_update_time']= intval(trim($data['last_update_time']));
 		
 		if('' == $data['title']
 		|| '' == $data['number']
@@ -114,13 +106,11 @@ class BugController extends BaseController {
 		|| '' == $data['description']
 		|| 0 > $data['level']
 		|| 0 > $data['status']
-		|| 0 > $data['last_update']
-		|| 0 > $data['last_update_time']
 		)
 		{
 				return C('param_fmt_err');
 		}
-		
+				
         $data['add_time'] = time();
 		
 		if(M($this->_module_name)->add($data))

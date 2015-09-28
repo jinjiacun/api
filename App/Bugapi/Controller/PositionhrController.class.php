@@ -11,7 +11,6 @@ public function add
 @@input
 @param int    $part_id      部门id
 @param string $name         资源名称
-@param int    $status       状态(默认0，开启)
 @param string $description  资源描述
 @param string $create       创建人
 @@output
@@ -47,7 +46,6 @@ class PositionhrController extends BaseController {
 	 @@input
 	 @param int    $part_id      部门id
 	 @param string $name         资源名称
-	 @param string $status       状态(默认0,开启)
 	 @param string $description  资源描述
 	 
 	 @@output
@@ -58,9 +56,7 @@ class PositionhrController extends BaseController {
 	
 		if(!isset($data['part_id'])
 		|| !isset($data['name'])
-		|| !isset($data['status'])
 		|| !isset($data['description'])
-		|| !isset($data['start_time'])
 		|| !isset($data['create'])
 		)
 		{
@@ -69,14 +65,12 @@ class PositionhrController extends BaseController {
 	
 	       $data['part_id']      = intval(trim($data['part_id']));
 		$data['name']         = htmlspecialchars(trim($data['name']));
-		$data['status']       = htmlspecialchars(trim($data['status']));
 		$data['description']  = htmlspecialchars(trim($data['description']));
 		$data['create']       = htmlspecialchars(trim($data['create']));
 	
-		if('' == $data['name']
-		|| '' == $data['url']
+		if(0 > $data['part_id']
+		|| '' == $data['name']
 		|| '' == $data['description']
-		|| 0 > $data['is_partition']
 		|| 0 > $data['create']
 		)
 		{

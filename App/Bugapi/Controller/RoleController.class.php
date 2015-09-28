@@ -9,7 +9,8 @@ function of api:
 
 public function add
 @@input
-@param string $name 名称
+@param string $number   编号
+@param string $name     名称
 @param string $resource 资源id,多个用逗号隔开
 @@output
 @param $is_success 0-操作成功,-1-操作失败
@@ -19,22 +20,25 @@ class RoleController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_role(id int primary key auto_increment,
+	                             number varchar(255) comment '编号',
 	                             name varchar(255) comment '名称',
-                                 resource text comment '权限资源(资源id,之间用逗号隔开)',
+                                    resource text comment '权限资源(资源id,之间用逗号隔开)',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
 	 
 	 public $_module_name = 'Role';
 	 public $id;
+	 public $number;
 	 public $name;
-     public $resource;
+        public $resource;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
       @@input
-	  @param string $name 名称
+         @param string $number   编号
+	  @param string $name     名称
 	  @param string $resource 资源id,多个用逗号隔开
 	  @@output
 	  @param $is_success 0-操作成功,-1-操作失败
@@ -42,17 +46,20 @@ class RoleController extends BaseController {
      {
 		$data = $this->fill($content);
 		
-		if(!isset($data['name'])
+		if(!isset($data['number'])
+		|| !isset($data['name'])
 		|| !isset($data['resource'])
 		)
 		{
 				return C('param_err');
 		}
 	
-		$data['name'] = htmlspecialchars(trim($data['name']));
+	       $data['number']   = htmlspecialchars(trim($data['number']));
+		$data['name']     = htmlspecialchars(trim($data['name']));
 		$data['resource'] = htmlspecialchars(trim($data['resource']));
 	
-		if('' == $data['name']
+		if('' == $data['number']
+		|| '' == $data['name']
 		|| '' == $data['resource']
 		)
 		{
@@ -92,6 +99,7 @@ class RoleController extends BaseController {
 				{
 						$list[] = array(
 										'id'          => intval($v['id']),
+										'number'      => urlencode($v['number']),
 										'name'        => urlencode($v['name']),
 										'resource'    => urlencode($v['resource']),
 										'add_time'    => intval($v['add_time']),
@@ -130,8 +138,9 @@ class RoleController extends BaseController {
 		{
 			$list = array(
 				'id'          => intval($tmp_one['id']),
+				'number'      => urlencode($tmp_one['number']),
 				'name'        => urlencode($tmp_one['name']),
-                'resource'    => urlencode($tmp_one['resource']),
+			       'resource'    => urlencode($tmp_one['resource']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}

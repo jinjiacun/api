@@ -177,7 +177,7 @@ class IndexController extends Controller {
                     }
                     */
                     list($class_name, $method)= explode('.', $this->method);
-                    $class_name = 'Bagapi/'.$class_name;        
+                    $class_name = 'Bugapi/'.$class_name;        
                     $obj = A($class_name);
                     list($status_code, $out_content) = $obj->{$method}($this->in_content, $handler);#处理带有资源的数据信息
                     $etime=microtime(true);//获取程序执行结束的时间

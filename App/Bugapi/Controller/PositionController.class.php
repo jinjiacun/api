@@ -9,7 +9,9 @@ function of api:
 
 public function add
 @@input
-@param string $name 名称
+@param string $number 编号
+@param string $name   名称
+@param int    $create 创建人
 @@output
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
@@ -18,34 +20,48 @@ class PositionController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_position(id int primary key auto_increment,
+	                             number varchar(255) comment '编号',
 	                             name varchar(255) comment '名称',
+	                             create int not null default 0 comment '创建人',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
 	 
 	 public $_module_name = 'Position';
 	 public $id;
+	 public $number;
 	 public $name;
+	 public $create;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
       @@input
-	  @param string $name 名称
+         @param string $number 编号
+	  @param string $name  名称
+	  @param int    $create 创建人
 	  @@output
 	  @param $is_success 0-操作成功,-1-操作失败
       * */    
      {
 		$data = $this->fill($content);
 		
-		if(!isset($data['name']))
+		if(!isset($data['name'])
+		|| !isset($data['number'])
+		|| !isset($data['create'])
+		)
 		{
 				return C('param_err');
 		}
 	
-		$data['name'] = htmlspecialchars(trim($data['name']));
+	       $data['number'] = htmlspecialchars(trim($data['number']));
+		$data['name']   = htmlspecialchars(trim($data['name']));
+		$data['create'] = intval(trim($data['create']));
 	
-		if('' == $data['name'])
+		if('' == $data['name']
+		|| '' == $data['number']
+		|| 0 > $data['create']
+		)
 		{
 				return C('param_fmt_err');
 		}
@@ -83,7 +99,9 @@ class PositionController extends BaseController {
 				{
 						$list[] = array(
 										'id'          => intval($v['id']),
+										'number'      => urlencode($v['number']),
 										'name'        => urlencode($v['name']),
+										'create'      => intval($v['create']),
 										'add_time'    => intval($v['add_time']),
 										
 								);	
@@ -120,7 +138,9 @@ class PositionController extends BaseController {
 		{
 			$list = array(
 				'id'          => intval($tmp_one['id']),
+				'number'      => urlencode($tmp_one['number']),
 				'name'        => urlencode($tmp_one['name']),
+				'create'      => intval($tmp_one['create']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}

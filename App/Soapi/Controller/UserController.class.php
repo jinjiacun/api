@@ -455,6 +455,14 @@ class UserController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
+		
+		#检查手机号是否存在:begin
+		/**
+		 * if 手机号码不存在
+		 *   调用注册接口
+		 * */
+		#检查手机号是否存在:end
+		
 		$content = array(
 			'user_id'  =>0,
 			'nickname' =>'',

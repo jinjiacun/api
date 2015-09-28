@@ -76,140 +76,16 @@ class MediaController extends BaseController {
 
 		switch($module_sn)
 		{
-			case '001001':#曝光图片 <400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				
-				$file_dir  = 'media/'.'expression'.'/'.date("Y-m-d").'/';
+			case '011001':#resume <400k
+			{	
+				$file_dir  = 'media/'.'resume'.'/'.date("Y-m-d").'/';
 			}
-			break;
-			case '001002':#监管机构 <20k
-			{
-				if(20 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了20k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'regulators'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001003':#营业执照 <400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'license'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001004':#机构代码证 <400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'code'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001005':#资质证明 <400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'certificate'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001006':#新闻图片(pc)
-			{
-				$file_dir  = 'media/'.'news_pc'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001007':#新闻图片（app)
-			{
-				$file_dir  = 'media/'.'news_app'.'/'.date("Y-m-d").'/';
-			}			
-			break;
-			case '001008':#logo
-			{
-				$file_dir  = 'media/'.'logo'.'/'.date("Y-m-d").'/';
-			}			
-			break;
-			case '001009':#评论图片<400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'comment'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001010':#意见反馈<400k
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'idea'.'/'.date("Y-m-d").'/';
-			}
-			break;
-			case '001011':#广告
-			{
-				if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-				$file_dir  = 'media/'.'bander'.'/'.date("Y-m-d").'/';
-			}
-			break;
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))
 		{
 			mkdir(__PUBLIC__.$file_dir);
 		}
-		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png')))
+		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png','pdf','doc','docx','xls')))
 		{
 			return array(
 				200,
@@ -241,6 +117,26 @@ class MediaController extends BaseController {
 					$file_name = $file_dir.time().'_'.rand(1000,2000).".png";
 				}
 				break;
+			case 'pdf':
+			      {
+				       $file_name = $file_dir.time().'_'.rand(1000,2000).".pdf";
+			      }
+			      break;
+			case 'doc':
+			     {
+			              $file_name = $file_dir.time().'_'.rand(1000,2000).".doc";
+			     }
+			     break;
+			case 'docx':
+			    {
+			              $file_name = $file_dir.time().'_'.rand(1000,2000).".docx";
+			    }
+			break;
+			case 'xls':
+			   {
+			              $file_name = $file_dir.time().'_'.rand(1000,2000).".xls";
+			   }
+			break;
 		}
 		$data_file_name = $file_name;
 		$file_name = __PUBLIC__.$file_name;		

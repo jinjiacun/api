@@ -37,6 +37,8 @@ class ResumeController extends BaseController {
                                     stage_time int not null default 0 comment '阶段时间',
                                     close int not null default 0 comment '关闭(默认0，未关闭)',
                                     create int not null default 0 comment '创建人',
+                                    last int not null default 0 comment '最后更新人',
+                                    last_time int not null default 0 comment '最后更新时间',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -55,6 +57,8 @@ class ResumeController extends BaseController {
         public $stage_time;
         public $close;
         public $create;
+        public $last;
+        public $last_time;
 	 public $add_time;     
          
 	 public function add($content)
@@ -109,8 +113,7 @@ class ResumeController extends BaseController {
 				return C('param_fmt_err');
 		}
 	
-	       $data['start_time'] = time();
-		$data['add_time'] = $data['start_time'];
+		$data['add_time'] = time();
 		if(M($this->_module_name)->add($data))
             {
                     return array(
@@ -154,6 +157,8 @@ class ResumeController extends BaseController {
 											'stage_time'  => intval($v['stage_time']),
 											'close'       => intval($v['close']),
 											'create'      => intval($v['create']),
+											'last'        => intval($v['last']),
+											'last_time'   => intval($v['last_time']),
 											'add_time'    => intval($v['add_time']),
 											
 									);	
@@ -202,6 +207,8 @@ class ResumeController extends BaseController {
 					'stage_time'  => intval($tmp_one['stage_time']),
 					'close'       => intval($tmp_one['close']),
 					'create'      => intval($tmp_one['create']),
+					'last'        => intval($tmp_one['last']),
+					'last_time'   => intval($tmp_one['last_time']),
 					'add_time'    => intval($tmp_one['add_time']), 
 				);
 			}
