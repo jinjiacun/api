@@ -15,7 +15,7 @@ public function add
 @param $is_success 0-操作成功,-1-操作失败
 ##--------------------------------------------------------##
 */
-class RoleController extends BaseController {
+class ProjectmoduleController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_project_mod(id int primary key auto_increment,

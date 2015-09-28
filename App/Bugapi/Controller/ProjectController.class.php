@@ -125,7 +125,7 @@ class ProjectController extends BaseController {
 							'list'=>$list,
 							'record_count'=> $record_count,
 							)
-					
+			    );	
 	 }
 	 
 	 public function get_info($content)
