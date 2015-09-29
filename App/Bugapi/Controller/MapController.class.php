@@ -21,18 +21,23 @@ class MapController extends BaseController {
 	      'role'      =>'Role',
 	      'position'  =>'Position',
 	      'positionhr'=>'Position_hr',
-	      'part'      =>'Part'
+	      'part'      =>'Part',
+	      'admin'     =>'Admin',
 	   );
 	   
 	   $_map_list = array();
 	   
+	   $label_name = 'name';
+	   
 	   foreach($_team as $k=>$v)
 	   {
-	    $tmp_list = M($v)->field('id, name')->select();
-	    foreach($tmp_list as $s_v)
-	    {
-	      $_map_list[$k][intval($s_v['id'])] = urlencode($s_v['name']);
-	    }
+	      if('admin' == $v) $label_name = 'admin_name';
+	      else $label_name = 'name';
+	      $tmp_list = M($v)->field('id,'.$label_name)->select();
+	      foreach($tmp_list as $s_v)
+	      {
+		$_map_list[$k][intval($s_v['id'])] = urlencode($s_v[$label_name]);
+	      }
 	   }
 	   unset($k, $v);
 	   
