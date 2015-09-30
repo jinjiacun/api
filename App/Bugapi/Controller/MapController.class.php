@@ -23,6 +23,7 @@ class MapController extends BaseController {
 	      'positionhr'=>'Position_hr',
 	      'part'      =>'Part',
 	      'admin'     =>'Admin',
+	      'mod'       => 'Project_mod',
 	   );
 	   
 	   $_map_list = array();
@@ -31,7 +32,7 @@ class MapController extends BaseController {
 	   
 	   foreach($_team as $k=>$v)
 	   {
-	      if('admin' == $v) $label_name = 'admin_name';
+	      if('admin' == $k) $label_name = 'admin_name';
 	      else $label_name = 'name';
 	      $tmp_list = M($v)->field('id,'.$label_name)->select();
 	      foreach($tmp_list as $s_v)

@@ -174,6 +174,8 @@ class AdminController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		$data['passwd'] = md5($data['passwd']);
+		
 		$data['add_time'] = time();
 		
 		if(M($this->_module_name)->add($data))

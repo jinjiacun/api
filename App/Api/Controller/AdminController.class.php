@@ -22,10 +22,12 @@ class AdminController extends BaseController {
       protected $_module_name = 'admin';
 	  protected $id;
 	  protected $admin_name;
-      protected $password;	
-      protected $last_login;         #最后登录时间
+         protected $password;	
+         protected $last_login;         #最后登录时间
 	  protected $login_ip;           #最后登录ip
 	  protected $add_time;           #添加日期
+	  
+	  
 
 	  #登录
 	  public function login($data)
