@@ -18,41 +18,53 @@ class BugfeedbackController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_bug_feedback(`id` int primary key auto_increment,
+	                             `bug_id` int not null default 0 'bug的id',
 	                             `create` varchar(255) comment '反馈人',
 	                             `content` varchar(255) comment '反馈内容',
+	                             `status_remark` varchar(255) comment '状态变迁',
 	                             `add_time` int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
 	 
 	 public $_module_name = 'Bug_feedback';
 	 public $id;
+	 public $bug_id;
 	 public $create;
 	 public $content;
+	 public $status_remark;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
       @@input
+         @param int    $bug_id   bug_id
 	  @param string $create  反馈人
 	  @param string $content 反馈内容
+	  @param string $status_remark 状态变迁
 	  @@output
 	  @param $is_success 0-操作成功,-1-操作失败
       * */    
      {
 		$data = $this->fill($content);
 		
-		if(!isset($data['create'])
+		if(!isset($data['bug_id'])
+		|| !isset($data['create'])
 		|| !isset($data['content'])
+		|| !isset($data['status_remark'])
 		)
 		{
 				return C('param_err');
 		}
 	
-		$data['create']  = htmlspecialchars(trim($data['create']));
-		$data['content'] = htmlspecialchars(trim($data['content']));
+	       $data['bug_id']        = intval(trim($data['bug_id']));
+		$data['create']        = htmlspecialchars(trim($data['create']));
+		$data['content']       = htmlspecialchars(trim($data['content']));
+		$data['status_remark'] = htmlspecialchars(trim($data['status_remark']));
 	
-		if('' == $data['create']
-		|| '' == $data['content'])
+		if(0 == $data['bug_id']
+		|| '' == $data['create']
+		|| '' == $data['content']
+		|| '' == $data['status_remark'])
 		{
 				return C('param_fmt_err');
 		}
@@ -89,10 +101,12 @@ class BugfeedbackController extends BaseController {
 				foreach($data as $v)
 				{
 						$list[] = array(
-										'id'          => intval($v['id']),
-										'create'      => urlencode($v['create']),
-										'content'     => urlencode($v['content']),
-										'add_time'    => intval($v['add_time']),
+										'id'           => intval($v['id']),
+										'bug_id'       => intval($v['bug_id']),
+										'create'       => urlencode($v['create']),
+										'content'      => urlencode($v['content']),
+										'status_remark'=> urlencode($v['status_remark']),
+										'add_time'     => intval($v['add_time']),
 										
 								);	
 				}
@@ -127,10 +141,12 @@ class BugfeedbackController extends BaseController {
 		if($tmp_one)
 		{
 			$list = array(
-				'id'          => intval($tmp_one['id']),
-				'create'      => urlencode($tmp_one['create']),
-				'content'     => urlencode($tmp_one['content']),
-				'add_time'    => intval($tmp_one['add_time']), 
+				'id'            => intval($tmp_one['id']),
+				'bug_id'        => intval($tmp_one['bug_id']),
+				'create'        => urlencode($tmp_one['create']),
+				'content'       => urlencode($tmp_one['content']),
+				'status_remark' => urlencode($tmp_one['status_remark']),
+				'add_time'       => intval($tmp_one['add_time']), 
 			);
 		}
 		
