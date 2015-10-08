@@ -150,10 +150,10 @@ class ProjectController extends BaseController {
 		{
 			$list = array(
 				'id'               => intval($tmp_one['id']),
-				'number'           => urlencode($tmp['number']),
+				'number'           => urlencode($tmp_one['number']),
 				'name'             => urlencode($tmp_one['name']),
 				'description'      => urlencode($tmp_one['description']),
-				'create'           => urlencode($tmp['create']),
+				'create'           => urlencode($tmp_one['create']),
 				'last_time'        => intval($tmp_one['last_time']),
 				'add_time'         => intval($tmp_one['add_time']), 
 			);

@@ -38,7 +38,7 @@ class AdminController extends BaseController {
 	 * */
 	 
 	 protected $_module_name = 'admin';
-	 protected $id;         
+	 protected $id;
 	 protected $number;
 	 protected $admin_name; #管理员用户名
 	 protected $passwd;     #管理员密码
