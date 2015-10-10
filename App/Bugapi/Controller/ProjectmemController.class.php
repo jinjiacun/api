@@ -22,7 +22,7 @@ class ProjectmemController extends BaseController {
 	 * sql script:
 	 * create table hr_project_mem(id int primary key auto_increment,
 	                             project_id int not null default 0 comment '项目id',
-	                             position_id int not null default 0 comment '职位id',
+	                             
 	                             admin_id int not null default 0 comment '用户id',
 	                             add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
@@ -31,7 +31,6 @@ class ProjectmemController extends BaseController {
 	 public $_module_name = 'Project_mem';
 	 public $id;
 	 public $project_id;
-        public $position_id;
         public $admin_id;
 	 public $add_time;      //注册时间
          
@@ -39,7 +38,6 @@ class ProjectmemController extends BaseController {
      /*
       @@input
 	  @param int $project_id  项目id
-	  @param int $position_id 职位id
 	  @param int admin_id     用户id
 	  @@output
 	  @param $is_success 0-操作成功,-1-操作失败
@@ -48,7 +46,6 @@ class ProjectmemController extends BaseController {
 		$data = $this->fill($content);
 		
 		if(!isset($data['project_id'])
-		|| !isset($data['position_id'])
 		|| !isset($data['admin_id'])
 		)
 		{
@@ -56,11 +53,9 @@ class ProjectmemController extends BaseController {
 		}
 	
 		$data['project_id']  = intval(trim($data['project_id']));
-		$data['position_id'] = intval(trim($data['position_id']));
 		$data['admin_id']    = intval(trim($data['admin_id']));
 	
 		if(0 > $data['project_id']
-		|| 0 > $data['position_id']
 		|| 0 > $data['admin_id']
 		)
 		{
@@ -101,7 +96,6 @@ class ProjectmemController extends BaseController {
 						$list[] = array(
 										'id'          => intval($v['id']),
 										'project_id'  => intval($v['project_id']),
-										'position_id' => intval($v['position_id']),
 										'admin_id'    => intval($v['admin_id']),
 										'add_time'    => intval($v['add_time']),
 										
@@ -140,7 +134,6 @@ class ProjectmemController extends BaseController {
 			$list = array(
 				'id'          => intval($tmp_one['id']),
 				'project_id'  => intval($tmp_one['project_id']),
-				'position_id' => intval($tmp_one['position_id']),
 				'admin_id'    => intval($tmp_one['admin_id']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
