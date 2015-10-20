@@ -67,6 +67,9 @@ class AdminController extends BaseController {
 			return C('param_err');
 		}
 	
+		$data['admin_name'] = htmlspecialchars(trim($data['admin_name']));
+		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
+		
 		if('' == $data['admin_name']
 		|| '' == $data['passwd']
 		)
@@ -74,13 +77,39 @@ class AdminController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
+		
+		
+		//检查用户名
+		if(!$this->__exists('admin_name', $data['admin_name']))
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>-2,
+					'message'=>C('no_exists'),
+				),
+			);
+		}
+		
 		$data['passwd'] = md5($data['passwd']);
 	
-		$tmp_one = M($this->_module_name)->field("id,role,part")->where($data)
+		$tmp_one = M($this->_module_name)->field("id,role,part,status")->where($data)
 		                                 ->find();
 	    if($tmp_one)
 	    {
 			session('admin_name',$data['admin_name']);
+			//检查是否过期
+			if(-1 == $tmp_one['status'])
+			{
+				return array(
+					200,
+					array(
+						'is_success'=>-3,
+						'message'=>urlencode('此帐号已停用'),
+					)
+				);
+			}
+			
 			return array(
 				200,
 				array(
@@ -148,7 +177,7 @@ class AdminController extends BaseController {
 		|| !isset($data['status'])
 		|| !isset($data['part'])
 		|| !isset($data['role'])
-		|| !isset($data['position'])
+	//	|| !isset($data['position'])
 		)
 		{
 			return C('param_err');
@@ -161,7 +190,7 @@ class AdminController extends BaseController {
 		$data['status']      = htmlspecialchars(trim($data['status']));
 		$data['part']       = intval(trim($data['part']));
 		$data['role']       = intval(trim($data['role']));
-		$data['position']   = intval(trim($data['position']));
+	//	$data['position']   = intval(trim($data['position']));
 		
 		
 		if('' == $data['number']
@@ -171,7 +200,7 @@ class AdminController extends BaseController {
 		|| '' == $data['status']
 		|| 0 >= $data['part']
 		|| 0 >= $data['role']
-		|| 0 >= $data['position']
+	//	|| 0 >= $data['position']
 		)
 		{
 			return C('param_fmt_err');

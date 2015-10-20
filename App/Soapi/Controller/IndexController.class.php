@@ -124,6 +124,7 @@ class IndexController extends Controller {
 
         $_arr = array(
           'Test.get_des',
+          'User.register',
     //      'Inexposal.dynamic',
         );
 
