@@ -84,7 +84,7 @@ class ResumeController extends BaseController {
 		|| !isset($data['position_id'])
 		|| !isset($data['part_id'])
 		|| !isset($data['accessories'])
-		|| !isset($data['remartk'])
+		#|| !isset($data['remartk'])
 		|| !isset($data['create'])
 		)
 		{
@@ -97,7 +97,7 @@ class ResumeController extends BaseController {
 	       $data['position_id']  = intval(trim($data['position_id']));
 	       $data['part_id']      = intval(trim($data['part_id']));
 	       $data['accessories']  = htmlspecialchars(trim($data['accessories']));
-	       $data['remartk']      = htmlspecialchars(trim($data['remartk']));
+	       #$data['remartk']      = htmlspecialchars(trim($data['remartk']));
 	       $data['create']       = intval(trim($data['create']));
 	
 		if('' == $data['number']
@@ -106,7 +106,7 @@ class ResumeController extends BaseController {
 		|| 0  > $data['position_id']
 		|| 0  > $data['part_id']
 		|| '' == $data['accessories']
-		|| '' == $data['remartk']
+		#|| '' == $data['remartk']
 		|| 0 > $data['create']
 		)
 		{

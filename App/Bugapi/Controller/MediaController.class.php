@@ -85,7 +85,7 @@ class MediaController extends BaseController {
 		{
 			mkdir(__PUBLIC__.$file_dir);
 		}
-		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png','pdf','doc','docx','xls')))
+		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png','pdf','doc','docx','xls','pdf','xlsx','zip','rar')))
 		{
 			return array(
 				200,
@@ -136,6 +136,26 @@ class MediaController extends BaseController {
 			   {
 			              $file_name = $file_dir.time().'_'.rand(1000,2000).".xls";
 			   }
+			break;
+			case 'pdf':
+				{
+						 $file_name = $file_dir.time().'_'.rand(1000,2000).".pdf";
+				}
+			break;
+			case 'xlsx':
+				{
+						$file_name = $file_dir.time().'_'.rand(1000,2000).".xlsx";
+				}
+			break;
+			case 'zip':
+				{
+						$file_name = $file_dir.time().'_'.rand(1000,2000).".zip";
+				}
+			break;
+			case 'rar':
+				{
+						$file_name = $file_dir.time().'_'.rand(1000,2000).".rar";
+				}
 			break;
 		}
 		$data_file_name = $file_name;
