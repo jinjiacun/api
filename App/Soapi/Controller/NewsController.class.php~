@@ -63,6 +63,7 @@ class NewsController extends BaseController {
 	                              content text comment '内容',
 	                              pic int not null default 0 comment '配图(pc)',
 	                              assist_num int not null default 0 comment '点赞数', 
+	                              show_time int not null default 0 comment '显示日期',
 	                              add_time int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -77,6 +78,7 @@ class NewsController extends BaseController {
 	protected $content;
 	protected $pic;
 	protected $assist_num;
+	protected $show_time;
 	protected $add_time;
 
 	#添加
@@ -98,26 +100,29 @@ class NewsController extends BaseController {
 		$data = $this->fill($content);
 		
 		if(!isset($data['title'])
-		|| !isset($data['source'])
-		|| !isset($data['author'])
+		//|| !isset($data['source'])
+		//|| !isset($data['author'])
 		|| !isset($data['content'])
 		|| !isset($data['pic'])
+		|| !isset($data['show_time'])
 		)
 		{
 			return C('param_err');
 		}
 		
 		$data['title']   = htmlspecialchars(trim($data['title']));
-		$data['source']  = htmlspecialchars(trim($data['source']));
-		$data['author']  = htmlspecialchars(trim($data['author']));
+		//$data['source']  = htmlspecialchars(trim($data['source']));
+		//$data['author']  = htmlspecialchars(trim($data['author']));
 		$data['content'] = htmlspecialchars(trim($data['content']));
 		$data['pic']     = intval($data['pic']);
+		$data['show_time'] = intval($data['show_time']);
 		
 		if('' == $data['title']
-		|| '' == $data['source']
-		|| '' == $data['author']
+		//|| '' == $data['source']
+		//|| '' == $data['author']
 		|| '' == $data['content']
 		|| 0  >= $data['pic']
+		|| 0  >= $data['show_time']
 		)
 		{
 			return C('param_fmt_err');
@@ -125,14 +130,34 @@ class NewsController extends BaseController {
 		
 		$data['add_time'] = time();
 		
+		#判定是否负面新闻:begin
+		$_push_has_validate = false;
+		if(0< $data['company_id']
+		&& 1 == $data['sign'])
+		{
+			$_push_has_validate = true;
+		}
+		#判定是否负面新闻:end
+		
 		if(M($this->_module_name)->add($data))
 		{
+			$id = M()->getLastInsID();
+			
+			if($_push_has_validate)
+			{
+					$_tempalte_param = C('push_event_type');
+					$src_event_param = $_tempalte_param['company_news']['src_event_param'];
+					$src_event_param = str_replace("<COMPANY_ID>", $data['company_id'], $src_event_param);
+					$src_event_param = str_replace("<NEWS_ID>", $id, $src_event_param);
+					A('Soapi/Pushmessage')->push_event('010004', $src_event_param, sprintf("负面新闻 %s", $data['title']));
+			}
+			
 			return array(
 				200,
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
-					'id'=> M()->getLastInsID(),
+					'id'=> $id,
 				)
 			);
 		}
@@ -169,6 +194,7 @@ class NewsController extends BaseController {
 						'pic'         => intval($v['pic']),
 						'pic_url'     => $this->get_pic_url($v['pic']),
 						'assist_num'  => intval($v['assist_num']),
+						'show_time'   => intval($v['show_time']),
 						'add_time'    => intval($v['add_time']),
 						
 					);	
@@ -228,6 +254,7 @@ class NewsController extends BaseController {
 	@param $content  内容
 	@param $pic      图片
 	@param $assist_num 点赞数
+	@param $show_time 显示时间
 	@param $add_time 
 	*/
 	{
@@ -261,6 +288,7 @@ class NewsController extends BaseController {
 				'pic'         => intval($tmp_one['pic']),
 				'pic_url'     => $this->get_pic_url($tmp_one['pic']),
 				'assist_num'  => intval($tmp_one['assist_num']),
+				'show_time'   => intval($tmp_one['show_time']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}
@@ -271,7 +299,68 @@ class NewsController extends BaseController {
 		);
 	}
 
+	#修改	
+		public function update($content)
+		/**
+		@@input
+		@param $where 条件
+		@param $data  要更新的数据
+		@@output
+		@param $is_success 0-成功操作，-1-操作失败
+		*/
+		{
+			$data = $this->fill($content);
 
+			$content = json_encode($data);
+			#判定是否从正面:begin
+			$has_validate = false;
+			if(1 == $data['data']['sign'])
+			{
+					$tmp_info = M($this->_module_name)->field('sign')->find($data['where']['id']);
+					if(0 == $tmp_info['sign'])
+					{
+						$has_validate = true;
+					}
+			}
+			
+			
+			#判定是否从正面:end			
+			list($status_code,$r_content) = parent::update($content);
+			$data = $this->fill($content);
+			if(500 == $status_code)
+			{
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			
+			if(200 == $status_code
+			&& 0 == $r_content['is_success'])
+			{
+				#新闻从正面到负面:begin
+				if($_push_has_validate)
+				{
+						$_tempalte_param = C('push_event_type');
+						$src_event_param = $_tempalte_param['company_news']['src_event_param'];
+						$src_event_param = str_replace("<COMPANY_ID>", $data['data']['company_id'], $src_event_param);
+						$src_event_param = str_replace("<NEWS_ID>", $data['where']['id'], $src_event_param);
+						A('Soapi/Pushmessage')->push_event('010004', $src_event_param, sprintf("负面新闻 %s", $data['title']));
+				}
+				#新闻从正面到负面:end
+					
+				return array(
+					$status_code,
+					$r_content
+				);
+			}
+			
+			return array(
+					$status_code,
+					$r_content
+			);
+		}
 
 
 

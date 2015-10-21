@@ -449,7 +449,7 @@ class InexposalController extends BaseController {
 			
 			//分别计算回复总数
 			$exposal_id = 0;
-			$sql_str = str_replace('<EXPOSAL_WHERE>', 'exposal_id in('.implode(",", $exposal_id_list).')', $template_sql1).' group by exposal_id';
+			$sql_str = str_replace('<EXPOSAL_WHERE>', 'parent_id in('.implode(",", $exposal_id_list).')', $template_sql1).' group by exposal_id';
 			$tmp_list = M()->query($sql_str);
 			$this->__debug(sprintf("sql:%s\n", M()->getLastSql()));
 			$sub_amount_list = array();
@@ -472,7 +472,7 @@ class InexposalController extends BaseController {
 					if($sub_list[$id])
 					{
 						$list[$k]['sub']['list'] = $sub_list[$id];
-						$list[$k]['sub']['record_count'] = $sub_amount_list[$id];
+						$list[$k]['sub']['record_count'] = intval($sub_amount_list[$id]);
 					}
 				}
 				unset($k, $v, $sub_list, $sub_amount_list);
@@ -1122,6 +1122,8 @@ class InexposalController extends BaseController {
                     'pic_1'   => intval($v['pic_1']),
                     'pic_1_url' => $this->get_pic_url($v['pic_1']),
                     're_amount' => $re_amount,
+                    'logo_url'  => $v['logo_url'],
+                    'alias_list'=> urlencode($v['alias_list']),
 				);				
 			}
 			unset($v, $tmp_list);
