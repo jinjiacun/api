@@ -54,7 +54,7 @@ class ProjectController extends BaseController {
 		
 		if(!isset($data['number'])
 		|| !isset($data['name'])
-		|| !isset($data['description'])
+		//|| !isset($data['description'])
 		|| !isset($data['create'])
 		)
 		{
@@ -63,12 +63,12 @@ class ProjectController extends BaseController {
 	
 	       $data['number']            = htmlspecialchars(trim($data['number']));
 		$data['name']              = htmlspecialchars(trim($data['name']));
-		$data['description'] 	     = htmlspecialchars(trim($data['description']));
+		//$data['description'] 	     = htmlspecialchars(trim($data['description']));
 	       $data['create']            = htmlspecialchars(trim($data['create']));
 	
 		if('' == $data['number']
 		|| '' == $data['name']
-		|| '' == $data['description']
+		//|| '' == $data['description']
 		|| '' == $data['create']
 		)
 		{
