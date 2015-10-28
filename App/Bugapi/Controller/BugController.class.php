@@ -115,6 +115,8 @@ class BugController extends BaseController {
 		
 		if(M($this->_module_name)->add($data))
 		{
+			#推送
+			$this->_mosquitto_push($data['get_member']);
 				return array(
 						200,
 						array(
@@ -211,5 +213,63 @@ class BugController extends BaseController {
 			$list
 		);
 	 }
+	 
+	#查询本人的bug及其级别
+	public function get_self_bug($content)
+	{
+		$data = $this->fill($content);
+		
+		if(!isset($data['admin_id']))
+		{
+			return C('param_err');
+		}
+		
+		$data['admin_id'] = htmlspecialchars(trim($data['admin_id']));
+		
+		if(0 >= $data['admin_id'])
+		{
+			return C('param_fmt_err');
+		}
+		
+		$tmp_one = M($this->_module_name)->field("level")
+		                                 ->where(array('get_member'=>$data['admin_id'],
+		                                               'level'=>1,
+		                                               'status'=>1))
+		                                 ->find();
+		
+		if($tmp_one)
+		{
+			return array(
+				200,
+				array(
+					'is_success'=>0,
+					'message'=>urlencode('严重bug'),
+				),
+			);
+		}
+		$tmp_one = M($this->_module_name)->field("level")
+		                                 ->where(array('get_member'=>$data['admin_id'],
+		                                               'status'=>1))
+		                                 ->find();
+		if($tmp_one)
+		{
+			return array(
+					200,
+					array(
+						'is_success'=>1,
+						'message'=>urlencode('有bug'),
+					),
+				);
+		}
+		
+		return array(
+					200,
+					array(
+						'is_success'=>-1,
+						'message'=>urlencode('错误'),
+					),
+				);
+		
+	} 
 }
 ?>

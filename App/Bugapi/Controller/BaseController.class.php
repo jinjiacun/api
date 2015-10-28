@@ -278,8 +278,29 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
+		#原来受理人bug修改
+		if('Bug' == $this->_module_name)
+		{
+			if(isset($data['where']['id'])
+			&& isset($data['data']['get_member']))
+			{
+				$tmp_one = M('Bug')->fileld('get_member')->find($data['where']['id']);
+				if($tmp_one)
+					$this->_mosquitto_push($tmp_one['get_member']);
+			}
+		}
 		if(false !== $obj->where($data['where'])->save($data['data']))
 		{
+			#查询是否是bug修改
+			if('Bug' == $this->_module_name)
+			{
+				if(isset($data['where']['id'])
+				&& isset($data['data']['get_member']))
+				{
+					$this->_mosquitto_push($data['data']['get_member']);
+				}
+			}
+			
 			return array(
 				200,
 				array(
@@ -881,7 +902,38 @@ class BaseController extends Controller {
 	}
 	
 	
-	
+	public function _mosquitto_push($admin_id)
+	{
+		$admin_name = '';
+		$message = 0;
+		
+		#查询用户名称
+		$tmp_one = M('Admin')->field('admin_name')->find($admin_id);
+		if($tmp_one)
+			$admin_name = $tmp_one['admin_name'];
+			
+		
+		$result = A('Bugapi/bug')->get_self_bug(json_encode(array('admin_id'=>$admin_id)));
+		
+		if(200 == $result[0] #严重bug
+		&& 0 == $result[1]['is_success'])
+		{
+			$message = 1;
+		}
+		elseif(200 == $result[0]
+		&& 1 == $result[1]['is_success'])
+		{
+			$message = 2;
+		}
+		
+		#推送
+		$this->post(C('mosquitto_server_url'),
+					array(
+						'target'=>'bug/'.$admin_name,
+						'message'=>$message
+					));
+		
+	}
 	
 	
 	
