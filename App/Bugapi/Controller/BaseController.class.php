@@ -278,15 +278,17 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
+		$old_id = 0;
 		#原来受理人bug修改
 		if('Bug' == $this->_module_name)
 		{
 			if(isset($data['where']['id'])
 			&& isset($data['data']['get_member']))
 			{
-				$tmp_one = M('Bug')->fileld('get_member')->find($data['where']['id']);
+				$tmp_one = M('Bug')->field('get_member')->find($data['where']['id']);
 				if($tmp_one)
-					$this->_mosquitto_push($tmp_one['get_member']);
+				    $old_id = $tmp_one['get_member'];
+					#$this->_mosquitto_push($tmp_one['get_member']);
 			}
 		}
 		if(false !== $obj->where($data['where'])->save($data['data']))
@@ -298,6 +300,8 @@ class BaseController extends Controller {
 				&& isset($data['data']['get_member']))
 				{
 					$this->_mosquitto_push($data['data']['get_member']);
+					if(0 < $old_id)
+						$this->_mosquitto_push($old_id);
 				}
 			}
 			

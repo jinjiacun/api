@@ -110,6 +110,9 @@ class AdminController extends BaseController {
 				);
 			}
 			
+			//推送提醒
+			$this->_mosquitto_push($tmp_one['id']);
+			
 			return array(
 				200,
 				array(
@@ -354,26 +357,7 @@ class AdminController extends BaseController {
 			);
 	} 
 	 
-	#查询本人的bug及其级别
-	public function get_bug($content)
-	{
-		$data = $this->fill($content);
-		
-		if(!isset($data['id']))
-		{
-			return C('param_err');
-		}
-		
-		$data['id'] = htmlspecialchars(trim($data['id']));
-		
-		if(0 >= $data['admin_name'])
-		{
-			return C('param_fmt_err');
-		}
-		
-		
-		
-	} 
+	
 	 
 	 
 	 
