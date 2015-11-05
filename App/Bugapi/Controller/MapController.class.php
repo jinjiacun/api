@@ -24,6 +24,7 @@ class MapController extends BaseController {
 	      'part'      =>'Part',
 	      'admin'     =>'Admin',
 	      'mod'       => 'Project_mod',
+	      'project'   => 'Project',
 	   );
 	   
 	   $_map_list = array();
