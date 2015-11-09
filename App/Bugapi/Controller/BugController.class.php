@@ -103,7 +103,7 @@ class BugController extends BaseController {
 		|| 0 >= $data['project_mod_id']
 		|| 0 >= $data['put_member']
 		|| 0 >= $data['get_member']
-		|| '' == $data['description']
+		//|| '' == $data['description']
 		|| 0 > $data['level']
 		|| 0 > $data['status']
 		)
