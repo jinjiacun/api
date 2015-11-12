@@ -9,6 +9,7 @@ class IndexController extends Controller {
     protected $token       = "" ; //加密验证
     protected $handler     = null;//资源处理句柄
     protected $is_mul      = false;
+    protected $debug       = 0;//0-非调试模式,1-调试模式
 
     public function __constract__()
     {
@@ -56,7 +57,11 @@ class IndexController extends Controller {
     	if(I('get.token'))
     	{
 			$this->token = I('get.token');
-		}
+		  }
+      if(I('get.debug'))
+      {
+        $this->debug = I('get.debug');
+      }
 
         ##post
         if(I('post.type'))
@@ -77,8 +82,12 @@ class IndexController extends Controller {
         }
         if(I('post.token'))
         {
-			$this->token = I('post.token');
-		}
+			   $this->token = I('post.token');
+		    }
+        if(I('post.debug'))
+        {
+          $this->debug = I('post.debug');
+        }
         if(!isset($this->method)
         || !isset($this->in_content)
         || !isset($this->token))
@@ -89,6 +98,14 @@ class IndexController extends Controller {
             return;
         }
         
+
+        //切换表前缀
+        if(1 == $this->debug)
+        {
+          C('DB_NAME','hr_bug_test');
+          C('IS_DEBUG',1);
+        }
+
         /*
         if(empty($this->token))
         {
@@ -148,6 +165,7 @@ class IndexController extends Controller {
            $this->in_content = str_replace("&amp;", '', $this->in_content);
            $this->in_content = str_replace("'", '"', $this->in_content);
            $this->in_content = str_replace("$", '%', $this->in_content);
+           //$this->in_content = str_replace(" ", '', $this->in_content);
         }     
 
         
@@ -160,7 +178,7 @@ class IndexController extends Controller {
                           $this->method,
                           $this->in_content,
                           $this->type);
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
     	  if(!in_array($this->type,array('text','resource')))
     	  {
 			     $this->type = 'text';
@@ -193,7 +211,7 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
+                    file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
 					           /*
 					           A('Soapi/Apistat')->add(json_encode(array(
 							         'name'=>$this->method,
@@ -263,7 +281,7 @@ class IndexController extends Controller {
                                         $status_code,
                                         urldecode(json_encode($out_content))
                       );
-                      file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                       self::call_back($status_code, $out_content);
                     }                    
                 }
@@ -284,7 +302,7 @@ class IndexController extends Controller {
                           $status_code,
                           json_encode($out_content)
                           );
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
         $etime=microtime(true);//获取程序执行结束的时间
 		$total=$etime-$stime;   //计算差值
 		

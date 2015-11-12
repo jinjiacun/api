@@ -930,10 +930,16 @@ class BaseController extends Controller {
 			$message = 2;
 		}
 		
+		$topic_prefix = 'bug/';
+		if(1 == C('IS_DEBUG'))
+		{
+			$topic_prefix = 'debug_bug/';
+		}
+
 		#推送
 		$this->post(C('mosquitto_server_url'),
 					array(
-						'target'=>'bug/'.$admin_name,
+						'target'=>$topic_prefix.$admin_name,
 						'message'=>$message
 					));
 		

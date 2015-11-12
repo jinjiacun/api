@@ -1,5 +1,6 @@
 <?php
 return array(
+     'IS_DEBUG'      => 0,
      'DB_TYPE'       => 'mysql',     // 数据库类型
      'DB_HOST'       => 'localhost', // 服务器地址
      'DB_NAME'       => 'hr_bug',       // 数据库名
