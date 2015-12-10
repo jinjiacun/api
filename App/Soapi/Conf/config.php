@@ -29,7 +29,8 @@ return array(
      'api_user_photo_url' => 'http://192.168.1.31:8310',
      'api_user_photo_def_url' => 'http://192.168.1.31:8310/useravatar.jpg',
      'KEY'                => 'souh*e_i#2?0>1&5',
-     
+     'push_android_url'   =>'http://192.168.1.131/phpmquttclient/send_mqtt.php',
+     'push_ios_url'       =>'',
      #推送事件类型
      'push_event_type' =>array(
                            #回复主贴评论推送
@@ -58,5 +59,6 @@ return array(
 		                                            'des_event_param'=>'type:010006,comment_id:<COMMENT_ID>'), 
 		                                            
 	 ),
+	 'resource_url'=>'http://tongji.cngold.com.cn/tools/PostSouheiData?mobile=%s&uname=%s&url=%s&preurl=%s&agent=%s&screen=%s&remark=%s',
 	//'配置项'=>'配置值'
 );

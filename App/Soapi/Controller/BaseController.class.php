@@ -537,6 +537,33 @@ class BaseController extends Controller {
 		return $result; 
 	}
 	
+	public function get($mobile='', $uname='', $my_url='', $preurl='', $agent='', $screen='', $remark='')
+	{
+		$url = C('resource_url');
+		$url .= 'mobile='.$mobile
+		        .'&uname='.$uname
+		        .'&url='.urlencode($my_url)
+		        .'&preurl='.urlencode($preurl)
+		        .'&agent='.urlencode($agent)
+		        .'&screen='.$screen
+		        .'&remark='.$remark;
+		#$url = sprintf($url,$mobile, $uname, $url, $preurl, $agent, $screen, $remark);
+		#print_r($url);
+		$ch = curl_init($url) ;  
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回  
+		curl_setopt($ch, CURLOPT_BINARYTRANSFER, true) ; // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回  
+		$output = curl_exec($ch) ;  
+			
+		return $output;  
+			/* 写入文件 */  
+			/*
+			$fh = fopen("out.html", 'w') ;  
+			fwrite($fh, $output) ;  
+			fclose($fh) ;   
+			*/
+	}
+	
+	
 	
 	//通过id获取图片地址
 	protected function get_pic_url($id)

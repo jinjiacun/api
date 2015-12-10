@@ -339,6 +339,15 @@ class UserController extends BaseController {
 				'nickname'=>$content['nickname'],
 			);
 			A('Soapi/Member')->add(json_encode($user_info));
+			#get($mobile='', $uname='', $url='', $preurl='', $agent='', $screen='', $remark='')
+			#判定是否是手机
+			if(!isset($data['agent']))#手机
+			{
+				$data['agent'] = $_SERVER['HTTP_USER_AGENT'];
+			}
+			//调用资源库
+			$this->get($data['mobile'],$data['uname'],$data['url'], $data['preurl'], $data['agent'], $data['screen'], $data['remark']);
+			
 			return array(
 				200,
 				array(
