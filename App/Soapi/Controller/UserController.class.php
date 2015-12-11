@@ -340,13 +340,18 @@ class UserController extends BaseController {
 			);
 			A('Soapi/Member')->add(json_encode($user_info));
 			#get($mobile='', $uname='', $url='', $preurl='', $agent='', $screen='', $remark='')
-			#判定是否是手机
-			if(!isset($data['agent']))#手机
+			#判定是否是手机			
+			if(!isset($data['agent'])||''==$data['agent'])#手机
 			{
 				$data['agent'] = $_SERVER['HTTP_USER_AGENT'];
 			}
+			$begin = microtime(true);
 			//调用资源库
-			$this->get($data['mobile'],$data['uname'],$data['url'], $data['preurl'], $data['agent'], $data['screen'], $data['remark']);
+			$result = $this->get($data['mobile'],$data['uname'],$data['url'], $data['preurl'], $data['agent'], $data['screen'], $data['remark']);		
+			$end = microtime(true);
+			$diff_time = $end-$begin;
+			$log_content = sprintf("mobile:%s	pswd:%s	user_time:%s	now:%s\n",$data['mobile'], $data['pswd'], $diff_time, time());
+			file_put_contents(__PUBLIC__."log/user_register_lib_time.log", $log_content,  FILE_APPEND);
 			
 			return array(
 				200,
