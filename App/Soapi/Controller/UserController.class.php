@@ -405,13 +405,18 @@ class UserController extends BaseController {
 		//var_dump($params);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['register'];
 		//var_dump($url);
+		$begin_time = microtime(true);
 		$back_str = $this->post($url, $params);
+		$end_time = microtime(true);
 		//var_dump($back_str);
 		//var_dump($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 == $re_json['State'])
 		{
+			$diff_time = $end_time-$begin_time;
+			$log_content = sprintf("mobile:%s	pswd:%s	user_time:%s	now:%s\n",$mobile, $pswd, $diff_time, time());
+			file_put_contents(__PUBLIC__."log/user_register_time.log", $log_content,  FILE_APPEND);
 			$back_content = $re_json['Descr'];
 			$r_list = explode('|', $back_content);
 			$content['user_id']  = $r_list[0];
