@@ -20,6 +20,7 @@ class BugfeedbackController extends BaseController {
 	 * create table hr_bug_feedback(`id` int primary key auto_increment,
 	                             `bug_id` int not null default 0 'bug的id',
 	                             `create` varchar(255) comment '反馈人',
+	                             'option_process' varchar(255) comment '操作过程',
 	                             `content` varchar(255) comment '反馈内容',
 	                             `status_remark` varchar(255) comment '状态变迁',
 	                             `add_time` int not null default 0 comment '添加日期'
@@ -30,6 +31,7 @@ class BugfeedbackController extends BaseController {
 	 public $id;
 	 public $bug_id;
 	 public $create;
+	 public $option_process;
 	 public $content;
 	 public $status_remark;
 	 public $add_time;      //注册时间
@@ -104,6 +106,7 @@ class BugfeedbackController extends BaseController {
 										'id'           => intval($v['id']),
 										'bug_id'       => intval($v['bug_id']),
 										'create'       => urlencode($v['create']),
+										'option_process'=> urlencode($v['option_process']),
 										'content'      => urlencode($v['content']),
 										'status_remark'=> urlencode($v['status_remark']),
 										'add_time'     => intval($v['add_time']),
@@ -144,6 +147,7 @@ class BugfeedbackController extends BaseController {
 				'id'            => intval($tmp_one['id']),
 				'bug_id'        => intval($tmp_one['bug_id']),
 				'create'        => urlencode($tmp_one['create']),
+				'option_process'=> urlencode($tmp_one['option_process']),
 				'content'       => urlencode($tmp_one['content']),
 				'status_remark' => urlencode($tmp_one['status_remark']),
 				'add_time'       => intval($tmp_one['add_time']), 
