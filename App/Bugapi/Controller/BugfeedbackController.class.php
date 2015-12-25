@@ -58,10 +58,12 @@ class BugfeedbackController extends BaseController {
 				return C('param_err');
 		}
 	
-	       $data['bug_id']        = intval(trim($data['bug_id']));
+	    $data['bug_id']        = intval(trim($data['bug_id']));
 		$data['create']        = htmlspecialchars(trim($data['create']));
 		$data['content']       = htmlspecialchars(trim($data['content']));
 		$data['status_remark'] = htmlspecialchars(trim($data['status_remark']));
+		if(isset($data['option_process']))
+			$data['option_process'] = htmlspecialchars(trim($data['option_process']));
 	
 		if(0 == $data['bug_id']
 		|| '' == $data['create']
@@ -106,7 +108,7 @@ class BugfeedbackController extends BaseController {
 										'id'           => intval($v['id']),
 										'bug_id'       => intval($v['bug_id']),
 										'create'       => urlencode($v['create']),
-										'option_process'=> urlencode($v['option_process']),
+										'option_process'=> urlencode(htmlspecialchars_decode($v['option_process'])),
 										'content'      => urlencode($v['content']),
 										'status_remark'=> urlencode($v['status_remark']),
 										'add_time'     => intval($v['add_time']),
@@ -147,7 +149,7 @@ class BugfeedbackController extends BaseController {
 				'id'            => intval($tmp_one['id']),
 				'bug_id'        => intval($tmp_one['bug_id']),
 				'create'        => urlencode($tmp_one['create']),
-				'option_process'=> urlencode($tmp_one['option_process']),
+				'option_process'=> urlencode(htmlspecialchars_decode($tmp_one['option_process'])),
 				'content'       => urlencode($tmp_one['content']),
 				'status_remark' => urlencode($tmp_one['status_remark']),
 				'add_time'       => intval($tmp_one['add_time']), 
