@@ -11,7 +11,7 @@ function of api:
 
 ##--------------------------------------------------------##
 */
-class CategoryController extends BaseController {
+class AskController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_ask(id int primary key auto_increment,
@@ -62,10 +62,10 @@ class CategoryController extends BaseController {
             }
 		
 	        
-            $data['project_id'] = int(trim($data['project_id']));
+            $data['project_id'] = intval(trim($data['project_id']));
             $data['ask']        = htmlspecialchars(trim($data['ask']));
             $data['asker']      = htmlspecialchars(trim($data['asker']));
-            $data['ask_time']      = int(trim($data['ask_time']));
+            $data['ask_time']      = intval(trim($data['ask_time']));
 		
             if(0 > $data['project_id']
             || '' == $data['ask']
