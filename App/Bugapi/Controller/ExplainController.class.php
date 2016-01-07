@@ -144,7 +144,7 @@ class ExplainController extends BaseController {
 				'project_id'  => intval($tmp_one['project_id']),
 				'title'        => urlencode($tmp_one['title']),
                 'description' => urlencode(htmlspecialchars_decode($tmp_one['description'])),
-                'create'      => intval($v['create']),
+                'create'      => intval($tmp_one['create']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}
