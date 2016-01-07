@@ -17,7 +17,8 @@ class CategoryController extends BaseController {
 	 * create table hr_category(id int primary key auto_increment,
 	                         name varchar(255) comment '项目名称',
 	                         description text comment '项目说明',
-	                         add_time int not null default 0 comment '添加日期'
+	                         create int not null default 0 comment '创建人',
+	                         add_time int not null default 0 comment '添加日期'	                         
 	                         )charset=utf8;
 	 * */
 	 
@@ -25,13 +26,15 @@ class CategoryController extends BaseController {
 	 protected $id;
 	 protected $name;          #项目名称
 	 protected $description;   #项目描述
-	 protected $add_time;   #新增日期
+	 protected $create;        #创建人
+	 protected $add_time;      #新增日期
 	
 	public function add($content)
          /*
          @@input
-         @param string $name   部门名称
+         @param string $name        名称
          @param string $description 项目描述
+         @param int    $create      创建人
          @@output
          @param $is_success 0-操作成功,-1-操作失败
          */
@@ -40,17 +43,20 @@ class CategoryController extends BaseController {
 		
             if(!isset($data['name'])
             || !isset($data['description'])
+            || !isset($data['create'])
             )
             {
                     return C('param_err');
             }
 		
 	        
-            $data['name'] = htmlspecialchars(trim($data['name']));
+            $data['name']        = htmlspecialchars(trim($data['name']));
             $data['description'] = htmlspecialchars(trim($data['description']));
+            $data['create']      = intval($data['create']);
 		
             if('' == $data['name']
             || '' == $data['description']
+            || 0> $data['create']
             )
             {
                     return C('param_fmt_err');
@@ -91,6 +97,7 @@ class CategoryController extends BaseController {
                                             'id'          => intval($v['id']),
                                             'name'        => urlencode($v['name']),
                                             'description' => urlencode(htmlspecialchars_decode($v['description'])),
+                                            'create'      => intval($v['create']),
                                             'add_time'    => intval($v['add_time']),
                                             
                                     );	
@@ -129,6 +136,7 @@ class CategoryController extends BaseController {
 				'id'          => intval($tmp_one['id']),
 				'name'        => urlencode($tmp_one['name']),
                 'description' => urlencode(htmlspecialchars_decode($tmp_one['description'])),
+                'create'      => intval($tmp_one['create']),
 				'add_time'    => intval($tmp_one['add_time']), 
 			);
 		}

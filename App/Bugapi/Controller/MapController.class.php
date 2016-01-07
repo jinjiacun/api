@@ -25,6 +25,8 @@ class MapController extends BaseController {
 	      'admin'     =>'Admin',
 	      'mod'       => 'Project_mod',
 	      'project'   => 'Project',
+	      'admin1'    => 'Admin1',
+	      'category'  => 'Category',
 	   );
 	   
 	   $_map_list = array();
@@ -33,7 +35,7 @@ class MapController extends BaseController {
 	   
 	   foreach($_team as $k=>$v)
 	   {
-	      if('admin' == $k) $label_name = 'admin_name';
+	      if('admin' == $k || 'admin1' == $k) $label_name = 'admin_name';
 	      else $label_name = 'name';
 	      $tmp_list = M($v)->field('id,'.$label_name)->select();
 	      foreach($tmp_list as $s_v)
