@@ -15,6 +15,7 @@ class AskController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_ask(id int primary key auto_increment,
+							 title varchar(255) comment '标题',
 							 project_id int comment '项目id',
 	                         ask text comment '问题',
 	                         asker text comment '提问者',
@@ -29,6 +30,7 @@ class AskController extends BaseController {
 	 
 	 protected $_module_name = 'ask';
 	 protected $id;
+	 protected $title;
 	 protected $project_id = 0;
 	 protected $ask = '';
 	 protected $asker = '';
@@ -43,6 +45,7 @@ class AskController extends BaseController {
          /*
          @@input
          @param string $project_id   项目id
+         @param string $title   标题
          @param string $ask   问题
          @param string $asker 提问者
          @param int ask_time 提问时间
@@ -53,6 +56,7 @@ class AskController extends BaseController {
             $data = $this->fill($content);
 		
             if(!isset($data['project_id'])
+            || !isset($data['title'])
             || !isset($data['ask'])
             || !isset($data['asker'])
             || !isset($data['ask_time'])
@@ -63,11 +67,13 @@ class AskController extends BaseController {
 		
 	        
             $data['project_id'] = intval(trim($data['project_id']));
+            $data['title']      = htmlspecialchars(trim($data['title']));
             $data['ask']        = htmlspecialchars(trim($data['ask']));
             $data['asker']      = htmlspecialchars(trim($data['asker']));
             $data['ask_time']      = intval(trim($data['ask_time']));
 		
             if(0 > $data['project_id']
+            || '' == $data['title']
             || '' == $data['ask']
             || '' == $data['asker']
             || 0> $data['ask_time']
@@ -109,6 +115,7 @@ class AskController extends BaseController {
                     {
                             $list[] = array(
                                             'id'           => intval($v['id']),
+                                            'title'        => urlencode($v['title']),
                                             'project_id'   => intval($v['project_id']),
 											'ask' 		   => urlencode(htmlspecialchars_decode($v['ask'])),
 											'asker'        => urlencode($v['asker']),
@@ -153,6 +160,7 @@ class AskController extends BaseController {
 		{
 			$list = array(
 				'id'          => intval($tmp_one['id']),
+				'title'       => urlencode($tmp_one['title']),
 				'project_id'   => intval($tmp_one['project_id']),
 				'ask' 		   => urlencode(htmlspecialchars_decode($tmp_one['ask'])),
 				'asker'        => urlencode($tmp_one['asker']),
