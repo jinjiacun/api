@@ -23,10 +23,11 @@ class ProjectController extends BaseController {
 	 * create table hr_project(id int primary key auto_increment,
 	                           number varchar(255) comment '编号',
 	                           name varchar(255) comment '项目名称',
-                                  description varchar(255) comment '项目描述',
-                                  create varchar(255) comment '项目创建人',
-                                  last_time int not null default 0 comment '最后更新时间',
-	                          add_time int not null default 0 comment '添加日期'
+                               description varchar(255) comment '项目描述',
+                               create varchar(255) comment '项目创建人',
+                               last_time int not null default 0 comment '最后更新时间',
+                               status int not null default 0 comment '项目状态(0-开发中，1-已经上线)',
+	                           add_time int not null default 0 comment '添加日期'
 	                          )charset=utf8;
 	 * */
 	 
@@ -34,17 +35,19 @@ class ProjectController extends BaseController {
 	 public $id;
 	 public $number;
 	 public $name;
-        public $description;
-        public $create;
-        public $last_time;
+     public $description;
+     public $create;
+     public $last_time;
+     public $status;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
      @@input
-        @param string      $number           编号
+     @param string      $number           编号
 	 @param string      $name             项目名称
 	 @param string      $description      项目描述
+	 @param int         $status           项目状态
 	 @param string      $create           创建人
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
@@ -114,6 +117,7 @@ class ProjectController extends BaseController {
 										'description'      => urlencode($v['description']),
 										'create'           => urlencode($v['create']),
 										'last_time'        => intval($v['last_time']),
+										'status'           => intval($v['status']),
 										'add_time'         => intval($v['add_time']),
 										
 								);	
@@ -155,6 +159,7 @@ class ProjectController extends BaseController {
 				'description'      => urlencode($tmp_one['description']),
 				'create'           => urlencode($tmp_one['create']),
 				'last_time'        => intval($tmp_one['last_time']),
+				'status'           => intval($tmp_one['status']),
 				'add_time'         => intval($tmp_one['add_time']), 
 			);
 		}

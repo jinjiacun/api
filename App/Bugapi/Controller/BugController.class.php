@@ -25,14 +25,16 @@ class BugController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_bug(id int primary key auto_increment,
-	                             title varchar(255) comment '标题，简要描述',
-	                             number varchar(255) comment '编号',
-                                     project_id int not null default 0 comment '项目id',
-                                     project_mod_id int not null default 0 comment '项目模块id',
-                                     put_member int not null default 0 comment '提出者',
-                                     get_member int not null default 0 comment '接受者',
-                                     description text comment '描述',
-                                     level int not null default 0 comment '优先级',
+	                              title varchar(255) comment '标题，简要描述',
+	                              number varchar(255) comment '编号',
+                                  project_id int not null default 0 comment '项目id',
+                                  project_status_id int not null default 0 comment '项目状态id',
+                                  history_project_status int not null default 0 comment '项目历史状态',
+                                  project_mod_id int not null default 0 comment '项目模块id',
+                                  put_member int not null default 0 comment '提出者',
+                                  get_member int not null default 0 comment '接受者',
+                                  description text comment '描述',
+                                  level int not null default 0 comment '优先级',
 	                              status int not null default 0 comment '状态(0-提出,1-分配,2-执行,3-完成)',
 	                              last_update int not null default 0 comment '最后更新人',
 	                              last_update_time int not null default 0 comment '最后更新日期',
@@ -58,15 +60,17 @@ class BugController extends BaseController {
      public function add($content)
      /*
      @@input
-        @param string $title           标题
-	 @param string $number          编号
-	 @param int    $project_id      项目id
-	 @param int    $project_mod_id   项目模块id
-	 @param int    $put_member       bug提出者
-	 @param int    $get_member       bug接受者
-	 @param string $description      描述
-	 @param int    $level            优先级
-	 @param int    $status           状态(0-提出,1-分配,2-执行,3-完成)
+     @param string $title                  标题
+	 @param string $number                 编号
+	 @param int    $project_id             项目id
+	 @param int    $project_status_id      项目状态id
+	 @param int    $history_project_status 项目历史状态
+	 @param int    $project_mod_id         项目模块id
+	 @param int    $put_member             bug提出者
+	 @param int    $get_member             bug接受者
+	 @param string $description            描述
+	 @param int    $level                  优先级
+	 @param int    $status                 状态(0-提出,1-分配,2-执行,3-完成)
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
      */
@@ -87,7 +91,7 @@ class BugController extends BaseController {
 				return C('param_err');
 		}
 	
-	       $data['title']           = htmlspecialchars(trim($data['title']));
+	    $data['title']           = htmlspecialchars(trim($data['title']));
 		$data['number']          = htmlspecialchars(trim($data['number']));
 		$data['project_id']      = intval(trim($data['project_id']));
 		$data['project_mod_id']  = intval(trim($data['project_mod_id']));
@@ -145,19 +149,21 @@ class BugController extends BaseController {
 				foreach($data as $v)
 				{
 						$list[] = array(
-										'id'               => intval($v['id']),
-										'title'            => urlencode($v['title']),
-										'number'           => urlencode($v['number']),
-										'project_id'       => intval($v['project_id']),
-										'project_mod_id'   => intval($v['project_mod_id']),
-										'put_member'       => intval($v['put_member']),
-										'get_member'       => intval($v['get_member']),
-										'description'      => urlencode(htmlspecialchars_decode($v['description'])),
-										'level'            => intval($v['level']),
-										'status'           => intval($v['status']),
-										'last_update'      => intval($v['last_update']),
-										'last_update_time' => intval($v['last_update_time']),
-										'add_time'         => intval($v['add_time']),
+										'id'                    => intval($v['id']),
+										'title'                 => urlencode($v['title']),
+										'number'                => urlencode($v['number']),
+										'project_id'            => intval($v['project_id']),
+										'project_status_id'     => intval($v['project_status_id']),
+										'history_project_status'=> intval($v['history_project_status']),
+										'project_mod_id'        => intval($v['project_mod_id']),
+										'put_member'            => intval($v['put_member']),
+										'get_member'            => intval($v['get_member']),
+										'description'           => urlencode(htmlspecialchars_decode($v['description'])),
+										'level'                 => intval($v['level']),
+										'status'                => intval($v['status']),
+										'last_update'           => intval($v['last_update']),
+										'last_update_time'      => intval($v['last_update_time']),
+										'add_time'              => intval($v['add_time']),
 										
 								);	
 				}
@@ -192,19 +198,21 @@ class BugController extends BaseController {
 		if($tmp_one)
 		{
 			$list = array(
-				'id'              => intval($tmp_one['id']),
-				'title'           => urlencode($tmp_one['title']),
-				'number'          => urlencode($tmp_one['number']),
-				'project_id'      => intval($tmp_one['project_id']),
-				'project_mod_id'  => intval($tmp_one['project_mod_id']),
-				'put_member'      => intval($tmp_one['put_member']),
-				'get_member'      => intval($tmp_one['get_member']),
-				'description'     => urlencode(htmlspecialchars_decode($tmp_one['description'])),
-				'level'           => intval($tmp_one['level']),
-				'status'          => intval($tmp_one['status']),
-				'last_update'     => intval($tmp_one['last_update']),
-				'last_update_time'=> intval($tmp_one['last_update_time']),
-				'add_time'    => intval($tmp_one['add_time']), 
+				'id'                     => intval($tmp_one['id']),
+				'title'                  => urlencode($tmp_one['title']),
+				'number'                 => urlencode($tmp_one['number']),
+				'project_id'             => intval($tmp_one['project_id']),
+				'project_status_id'      => intval($tmp_one['project_status_id']),
+				'history_project_status' => intval($tmp_one['history_project_status']),
+				'project_mod_id'         => intval($tmp_one['project_mod_id']),
+				'put_member'             => intval($tmp_one['put_member']),
+				'get_member'             => intval($tmp_one['get_member']),
+				'description'            => urlencode(htmlspecialchars_decode($tmp_one['description'])),
+				'level'                  => intval($tmp_one['level']),
+				'status'                 => intval($tmp_one['status']),
+				'last_update'            => intval($tmp_one['last_update']),
+				'last_update_time'       => intval($tmp_one['last_update_time']),
+				'add_time'               => intval($tmp_one['add_time']), 
 			);
 		}
 		
