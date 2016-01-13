@@ -34,6 +34,10 @@ class BugController extends BaseController {
                                   put_member int not null default 0 comment '提出者',
                                   get_member int not null default 0 comment '接受者',
                                   description text comment '描述',
+                                  
+                                  solve_description varchar(255) comment 'bug解决描述',
+                                  solve_explain varchar(255) comment 'bug解决说明',
+                                  
                                   level int not null default 0 comment '优先级',
 	                              status int not null default 0 comment '状态(0-提出,1-分配,2-执行,3-完成)',
 	                              last_update int not null default 0 comment '最后更新人',
@@ -159,6 +163,8 @@ class BugController extends BaseController {
 										'put_member'            => intval($v['put_member']),
 										'get_member'            => intval($v['get_member']),
 										'description'           => urlencode(htmlspecialchars_decode($v['description'])),
+										'solve_description'     => urlencode($v['solve_description']),
+										'solve_explain'         => urlencode($v['solve_explain']),
 										'level'                 => intval($v['level']),
 										'status'                => intval($v['status']),
 										'last_update'           => intval($v['last_update']),
@@ -208,6 +214,8 @@ class BugController extends BaseController {
 				'put_member'             => intval($tmp_one['put_member']),
 				'get_member'             => intval($tmp_one['get_member']),
 				'description'            => urlencode(htmlspecialchars_decode($tmp_one['description'])),
+				'solve_description'     => urlencode($tmp_one['solve_description']),
+				'solve_explain'         => urlencode($tmp_one['solve_explain']),
 				'level'                  => intval($tmp_one['level']),
 				'status'                 => intval($tmp_one['status']),
 				'last_update'            => intval($tmp_one['last_update']),
