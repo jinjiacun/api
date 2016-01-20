@@ -23,6 +23,7 @@ class BugfeedbackController extends BaseController {
 	                             'option_process' varchar(255) comment '操作过程',
 	                             `content` varchar(255) comment '反馈内容',
 	                             `status_remark` varchar(255) comment '状态变迁',
+	                             `person_remark` varchar(255) comment '人员变迁',
 	                             `add_time` int not null default 0 comment '添加日期'
 	                             )charset=utf8;
 	 * */
@@ -34,12 +35,13 @@ class BugfeedbackController extends BaseController {
 	 public $option_process;
 	 public $content;
 	 public $status_remark;
+	 public $person_remark;
 	 public $add_time;      //注册时间
          
      public function add($content)
      /*
       @@input
-         @param int    $bug_id   bug_id
+      @param int    $bug_id   bug_id
 	  @param string $create  反馈人
 	  @param string $content 反馈内容
 	  @param string $status_remark 状态变迁
@@ -111,6 +113,7 @@ class BugfeedbackController extends BaseController {
 										'option_process'=> urlencode(htmlspecialchars_decode($v['option_process'])),
 										'content'      => urlencode($v['content']),
 										'status_remark'=> urlencode($v['status_remark']),
+										'person_remark'=> urlencode($v['person_remark']),
 										'add_time'     => intval($v['add_time']),
 										
 								);	
@@ -152,6 +155,7 @@ class BugfeedbackController extends BaseController {
 				'option_process'=> urlencode(htmlspecialchars_decode($tmp_one['option_process'])),
 				'content'       => urlencode($tmp_one['content']),
 				'status_remark' => urlencode($tmp_one['status_remark']),
+				'person_remark' => urlencode($tmp_one['person_remark']),
 				'add_time'       => intval($tmp_one['add_time']), 
 			);
 		}
