@@ -105,6 +105,11 @@ class IndexController extends Controller {
           C('DB_NAME','hr_bug_test');
           C('IS_DEBUG',1);
         }
+        elseif(2== $this->debug)
+        {
+		  C('DB_NAME','hr_bug_test_ex');
+          C('IS_DEBUG',2);
+		}
 
         /*
         if(empty($this->token))
