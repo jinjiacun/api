@@ -177,12 +177,13 @@ class IndexController extends Controller {
 
 
         #访问日志
-        $log_str = sprintf("begin   ip:%s   date:%s method:%s  content:%s   type:%s\r\n", 
+        $log_str = sprintf("begin   ip:%s   date:%s method:%s  content:%s   type:%s	debug:%s\r\n", 
                           $this->getIP(),
                           date("Y-m-d H:i:s"), 
                           $this->method,
                           $this->in_content,
-                          $this->type);
+                          $this->type,
+                          $this->debug);
         file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
     	  if(!in_array($this->type,array('text','resource')))
     	  {
