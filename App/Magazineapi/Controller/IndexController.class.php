@@ -180,7 +180,7 @@ if('Comment.get_list' == $this->method)
                           $this->method,
                           $this->in_content,
                           $this->type);
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".C('APP').date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
     	if(!in_array($this->type,array('text','resource')))
     	{
 			 $this->type = 'text';
@@ -213,7 +213,7 @@ if('Comment.get_list' == $this->method)
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
+                    file_put_contents(__PUBLIC__."log/request".C('APP').date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
 					           /*
 					           A('Soapi/Apistat')->add(json_encode(array(
 							         'name'=>$this->method,
@@ -284,7 +284,7 @@ if('Comment.get_list' == $this->method)
                                         $status_code,
                                         urldecode(json_encode($out_content))
                       );
-                      file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      file_put_contents(__PUBLIC__."log/request".C('APP').date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                       self::call_back($status_code, $out_content);                      
                     }                    
                 }
@@ -305,7 +305,7 @@ if('Comment.get_list' == $this->method)
                           $status_code,
                           json_encode($out_content)
                           );
-        file_put_contents(__PUBLIC__."log/request".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request".C('APP').date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
         $etime=microtime(true);//获取程序执行结束的时间
 		$total=$etime-$stime;   //计算差值
 		

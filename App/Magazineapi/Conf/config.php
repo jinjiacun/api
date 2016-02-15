@@ -10,6 +10,7 @@ return array(
      'DB_CHARSET'    => 'utf8',    // 字符集
      
      'APP_CONTROL'   => 'Magazineapi/', //APP前缀
+     'APP'           => 'Magazineapi',
      
 	 #'DATA_CACHE_TYPE' => 'Memcache',
 	 //'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
