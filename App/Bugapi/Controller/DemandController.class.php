@@ -25,6 +25,8 @@ class DemandController extends BaseController {
 	                          status int not null default 0 comment '状态',
 	                          create int not null default 0 comment '创建人',
 	                          last_online int not null default 0 comment '最终上线时间',
+	                          last_person int not null default 0 comment '最后更新人',
+	                          last_time   int not null default 0 comment '最新更新时间',
 	                          add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
 	 * */
@@ -41,6 +43,8 @@ class DemandController extends BaseController {
 	 protected $status = 0;
 	 protected $create = 0;
 	 protected $last_online = 0;
+	 protected $last_person = 0;
+	 protected $last_time   = 0;
 	 protected $add_time;   #新增日期
 	
 	public function add($content)
@@ -140,6 +144,8 @@ class DemandController extends BaseController {
 											'status'       => intval($v['status']),
 											'create'       => intval($v['create']),
 											'last_online'  => intval($v['last_online']),
+											'last_person'  => intval($v['last_person']),
+											'last_time'    => intval($v['last_time']),
 											'add_time'     => intval($v['add_time']),                                            
                                     );	
                     }
@@ -185,6 +191,8 @@ class DemandController extends BaseController {
 				'status'       => intval($tmp_one['status']),
 				'create'       => intval($tmp_one['create']),
 				'last_online'  => intval($tmp_one['last_online']),
+				'last_person'  => intval($tmp_one['last_person']),
+				'last_time'    => intval($tmp_one['last_time']),
 				'add_time'     => intval($tmp_one['add_time']),
 			);
 		}
