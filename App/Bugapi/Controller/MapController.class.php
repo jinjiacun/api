@@ -27,6 +27,7 @@ class MapController extends BaseController {
 	      'project'   => 'Project',
 	      'admin1'    => 'Admin1',
 	      'category'  => 'Category',
+	      'source_id' => 'Resume_source',
 	   );
 	   
 	   $_map_list = array();
