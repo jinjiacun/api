@@ -69,7 +69,7 @@ class AdminController extends BaseController {
 	
 		$data['admin_name'] = htmlspecialchars(trim($data['admin_name']));
 		$data['passwd'] = htmlspecialchars(trim($data['passwd']));
-		
+        
 		if('' == $data['admin_name']
 		|| '' == $data['passwd']
 		)
@@ -77,7 +77,7 @@ class AdminController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-		
+
 		
 		//检查用户名
 		if(!$this->__exists('admin_name', $data['admin_name']))
