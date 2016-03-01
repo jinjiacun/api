@@ -10,6 +10,10 @@ return array(
      'DB_PREFIX'     => 'hr_',    // 数据库表前缀
      'DB_CHARSET'    => 'utf8',    // 字符集
      
+		
+	 'media_physical_path' => 'C:/wamp/www/yms_api/Public/', #媒体物理路径
+	 'swf_tool_path'       => 'C:/SWFTools/pdf2swf.exe',#swf生成工具路径
+     
 	 //'DATA_CACHE_TYPE' => 'Memcache',
 	 //'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
 	 'DATA_CACHE_TYPE' => 'file',
