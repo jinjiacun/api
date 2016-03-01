@@ -412,3 +412,34 @@ function getOS()
 	}
 	return $platform;
 }
+
+function MakePropertyValue($name, $value, $osm) {
+        $oStruct = $osm->Bridge_GetStruct("com.sun.star.beans.PropertyValue");
+        $oStruct->Name = $name;
+        $oStruct->Value = $value;
+        return $oStruct;
+}
+    
+function word2pdf($doc_url, $output_url) {
+        $osm = new COM("com.sun.star.ServiceManager") or die("Please be sure that OpenOffice.org is installed.n");
+        $args = array(MakePropertyValue("Hidden", true, $osm));
+        $oDesktop = $osm->createInstance("com.sun.star.frame.Desktop");
+        $oWriterDoc = $oDesktop->loadComponentFromURL($doc_url, "_blank", 0, $args);
+        $export_args = array(MakePropertyValue("FilterName", "writer_pdf_Export", $osm));
+        $oWriterDoc->storeToURL($output_url, $export_args);
+        $oWriterDoc->close(true);
+    }
+
+function pdf2swf($command)
+{
+    $WshShell = new COM("WSCript.Shell") or die("创建COM对象失败");
+    //执行cmd命令
+    try{
+        $oExec = $WshShell->Run("cmd /C " . $command, 0, true);
+    }
+    catch(Exception $e)
+    {
+        return false;
+    }
+    return true;
+}
