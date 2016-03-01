@@ -26,6 +26,7 @@ class ResumeController extends BaseController {
 	 * sql script:
 	 * create table hr_resume(id int primary key auto_increment,
 	                             number varchar(255) comment '编号',
+	                             title varchar(255) comment '标题',
 	                             candidates varchar(255) comment '应聘人',
 	                             telephone varchar(255) comment '手机号码',
 	                             position_id int not null default 0 comment '岗位id',
@@ -153,6 +154,7 @@ class ResumeController extends BaseController {
 					{
 							$list[] = array(
 											'id'          => intval($v['id']),
+											'title'       => urlencode($v['title']),
 											'number'      => urlencode($v['number']),
 											'candidates'  => urlencode($v['candidates']),
 											'telephone'   => urlencode($v['telephone']),
@@ -204,6 +206,7 @@ class ResumeController extends BaseController {
 			{
 				$list = array(
 					'id'              => intval($tmp_one['id']),
+					'title'           => urlencode($tmp_one['title']),
 					'number'          => urlencode($tmp_one['number']),
 					'candidates'      => urlencode($tmp_one['candidates']),
 					'telephone'       => urlencode($tmp_one['telephone']),
