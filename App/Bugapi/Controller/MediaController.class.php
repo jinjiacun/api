@@ -1,10 +1,21 @@
 <?php
 namespace Bugapi\Controller;
 use Bugapi\Controller;
+use Think\Exception;
 include_once(dirname(__FILE__).'/BaseController.class.php');
+
 /**
 --媒体管理--
 */
+/*
+##--------------------------------------------------------##
+public function get_swf_by_doc($content)             doc生成swf接口
+@@input
+@@param $doc_id
+@@output
+@param $swf_url
+*/
+
 class MediaController extends BaseController {
 	/**	
 	CREATE TABLE IF NOT EXISTS `hr_media` (
@@ -276,4 +287,143 @@ class MediaController extends BaseController {
 			$list,
 		);
 	}
+	
+	
+	/**
+	 *
+	 @@input
+	 @@param $doc_id
+	 @@output
+	 @param $swf_url
+	 * */
+	public function get_swf_by_doc($content)                 #doc生成swf接口
+	{
+		$data = $this->fill($content);
+	
+		if(!isset($data['doc_id']))
+		{
+			return C('param_err');
+		}
+	
+		$data['doc_id'] = intval(trim($data['doc_id']));
+	
+		if(0> $data['doc_id'])
+		{
+			return C('param_fmt_err');
+		}
+	
+		$swf_http_url = '';//要返回的url
+		$tmp_one = null;
+		#检查文档是否存在
+		if(!($tmp_one = M('media')->field("media_url")->find($data['doc_id'])))
+		{
+		return array(
+				200,
+				array(
+						'is_success'=>-4,
+						'message'=>urlencode('不存在此媒体'),
+					)
+				);
+		}
+		
+		#物理路径
+		$old_media_physical_path = C('media_physical_path').$tmp_one['media_url'];
+		$pdf_media_physical_path = '';
+		$swf_media_physical_path = '';
+		
+		#转换pdf,swf路径
+		$tmp_file_info = pathinfo($old_media_physical_path);
+		if(!in_array($tmp_file_info['extension'],array('doc', 'docx')))
+		{
+			return array(
+					200,
+					array(
+							'is_success'=>-3,
+							'message'=>urlencode('文件格式不正确'),
+					)
+			);
+		}
+		else
+		{
+			$path_pre = substr($old_media_physical_path,0,-1*strlen($tmp_file_info['extension']));
+			$pdf_media_physical_path = $path_pre.'pdf';
+			$swf_media_physical_path = $path_pre.'swf';
+		}
+		
+		#判定pdf文件是否存在
+		if(!file_exists($pdf_media_physical_path))
+		{
+			#生成pdf
+			try{
+				word2pdf('file:///'.$old_media_physical_path, 'file:///'.$pdf_media_physical_path);
+			}
+			catch(Exception $e)
+			{
+				return array(
+					200,
+					array(
+					'is_success'=>-2,
+					'message'=>urlencode($e->getMessage()),
+					),
+				);
+			}
+		}
+		
+		#判定swf文件是否存在
+		if(!file_exists($swf_media_physical_path))
+		{
+			#生成swf
+			//使用pdf2swf转换命令
+			$command = C('swf_tool_path')."  -t \"" . $pdf_media_physical_path . "\" -o  \"" . $swf_media_physical_path . "\" -s flashversion=9 ";
+			//创建shell对象
+			if(!pdf2swf($command))
+			{
+				return array(
+					200,
+					array(
+					'is_success'=>-1,
+					'message'=>urlencode('生成swf失败'),
+					),
+				);
+			}
+		}
+	
+		#处理swf物理路径到网络路径转换
+		$swf_media_physical_path = substr($swf_media_physical_path, strlen(C('media_physical_path')));
+	
+		return array(
+			200,
+			array(
+				'is_success'=>0,
+				'url'=>C('media_url_pre').$swf_media_physical_path
+			)		
+		);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
