@@ -1,6 +1,7 @@
 <?php
 namespace Bugapi\Controller;
 use Think\Controller;
+set_time_limit(0);
 /**
 --基础类--
 ------------------------------------------------------------
@@ -944,17 +945,4 @@ class BaseController extends Controller {
 					));
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
