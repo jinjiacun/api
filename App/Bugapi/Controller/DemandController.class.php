@@ -18,6 +18,7 @@ class DemandController extends BaseController {
 	                          number varchar(255) comment '编号',
 							  description varchar(255) comment '描述',
 							  project_id int not null default 0 comment '项目id',
+							  stage int not null default 0 comment '阶段(0-需求提出，1-产品主管确认,2-开发主管确认,4-任务分配)',
 	                          level int not null default 0 comment '优先级',
 	                          plan_online int not null default 0 comment '预计上线时间',
 	                          mast_develop int not null default 0 comment '开发主管',
@@ -64,13 +65,16 @@ class DemandController extends BaseController {
          {
             $data = $this->fill($content);
 		
-            if(!isset($data['project_id'])
-            || !isset($data['number'])
+            if(
+            //!isset($data['project_id'])
+             !isset($data['number'])
             || !isset($data['description'])
+            /*
             || !isset($data['level'])
             || !isset($data['plan_online'])
             || !isset($data['mast_develop'])
             || !isset($data['mast_product'])
+            */
             || !isset($data['create'])
             )
             {
@@ -78,22 +82,27 @@ class DemandController extends BaseController {
             }
 		
 	        
-            $data['project_id']    = intval(trim($data['project_id']));
+            //$data['project_id']    = intval(trim($data['project_id']));
             $data['number']        = htmlspecialchars(trim($data['number']));
             $data['description']   = htmlspecialchars(trim($data['description']));
+            /*
             $data['level']         = intval(trim($data['level']));
             $data['plan_online']   = intval(trim($data['plan_online']));
             $data['mast_develop']  = intval(trim($data['mast_develop']));
             $data['mast_product']  = intval(trim($data['mast_product']));
+            */
             $data['create']        = intval(trim($data['create']));
 		
-            if(0 > $data['project_id']
-            || '' == $data['number']
+            if(
+            //0 > $data['project_id']
+             '' == $data['number']
             || '' == $data['description']
+            /*
             || 0 >  $data['level']
             || 0 >  $data['plan_online']
             || 0 >  $data['mast_develop']
             || 0 >  $data['mast_product']
+            */
             || 0 >  $data['create']
             )
             {
@@ -137,6 +146,7 @@ class DemandController extends BaseController {
                                             'number'       => urlencode($v['number']),
 											'description'  => urlencode($v['description']),
 											'project_id'   => intval($v['project_id']),
+											'stage'        => intval($v['stage']),
 											'level'        => intval($v['level']),
 											'plan_online'  => intval($v['plan_online']),
 											'mast_develop' => intval($v['mast_develop']),
@@ -184,6 +194,7 @@ class DemandController extends BaseController {
 				'number'       => urlencode($tmp_one['number']),
 				'description'  => urlencode($tmp_one['description']),
 				'project_id'   => intval($tmp_one['project_id']),
+				'stage'        => intval($tmp_one['stage']),
 				'level'        => intval($tmp_one['level']),
 				'plan_online'  => intval($tmp_one['plan_online']),
 				'mast_develop' => intval($tmp_one['mast_develop']),
