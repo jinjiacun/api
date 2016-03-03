@@ -23,6 +23,7 @@ class DemandController extends BaseController {
 	                          plan_online int not null default 0 comment '预计上线时间',
 	                          mast_develop int not null default 0 comment '开发主管',
 	                          mast_product int not null default 0 comment '产品主管',
+	                          to_user_id int not null default 0 comment '指派人',
 	                          status int not null default 0 comment '状态',
 	                          create int not null default 0 comment '创建人',
 	                          last_online int not null default 0 comment '最终上线时间',
@@ -41,6 +42,7 @@ class DemandController extends BaseController {
 	 protected $plan_online = 0;
 	 protected $mast_develop = 0;
 	 protected $mast_product = 0;
+	 protected $to_user_id   = 0;
 	 protected $status = 0;
 	 protected $create = 0;
 	 protected $last_online = 0;
@@ -151,6 +153,7 @@ class DemandController extends BaseController {
 											'plan_online'  => intval($v['plan_online']),
 											'mast_develop' => intval($v['mast_develop']),
 											'mast_product' => intval($v['mast_product']),
+											'to_user_id'   => intval($v['to_user_id']),
 											'status'       => intval($v['status']),
 											'create'       => intval($v['create']),
 											'last_online'  => intval($v['last_online']),
@@ -199,6 +202,7 @@ class DemandController extends BaseController {
 				'plan_online'  => intval($tmp_one['plan_online']),
 				'mast_develop' => intval($tmp_one['mast_develop']),
 				'mast_product' => intval($tmp_one['mast_product']),
+				'to_user_id'   => intval($tmp_one['to_user_id']),
 				'status'       => intval($tmp_one['status']),
 				'create'       => intval($tmp_one['create']),
 				'last_online'  => intval($tmp_one['last_online']),
