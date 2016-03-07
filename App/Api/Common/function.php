@@ -28,6 +28,9 @@ function upimg($imgval,$newwidth,$newheight,$typeval){
     else if($type=="jpg" || $type=="JPG" || $type=="jpeg" || $type=="JPEG"){
         imagejpeg($newimg,$img);
     }
-    else if($type=="png" || $type=="PNG"){
+    else if($type=="png" || $type=="PNG")
+    {
         imagepng($newimg,$img);
+    }
 }
+?>
