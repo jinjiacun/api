@@ -7,7 +7,7 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 */
 class MediaController extends BaseController {
 	/**	
-	CREATE TABLE IF NOT EXISTS `yms_media` (
+	CREATE TABLE IF NOT EXISTS `so_media` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `dict_sn` varchar(11) DEFAULT '0' COMMENT '媒体类型(1-商品)',
   `media_url` varchar(255) DEFAULT NULL COMMENT '媒体相对路径',
@@ -204,6 +204,19 @@ class MediaController extends BaseController {
 				$file_dir  = 'media/'.'bander'.'/'.date("Y-m-d").'/';
 			}
 			break;
+			case ''001012:#杂志
+			{
+				if(400 < ($_FILES[$field_name]["size"] / 1024))
+				{
+					return array(
+						200,
+						array('is_success'=>-4,
+							  'message'=> urlencode('超过了400k')
+						),
+					);
+				}
+				$file_dir  = 'media/'.'magazine'.'/'.date("Y-m-d").'/';
+			}
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))
 		{
