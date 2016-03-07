@@ -65,8 +65,9 @@ class AdminController extends BaseController {
 		
 		$data['passwd'] = md5($data['passwd']);
 	
-		$tmp_one = M($this->_module_name)->where($data)
-		                                 ->find();		
+		$tmp_one = M($this->_module_name)->field('id')
+		                                       ->where($data)
+		                                       ->find();		
 	    if($tmp_one)
 	    {
 			session('admin_name',$data['admin_name']);
@@ -75,6 +76,7 @@ class AdminController extends BaseController {
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
+					'id'=>$tmp_one['id'],
 				)
 			);
 		}
