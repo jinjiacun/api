@@ -18,7 +18,7 @@ class DemandproductlogController extends BaseController {
 	                          demand_id int not null default 0 comment '需求id',
 							  user_id int not null default 0 comment '修改人',
 							  result int not null default 0 comment '确认结果(0-未操作，1-暂缓,2-通过)',
-							  content varchar(255) comment '内容',
+							  content text comment '内容',
 							  to_user_id int not null default 0 comment '派发人',
 	                          add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
@@ -48,7 +48,7 @@ class DemandproductlogController extends BaseController {
 		
             if(!isset($data['demand_id'])
             || !isset($data['user_id'])
-            || !isset($data['to_user_id'])
+           // || !isset($data['to_user_id'])
             || !isset($data['result'])
             || !isset($data['content'])
             )
@@ -59,13 +59,13 @@ class DemandproductlogController extends BaseController {
 	        
             $data['demand_id']    = intval(trim($data['demand_id']));
             $data['user_id']      = intval(trim($data['user_id']));
-            $data['to_user_id']   = intval(trim($data['to_user_id']));
+            //$data['to_user_id']   = intval(trim($data['to_user_id']));
             $data['result']       = intval(trim($data['result']));
             $data['content']      = htmlspecialchars($data['content']);
 		
             if(0 > $data['demand_id']
             || 0 > $data['user_id']
-            || 0 > $data['to_user_id']
+          //  || 0 > $data['to_user_id']
             || 0 > $data['result']
             || '' == $data['content']
             )

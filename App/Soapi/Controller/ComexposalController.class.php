@@ -199,22 +199,34 @@ class ComexposalController extends BaseController {
 			);
 		}
 		
-        $now = time();
-        $data['last_time'] = $now;
+        		$now = time();
+        		$data['last_time'] = $now;
 		$user_id = $data['user_id'];
-	    $data['add_time'] = $now;
-	    #更新曝光回复时间和用户id
+	    	$data['add_time'] = $now;
+	    	#更新曝光回复时间和用户id
 		M('In_exposal')->where(array('id'=>$data['exposal_id']))->save(array('last_time'=>$now,'last_user_id'=>$user_id));
 	
+		$is_validate = true;
+		#检查是否有敏感词
+		if($this->filter_sensitive($data['content']))
+		{
+			$is_validate = false;
+		}		
+
 		if(M($this->_module_name)->add($data))
 		{
 			//评论的回复，则改变父评论未审核childs数为1
 			if(0< $data['parent_id'])
 			{
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
-                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
-                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
+                			M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
+                			M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
+			}
+			$id = M()->getLastInsID();
+			if($is_validate)
+			{
+				$this->validate(json_encode(array('id'=>$id));
 			}
 			return array(
 				200,

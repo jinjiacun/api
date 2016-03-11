@@ -215,6 +215,7 @@ class InexposalController extends BaseController {
 	@param $user_id          #用户id
 	@param $nature           #企业性质
 	@param $trade            #所属行业
+	@param $company_id 	         #公司id
 	@param $company_name     #公司名称
 	@param $amount           #涉及金额
 	@param $website          #公司网址
@@ -234,6 +235,7 @@ class InexposalController extends BaseController {
 		if(!isset($data['user_id'])
 		|| !isset($data['nature'])
 		|| !isset($data['trade'])
+		|| !isset($data['company_id'])
 		|| !isset($data['company_name'])
 		|| !isset($data['amount'])
 		|| !isset($data['website'])
@@ -247,6 +249,7 @@ class InexposalController extends BaseController {
 		$data['user_id'] = intval($data['user_id']);
 		$data['nature'] = htmlspecialchars(trim($data['nature']));
 		$data['trade'] = htmlspecialchars(trim($data['trade']));
+		$data['company_id'] = intval(trim($data['company_id']));
 		$data['company_name'] = htmlspecialchars(trim($data['company_name']));
 		$data['amount'] = htmlspecialchars(trim($data['amount']));
 		$data['website'] = htmlspecialchars(trim($data['website']));
@@ -256,8 +259,9 @@ class InexposalController extends BaseController {
 		if(0 >= $data['user_id']
 		|| '' == $data['nature']
 		|| '' == $data['trade']
+		|| 0 >= $data['company_id']
 		|| '' == $data['company_name']
-	  //|| '' == $data['amount']
+	              //|| '' == $data['amount']
 		//|| '' == $data['website']
 		|| '' == $data['content']
 		//|| 0 >= $data['pic_1']
@@ -269,15 +273,30 @@ class InexposalController extends BaseController {
 		$data['type'] = 0;
 		$data['add_time'] = time();
 		$data['user_agent'] = base64_encode($_SERVER['HTTP_USER_AGENT']);
+
+		$is_relation = true;
+		#检查是否有敏感词
+		if($this->filter_sensitive($data['content']))
+		{
+			unset($data['company_id']);
+			$is_relation = false;
+		}
 		
 		if(M($this->_module_name)->add($data))
 		{
+			$id = M()->getLastInsID();
+			#关联更新
+			if($is_relation)
+			{
+				$this->chang_relate(json_encode(array('id'=>$id,
+								              'company_id'=>$data['company_id'])));
+			}
 			return array(
 				200,
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
-					'id'=> M()->getLastInsID(),
+					'id'=> $id,
 				),
 			);
 		}
@@ -524,6 +543,7 @@ class InexposalController extends BaseController {
 	@param $user_id         *用户id
 	@param $nature          *企业性质(字典编码)
 	@param $trade           *所属行业
+	@param company_id             公司id
 	@param company_name     *公司全称
 	@param corporation      *公司简称
 	@param reg_address      *注册地址
@@ -547,6 +567,7 @@ class InexposalController extends BaseController {
 		if(!isset($data['user_id'])
 		|| !isset($data['nature'])
 		|| !isset($data['trade'])
+		|| !isset($data['company_id'])
 		|| !isset($data['company_name'])
 		|| !isset($data['corporation'])
 		|| !isset($data['reg_address'])
@@ -568,16 +589,18 @@ class InexposalController extends BaseController {
 		
 		$data['type'] = 1;
 		$data['add_time'] = time();
-		$data['user_agent'] = base64_encode($_SERVER['HTTP_USER_AGENT']);
+		$data['user_agent'] = base64_encode($_SERVER['HTTP_USER_AGENT']);		
 		
 		if(M($this->_module_name)->add($data))
 		{
+			$this->chang_relate(json_encode(array('id'=>$id,
+							             'company_id'=>$data['company_id'])));
 			return array(
 				200,
 				array(
 					'is_success'=>0,
 					'message'=>C('option_ok'),
-					'id'=> M()->getLastInsID(),
+					'id'=> $id,
 				),
 			);
 		}

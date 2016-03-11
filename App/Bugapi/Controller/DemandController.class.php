@@ -16,7 +16,7 @@ class DemandController extends BaseController {
 	 * sql script:
 	 * create table hr_demand(id int primary key auto_increment,
 	                          number varchar(255) comment '编号',
-							  description varchar(255) comment '描述',
+							  description text comment '描述',
 							  project_id int not null default 0 comment '项目id',
 							  stage int not null default 0 comment '阶段(0-需求提出，1-产品主管确认,2-开发主管确认,4-任务分配)',
 	                          level int not null default 0 comment '优先级',

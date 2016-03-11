@@ -18,7 +18,7 @@ class DemanddeveloplogController extends BaseController {
 	                          demand_id int not null default 0 comment '需求id',
 							  user_id int not null default 0 comment '修改人',
 							  result int not null default 0 comment '确认结果(0-未定,1-暂缓,2-通过)',
-							  content varchar(255) comment '内容',
+							  content text comment '内容',
 							  plan_online_time int not null default 0 comment '预计上线时间',
 	                          add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
@@ -66,7 +66,7 @@ class DemanddeveloplogController extends BaseController {
 		
             if(0 > $data['demand_id']
             || 0 > $data['user_id']
-            || 0 > $data['result']
+            || 0 >= $data['result']
             || 0 > $data['plan_online_time']
             || '' == $data['content']
             )

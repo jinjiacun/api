@@ -16,8 +16,9 @@ class DemandfeedbackController extends BaseController {
 	 * sql script:
 	 * create table hr_demand_feedback(id int primary key auto_increment,
 	                          demand_id int not null default 0 comment '需求id',
+	                          position_id int not null default 0 comment '职位id',
 							  user_id int not null default 0 comment '用户id',
-							  content varchar(255) comment '反馈内容',
+							  content text comment '反馈内容',
 	                          add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
 	 * */
@@ -25,6 +26,7 @@ class DemandfeedbackController extends BaseController {
 	 protected $_module_name = 'demand_feedback';
 	 protected $id;
 	 protected $demand_id;
+	 protected $position_id;
 	 protected $user_id;
 	 protected $content;
 	 protected $add_time;   #新增日期
@@ -33,6 +35,7 @@ class DemandfeedbackController extends BaseController {
          /*
          @@input
          @param int    $demand_id    需求id
+         @param int    $position_id  职位id
          @param int    $user_id      用户id
          @param string $content      内容
          @@output
@@ -42,6 +45,7 @@ class DemandfeedbackController extends BaseController {
             $data = $this->fill($content);
 		
             if(!isset($data['demand_id'])
+			|| !isset($data['position_id'])
             || !isset($data['user_id'])
             || !isset($data['content'])
             )
@@ -51,10 +55,12 @@ class DemandfeedbackController extends BaseController {
 		
 	        
             $data['demand_id']     = intval(trim($data['demand_id']));
+			$data['position_id']   = intval(trim($data['position_id']));
             $data['user_id']       = intval(trim($data['user_id']));
             $data['content']       = htmlspecialchars(trim($data['content']));
 		
             if(0 > $data['demand_id']
+			|| 0 > $data['position_id']
             || 0 >  $data['user_id']
             || '' == $data['content']
             )
@@ -96,6 +102,7 @@ class DemandfeedbackController extends BaseController {
                             $list[] = array(
                                             'id'           => intval($v['id']),                                            
 											'demand_id'    => intval($v['demand_id']),
+											'position_id'  => intval($v['position_id']),
 											'user_id'      => intval($v['user_id']),
 											'content'      => urlencode($v['content']),
 											'add_time'     => intval($v['add_time']),                                            
@@ -134,6 +141,7 @@ class DemandfeedbackController extends BaseController {
 			$list = array(
 				'id'           => intval($tmp_one['id']),                                            
 				'demand_id'    => intval($tmp_one['demand_id']),
+				'position_id'  => intval($tmp_one['position_id']),
 				'user_id'      => intval($tmp_one['user_id']),
 				'content'      => urlencode($tmp_one['content']),
 				'add_time'     => intval($tmp_one['add_time']),

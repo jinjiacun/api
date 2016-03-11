@@ -38,6 +38,7 @@ content={'id':'xxx'}<br/>
 输入参数格式:<br/>
 method=Inexposal.add<br/>
 content={"title":"xxx","user_id":xxx,"nature":"xxx","trade":"xxx","company_name":"xxx",<br/>
+                    "company_id":xxx,<br/>
 	     "amount":"xxx","website":"xxx","content":"xxx","pic_1":xxx,<br/>
 	     "pic_2":xxx,"pic_3":xxx,"pic_4":xxx,"pic_5":xxx}<br/>
 @@input<br/>
@@ -46,6 +47,7 @@ content={"title":"xxx","user_id":xxx,"nature":"xxx","trade":"xxx","company_name"
 @param $nature           #企业性质<br/>
 @param $trade            #所属行业<br/>
 @param $company_name     #公司名称<br/>
+@param $company_id            #公司id<br/>
 @param $amount           #涉及金额<br/>
 @param $website          #公司网址<br/>
 @param $content          #曝光内容<br/>
@@ -143,6 +145,7 @@ content={}<br/>
 输入参数格式:<br/>
 method=Inexposal.add_ex<br/>
 content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
+                  'company_id':xxx,<br/>
 	   'corporation':'xxx','reg_address':'xxx','company_type':'xxx',<br/>
 	   'busin_license':xxx,'code_certificate':xxx,'mobile':'xxx','contact':'xxx','telephone':'xxx',<br/>
 	   'website':xxx,'record':'xxx','agent_platform':'xxx','mem_sn':'xxx',<br/>
@@ -152,6 +155,7 @@ content={'user_id':xxx,'nature':'xxx','trade':'xxx','company_name':'xxx',<br/>
 @param $nature          *企业性质(字典编码)<br/>
 @param $trade           *所属行业(字典编码)<br/>
 @param company_name     *公司全称<br/>
+@param company_id               公司id<br/>
 @param corporation      *公司简称<br/>
 @param reg_address      *注册地址<br/>
 @param company_type     *企业类型<br/>

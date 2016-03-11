@@ -275,9 +275,9 @@ class CommentController extends BaseController {
 			return C('param_fmt_err');
 		}
 		
-	    $now = time();		
-        $data['last_time'] = $now;
-        $user_id = $data['user_id'];
+	    	$now = time();		
+        		$data['last_time'] = $now;
+        		$user_id = $data['user_id'];
 		$data['last_user_id'] = $user_id;
 		$data['add_time'] = $now;
 		$data['ip']       = $this->get_real_ip();
@@ -309,9 +309,9 @@ class CommentController extends BaseController {
 		{
 			//检查父评论是否已删除
 			if(M($this->_module_name)->where(array(
-											'id'=>$data['parent_id'],
-											'is_delete'=>1))
-										->find())
+								'id'=>$data['parent_id'],
+								'is_delete'=>1))
+								->find())
 			{
 				return array(
 					200,
@@ -338,9 +338,8 @@ class CommentController extends BaseController {
 			{
 					//检查祖父评论是否被删除
 					if(M($this->_module_name)->where(array(
-														'id'=>$data['pparent_id'],
-														'is_delete'=>1,
-													))
+										'id'=>$data['pparent_id'],
+										'is_delete'=>1,))
 					                         ->find())
 					{
 						return array(
@@ -378,8 +377,14 @@ class CommentController extends BaseController {
 				)
 			);
 		}
-		
-							
+					
+		$is_validate = true;
+		#检查是否有敏感词
+		if($this->filter_sensitive($data['content']))
+		{
+			$is_validate = false;
+		}		
+
 							
 		if(M($this->_module_name)->add($data))
 		{
@@ -387,27 +392,35 @@ class CommentController extends BaseController {
 			if(0< $data['parent_id'])
 			{
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->setInc('childs', 1);
-                //更新父评论里面最新的子评论时间
-                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
-                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
-                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
+                			//更新父评论里面最新的子评论时间
+			                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_child_time'=>$now));
+			                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
+			                M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
 				//判定是否第三层
 				if(0< $data['pparent_id'])
 				{
 					M($this->_module_name)->where(array('id'=>$data['pparent_id']))->setInc('childs', 1);
-                    //更新祖父评论里面最新评论的再回复时间
-                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_cchild_time'=>$now));
-                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_time'=>$now));
-                    M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_user_id'=>$user_id));  
+				                //更新祖父评论里面最新评论的再回复时间
+				                M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_cchild_time'=>$now));
+				                M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_time'=>$now));
+				                M($this->_module_name)->where(array('id'=>$data['pparent_id']))->save(array('last_user_id'=>$user_id));  
 				}
 			}
+			$id = M()->getLastInsID();
+			if($is_validate)
+			{
+				$this->validate(json_encode(array('id'=>$id,
+					                                                    'company_id'=>$data['company_id']));
+			}
+
+
 			return array(
-						200,
-						array(
-							'is_success'=>0,
-							'message'=> C('option_ok'),
-							'id'=> M()->getLastInsID(),
-						),
+					200,
+					array(
+						'is_success'=>0,
+						'message'=> C('option_ok'),
+						'id'=> $id,
+					),
 			);
 		}
 		

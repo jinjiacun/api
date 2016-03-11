@@ -23,6 +23,7 @@ return array(
      'option_no_allow' => urlencode('不允许操作'),
      'is_exists'     => urlencode('存在'),
      'no_exists'  => urlencode('不存在'),
+     'api_user_document'=>'http://192.168.1.31:8300/Api/Readme',
      'api_user_url'  => 'http://192.168.1.31:8300/Api/',
      'api_user_domain' => 'http://192.168.1.31:8300',
      'api_user_pic_url' => 'http://192.168.1.31:8300/imgcode?m=',

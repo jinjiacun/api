@@ -17,7 +17,7 @@ class DemandlogController extends BaseController {
 	 * create table hr_demand_log(id int primary key auto_increment,
 	                          demand_id int not null default 0 comment '需求id',
 							  user_id int not null default 0 comment '修改人',
-							  content varchar(255) comment '内容',
+							  content text comment '内容',
 	                          add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
 	 * */
