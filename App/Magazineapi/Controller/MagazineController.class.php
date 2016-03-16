@@ -15,8 +15,8 @@ class ArticleController extends BaseController {
 	                         author varchar(255) comment '作者',
 	                         description varchar(255) comment '摘要',
 	                         content text comment '内容',
-	                         cover int not null default 0 comment ''封面,
-	                         year int not null default 0 comment '年',
+	                         cover int not null default 0 comment '封面',
+	                         `year` int not null default 0 comment '年',
 	                         month int not null default 0 comment ' 月',
 	                         `create` int not null default 0 comment '创建者',
 	                         add_time int not null default 0 comment '添加日期'

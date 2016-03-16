@@ -96,7 +96,7 @@ class MediaController extends BaseController {
 		{
 			mkdir(__PUBLIC__.$file_dir);
 		}
-		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png','pdf','doc','docx','xls','pdf','xlsx','zip','rar')))
+		if(!in_array($file_ext, array('jpg', 'gif', 'jpeg', 'png','pdf','doc','docx','xls','pdf','xlsx','zip','rar','html')))
 		{
 			return array(
 				200,
@@ -166,6 +166,11 @@ class MediaController extends BaseController {
 			case 'rar':
 				{
 						$file_name = $file_dir.time().'_'.rand(1000,2000).".rar";
+				}
+			break;
+			case 'html':
+				{
+						$file_name = $file_dir.time().'_'.rand(1000,2000).".html";
 				}
 			break;
 		}
