@@ -339,7 +339,7 @@ class CommentController extends BaseController {
 					//检查祖父评论是否被删除
 					if(M($this->_module_name)->where(array(
 										'id'=>$data['pparent_id'],
-										'is_delete'=>1,))
+										'is_delete'=>1))
 					                         ->find())
 					{
 						return array(
@@ -410,7 +410,7 @@ class CommentController extends BaseController {
 			if($is_validate)
 			{
 				$this->validate(json_encode(array('id'=>$id,
-					                                                    'company_id'=>$data['company_id']));
+					                        'company_id'=>$data['company_id'])));
 			}
 
 

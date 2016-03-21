@@ -918,7 +918,7 @@ class BaseController extends Controller {
 	
 	public function __debug($str)
 	{
-		f(in_array($this->get_real_ip(),array('192.168.1.113','192.168.1.65')))
+		if(in_array($this->get_real_ip(),array('192.168.1.113','192.168.1.65')))
 		file_put_contents(__PUBLIC__.'log/debug_'.date('Y-m-d').'.log', $str, FILE_APPEND);
 	}
 	
