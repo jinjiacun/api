@@ -335,7 +335,7 @@ class BaseController extends Controller {
 	{
 		$data = $this->fill($content);
 		$obj  = M($this->_module_name);
-		if($obj->where($data)->delete())
+		if(false !== $obj->where($data)->delete())
 		{
 			return array(
 				200,
