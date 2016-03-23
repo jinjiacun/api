@@ -7,6 +7,13 @@ url:http://192.168.1.131/yms_api/index.php?m=Soapi<br/>
 测试android推动:http://192.168.1.131/phpmquttclient/index.php<br/>
 查看android连接及其发送接受相关日志信息:http://192.168.1.131/phpmquttclient/info.php<br/>
 正式地址:http://api.koubei365.com.cn<br/>
+通用方法:<br/>
+关键字一<b>where</b><br/>
+ &nbsp;&nbsp;模式一:&nbsp;key-value模式:选择其需要的关键字(比如:id),值(比如:1),即可查询对应条件下的列表信息,例:"where":{"id":1}<br/>
+  &nbsp;&nbsp;模式二:&nbsp;不等于模式:在上面模式的反条件,例子不为(id=1)的其他,例子:"where":{"id":["neq", 1]}<br/>
+  &nbsp;&nbsp;模式三:&nbsp;直接写入sql语句,例:"where":{"_string":"xxx"},建议不推荐使用,尽量不使用<br/>
+  关键字二<b>order</b><br/>
+  &nbsp;&nbsp;使用和where基本相同,对应的值域{"asc","desc"},例:按照id倒排"order":{"id":"desc"},正排"order":{"id":"asc"}<br/>
 <p id="version_1">
 模块名称:Version<br/>
 模块名称描述:版本更新<br/>
