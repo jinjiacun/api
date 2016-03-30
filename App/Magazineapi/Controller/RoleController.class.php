@@ -11,15 +11,18 @@ class RoleController extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_role(id int primary key auto_increment,
+	                         number varchar(255) comment '编号',
 	                         name varchar(255) comment '名称',
-	                         `right` int not null default 0 comment '权值',
+	                         resource varchar(255) comment '资源',
 	                         add_time int not null default 0 comment '添加日期'
 	                         )charset=utf8;
 	 * */
 	 
 	 protected $_module_name = 'role';
 	 protected $id;         
+	 protected $number;
 	 protected $name;
+	 protected $resource;
 	 protected $right;
 	 protected $add_time;
 	 
@@ -27,23 +30,26 @@ class RoleController extends BaseController {
 	 public function add($content)
 	 /*
 	 @@input
+	 @param string $number
      @param string $name
-     @param int    $right
+     @param string $resource
 	 @@output
 	 @param $is_success 0-成功,-1-失败
 	 */
 	 {
 		$data = $this->fill($content);
 		
-		if(!isset($data['name'])
-		|| !isset($data['right'])
+		if(!isset($data['number'])
+		|| !isset($data['name'])
+		|| !isset($data['resource'])
 		)
 		{
 			return C('param_err');
 		}
 	
-		if('' == $data['name']
-		|| '' == $data['right']
+		if('' == $data['number']
+		|| '' == $data['name']
+		|| '' == $data['resource']
 		)
 		{
 			return C('param_fmt_err');
@@ -78,8 +84,9 @@ class RoleController extends BaseController {
 		@param $id                id
 		@@output
 		@param $id                id
-		@param $name              名称
-		@param $right             权值
+		@param $number     编号
+		@param $name          名称
+		@param $resource    资源
 		@param $add_time          添加日期
 		*/
 		{
@@ -102,9 +109,10 @@ class RoleController extends BaseController {
 			if($tmp_one)
 			{
 				$list = array(
-						'id'           => intval($tmp_one['id']),
-					    'name'         => urlencode($tmp_one['name']),
-						'right'        => intval($tmp_one['right']),
+						'id'                    => intval($tmp_one['id']),
+						'number'       => urlencode($tmp_one['number']),
+					    'name'            => urlencode($tmp_one['name']),
+						'resource'      => intval($tmp_one['resource']),
 						'add_time'     => intval($tmp_one['add_time']),
 				);
 			}
@@ -125,10 +133,11 @@ class RoleController extends BaseController {
 				foreach($data as $v)
 				{
 					$list[] = array(
-							'id'           => intval($v['id']),
-							'name'         => urlencode($v['name']),
-							'right'        => intval($v['right']),
-							'add_time'     => intval($v['add_time']),							
+							'id'           			=> intval($v['id']),
+							'number' 		=> urlencode($v['number']),
+							'name'         		=> urlencode($v['name']),
+							'resource'         => intval($v['resource']),
+							'add_time'     	=> intval($v['add_time']),							
 						);	
 				}
 			}

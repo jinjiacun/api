@@ -142,6 +142,7 @@ class IndexController extends Controller {
           'Inexposal.get_list_com',
           'Admin.login',
           'User.register',
+          'Article.add'
     //      'Inexposal.dynamic',
         );
 
@@ -267,7 +268,7 @@ if('Comment.get_list' == $this->method)
                     else
                     {
                       list($class_name, $method)= explode('.', $this->method);
-                      $class_name = C('APP_CONTROL').$class_name;                      
+                      $class_name = C('APP_CONTROL').$class_name;
                       $obj = A($class_name);
                       list($status_code, $out_content) = call_user_func(array($obj, $method), $this->in_content);
                       //list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据                      
