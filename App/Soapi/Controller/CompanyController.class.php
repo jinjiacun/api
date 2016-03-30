@@ -419,7 +419,7 @@ class CompanyController extends BaseController {
 		public function get_list($content)
 		{
 			list($data, $record_count) = parent::get_list($content);
-
+			$this->_bug(M()->getLastSql());
 			$list = array();
 			if($data)
 			{
