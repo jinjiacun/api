@@ -3,15 +3,15 @@ namespace Magazineapi\Controller;
 use Magazineapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
---管理员管理--
+--会员管理--
 ------------------------------------------------------------
 function of api:
 
 #登录
 public function login
 @@input
-@param $name #管理员用户名
-@param $passwd     #管理员密码
+@param $name 	    #用户名
+@param $passwd     #密码
 @@output
 @param $is_success 0-成功,-1-失败
 ##--------------------------------------------------------##
@@ -25,8 +25,8 @@ class Usercontroller extends BaseController {
 	/**
 	 * sql script:
 	 * create table so_user(id int primary key auto_increment,
-	                         name varchar(255) comment '管理员名称',
-	                         passwd varchar(255) comment '管理员密码',
+	                         name varchar(255) comment '名称',
+	                         passwd varchar(255) comment '密码',
 	                         nickname varchar(255) comment '昵称',
 	                         sex int not null default 0 comment '性别(0-男,1-女)',
 	                         last_time int not null default 0 comment '最后登录日期',
@@ -37,7 +37,7 @@ class Usercontroller extends BaseController {
 	 
 	 protected $_module_name = 'user';
 	 protected $id;         
-	 protected $name;       #用户名
+	 protected $name;        #用户名
 	 protected $passwd;     #密码
 	 protected $last_time;  #最后登录时间
 	 protected $last_ip;    #最后登录ip
@@ -209,10 +209,11 @@ class Usercontroller extends BaseController {
 			foreach($data as $v)
 			{
 				$list[] = array(
-						'id'          => intval($v['id']),
-						'name'        => urlencode($v['name']),
-						'add_time'    => intval($v['add_time']),
-						
+						'id'          		=> intval($v['id']),
+						'name'        	=> urlencode($v['name']),
+						'nickname'	=> urlencode($v['nickname']),
+						'sex'                => intval($v['sex']),
+						'add_time'    => intval($v['add_time']),						
 					);	
 			}
 		}
@@ -223,6 +224,41 @@ class Usercontroller extends BaseController {
 					'record_count'=> $record_count,
 					)
 				);
+	}
+	
+	public function get_info($content)
+	{
+			$data = $this->fill($content);
+		
+			if(!isset($data['id']))
+			{
+				return C('param_err');
+			}
+		
+			$data['id'] = intval($data['id']);
+		
+			if(0>= $data['id'])
+			{
+				return C('param_fmt_err');
+			}
+		
+			$list = array();
+			$tmp_one = M($this->_module_name)->find($data['id']);
+			if($tmp_one)
+			{
+				$list = array(
+						'id'                     => intval($tmp_one['id']),
+					   'name'			  => urlencode($tmp_one['name']),
+					   'nickname'     => urlencode($tmp_one['nickname']),
+					   'sex'                  => intval($tmp_one['sex']),
+						'add_time'      => intval($tmp_one['add_time']),
+				);
+			}
+		
+			return array(
+				200,
+				$list
+			);
 	}
 	 
 	#查询名称是否存在
