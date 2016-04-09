@@ -528,7 +528,7 @@ class BaseController extends Controller {
         $curl_error = curl_error($ch);
 		curl_close($ch); 
 		if($curl_errno >0){ 
-                echo "cURL Error ($curl_errno): $curl_error\n"; 
+                //echo "cURL Error ($curl_errno): $curl_error\n"; 
                 $result = array();
         }
         /*
