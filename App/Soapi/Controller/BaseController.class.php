@@ -516,7 +516,7 @@ class BaseController extends Controller {
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,FALSE); 
 		curl_setopt($ch, CURLOPT_HTTPGET, true); 
-		curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
+		curl_setopt($ch, CURLOPT_TIMEOUT, 1000); 
 		if($params !== false){
 		 	curl_setopt($ch, CURLOPT_POSTFIELDS , $params);
 		} 
@@ -918,7 +918,7 @@ class BaseController extends Controller {
 	
 	public function __debug($str)
 	{
-		if(in_array($this->get_real_ip(),array('192.168.1.113','192.168.1.65')))
+		if(in_array($this->get_real_ip(),array('192.168.1.42','192.168.1.41')))
 		file_put_contents(__PUBLIC__.'log/debug_'.date('Y-m-d').'.log', $str, FILE_APPEND);
 	}
 	

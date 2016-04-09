@@ -215,6 +215,7 @@ class ComexposalController extends BaseController {
 
 		if(M($this->_module_name)->add($data))
 		{
+			$id = M()->getLastInsID();
 			//评论的回复，则改变父评论未审核childs数为1
 			if(0< $data['parent_id'])
 			{
@@ -223,10 +224,10 @@ class ComexposalController extends BaseController {
                 			M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_time'=>$now));
 				M($this->_module_name)->where(array('id'=>$data['parent_id']))->save(array('last_user_id'=>$user_id));
 			}
-			$id = M()->getLastInsID();
+			
 			if($is_validate)
 			{
-				$this->validate(json_encode(array('id'=>$id));
+				$this->validate(json_encode(array('id'=>$id)));
 			}
 			return array(
 				200,
