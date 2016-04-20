@@ -35,11 +35,11 @@ class Helpcontroller extends BaseController {
 	{
 		$list = array(
 			'list'=>array(
-				"http://192.168.1.131/yms_api/Public/media/ad/item01.jpg",
-				"http://192.168.1.131/yms_api/Public/media/ad/item02.jpg",
-				"http://192.168.1.131/yms_api/Public/media/ad/item03.jpg",
-				"http://192.168.1.131/yms_api/Public/media/ad/item04.jpg",
-				"http://192.168.1.131/yms_api/Public/media/ad/item05.jpg",
+				C('media_url_pre')."media/ad/item01.png",
+				C('media_url_pre')."media/ad/item02.png",
+				C('media_url_pre')."media/ad/item03.png",
+				C('media_url_pre')."media/ad/item04.png",
+				C('media_url_pre')."media/ad/item05.png",
 				),
 			'record_count'=>5,
 			);
@@ -56,14 +56,14 @@ class Helpcontroller extends BaseController {
 				array(
 					'title'=>'1月26日',
 					'content'=>'一绘视频|发现身边被忽略的美',
-					'p1'=>'http://192.168.1.131/yms_api/Public/media/article/p1.jpg',
-					'p2'=>'http://192.168.1.131/yms_api/Public/media/article/p1_1.jpg',
+					'p1'=>C('media_url_pre').'media/article/p1.png',
+					'p2'=>C('media_url_pre').'media/article/p1_1.png',
 					),
 				array(
 					'title'=>'1月25日',
 					'content'=>'精选|爱她就为她打造一座爱的城堡',
-					'p1'=>'http://192.168.1.131/yms_api/Public/media/article/p2.jpg',
-					'p2'=>'http://192.168.1.131/yms_api/Public/media/article/p2_1.jpg',
+					'p1'=>C('media_url_pre').'media/article/p2.png',
+					'p2'=>C('media_url_pre').'media/article/p2_1.png',
 					),
 				),
 			'record_count'=>2,

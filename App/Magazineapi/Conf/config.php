@@ -17,8 +17,8 @@ return array(
 	 //'DATA_CACHE_TYPE' => 'file',
 	 #'DATA_CACHE_TIME' => '86400',
 		
-     'domain_url'    => 'http://192.168.1.131',
-     'media_url_pre' => 'http://192.168.1.131/yms_api/Public/',
+     'domain_url'    => 'http://192.168.1.51:81',
+     'media_url_pre' => 'http://192.168.1.51:81/api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),
      'param_fmt_err' => array(500, urlencode('参数格式不正确')),
      'option_ok'     => urlencode('操作成功'),
