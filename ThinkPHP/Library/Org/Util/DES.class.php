@@ -3,8 +3,8 @@ namespace Org\Util;
 class DES{	
 	var $key='souh*e_i#2?0>1&5';		
 
-	function 	DES($key) {		
-		//$this->key = $key;		
+	function 	DES($key='souh*e_i#2?0>1&5') {
+		$this->key = $key;		
 	}
 
 	function encrypt($input) {		

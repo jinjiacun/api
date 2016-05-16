@@ -11,21 +11,22 @@ function of api:
 public function home_five_img_url
 ####下拉文章(最多十个文章)
 public function home_ten_article
-
+####杂志列表
+public function magazine_list
+####我的杂志列表
+public function mine_magazine_list
+####我的文章列表
+public function mine_article_list
+####我的资讯列表
+public function mine_info_list
+####我的帖子列表
+public function mine_letter_list
 ##--------------------------------------------------------##
 */
 class Helpcontroller extends BaseController {
 	/**
 	 * sql script:
-	 * create table so_user(id int primary key auto_increment,
-	                         name varchar(255) comment '名称',
-	                         passwd varchar(255) comment '密码',
-	                         nickname varchar(255) comment '昵称',
-	                         sex int not null default 0 comment '性别(0-男,1-女)',
-	                         last_time int not null default 0 comment '最后登录日期',
-	                         last_ip varchar(255) comment '最后登录ip',
-	                         add_time int not null default 0 comment '添加日期'
-	                         )charset=utf8;
+	 * 
 	 * */
 	 
 	 protected $_module_name = 'user';
@@ -73,9 +74,155 @@ class Helpcontroller extends BaseController {
 				$list
 			);
 	}
+
+
+	 ####杂志列表
+	 public function magazine_list()
+	 {
+	 	$list = array(
+			'list'=>array(
+				array(
+					'year'=>2016,
+					'title'=>'1月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'2月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'3月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'4月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'5月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'6月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'2月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'2月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				),
+			'record_count'=>8,
+		);
+		return array(
+				200,
+				$list
+		);
+	 }
 	 
-	 
-	 
+	 ####我的杂志列表
+	public function mine_magazine_list()
+	{
+		$list = array(
+			'list'=>array(
+				array(
+					'year'=>2016,
+					'title'=>'1月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'2月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'3月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'year'=>2016,
+					'title'=>'4月刊',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				),
+			'record_count'=>4,
+		);
+		return array(
+				200,
+				$list
+		);
+	}
+
+	####我的文章列表
+	public function mine_article_list()
+	{
+		$list = array(
+			'list'=>array(
+				array(
+					'title'=>'文章1',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'文章2',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'文章3',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'文章4',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				),
+			'record_count'=>4,
+		);
+		return array(
+				200,
+				$list
+		);
+	}
+
+	####我的资讯列表
+	public function mine_info_list()
+	{
+		'list'=>array(
+				array(
+					'title'=>'资讯1',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'资讯2',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'资讯3',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				array(
+					'title'=>'资讯4',
+					'img'=>C('media_url_pre').'media/article/p1.png',
+					),
+				),
+			'record_count'=>4,
+	}
+
+	####我的帖子列表
+	public function mine_letter_list()
+	{
+
+	}
 	 
 	 
 	 

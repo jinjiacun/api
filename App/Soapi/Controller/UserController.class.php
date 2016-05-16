@@ -392,6 +392,8 @@ class UserController extends BaseController {
 	
 	private function call_RegisterByMobile($mobile, $pswd, $content)
 	{
+		$obj_des = new \Org\Util\DES1("ODMQHZUK");
+		$mobile = $obj_des->encrypt($mobile);
 		$params = array(
 			'mobile'   => $mobile,
 			'pswd'     => $pswd,
@@ -580,8 +582,15 @@ class UserController extends BaseController {
 		);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['login'];
 		$begin_time = microtime(true);
+		$this->__debug(serialize($params));
 		$back_str = $this->post($url, $params);
-		
+		$this->__debug(sprintf("back:%s\n",$back_str));
+		/*
+		if(!is_null(json_decode($back_str)))
+		{
+			return false;
+		}
+		*/
 		$re_json = json_decode($back_str, true);
 		$end_time = microtime(true);
 		if($re_json
@@ -599,7 +608,7 @@ class UserController extends BaseController {
 			$content['sex']      = $r_list[$index++];
 			$content['cur_date'] = $r_list[$index++];
 			$content['head_portrait'] = C('api_user_photo_url').$content['head_portrait'];
-			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);			
+			$content['head_portrait'] = str_replace('user','',$content['head_portrait']);
 			//添加登录日志
 			/*
 			A('Soapi/Memlog')->add(json_encode(array(
@@ -2303,7 +2312,6 @@ class UserController extends BaseController {
 		$params['safekey']  = $this->mk_passwd($params, 11);
 		$url = C('api_user_url').$this->USER_API_METHOD_LIST['cancel_bind'];
 		$back_str = $this->post($url, $params);
-		//print_r($back_str);
 		$re_json = json_decode($back_str, true);
 		if($re_json
 		&& 1 <= $re_json['State'])
