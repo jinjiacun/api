@@ -9,7 +9,9 @@ return array(
      'DB_PORT'       => 3306,        // 端口
      'DB_PREFIX'     => 'hr_',    // 数据库表前缀
      'DB_CHARSET'    => 'utf8',    // 字符集
-     
+
+	 'RTX_SERVER'    => '192.168.1.205',	 
+	 'RTX_PORT'      => '8006',
 		
 	 'media_physical_path' => 'C:/wamp/www/yms_api/Public/', #媒体物理路径
 	 'swf_tool_path'       => 'C:/SWFTools/pdf2swf.exe',#swf生成工具路径

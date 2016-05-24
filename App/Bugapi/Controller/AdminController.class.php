@@ -28,9 +28,12 @@ class AdminController extends BaseController {
 	                         number varchar comment '编号',
 	                         admin_name varchar(255) comment '管理员名称',
 	                         passwd varchar(255) comment '管理员密码',
-	                         name varchar(255) comment '姓名',
+							 name varchar(255) comment '姓名',
+							 rtx_no int not null default 0 comment 'rtx编号',
+							 rtx_nickname varchar(255) comment 'rtx昵称',
+							 is_rtx_push int not null default 0 comment '是否rtx推送(0-不推送,1-推送)',
 	                         status int not null default 0 comment '状态',
-				   part int not null default 0 comment '部门', 
+							 part int not null default 0 comment '部门', 
 	                         role int not null default 0 comment '角色',
 	                         position int not null default 0 comment '岗位',
 	                         add_time int not null default 0 comment '添加日期'
@@ -40,14 +43,17 @@ class AdminController extends BaseController {
 	 protected $_module_name = 'admin';
 	 protected $id;
 	 protected $number;
-	 protected $admin_name; #管理员用户名
-	 protected $passwd;     #管理员密码
-	 protected $name;       #姓名
-	 protected $status;     #状态
-	 protected $part;       #部门
-	 protected $role;       #角色
-	 protected $position;   #岗位
-	 protected $add_time;   #新增日期
+	 protected $admin_name;		#管理员用户名
+	 protected $passwd;			#管理员密码
+	 protected $name;			#姓名
+	 protected $rtx_no;			#rxt编号
+	 protected $rtx_nickname;	#rxt昵称
+	 protected $is_rtx_push;    #是否rtx推送
+	 protected $status;			#状态
+	 protected $part;			#部门
+	 protected $role;			#角色
+	 protected $position;		#岗位
+	 protected $add_time;		#新增日期
 	 #登录
 	 public function login($content)
 	 /*
@@ -159,14 +165,17 @@ class AdminController extends BaseController {
 	public function add($content)
 	/*
 	 @@input
-	 @param string $number      编号
-	 @param string $admin_name  名称
-	 @param string $passwd      密码
-	 @param string $name        姓名
-	 @param string $status      状态
-	 @param int    $part        部门
-	 @param int    $role        角色
-	 @param int    $position    岗位
+	 @param string $number			编号
+	 @param string $admin_name		名称
+	 @param string $passwd			密码
+	 @param string $name			姓名
+	 @param int    $rtx_no			rxt编号
+	 @param string $rtx_nickname	rtx昵称
+	 @param int    $is_rtx_push     是否rtx推送
+	 @param string $status			状态
+	 @param int    $part			部门
+	 @param int    $role			角色
+	 @param int    $position		岗位
 	 @@output
 	 @param $is_success 0-成功,-1-失败
 	 */
@@ -297,6 +306,9 @@ class AdminController extends BaseController {
 						'number'      => urlencode($v['number']),
 						'admin_name'  => urlencode($v['admin_name']),
 						'name'        => urlencode($v['name']),
+						'rtx_no'	  => intval($v['rtx_no']),
+						'rtx_nickname'=> urlencode($v['rtx_nickname']),
+						'is_rtx_push' => intval($v['is_rxt_push']),
 						'status'      => $v['status'],
 						'part'        => intval($v['part']),
 						'role'        => intval($v['role']),

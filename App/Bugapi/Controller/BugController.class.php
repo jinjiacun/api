@@ -123,6 +123,20 @@ class BugController extends BaseController {
 		
 		if(M($this->_module_name)->add($data))
 		{
+			#推送rxt
+			/*查询是否允许推送*/
+			$user_info = M('Admin')->field("rtx_nickname,is_rxt_push")->find($data['get_member']);
+			if($user_info)
+			{
+				if(1 == $user_info["is_rtx_push"])
+				{
+					$rtx_nickname = $user_info['rtx_nickanem'];
+					if('' != $rtx_nickname)
+					{
+						$this->rtx_push($rtx_nickname, 0, $data['title'], $data['description']);	
+					}
+				}
+			}
 			#推送
 			$this->_mosquitto_push($data['get_member']);
 				return array(

@@ -51,6 +51,16 @@ public function down_net_pic              从网络下载图片
 @param $net_pic_url
 @@output
 @param $local_pic_url
+##--------------------------------------------------------##
+public function rtx_push                  rxt消息推送
+@@input
+@param $rtx_nickname
+@param $rtx_no
+@param $message_title
+@param $message_content
+@@output
+@param $is_success 0-成功,1-失败
+#
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -944,5 +954,33 @@ class BaseController extends Controller {
 						'message'=>$message
 					));
 		
+	}
+
+	public function rtx_push($rtx_nickname, $rtx_no, $message_title, $message_content)
+	{
+		$time = 0;
+	    $send_to = $rtx_nickname;
+		$title = $message_title;
+		$body = $message_content;
+
+		if(this->send_msg($send_to, $title, $time, $body))
+			return true;
+
+		return false;	
+	}
+
+	private function send_msg($send_to, $title, $time, $body)
+	{
+		$RootObj = new COM("RTXSAPIRootObj.RTXSAPIRootObj");
+		$RootObj->ServerIP = C('RTX_SERVER');
+		$RootObj->ServerPort = C('RTX_PORT');
+		try{
+			$RootObj->SendNotify($send_to, $title, $time, $body);
+		}
+		catch(Exception $e)
+		{
+			return false;
+		}
+		return true;
 	}
 }
