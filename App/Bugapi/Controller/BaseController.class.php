@@ -963,7 +963,7 @@ class BaseController extends Controller {
 		$title = $message_title;
 		$body = $message_content;
 
-		if(this->send_msg($send_to, $title, $time, $body))
+		if($this->send_msg($send_to, $title, $time, $body))
 			return true;
 
 		return false;	
