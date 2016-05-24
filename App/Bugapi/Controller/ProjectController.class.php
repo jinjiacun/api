@@ -21,6 +21,7 @@ class ProjectController extends BaseController {
 	/**
 	 * sql script:
 	 * create table hr_project(id int primary key auto_increment,
+							   class_id int not null default 0 comment '项目分类',
 	                           number varchar(255) comment '编号',
 	                           name varchar(255) comment '项目名称',
                                description varchar(255) comment '项目描述',
@@ -33,6 +34,7 @@ class ProjectController extends BaseController {
 	 
 	 public $_module_name = 'Project';
 	 public $id;
+	 public $class_id;
 	 public $number;
 	 public $name;
      public $description;
@@ -44,11 +46,12 @@ class ProjectController extends BaseController {
      public function add($content)
      /*
      @@input
-     @param string      $number           编号
-	 @param string      $name             项目名称
-	 @param string      $description      项目描述
-	 @param int         $status           项目状态
-	 @param string      $create           创建人
+	 @param		string      $number           编号
+	 @param		int			$class_id         项目分类
+	 @param		string      $name             项目名称
+	 @param		string      $description      项目描述
+	 @param		int         $status           项目状态
+	 @param		string      $create           创建人
 	 @@output
 	 @param $is_success 0-操作成功,-1-操作失败
      */
@@ -56,6 +59,7 @@ class ProjectController extends BaseController {
 		$data = $this->fill($content);
 		
 		if(!isset($data['number'])
+		|| !isset($data['class_id'])
 		|| !isset($data['name'])
 		//|| !isset($data['description'])
 		|| !isset($data['create'])
@@ -63,13 +67,15 @@ class ProjectController extends BaseController {
 		{
 				return C('param_err');
 		}
-	
-	       $data['number']            = htmlspecialchars(trim($data['number']));
+
+		$data['class_id']		   = intval($data['class_id']);
+	    $data['number']            = htmlspecialchars(trim($data['number']));
 		$data['name']              = htmlspecialchars(trim($data['name']));
 		//$data['description'] 	     = htmlspecialchars(trim($data['description']));
-	       $data['create']            = htmlspecialchars(trim($data['create']));
+	    $data['create']            = htmlspecialchars(trim($data['create']));
 	
 		if('' == $data['number']
+		|| 0 >= $data['class_id']
 		|| '' == $data['name']
 		//|| '' == $data['description']
 		|| '' == $data['create']
@@ -112,6 +118,7 @@ class ProjectController extends BaseController {
 				{
 						$list[] = array(
 										'id'               => intval($v['id']),
+										'class_id'		   => intval($v['class_id']),
 										'number'           => urlencode($v['number']),
 										'name'             => urlencode($v['name']),
 										'description'      => urlencode($v['description']),
@@ -154,6 +161,7 @@ class ProjectController extends BaseController {
 		{
 			$list = array(
 				'id'               => intval($tmp_one['id']),
+				'class_id'		   => intval($tmp_one['class_id']),
 				'number'           => urlencode($tmp_one['number']),
 				'name'             => urlencode($tmp_one['name']),
 				'description'      => urlencode($tmp_one['description']),

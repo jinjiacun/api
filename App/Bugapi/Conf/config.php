@@ -20,6 +20,14 @@ return array(
 	 //'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
 	 'DATA_CACHE_TYPE' => 'file',
 	 'DATA_CACHE_TIME' => '3600',
+	 'PROJECT_CLASS'   => array(
+	 		     1 => '中金网',
+			     2 => '金融家',
+			     3 => '直播室',
+ 			     4 => '官网',
+			     5 => '投了么',
+			     6 => '其他',			     
+	 ),
 		
      'domain_url'    => 'http://192.168.1.131',
      'media_url_pre' => 'http://192.168.1.131/yms_api/Public/',

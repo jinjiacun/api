@@ -45,7 +45,15 @@ class MapController extends BaseController {
 	      }
 	   }
 	   unset($k, $v);
-	   
+
+	   #新增项目分类
+	   $tmp_class_list = C("PROJECT_CLASS");
+	   foreach($tmp_class_list as $k=>$v)
+	   {
+			$_map_list['project_class'][$k] = urlencode($v);
+	   }
+	   unset($tmp_class_list, $k, $v);
+
 	   return array(
 	    200,
 	    $_map_list

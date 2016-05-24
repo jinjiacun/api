@@ -308,7 +308,7 @@ class AdminController extends BaseController {
 						'name'        => urlencode($v['name']),
 						'rtx_no'	  => intval($v['rtx_no']),
 						'rtx_nickname'=> urlencode($v['rtx_nickname']),
-						'is_rtx_push' => intval($v['is_rxt_push']),
+						'is_rtx_push' => intval($v['is_rtx_push']),
 						'status'      => $v['status'],
 						'part'        => intval($v['part']),
 						'role'        => intval($v['role']),
