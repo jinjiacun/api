@@ -41,12 +41,12 @@ class ComtableController extends BaseController {
  protected $_module_name = 'comtable';
  protected $_key = 'ComId';
 
- protected $ComId;
- protected $ComTag;
- protected $ComName;
- protected $ComAllName;
- protected $ComLogo;
- protected $ComPhoto;
+ protected $ComId;      //机构id
+ protected $ComTag;     //机构tag(url参数)
+ protected $ComName;    //机构名称
+ protected $ComAllName; //机构全称
+ protected $ComLogo;    //机构logo
+ protected $ComPhoto;   //
  protected $ComEmail;
  protected $LoginBack;
  protected $ComMin;
@@ -105,6 +105,65 @@ class ComtableController extends BaseController {
           'record_count'=> $record_count,
           )
         );
+  }
+
+  #通过ComId查询单条
+  public function get_info($content)
+  /*
+  @@input
+  @param $ComId 机构id
+  @@output
+  @param  $ComId
+  */
+  {
+    $data = $this->fill($content);
+
+    if(!isset($data['ComId']))
+    {
+      return C('param_err');
+    }
+
+    $data['ComId'] = intval($data['ComId']);
+
+    if(0>= $data['ComId'])
+    {
+      return C('param_fmt_err');
+    }
+
+    $list = array();
+    $tmp_one = M($this->_module_name)->find($data['ComId']);
+    if($tmp_one)
+    {
+      $list = array(
+        'ComId'       =>$tmp_one['ComId'],
+        'ComTag'      =>$tmp_one['ComTag'],
+        'ComName'     =>$tmp_one['ComName'],
+        'ComAllName'  =>$tmp_one['ComAllName'],
+        'ComLogo'     =>$tmp_one['ComLogo'],
+        'ComPhoto'    =>$tmp_one['ComPhoto'],
+        'ComEmail'    =>$tmp_one['ComEmail'],
+        'LoginBack'   =>$tmp_one['LoginBack'],
+        'ComMin'      =>$tmp_one['ComMin'],
+        'ComSLogo'    =>$tmp_one['ComSLogo'],
+        'ComBanner'   =>$tmp_one['ComBanner'],
+        'ComBanLink'  =>$tmp_one['ComBanLink'],
+        'ComState'    =>$tmp_one['ComState'],
+        'ComFlag'     =>$tmp_one['ComFlag'],
+        'ComUrl'      =>$tmp_one['ComUrl'],
+        'ComLine'     =>$tmp_one['ComLine'],
+        'ComMob'      =>$tmp_one['ComMob'],
+        'ComAddress'  =>$tmp_one['ComAddress'],
+        'CreateTime'  =>$tmp_one['CreateTime'],
+        'UpTime'      =>$tmp_one['UpTime'],
+        'ExpTime'     =>$tmp_one['ExpTime'],
+        'AppId'       =>$tmp_one['AppId'],
+      );
+    }
+
+    return array(
+      200,
+      $list
+    );
   }
 
 }
