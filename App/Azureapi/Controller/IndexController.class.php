@@ -90,6 +90,7 @@ class IndexController extends Controller {
            $this->in_content = str_replace("&quot;",'"', $this->in_content);
            $this->in_content = str_replace("&amp;", '', $this->in_content);
            $this->in_content = str_replace("'", '"', $this->in_content);
+           $this->in_content = str_replace("$", "%", $this->in_content);
         }
 
         #访问日志
@@ -143,7 +144,7 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request_auzure_".date("Y-m-d").".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request_azure_".date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                 break;

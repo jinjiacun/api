@@ -6,6 +6,18 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --机构管理--
 ------------------------------------------------------------
 function of api:
+--功能:添加
+public function add
+--功能:列表查询
+public function get_list
+--功能:通过查询一条信息
+public function get_info
+--功能:通过关键字查询一条信息
+public function get_info_by_key
+--功能:审核通过
+public function check
+--功能:重置机构管理员密码
+public function reset_admin_password
 ------------------------------------------------------------
 */
 class ComtableController extends BaseController {
@@ -16,7 +28,7 @@ class ComtableController extends BaseController {
                         ComName varchar(100),
                         ComAllName varchar(200),
                         ComLogo text,
-                        ComPhoto varchar(50),
+                        ComPhone varchar(50),
                         ComEmail varchar(200),
                         LoginBack text,
                         ComMin int,
@@ -46,22 +58,23 @@ class ComtableController extends BaseController {
  protected $ComName;    //机构名称
  protected $ComAllName; //机构全称
  protected $ComLogo;    //机构logo
- protected $ComPhoto;   //
- protected $ComEmail;
+ protected $ComPhone;   //热线电话
+ protected $ComEmail;   //企业邮箱
  protected $LoginBack;
  protected $ComMin;
  protected $ComSLogo;
  protected $ComBanner;
  protected $ComBanLink;
- protected $ComState;
- protected $ComFlag;
- protected $ComUrl;
- protected $ComLine;
- protected $ComMob;
- protected $ComAddress;
+ protected $ComState;   //状态
+ protected $ComFlag;    
+ protected $ComUrl;     //公司网站
+ protected $ComLine;    //联系人
+ protected $ComMob;     //联系电话
+ protected $ComMail;    //联系邮箱
+ protected $ComAddress; //地址
  protected $CreateTime;
  protected $UpTime;
- protected $ExpTime;
+ protected $ExpTime;    //过期时间
  protected $AppId;
 
   public function get_list($content)
@@ -73,28 +86,29 @@ class ComtableController extends BaseController {
       foreach($data as $v)
       {
         $list[] = array(
-          'ComId'       =>$v['ComId'],
-          'ComTag'      =>$v['ComTag'],
-          'ComName'     =>$v['ComName'],
-          'ComAllName'  =>$v['ComAllName'],
-          'ComLogo'     =>$v['ComLogo'],
-          'ComPhoto'    =>$v['ComPhoto'],
-          'ComEmail'    =>$v['ComEmail'],
-          'LoginBack'   =>$v['LoginBack'],
-          'ComMin'      =>$v['ComMin'],
-          'ComSLogo'    =>$v['ComSLogo'],
-          'ComBanner'   =>$v['ComBanner'],
-          'ComBanLink'  =>$v['ComBanLink'],
-          'ComState'    =>$v['ComState'],
-          'ComFlag'     =>$v['ComFlag'],
-          'ComUrl'      =>$v['ComUrl'],
-          'ComLine'     =>$v['ComLine'],
-          'ComMob'      =>$v['ComMob'],
-          'ComAddress'  =>$v['ComAddress'],
-          'CreateTime'  =>$v['CreateTime'],
-          'UpTime'      =>$v['UpTime'],
-          'ExpTime'     =>$v['ExpTime'],
-          'AppId'       =>$v['AppId'],
+            'ComId'       => intval($v['ComId']),
+            'ComTag'      => urlencode($v['ComTag']),
+            'ComName'     => urlencode($v['ComName']),
+            'ComAllName'  => urlencode($v['ComAllName']),
+            'ComLogo'     => urlencode($v['ComLogo']),
+            'ComPhone'    => urlencode($v['ComPhone']),
+            'ComEmail'    => urlencode($v['ComEmail']),
+            'LoginBack'   => urlencode($v['LoginBack']),
+            'ComMin'      => urlencode($v['ComMin']),
+            'ComSLogo'    => urlencode($v['ComSLogo']),
+            'ComBanner'   => urlencode($v['ComBanner']),
+            'ComBanLink'  => urlencode($v['ComBanLink']),
+            'ComState'    => intval($v['ComState']),
+            'ComFlag'     => urlencode($v['ComFlag']),
+            'ComUrl'      => urlencode($v['ComUrl']),
+            'ComLine'     => urlencode($v['ComLine']),
+            'ComMob'      => urlencode($v['ComMob']),
+            'ComMail'     => urlencode($v['ComMail']),
+            'ComAddress'  => urlencode($v['ComAddress']),
+            'CreateTime'  => urlencode($v['CreateTime']),
+            'UpTime'      => urlencode($v['UpTime']),
+            'ExpTime'     => urlencode($v['ExpTime']),
+            'AppId'       => intval($v['AppId']),
           );
       }
     }
@@ -107,31 +121,25 @@ class ComtableController extends BaseController {
         );
   }
 
-  #通过ComId查询单条
-  public function get_info($content)
-  /*
-  @@input
-  @param $ComId 机构id
-  @@output
-  @param  $ComId
-  */
+  #通过关键字查询单条
+  public function get_info_by_key($content)
   {
     $data = $this->fill($content);
 
-    if(!isset($data['ComId']))
+    if(!isset($data[$this->_key]))
     {
       return C('param_err');
     }
 
-    $data['ComId'] = intval($data['ComId']);
+    $data[$this->_key] = intval($data[$this->_key]);
 
-    if(0>= $data['ComId'])
+    if(0>= $data[$this->_key])
     {
       return C('param_fmt_err');
     }
 
     $list = array();
-    $tmp_one = M($this->_module_name)->find($data['ComId']);
+    $tmp_one = M($this->_module_name)->find($data[$this->_key]);
     if($tmp_one)
     {
       $list = array(
@@ -140,7 +148,7 @@ class ComtableController extends BaseController {
         'ComName'     =>$tmp_one['ComName'],
         'ComAllName'  =>$tmp_one['ComAllName'],
         'ComLogo'     =>$tmp_one['ComLogo'],
-        'ComPhoto'    =>$tmp_one['ComPhoto'],
+        'ComPhone'    =>$tmp_one['ComPhone'],
         'ComEmail'    =>$tmp_one['ComEmail'],
         'LoginBack'   =>$tmp_one['LoginBack'],
         'ComMin'      =>$tmp_one['ComMin'],
@@ -152,6 +160,7 @@ class ComtableController extends BaseController {
         'ComUrl'      =>$tmp_one['ComUrl'],
         'ComLine'     =>$tmp_one['ComLine'],
         'ComMob'      =>$tmp_one['ComMob'],
+        'ComMail'     =>$tmp_one['ComMail'],
         'ComAddress'  =>$tmp_one['ComAddress'],
         'CreateTime'  =>$tmp_one['CreateTime'],
         'UpTime'      =>$tmp_one['UpTime'],
@@ -166,4 +175,33 @@ class ComtableController extends BaseController {
     );
   }
 
+  /**
+     功能:审核通过
+     
+     参数:
+     @param $ComId int 机构编号
+     @param $ComTag string 机构tag
+   */
+  public function check($content)
+  {
+      return array(200,
+      array(
+          'is_success'=>0,
+          'message'=>'错误'));
+  }
+
+  /**
+     功能:重置机构管理员密码
+     
+     参数:
+     @param $ComId int 机构编号
+     @param $AdminId int 管理员id
+   */
+  public function reset_admin_password($content)
+  {
+      return array(200,
+      array(
+          'is_success'=>0,
+          'message'=>'错误'));
+  }
 }

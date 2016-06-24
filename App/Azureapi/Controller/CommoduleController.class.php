@@ -6,6 +6,10 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --前台模块管理--
 ------------------------------------------------------------
 function of api:
+--功能:新增
+--功能:列表查询
+--功能:查询一条信息
+--功能:通过关键字查询一条信息
 ------------------------------------------------------------
 */
 class CommoduleController extends BaseController {
@@ -26,6 +30,7 @@ class CommoduleController extends BaseController {
  * */
 
  protected $_module_name = 'commodule';
+ protected $_key = 'MoId';
 
  protected $MoId;
  protected $MoName;
@@ -39,6 +44,19 @@ class CommoduleController extends BaseController {
  protected $MoState;
  Protected $AdminId;
 
+ /**
+    功能:新增
+  */
+ public function add($content){
+     return array(200,
+     array(
+         'is_success'=>1,
+         'message'=>'错误'));
+ }
+
+ /**
+    功能:列表查询
+  */
  public function get_list($content)
  {
    list($data, $record_count) = parent::get_list($content);
@@ -68,6 +86,24 @@ class CommoduleController extends BaseController {
          'record_count'=> $record_count,
          )
        );
+ }
+
+ /**
+    功能:查询一条信息
+  */
+ public function get_info($content){
+     $list = array();
+     return array(200,
+     $list);
+ }
+
+ /**
+    功能:通过关键字查询一条信息
+  */
+ public function get_info_by_key($content){
+     $list = array();
+     return array(200,
+     $list);
  }
 
  }

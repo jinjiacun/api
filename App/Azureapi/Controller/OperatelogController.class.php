@@ -6,6 +6,10 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --日志管理--
 ------------------------------------------------------------
 function of api:
+--功能:新增
+--功能:列表查询
+--功能:查询一条信息
+--功能:通过关键字查询一条信息
 ------------------------------------------------------------
 */
 class OperatelogController extends BaseController {
@@ -23,6 +27,7 @@ class OperatelogController extends BaseController {
  * */
 
  protected $_module_name = 'allmessage';
+ protected $_key = 'LogId';
 
  protected $LogId;
  protected $LogType;
@@ -33,6 +38,19 @@ class OperatelogController extends BaseController {
  protected $LogTime;
  protected $ComId;
 
+ /**
+    功能:新增
+  */
+ public function add($content){
+     return array(200,
+     array(
+         'is_success'=>1,
+         'message'=>'错误'));
+ }
+ 
+ /**
+    功能:列表查询
+  */
  public function get_list($content)
  {
    list($data, $record_count) = parent::get_list($content);
@@ -62,4 +80,21 @@ class OperatelogController extends BaseController {
        );
  }
 
+ /**
+    功能:查询一条信息
+  */
+ public function get_info($content){
+     $list = array();
+     return array(200,
+     $list);
+ }
+
+/**
+   功能:通过关键字查询一条信息
+ */
+ public function get_info_by_key($conent){
+     $list = array();
+     return array(200,
+     $list);
+ }
  }
