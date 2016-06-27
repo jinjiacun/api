@@ -29,6 +29,7 @@ class ComadminController extends BaseController {
                         Adavatar text,
                         CreatTime timestamp,
                         UpTime timestamp,
+                        AdminState int,
                         LoginIp varchar(20),
                         LoginTime timestamp,
                         CreateAdminId int
@@ -38,15 +39,17 @@ class ComadminController extends BaseController {
    protected $_module_name = 'comadmin';
    protected $_key = 'AdminId';
 
-   protected $AdminId;
-   protected $Password;
+   protected $AdminId;//机构管理id
+   protected $AdminName;//管理员名称
+   protected $Password;//密码
    protected $AdminUserName;
-   protected $ComId;
-   protected $RoleId;
-   protected $AuthNo;
-   protected $Adavatar;
-   protected $CreatTime;
-   protected $UpTime;
+   protected $ComId;//机构公司id
+   protected $RoleId;//角色id
+   protected $AuthNo;//分析师认证编号
+   protected $Adavatar;//头像
+   protected $CreatTime;//创建时间
+   protected $UpTime;//更新时间
+   protected $AdminState;//状态:0-禁用,1-启用
    protected $LoginIp;
    protected $LoginTime;
    protected $CreateAdminId;
@@ -176,7 +179,19 @@ class ComadminController extends BaseController {
       if($data){
           foreach($data as $v){
               $list[] = array(
-
+                  'AdminId' => $v['AdminId'],
+                  'AdminName' => $v['AdminName'],
+                  'AdminUserName' => $v['AdminUserName'],
+                  'ComId' => $v['ComId'],
+                  'RoleId' => $v['RoleId'],
+                  'AuthNo' => $v['AuthNo'],
+                  'Adavatar' => $v['Adavatar'],
+                  'Creatime' => $v['Creatime'],
+                  'UpTime' => $v['UpTime'],
+                  'AdminState' => $v['AdminState'],
+                  'LoginIp' => $v['LoginIp'],
+                  'LoginTime' => $v['LoginTime'],
+                  'CreateAdminId' => $v['CreateAdminId']
               );
           }
       }

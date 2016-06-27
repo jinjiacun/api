@@ -30,13 +30,13 @@ class AllmessageController extends BaseController {
  protected $_key = 'FMId';
 
  protected $FMId;
- protected $FMTitle;
- protected $FMCon;
- protected $FMState;
- protected $FMFlag;
- protected $FMTime;
- protected $FMUpTime;
- protected $FMComId;
+ protected $FMTitle;//消息标题
+ protected $FMCon;//消息内容
+ protected $FMState;//消息状态
+ protected $FMFlag;//同步标识
+ protected $FMTime;//消息时间
+ protected $FMUpTime;//更新时间
+ protected $FMComId;//发送机构id,多个以|分割,0代表全部
 
  /**
     功能:新增
@@ -60,8 +60,8 @@ class AllmessageController extends BaseController {
      foreach($data as $v)
      {
        $list[] = array(
-         'FMId'           =>$v['FmId'],
-         'FMTitle'        =>$v['FmTitle'],
+         'FMId'           =>$v['FMId'],
+         'FMTitle'        =>$v['FMTitle'],
          'FMCon'          =>$v['FMCon'],
          'FMState'        =>$v['FMState'],
          'FMFlag'         =>$v['FMFlag'],

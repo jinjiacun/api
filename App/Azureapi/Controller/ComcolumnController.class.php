@@ -34,13 +34,13 @@ class ComcolumnController extends BaseController
     protected $_key = 'ColumnId';
 
     protected $ColumnId;
-    protected $ColumnName;
-    protected $ComId;
-    protected $ColumnPId;
-    protected $ColumnState;
-    protected $ColumnPath;
-    protected $ColumnTime;
-    protected $AdminId;
+    protected $ColumnName;//栏目名称
+    protected $ComId;//机构公司名称
+    protected $ColumnPId;//父级id
+    protected $ColumnState;//栏目状态
+    protected $ColumnPath;//栏目路径
+    protected $ColumnTime;//创建时间
+    protected $AdminId;//管理员id
     
     /**
        功能:新增
