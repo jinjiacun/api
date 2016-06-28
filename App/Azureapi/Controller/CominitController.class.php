@@ -3,7 +3,7 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
---管理--
+--初始人员管理--
 ------------------------------------------------------------
 --功能:新增
 --功能:查询列表
@@ -58,8 +58,71 @@ class CominitController extends BaseController
 
     /**
        功能:新增
+       
+       参数:
+       @@input
+       @param $ComAdmin int 机构管理员id
+       @param $AdminPWD string 机构管理员密码
+       @param $ComAdminRole int 机构管理员角色
+       @param $ComAdaId int 机构分析师id
+       @param $AdaPWD string 机构分析师密码
+       @param $ComAdaRole int 机构分析师角色
+       @param $ThemeId int 前台模板id
+       @param $ComIntro string 机构介绍
+       @param $ComId int 机构id
+       @param $ComSafe string 机构安全
+       @param $CeTime string 创建时间
+       @param $CeUpTime string 更新时间
+       @param $ResType int 资源类型
      */
     public function add($content){
+        $data = $this->fill($content);
+        if(!isset($data['ComAdmin'])
+        || !isset($data['AdminPWD'])
+        || !isset($data['ComAdminRole'])
+        || !isset($data['ComAdaId'])
+        || !isset($data['AdaPWD'])
+        || !isset($data['ComAdaRole'])
+        || !isset($data['ThemeId'])
+        || !isset($data['ComId'])
+        || !isset($data['ResType'])){
+            return C('param_err');
+        }
+        
+        $data['ComAdmin'] = intval($data['ComAdmin']);
+        $data['AdminPWD'] = htmlspecialchars(trim($data['AdminPWD']));
+        $data['ComAdminRole'] = intval($data['ComAdminRole']);
+        $data['ComAdaId'] = intval($data['ComAdaId']);
+        $data['AdaPWD'] = htmlspecialchars(trim($data['AdaPWD']));
+        $data['ComAdaRole'] = intval($data['ComAdaRole']);
+        $data['ThemeId'] = intval($data['ThemeId']);
+        $data['ComId'] = intval($data['ComId']);
+        $data['ResType'] = intval($data['ResType']);
+        
+        if(0 >= $data['ComAdmin']
+        || '' == $data['AdminPWD']
+        || 0 >= $data['ComAdminRole']
+        || 0 >= $data['ComAdaId']
+        || '' == $data['AdaPWD']
+        || 0 >= $data['ComRoleId']
+        || 0 >= $data['ThemeId']
+        || 0 >= $data['ComId']
+        || 0 >= $data['ResType']){
+            return C('param_fmt_err');
+        }
+        
+        $data['CeTime'] = date('Y-m-d H:i:s');
+        $data['CeUpTime'] = date('Y-m-d H:i:s');
+
+        if(False != M($this->_module_name)->add($data)){
+            return array(200,
+            array(
+                'is_success'=>0,
+                'message'=>C('option_ok'),
+                'id' => M()->getLastInsID())   
+            );
+        }
+
         return array(200,
         array(
             'is_success'=>1,

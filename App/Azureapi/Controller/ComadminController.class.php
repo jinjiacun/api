@@ -8,6 +8,8 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 function of api:
 --功能:新增
 public funtion add
+--功能:批量新增
+public function add_all
 --功能:列表查询
 public function get_list
 --功能:查询一条信息
@@ -56,13 +58,81 @@ class ComadminController extends BaseController {
 
    /**
       功能:新增
+      
+      参数:
+      @@input
+      @param $AdminName string 用户名
+      @param $AdminUserName string 账号
+      @param $Password string 密码
+      @param $ComId int 机构id
+      @param $RoleId int 角色id
+      @param $AuthNo string 分析师编号
+      @param $Adavatar string 头像
+      @param $Creatime string 创建日期
+      @param $UpTime string 更新日期
+      @param $AdminState int 状态
+      @param $LoginIp string 登陆ip
+      @param $LoginTime string 登陆时间
+      @param $CreateAdminId int 创建人
     */
    public function add($content)
    {
+       $data = $this->fill($content);
+       if(!isset($data['AdminName'])
+       || !isset($data['AdminUserName'])
+       || !isset($data['Password'])
+       || !isset($data['ComId'])
+       || !isset($data['RoleId'])){
+           return C('param_err');
+       }
+
+       $data['AdminName'] = htmlspecialchars(trim($data['AdminName']));
+       $data['AdminUserName'] = htmlspecialchars(trim($data['AdminUserName']));
+       $data['Password'] = htmlspecialchars(trim($data['Password']));
+       $data['ComId'] = intval($data['ComId']);
+       $data['RoleId'] = intval($data['RoleId']);
+
+       if('' == $data['AdminName']
+       || '' == $data['AdminUserName']
+       || '' == $data['Password']
+       || 0 >= $data['ComId']
+       || 0 >= $data['RoleId']){
+           return C('param_fmt_err');
+       }
+       
+       if(False !== M($this->_module_name)->add($data)){
+           return array(200,
+           array(
+               'is_success'=>0,
+               'message'=>C('option_ok'))
+           );
+       }
+       
        return array(200,
        array(
            'is_success'=>1,
            'message'=>'错误'));
+   }
+
+   /**
+      功能:批量新增
+    */
+   public function add_all($content){
+       $data = $this->fill($content);
+
+       if(False !== M($this->_module_name)->addAll($data)){
+           return array(200,
+           array(
+               'is_success'=>0,
+               'message'=>C('option_ok'))
+           );
+       }
+
+       return array(200,
+       array(
+           'is_success'=>1,
+           'message'=>urlencode('错误'))
+       );
    }
 
   #登录

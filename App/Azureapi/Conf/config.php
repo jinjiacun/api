@@ -13,4 +13,7 @@ return array(
      'param_err'     => array(500, urlencode('参数不合法')),
      'param_fmt_err' => array(500, urlencode('参数格式不正确'))
 	//'配置项'=>'配置值'
+     
+     'AminInitCol' => '376,378,379,380,384,392,394,397,398,399,401',//机构管理员权限
+     'TeacherInitCol' => '355,377,381,378,385',//机构分析师权限
 );

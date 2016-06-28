@@ -22,6 +22,15 @@ class HelpController extends BaseController
                 $_list['role'][intval($v['RoleId'])] = urlencode($v['RoleName']);
             }
         }
+
+        //机构id及其名称
+        unset($list);
+        $list = M('comtable')->field("ComId,ComName")->select();
+        if($list){
+            foreach($list as $v){
+                $_list['com'][intval($v['ComId'])] = urlencode($v['ComName']);
+            }
+        }
         
         return array(200,
         $_list);
