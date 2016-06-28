@@ -20,19 +20,19 @@ class ComadminController extends BaseController {
   /**
    * sql script:
     create table comadmin(AdminId int primary key auto_increment,
-                        AdminName   varchar(50),
-                        Password text,
-                        AdminUserName varchar(100),
-                        ComId int,
-                        RoleId int,
-                        AuthNo varchar(100),
-                        Adavatar text,
-                        CreatTime timestamp,
-                        UpTime timestamp,
-                        AdminState int,
-                        LoginIp varchar(20),
-                        LoginTime timestamp,
-                        CreateAdminId int
+                        AdminName varchar(50) comment '用户名',
+                        Password text comment '密码',
+                        AdminUserName varchar(100) comment '账号',
+                        ComId int comment '机构id',
+                        RoleId int comment '角色id',
+                        AuthNo varchar(100) comment '分析师编号',
+                        Adavatar text comment '头像',
+                        CreatTime timestamp comment '创建日期',
+                        UpTime timestamp comment '更新日期',
+                        AdminState int comment '状态',
+                        LoginIp varchar(20) comment '登陆ip',
+                        LoginTime timestamp comment '登陆日期',
+                        CreateAdminId int comment '创建人(0为系统)'
                  )charset=utf8;
    * */
 
@@ -98,16 +98,21 @@ class ComadminController extends BaseController {
     $tmp_one = M('Comadmin')->where($where)->find();
     if($tmp_one)
     {
-      $user_info = $this->do_getuserinfo_by_username($data['user_name']);
+        /*$user_info = $this->do_getuserinfo_by_username($data['user_name']);
       session('user_name',   $data['user_name']);
       session('user_id',     $user_info['id']);
       session('nick_name',   $user_info['nick_name']);
       session('user_mobile', $user_info['user_mobile']);
+        */
+        
       return array(
         200,
         array(
-          'is_success'=>0,
-                    'message'=>urlencode('成功登录'),
+          'is_success' => 0,
+          'message' => urlencode('成功登录'),
+          'AdminId' => $tmp_one['AdminId'],
+          'AdminName' => $tmp_one['AdminName'],
+          'RoleId' => $tmp_one['RoleId']
           ),
       );
     }
