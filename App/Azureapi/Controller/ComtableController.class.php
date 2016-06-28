@@ -184,13 +184,17 @@ class ComtableController extends BaseController {
      @param $ComTag string 机构tag
      @@out
      @param $is_success int 
-     (-1:机构标签已存在,
-      -2:更新机构信息错误,
-      -3:新增管理员角色失败,
-      -4:新增分析师角色失败,
-      -5:更新管理员和分析师默认权限失败,
-      -6:新增机构超级管理失败,
-      -7:新增机构分析师失败,
+     (1:机构标签已存在,
+      2:更新机构信息错误,
+      3:新增管理员角色失败,
+      4:新增分析师角色失败,
+      5:更新管理员和分析师默认权限失败,
+      6:新增机构超级管理失败,
+      7:新增机构分析师失败,
+      8:新增初始人员失败,
+      9:新增vip等级错误,
+      10:新增VIP权限错误,
+
       )
    */
 
@@ -214,7 +218,7 @@ class ComtableController extends BaseController {
       || 0 == count($_tmp)){
           return array(200,
           array(
-              'is_success'=>-1,
+              'is_success'=>1,
               'message'=>urlencode('标签已存在'))
           );
       }
@@ -237,7 +241,7 @@ class ComtableController extends BaseController {
       if(False === $_tmp){
           return array(200,
           array(
-              'is_success' => -2,
+              'is_success' => 2,
               'message' => urlencode('更新机构信息错误'))
           );
       }
@@ -256,7 +260,7 @@ class ComtableController extends BaseController {
       || $content['is_success'] != 0){
           return array(200,
           array(
-              'is_success' => -3,
+              'is_success' => 3,
               'message' => urlencode('新增管理员角色失败'))
           );
       }
@@ -276,7 +280,7 @@ class ComtableController extends BaseController {
       || $content['is_success'] != 0){
           return array(200,
           array(
-              'is_success' => -4,
+              'is_success' => 4,
               'message' => urlencode('新增分析师角色失败'))
           );
       }
@@ -311,7 +315,7 @@ class ComtableController extends BaseController {
           || $content['is_success'] != 0){
       return array(200,
           array(
-      'is_success'=>-5,
+      'is_success'=>5,
           'message'=>urlencode('更新管理员和分析师默认权限失'))
           );
       }
@@ -338,7 +342,7 @@ class ComtableController extends BaseController {
       if($status_code != 200 || $content['is_success'] != 0){
       return array(200,
           array(
-      'is_success'=>-6,
+      'is_success'=>6,
           'message' => urlencode('新增机构超级管理失败'))
           );
   }
@@ -366,7 +370,7 @@ class ComtableController extends BaseController {
       if($status_code != 200 || $content['is_success'] != 0){
           return array(200,
           array(
-              'is_success'=> -7,
+              'is_success'=> 7,
               'message' => urlencode('新增机构分析师失败')),
           );
       }
@@ -375,10 +379,97 @@ class ComtableController extends BaseController {
 
       #增加初始人员
       $in_content = array(
+          'ComAdmin' => $admin_id,
+          'AdminPWD' => md5('123456'),
+          'ComAdminRole' => $admin_role_id,
+          'ComAnaId' => $analyst_id,
+          'AnaPWD' => md5('123456'),
+          'ComAnaRole' => $analyst_role_id,
+          'ThemeId' => 1,
+          'ComIntro' => '',
+          'ComId' => $data['ComId'],
+          'ComSafe' => '',
+          'CeTime' => date('Y-m-d H:i:s'),
+          'CeUpTime' => date('Y-m-d H:i:s'),
+          'ResType' => 2
           );    
-          
-      #增加vip等级及权限
+      list($status_code, $content) = A('Azureapi/Cominit')->add($content);
+      unset($in_content);
+      if($status_code != 200 || $content['is_success'] != 0){
+          return array(200,
+          array(
+              'is_success'=>8,
+              'message'=>urlencode('新增初始人员失败'))
+          );
+      }
+      unset($status_code, $content);
 
+      $vip_module_str = C('VIPInitCol');
+      $vip_module_list = explode('|', $vip_module_str);
+      #增加vip等级及权限
+      for($i=0; $i<6; $i++){
+      $vip_id = 0;
+      $vip_state = 0;
+      if($i< count($vip_module_list))
+          $vip_state = 1;
+      $in_content = array(
+      'VipLevel'=>0,
+          'VipName'=>'VIP '.$i,
+          'VipState' =>1,
+          'CVipIntro' => '',
+          'AdminId' => 0,
+          'ComId' => $data['ComId'],
+          'CVipTime' => date('Y-m-d H:i:s'),
+          'UpTime' => date('Y-m-d H:i:s')
+          );
+      list($status_code, $content) = A('Azureapi/Comvip')->add(in_content);
+      unset($in_content);
+      if($status_code != 200 || $content['is_success'] != 0){
+          return array(200,
+          array(
+              'is_success'=>9,
+              'message'=>'新增vip等级错误')
+          );
+      }
+      $vip_id = $content['id'];
+      unset($status_code, $content);
+
+      #增加VIP权限
+      if($i< count($vip_module_list)){
+      $vip_init_module_list = $vip_module_list[$i];
+      foreach($vip_init_module_list as $v)
+      {
+         $in_content[] = array(
+              'ComId' => $data['ComId'],
+              'ComTag' => $data['ComTag'],
+              'CVipId' => $vip_id,
+              'VipLevel' => $i,
+                  'MoId' => $v,
+              'MVTime' => date('Y-m-d H:i:s'),
+              'UpTime' => date('Y-m-d H:i:s'),
+              'VipState' => $vip_state
+              );        
+      }
+      list($status_code, $content) = A('Azureapi/Commovip')->add_all($in_content);
+      unset($in_content);
+      if($status_code != 200 || $content['is_success'] != 0){
+      return array(200,
+          array(
+            'is_success'=>10,
+                'message'=>urlencode('新增VIP权限错误'))      
+      );
+      }
+      
+      }
+      
+  }
+      
+      
+      
+      
+          
+      
+      
       #增加默认直播室
 
       #增加默认直播内容
