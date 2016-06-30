@@ -3,11 +3,14 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class RoomliveController extends BaseController
+/**
+   --直播室内容
+*/
+class RoomLiveController extends BaseController
 {
     /**
        sql script:
-       create table roomlive(LiveID char(50) primary key,
+       create table sp_room_live(LiveID char(50) primary key,
        AdminId int,
        AdminName varchar(50),
        AdminAvartar text,
@@ -24,7 +27,7 @@ class RoomliveController extends BaseController
        )charset=utf8;
      */
 
-    protected $_module_name = 'roomlive';
+    protected $_module_name = 'room_live';
     protected $_key = 'LiveID';
 
     protected $LiveID;
@@ -42,6 +45,58 @@ class RoomliveController extends BaseController
     protected $LiveUpdate;
     protected $ComId;
 
+    /**
+       
+     */
+    public function add($content){
+        $data = $this->fill($content);
+        
+        if(!isset($data['AdminAvatar'])
+        || !isset($data['AdminId'])
+        || !isset($data['AdminName'])
+        || !isset($data['ComId'])
+        || !isset($data['LiveContent'])
+        || !isset($data['LiveState'])
+        || !isset($data['RoomId'])){
+            return C('param_err');
+        }
+        
+        $data['AdminAvatar'] = htmlspecialchars(trim($data['AdaminAvatar']));
+        $data['AdminId'] = intval($data['AdminId']);
+        $data['AdminName'] = htmlspecialchars(trim($data['Adminname']));
+        $data['ComId'] = intval($data['ComId']);
+        $data['LiveContent'] = htmlspecialchars(trim($data['LiveContent']));
+        $data['LiveState'] = intval($data['LiveState']);
+        $data['RoomId'] = intval($data['RoomId']);
+
+        if('' == $data['AdminAvatar']
+        || 0 >= $data['AdminId']
+        || '' == $data['AdminName']
+        || 0 >= $data['ComId']
+        || '' == $data['LiveContent']
+        || 0 > $data['LiveState']
+        || 0 >= $data['RoomId']){
+            return C('param_fmt_err');
+        }
+        
+        $data['LiveTime'] = date('Y-m-d H:i:s');
+        $data['LiveUpdate'] = date('Y-m-d H:i:s');
+
+        if(False !== M($this->_module_name)->add($data)){
+            return array(200,
+            array(
+                'is_success'=>0,
+                'message'=>C('option_ok'),
+                'id' => M()->getLastInsID()
+            ));
+        }
+
+        return array(200,
+        array(
+            'is_success'=>1,
+            'message'=>urlencode('错误')));
+    }
+    
     public function get_list($content)
     {
         list($data, $record_count) = parent::get_list($conent);

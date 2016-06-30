@@ -3,11 +3,11 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class ComuserController extends BaseController
+class ComUserController extends BaseController
 {
     /**
        sql script:
-       create table comuser(ComUserId bigint(19) primary key auto_increment,
+       create table sp_com_user(ComUserId bigint(19) primary key auto_increment,
        User_Id bigint(19),
        ComId int,
        ComTag varchar(50),
@@ -18,7 +18,7 @@ class ComuserController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'comuser';
+    protected $_module_name = 'com_user';
     protected $_key = 'ComUserId';
     
     protected $ComUserId;

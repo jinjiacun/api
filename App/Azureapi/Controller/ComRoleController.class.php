@@ -10,11 +10,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --功能:查询一条信息
 --功能:通过关键字查询一条信息
 */
-class ComroleController extends BaseController
+class ComRoleController extends BaseController
 {
     /**
        sql script:
-       create table comrole(RoleId int primary key auto_increment,
+       create table sp_com_role(RoleId int primary key auto_increment,
        RoleName varchar(50),
        ComId int,
        RoleState int,
@@ -24,7 +24,7 @@ class ComroleController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'comrole';
+    protected $_module_name = 'Com_role';
     protected $_key = 'RoleId';
 
     protected $RoleId;

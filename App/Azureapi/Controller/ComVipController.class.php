@@ -10,11 +10,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
    --功能:查询单条
    --功能:通过关键字查询单条
  */
-class ComvipController extends BaseController
+class ComVipController extends BaseController
 {
     /**
        sql script:
-       create table comvip(CVipId int primary key auto_increment,
+       create table sp_com_vip(CVipId int primary key auto_increment,
        ComId int,
        CVipIntro text,
        VipLevel int,
@@ -26,7 +26,7 @@ class ComvipController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'comvip';
+    protected $_module_name = 'com_vip';
     protected $_key = 'CVipId';
 
     protected $CVipId;

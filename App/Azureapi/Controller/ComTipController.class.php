@@ -3,11 +3,11 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class ComtipController extends BaseController
+class ComTipController extends BaseController
 {
     /**
        sql script:
-       create table comtip(TipId bigint(19) primary key auto_increment,
+       create table sp_com_tip(TipId bigint(19) primary key auto_increment,
        AdminId int,
        AdminName varchar(50),
        T_Type int,
@@ -19,7 +19,7 @@ class ComtipController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'comtip';
+    protected $_module_name = 'com_tip';
     protected $_key = 'TipId';
 
 

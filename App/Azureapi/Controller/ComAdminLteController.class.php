@@ -8,10 +8,10 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 function of api:
 ------------------------------------------------------------
 */
-class ComAdminlteController extends BaseController {
+class ComAdminLteController extends BaseController {
   /**
    * sql script:
-    create table comadminlte(ComAdminId int primary key auto_increment,
+    create table sp_com_admin_lte(ComAdminId int primary key auto_increment,
                             ComTLevel varchar(50),
                             ComTStyle varchar(200),
                             ComTIntro text,
@@ -21,7 +21,7 @@ class ComAdminlteController extends BaseController {
                  )charset=utf8;
    * */
 
-   protected $_module_name = 'comadminlte';
+   protected $_module_name = 'com_admin_lte';
    protected $_key = 'ComAdminId';
 
    protected $ComAdminId;

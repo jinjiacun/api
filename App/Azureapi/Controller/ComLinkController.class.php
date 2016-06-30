@@ -5,11 +5,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
    --管理--
 */
-class ComlinkController extends BaseController
+class ComLinkController extends BaseController
 {
     /**
      sql script:
-     create table comlink(LinkId int primary key auto_increment,
+     create table sp_com_link(LinkId int primary key auto_increment,
      LinkName varchar(50),
      LinkUrl varchar(200),
      LinkImg varchar(200),
@@ -22,7 +22,7 @@ class ComlinkController extends BaseController
      )charset=utf8;
      */
 
-    protected $_module_name = 'comlink';
+    protected $_module_name = 'com_link';
     protected $_key = 'LinkId';
     
     protected $LinkId;

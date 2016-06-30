@@ -10,11 +10,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --功能:查询单条
 --功能:通过关键字查询单条
 */
-class CominitController extends BaseController
+class ComInitController extends BaseController
 {
     /**
        sql script:
-       create table cominit(ComId int primary key auto_increment,
+       create table sp_com_init(ComId int primary key auto_increment,
        ComAdmin int,
        AdminPWD varchar(50),
        ComAdminRole int,
@@ -35,7 +35,7 @@ class CominitController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'cominit';
+    protected $_module_name = 'com_init';
     protected $_key = 'ComId';
     
     protected $ComId;

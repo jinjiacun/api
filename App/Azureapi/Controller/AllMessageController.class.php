@@ -12,10 +12,10 @@ function of api:
 --功能:通过关键字查询一条信息
 ------------------------------------------------------------
 */
-class AllmessageController extends BaseController {
+class AllMessageController extends BaseController {
 /**
  * sql script:
-  create table allmessage(FMId int primary key auto_increment,
+  create table sp_all_message(FMId int primary key auto_increment,
                       FMTitle varchar(100),
                       FMCon text,
                       FMState int,
@@ -26,7 +26,7 @@ class AllmessageController extends BaseController {
                )charset=utf8;
  * */
 
- protected $_module_name = 'allmessage';
+ protected $_module_name = 'All_message';
  protected $_key = 'FMId';
 
  protected $FMId;

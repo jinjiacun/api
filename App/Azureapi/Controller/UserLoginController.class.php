@@ -3,11 +3,11 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class UserloginController extends BaseController
+class UserLoginController extends BaseController
 {
     /**
        sql script:
-       create table userlogin(ULId bigint(19) primary key,
+       create table sp_user_login(ULId bigint(19) primary key,
        LoginId varchar(100),
        LoginType int,
        TypeName varchar(50),
@@ -21,7 +21,7 @@ class UserloginController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'userlogin';
+    protected $_module_name = 'user_login';
     protected $_key = 'ULId';
     
     protected $ULId;

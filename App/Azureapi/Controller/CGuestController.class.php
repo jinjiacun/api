@@ -8,10 +8,10 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 function of api:
 ------------------------------------------------------------
 */
-class CguserController extends BaseController {
+class CGuserController extends BaseController {
   /**
    * sql script:
-    create table cguser(User_Id int primary key auto_increment,
+    create table sp_cguser(User_Id int primary key auto_increment,
                         UserNickName varchar(50),
                         UserName varchar(50),
                         UserPsw varchar(50),

@@ -8,10 +8,10 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 function of api:
 ------------------------------------------------------------
 */
-class AmoduleController extends BaseController {
+class AModuleController extends BaseController {
 /**
  * sql script:
-  create table amodule(AMoId int primary key auto_increment,
+  create table sp_amodule(AMoId int primary key auto_increment,
                       AMoName varchar(50),
                       AMoPId int,
                       AdminId int,

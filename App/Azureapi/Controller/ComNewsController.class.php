@@ -3,13 +3,18 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
-   --管理--
+   --新闻管理--
+   --功能:新增
+   --功能:批量新增
+   --功能:列表查询
+   --功能:查询单条
+   --功能:通过关键字查询单条
 */
-class ComnewsController extends Controller
+class ComNewsController extends Controller
 {
     /**
        sql script:
-       create table comnews(NewsId char(50) primary key,
+       create table sp_com_news(NewsId char(50) primary key,
        NewsTitle varchar(200),
        NewsDocReader text,
        ColumnId int,
@@ -26,6 +31,43 @@ class ComnewsController extends Controller
        NewsImg varchar(200),
        NewsFlag int
        )charset=utf8;
+     */
+    
+    protected $_module_name = 'com_news';
+    protected $_key = 'NewsId';
+
+    protected $NewsId;
+    protected $NewsTitle;
+    protected $NewsDocReader;
+    protected $ColumnId;
+    protected $ComId;
+    protected $NewsCon;
+    protected $NewsPDF;
+    protected $NewsState;
+    protected $NewShowTime;
+    protected $NewTime;
+    protected $NewUpTime;
+    protected $AdminId;
+    protected $AdminName;
+    protected $NewsUrl;
+    protected $NewsImg;
+    protected $NewsFlag;
+
+    /**
+       功能:新增
+     */
+    public function add($content){
+    }
+
+    /**
+       功能:批量新增
+     */
+    public function add_all($content){
+
+    }
+
+    /**
+       功能:列表查询
      */
     public function get_list($content)
     {
@@ -63,4 +105,19 @@ class ComnewsController extends Controller
         )
         );
     }
+
+    /**
+       功能:查询单条
+     */
+    public function get_info($content){
+
+    }
+
+    /**
+       功能:通过关键字查询单条
+     */
+    public function get_info_by_key($content){
+
+    }
+
 }

@@ -5,11 +5,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
    --管理--
 */
-class CommovipController extends BaseController
+class ComMoVipController extends BaseController
 {
     /**
        sql script:
-       create table commovip(MoVipId int primary key auto_increment,
+       create table sp_com_mo_vip(MoVipId int primary key auto_increment,
        CVipId int,
        MoId int,
        VipLevel int,
@@ -21,7 +21,7 @@ class CommovipController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'commovip';
+    protected $_module_name = 'com_mo_vip';
     protected $_key = 'MoVipId';
     
     protected $MoVipId;

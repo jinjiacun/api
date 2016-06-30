@@ -12,10 +12,10 @@ function of api:
 --功能:通过关键字查询一条信息
 ------------------------------------------------------------
 */
-class OperatelogController extends BaseController {
+class OperateLogController extends BaseController {
 /**
  * sql script:
-  create table operatelog(LogId int primary key auto_increment,
+  create table sp_operate_log(LogId int primary key auto_increment,
                       LogType int,
                       AdminId int,
                       AdminName varchar(50),
@@ -26,7 +26,7 @@ class OperatelogController extends BaseController {
                )charset=utf8;
  * */
 
- protected $_module_name = 'allmessage';
+ protected $_module_name = 'operate_log';
  protected $_key = 'LogId';
 
  protected $LogId;

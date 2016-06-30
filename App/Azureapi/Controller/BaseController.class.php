@@ -42,6 +42,8 @@ public function get_mobile_validate_code  查询手机验证码
 public function send_email                发送邮件
 ##--------------------------------------------------------##
 public function get_real_ip               获取当前访问的ip地址
+##--------------------------------------------------------##
+public function is_exists                 是否存在
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -321,4 +323,53 @@ class BaseController extends Controller {
 		}
 		return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
 	}
+
+    public function curl_get($url, $data){
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+        return curl_exec($ch);
+    }
+    
+    public function curl_post($url, $data){
+        $fields = $data;
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+        ob_start();
+        curl_exec($ch);
+        $result = ob_get_contents();
+        ob_end_clean();
+        curl_close($ch);
+        return $result;
+    }
+
+    /**
+       功能:判定按照条件是否存在
+       
+       参数:
+       @@output
+       @param $is_exists (0-存在,1-不存在)
+     */
+    public function is_exists($content){
+        $data = $this->fill($content);
+
+        $tmp_one = M($this->_module_name)->field($this->_key)->where($data)->find();
+        if($tmp_one){
+            return array(200,
+            array(
+                'is_exists'=>0,
+                'message'=>urlencode('存在'))
+            );
+        }
+
+        return array(200,
+        array(
+            'is_exists'=>1,
+            'message'=>urlencode('不存在'))
+        );
+    }
 }

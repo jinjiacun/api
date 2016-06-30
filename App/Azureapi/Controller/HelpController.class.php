@@ -7,7 +7,7 @@ class HelpController extends BaseController
     public function get_dictionary(){
         $_list = array();
         //管理员id及其名称
-        $list = M('comadmin')->field("ComId,AdminName")->select();
+        $list = M('com_admin')->field("ComId,AdminName")->select();
         if($list){
             foreach($list as $v){
                 $_list['admin'][intval($v['ComId'])] = urlencode($v['AdminName']);
@@ -16,7 +16,7 @@ class HelpController extends BaseController
         
         //角色id及其名称
         unset($list);
-        $list = M('comrole')->field("RoleId,RoleName")->select();
+        $list = M('com_role')->field("RoleId,RoleName")->select();
         if($list){
             foreach($list as $v){
                 $_list['role'][intval($v['RoleId'])] = urlencode($v['RoleName']);
@@ -25,7 +25,7 @@ class HelpController extends BaseController
 
         //机构id及其名称
         unset($list);
-        $list = M('comtable')->field("ComId,ComName")->select();
+        $list = M('com_table')->field("ComId,ComName")->select();
         if($list){
             foreach($list as $v){
                 $_list['com'][intval($v['ComId'])] = urlencode($v['ComName']);

@@ -5,11 +5,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
    --管理--
 */
-class CommoController extends BaseController
+class ComMoController extends BaseController
 {
     /**
        sql script:
-       create table commo(ComMoId int primary key auto_increment,
+       create table sp_com_mo(ComMoId int primary key auto_increment,
        ComId int,
        MoId int,
        MoType int,
@@ -20,7 +20,7 @@ class CommoController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'commo';
+    protected $_module_name = 'com_mo';
     protected $_key = 'ComMoId';
     
     protected $ComMoId;

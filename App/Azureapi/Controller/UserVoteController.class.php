@@ -3,11 +3,11 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class UservoteController extends BaseController
+class UserVoteController extends BaseController
 {
     /**
        sql script:
-       create table uservote(VoteId bigint(19) primary key,
+       create table sp_user_vote(VoteId bigint(19) primary key,
        UserId int,
        UserNickName varchar(50),
        VoteIp varchar(50),
@@ -18,7 +18,7 @@ class UservoteController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'uservote';
+    protected $_module_name = 'user_vote';
     protected $_key = 'VoteId';
     
     protected $VoteId;

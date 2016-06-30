@@ -3,11 +3,11 @@ namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
 
-class RoominterController extends BaseController
+class RoomInterController extends BaseController
 {
     /**
        sql script:
-       create table roominter(InterId char(50) primary key,
+       create table sp_room_inter(InterId char(50) primary key,
        UserId int,
        UserNickName varchar(50),
        ReUserId bigint(19),
@@ -22,7 +22,7 @@ class RoominterController extends BaseController
        )charset=utf8;
      */
 
-    protected $_module_name = 'roominter';
+    protected $_module_name = 'room_inter';
     protected $_key = 'InterId';
     
     protected $InterId;

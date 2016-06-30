@@ -5,11 +5,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
    --消息管理--
 */
-class CommessageController extends Controller
+class ComMessageController extends Controller
 {
     /**
      sql script:
-     create table commessage(CMId char(50) primary key,
+     create table sp_com_message(CMId char(50) primary key,
      ComId int,
      CMTitle varchar(100),
      CMCon text,
@@ -21,7 +21,7 @@ class CommessageController extends Controller
      )charset=utf8;
      */
 
-    protected $_module_name = 'commessage';
+    protected $_module_name = 'com_message';
     protected $_key = 'CMId';
     
     protected $CMId;

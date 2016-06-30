@@ -3,7 +3,7 @@ namespace Azureadmin\Controller;
 use Azureadmin\Controller;
 include_once(dirname(__FILE__)."/BaseController.class.php");
 
-class ComdiaController extends BaseController
+class ComDiaController extends BaseController
 {
     /**
        --管理--
@@ -16,7 +16,7 @@ class ComdiaController extends BaseController
   
     /**
        sql script:
-       create table comdia(DiaId int primary key auto_increment,
+       create table sp_com_dia(DiaId int primary key auto_increment,
        UserId int,
        UserOffer varchar(50),
        AdminId int,
@@ -30,7 +30,7 @@ class ComdiaController extends BaseController
        )charset=utf8;
      */
     
-    protected $_module_name = 'comdia';
+    protected $_module_name = 'com_dia';
     protected $_key = 'DiaId';
 
     protected $DiaId;

@@ -15,11 +15,11 @@ public function get_info
 public function get_info_by_key
 -----------------------------------------------------------------
  */
-class ComcolumnController extends BaseController
+class ComColumnController extends BaseController
 {
     /**
      * sql script:
-     create table comcolumn(ColumnId int primary key auto_increment,
+     create table sp_com_column(ColumnId int primary key auto_increment,
      ColumnName varchar(50),
      ComId int(10),
      ColumnPId int(10),
@@ -30,7 +30,7 @@ class ComcolumnController extends BaseController
      )charset=utf8;
      */
 
-    protected $_module_name = 'comcolumn';
+    protected $_module_name = 'com_column';
     protected $_key = 'ColumnId';
 
     protected $ColumnId;

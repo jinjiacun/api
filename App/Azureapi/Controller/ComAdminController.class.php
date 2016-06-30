@@ -18,10 +18,10 @@ public function get_info
 public function get_info_by_key
 ------------------------------------------------------------
 */
-class ComadminController extends BaseController {
+class ComAdminController extends BaseController {
   /**
    * sql script:
-    create table comadmin(AdminId int primary key auto_increment,
+    create table sp_com_admin(AdminId int primary key auto_increment,
                         AdminName varchar(50) comment '用户名',
                         Password text comment '密码',
                         AdminUserName varchar(100) comment '账号',
@@ -38,7 +38,7 @@ class ComadminController extends BaseController {
                  )charset=utf8;
    * */
 
-   protected $_module_name = 'comadmin';
+   protected $_module_name = 'Com_admin';
    protected $_key = 'AdminId';
 
    protected $AdminId;//机构管理id
@@ -165,7 +165,7 @@ class ComadminController extends BaseController {
           'AdminName'=>$data['AdminName'],
           'Password'=>md5($data['Password'])
       );
-    $tmp_one = M('Comadmin')->where($where)->find();
+    $tmp_one = M($this->_module_name)->where($where)->find();
     if($tmp_one)
     {
         /*$user_info = $this->do_getuserinfo_by_username($data['user_name']);
@@ -182,12 +182,15 @@ class ComadminController extends BaseController {
           'message' => urlencode('成功登录'),
           'AdminId' => $tmp_one['AdminId'],
           'AdminName' => $tmp_one['AdminName'],
-          'RoleId' => $tmp_one['RoleId']
+          'RoleId' => $tmp_one['RoleId'],
+          'ComId' => $tmp_one['ComId'],
+          'Adavatar' => $tmp_one['Adavatar'],
           ),
       );
     }
 
     #昵称登录
+    /*
     $where = array(
         'nick_name' => $data['user_name'],
         'password'  => md5($data['password'])
@@ -208,8 +211,10 @@ class ComadminController extends BaseController {
           ),
       );
     }
+    */
 
     #手机号码登录
+    /*
     $where = array(
         'mobile'   => $data['user_name'],
         'password' => md5($data['password'])
@@ -218,6 +223,7 @@ class ComadminController extends BaseController {
     if($tmp_one)
     {
       $user_info = $this->do_getuserinfo_by_mobile($data['user_name']);
+      
       session('AdminName',   $data['AdminName']);
       session('AdminId',     $user_info['AdminId']);
       session('nick_name',   $user_info['nick_name']);
@@ -230,6 +236,7 @@ class ComadminController extends BaseController {
           ),
       );
     }
+    */
 
     return array(
         200,

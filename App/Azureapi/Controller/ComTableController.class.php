@@ -20,10 +20,10 @@ public function check
 public function reset_admin_password
 ------------------------------------------------------------
 */
-class ComtableController extends BaseController {
+class ComTableController extends BaseController {
   /**
  * sql script:
-  create table comtable(ComId int primary key auto_increment,
+  create table sp_com_table(ComId int primary key auto_increment,
                         ComTag varchar(100),
                         ComName varchar(100),
                         ComAllName varchar(200),
@@ -50,7 +50,7 @@ class ComtableController extends BaseController {
                )charset=utf8;
  * */
 
- protected $_module_name = 'comtable';
+ protected $_module_name = 'com_table';
  protected $_key = 'ComId';
 
  protected $ComId;      //机构id
@@ -194,7 +194,9 @@ class ComtableController extends BaseController {
       8:新增初始人员失败,
       9:新增vip等级错误,
       10:新增VIP权限错误,
-
+      11:新增直播室失败,
+      12:新增默认直播室内容失败,
+      13:审核同步失败
       )
    */
 
@@ -212,7 +214,7 @@ class ComtableController extends BaseController {
 
       #检查机构标签是否存在
       $where['ComTag'] = $data['ComTag'];
-      $_tmp = M($this->_module_name)->where($where)->find();
+      $_tmp = M($this->_module_name)->field("AppId")->where($where)->find();
       unset($where);
       if(!$_tmp
       || 0 == count($_tmp)){
@@ -222,6 +224,7 @@ class ComtableController extends BaseController {
               'message'=>urlencode('标签已存在'))
           );
       }
+      $app_id = $_tmp['AppId'];
       unset($_tmp);
 
       #更新机构信息
@@ -462,20 +465,70 @@ class ComtableController extends BaseController {
       
       }
       
-  }
-      
-      
-      
-      
-          
-      
+  } 
       
       #增加默认直播室
+      $in_content = array(
+      'RoomAddAdmin' => 0,
+          'RoomUpdateAdmin' => 0,
+          'ComId' => $data['ComId'],
+          'RoomEnable' => 1,
+          'RoomHisPop' => 1,
+          'RoomInterLimit' => 1,
+          'RoomLiveLimit' => 1,
+          'RoomTitle' => C('DefaultRoomTitle'),
+          'RoomTeacher' => $analyst_id,
+          'RoomMaximage' => C('DefaultRoomMaximage'),
+          'RoomLivehisLimit' => 1,
+          'RoomLivetime' => '||',
+          'RoomMEtip' => 0,
+          'RoomMinimage' => C('DefaultRoomMinimage'),
+          'RoomName' => C('DefaultRoomName'),
+          'RoomPopSet' =>1);
+      list($status_code, $content) = A('Azureapi/ComRoom')->add($in_content);
+      unset($in_content);
+      if($status_code != 200 || $content['is_success'] != 0){
+      return array(200,
+          array(
+      'is_success'=>11,
+          'message'=>urlencode('新增直播室失败')));
+       }
+      $room_id = $content['id'];
+      unset($status_code, $content);
 
       #增加默认直播内容
+      $in_content = array(
+          'AdminAvatar'=> C('DefaultAdavatar'),
+          'AdminId' => $analyst_id,
+          'AdminName' => C('AnalystPrefixName').$data['ComTag'],
+          'ComId' => $data['ComId'],
+          'LiveContent' => C('DefaultLiveContent'),
+          'LiveQuote' => '',
+          'LiveState' => 1,
+          'LiveTop' => 0,
+          'LiveType' => 0,
+          'LiveVipGrade' => 0,
+          'RoomId' => $room_id);
+      list($status_code, $content) = A('Azureapi/RoomLive')->add($in_content);
+      unset($in_content);
+      if($status_code != 200 || $content['is_success'] != 0){
+          return array(200,
+          array(
+              'is_success'=>12,
+              'message' => urlencode('新增默认直播室内容失')));
+      }
+      unset($status_code, $content);          
 
       #审核通过数据同步
-
+      $template_data = 'appid=%d&pw=%s&state=1';
+      $data = sprintf($template_data, $app_id, md5($app_id.'cngold'.date('Ymd')));
+      $result = $this->curl_get(C('PassUrl'), $data);
+      if(strtolower($result) != 'true'){
+      return array(200,
+          array(
+          'is_success'=>13,
+          'message'=>urlencode('审核同步失败')));
+      }
       
 
       return array(200,
