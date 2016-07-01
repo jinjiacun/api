@@ -91,7 +91,7 @@ class CGUserController extends BaseController {
            'UserNickName'=> $v['UserNickName'],
            'UserName' => $v['UserName'],
            'UserPsw' =>$v['UserPsw'],
-           'UserState'=>$v['UserState']
+           'UserState'=>$v['UserState'],
            'UserAvatar'=>$v['UserAvatar'],
            'User_Sex' => $v['User_Sex'],
            'UserBirthDay' => $v['UserBirthDay'],
@@ -104,7 +104,7 @@ class CGUserController extends BaseController {
            'UserAllCGold' => $v['UserAllCGold'],
            'LoginIp' => $v['LoginIp'],
            'LoginTime' => $v['LoginTime'],
-           'RegisterTime' => $v['RegisterTime'];
+           'RegisterTime' => $v['RegisterTime'],
            'Address' => $v['Address'],
            'RegisterIp' => $v['RegisterIp'],
            'UserUpTime' => $v['UserUpTime'],

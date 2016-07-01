@@ -40,12 +40,53 @@ class AllMessageController extends BaseController {
 
  /**
     功能:新增
+    
+    参数:
+    @@input
+    @param $FMTitle 机构编号
+    @param $FMCon   内容
+    @param $FMComId 标题
+    @param $FMState 状态    
   */
  public function add($content){
+     $data = $this->fill($content);
+
+     if(!isset($data['FMTitle'])
+     || !isset($data['FMCon'])
+     || !isset($data['FMComId'])
+     || !isset($data['FMState'])){
+         return C('param_err');
+     }
+
+     $data['FMTitle'] = htmlspecialchars(trim($data['FMTitle']));
+     $data['FMCon'] = htmlspecialchars(trim($data['FMCon']));
+     $data['FMComId'] = htmlspecialchars(trim($data['FMComId']));
+     $data['FMState'] = intval($data['FMState']);
+
+     if('FMTitle' == $data['FMTitle']
+     || 'FMCon' == $data['FMCon']
+     || 'FMComId' == $data['FMComId']
+     || 0 > $data['FMStatex']){
+         return C('param_fmt_err');
+     }    
+
+     $data['FMTime'] = date('Y-m-d H:i:s');
+     $data['FMUpTime'] = date('Y-m-d H:i:s');
+     
+     if(False !== M($this->_module_name)->add($data)){
+         return array(200,
+         array(
+             'is_success'=>0,
+             'message'=>C('option_ok'),
+             'id'=>M()->getLastInsID())
+         );
+     }
+     
      return array(200,
      array(
          'is_success'=>1,
-         'message'=>'错误'));
+         'message'=>urlencode('错误'))
+     );
  }
 
  /**

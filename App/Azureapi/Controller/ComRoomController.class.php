@@ -129,7 +129,7 @@ class ComRoomController extends BaseController
         $data['RoomInterLimit'] = intval($data['RoomInterLimit']);
         $data['RoomLiveLimit'] = intval($data['RoomLiveLimit']);
         $data['RoomName'] = htmlspecialchars(trim($data['RoomName']));
-        $data['RoomTeacher'] = htmlspecialchars(trim($data['RoomTeacher'));
+        $data['RoomTeacher'] = htmlspecialchars(trim($data['RoomTeacher']));
         $data['RoomMaximage'] = htmlspecialchars(trim($data['RoomMaximage']));
         $data['RoomLivehisLimit'] = intval($data['RoomLivehisLimit']);
         $data['RoomLivetime'] = htmlspecialchars(trim($data['RoomLivetime']));

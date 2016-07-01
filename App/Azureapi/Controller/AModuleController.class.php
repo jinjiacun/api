@@ -6,6 +6,14 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 --栏目模块管理--
 ------------------------------------------------------------
 function of api:
+--功能:新增
+public function add
+--功能:列表查询
+public function get_list
+--功能:查询单条
+public function get_info
+--功能:通过关键字查询
+public function get_info_by_keyxx
 ------------------------------------------------------------
 */
 class AModuleController extends BaseController {
@@ -40,6 +48,64 @@ class AModuleController extends BaseController {
 
 
  /**
+    功能:新增
+    
+    参数:
+    @@input
+    @param $AMoPId int 父栏目编号
+    @param $AMoName string 栏目名称
+    @param $AMoUrl string 栏目地址
+    @param $AMoType int 栏目类型
+    @param $AdminId int 创建者
+    @param $AMoState int 状态
+  */
+ public function add($content){
+     $data = $this->fill($content);
+     
+     if(!isset($data['AMoPId'])
+     || !isset($data['AMoName'])
+     || !isset($data['AMoUrl'])
+     || !isset($data['AMoType'])
+     || !isset($data['AdminId'])
+     || !isset($data['AMoState'])){
+         return C('param_err');
+     }
+
+     $data['AMoPId'] = intval($data['AMoPId']);
+     $data['AMoName'] = htmlspecialchars(trim($data['AMoName']));
+     $data['AMoUrl'] = htmlspecialchars(trim($data['AMoUrl']));
+     $data['AMoType'] = intval($data['AMoType']);
+     $data['AdminId'] = intval($data['AdminId']);
+     $data['AMoState'] = intval($data['AMoState']);
+
+     if(0 > $data['AMoPId']
+     || '' ==  $data['AMoName']
+     || 0 > $data['AMoType']
+     || 0 > $data['AdminId']
+     || 0 > $data['AMoState']){
+         return C('param_fmt_err');
+     }
+
+     $data['AMTime'] = date('Y-m-d H:i:s');
+     $data['AMUpTime'] = date('Y-m-d H:i:s');
+
+     if(False !== M($this->_module_name)->add($data)){
+         return array(200,
+         array(
+             'is_success'=>0,
+             'message'=>C('option_ok'),
+             'id'=>M()->getLastInsID())
+         );
+     }
+
+     return array(200,
+     array(
+         'is_success'=>1,
+         'message'=>urlencode('错误')
+     ));
+ }
+
+ /**
     功能:列表查询
   */
  public function get_list($content)
@@ -71,6 +137,70 @@ class AModuleController extends BaseController {
          'record_count'=> $record_count,
          )
        );
+ }
+
+ /**
+    功能:查询单条
+  */
+ public function get_info($conent){
+     $data = $this->fill($content);
+     
+     $list = array();
+
+     if(count($data) > 0){
+         $tmp_one = M($this->_module_name)->where($data)->find();
+         if($tmp_one
+         && count($tmp_one) > 0){
+             $list = array(
+                 'AMoId'       => $tmp_one['AMoId'],
+                 'AMoName'     => $tmp_one['AMoName'],
+                 'AMoPId'      => $tmp_one['AMoPId'],
+                 'AdminId'     => $tmp_one['AdminId'],
+                 'AMoUrl'      => $tmp_one['AMoUrl'],
+                 'AMoType'     => $tmp_one['AMoType'],
+                 'AMoState'    => $tmp_one['AMoState'],
+                 'AMTime'      => $tmp_one['AMTime'],
+                 'AMPath'      => $tmp_one['AMPath'],
+                 'AMUpTime'    => $tmp_one['AMUpTime'],
+             );
+         }
+     }
+
+     return array(200, $list);         
+ }
+
+ /**
+    功能:通过关键字查询
+  */
+ public function get_info_by_key($content){
+     $data = $this->fill($content);
+     
+     if(!isset($data[$this->_key])){
+         return C('param_err');
+     }
+     
+     $list = array();
+
+     if(count($data) > 0){
+         $tmp_one = M($this->_module_name)->find($data[$this->_key]);
+         if($tmp_one
+         && count($tmp_one) > 0){
+             $list = array(
+                 'AMoId'       => $tmp_one['AMoId'],
+                 'AMoName'     => $tmp_one['AMoName'],
+                 'AMoPId'      => $tmp_one['AMoPId'],
+                 'AdminId'     => $tmp_one['AdminId'],
+                 'AMoUrl'      => $tmp_one['AMoUrl'],
+                 'AMoType'     => $tmp_one['AMoType'],
+                 'AMoState'    => $tmp_one['AMoState'],
+                 'AMTime'      => $tmp_one['AMTime'],
+                 'AMPath'      => $tmp_one['AMPath'],
+                 'AMUpTime'    => $tmp_one['AMUpTime'],
+             );
+         }
+     }
+
+     return array(200, $list);         
  }
 
 }
