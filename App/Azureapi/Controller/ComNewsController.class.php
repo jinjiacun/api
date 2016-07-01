@@ -10,11 +10,11 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
    --功能:查询单条
    --功能:通过关键字查询单条
 */
-class ComNewsController extends Controller
+class ComNewsController extends BaseController
 {
     /**
        sql script:
-       create table sp_com_news(NewsId char(50) primary key,
+       create table sp_com_news(NewId char(50) primary key,
        NewsTitle varchar(200),
        NewsDocReader text,
        ColumnId int,
@@ -34,9 +34,9 @@ class ComNewsController extends Controller
      */
     
     protected $_module_name = 'com_news';
-    protected $_key = 'NewsId';
+    protected $_key = 'NewId';
 
-    protected $NewsId;
+    protected $NewId;
     protected $NewsTitle;
     protected $NewsDocReader;
     protected $ColumnId;
@@ -78,7 +78,7 @@ class ComNewsController extends Controller
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'NewsId' => $v['NewsId'],
+                            'NewId' => $v['NewId'],
                             'NewsTitle' => $v['NewsTitle'],
                             'NewsDocReader' => $v['NewsDocReader'],
                             'ColumnId' => $v['ColumnId'],

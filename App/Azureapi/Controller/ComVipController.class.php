@@ -102,7 +102,10 @@ class ComVipController extends BaseController
             return array(200,
             array(
                 'is_success'=>0,
-                'message'=>C('option_ok')
+                'message'=>C('option_ok'),
+                'id' => M()->getLastInsID()
+               )
+            );
         }
 
         return array(200,
@@ -139,7 +142,7 @@ class ComVipController extends BaseController
 
         return array(200,
         array(
-            'list'=>$list
+            'list'=>$list,
             'record_count'=>$record_count
         )
         );

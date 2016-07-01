@@ -15,6 +15,14 @@ public function get_list      			  查询数据列表
 @@output
 @param 返回对应的列表，具体内容看具体的对应的模块
 ##--------------------------------------------------------##
+public function performace_get_list       查询数据列表(优化接口,只返回对应的关键字)
+@@input
+@param $page_index   当前满足条件的第几页(可选)
+@param $page_size    当前请求的页面数(可选)
+@param $where        当前查询条件(可选)
+@@output
+@param 返回对应的列表，具体内容看具体的对应的模块(list里面内容只包含key值)
+##--------------------------------------------------------##
 public function get_row                   查询一行
 ##--------------------------------------------------------##
 public function get_info
@@ -178,6 +186,50 @@ class BaseController extends Controller {
 					$record_count
 		);
 	}
+    
+    /**
+       功能:查询数据列表(优化接口,只返回对应的关键字)
+
+       参数:
+       @@input
+       @param $page_index   当前满足条件的第几页(可选)
+       @param $page_size    当前请求的页面数(可选)
+       @param $where        当前查询条件(可选)
+       @@output
+       @param 返回对应的列表，具体内容看具体的对应的模块(list里面内容只包含key值)
+    */
+    public function performace_get_list($content){
+        $data = $this->fill($content);
+		$data['where'] = isset($data['where'])?$data['where']:array();
+		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
+		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
+		$data['order']      = isset($data['order'])?$data['order']:array($this->_key=>'desc');
+		$obj  = M($this->_module_name);
+		if(isset($data['page_index']))
+			$page_index = $data['page_index'];
+		else
+			$page_index = 1;
+		if(isset($data['page_size']))
+			$page_size  = $data['page_size'];
+		else
+			$page_size  = 10;
+		//$page_index = 1;
+		//$page_size  = 10;
+		$list = $obj->field($this->_key)
+                    ->page($page_index, $page_size)
+		            ->where($data['where'])
+		            ->order($data['order'])
+		            ->select();
+		#
+		$record_count = 0;
+		$record_count = $obj->where($data['where'])->count();
+		return array(
+            200,
+            array(
+					$list,
+					$record_count)
+		);
+    }   
 
 	#查询单个
 	public function get_row($content){
