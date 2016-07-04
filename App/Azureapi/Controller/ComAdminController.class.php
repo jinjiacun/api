@@ -95,7 +95,7 @@ class ComAdminController extends BaseController {
        if('' == $data['AdminName']
        || '' == $data['AdminUserName']
        || '' == $data['Password']
-       || 0 >= $data['ComId']
+       || 0 > $data['ComId']
        || 0 >= $data['RoleId']){
            return C('param_fmt_err');
        }
@@ -336,7 +336,7 @@ class ComAdminController extends BaseController {
           $list = array(
               'AdminId' => $tmp_one['AdminId'],
               'AdminName' => $tmp_one['AdminName'],
-              'AdminNickName' => $tmp_one['AdminNickName'],
+              'AdminUserName' => $tmp_one['AdminUserName'],
               'ComId' => $tmp_one['ComId'],
               'RoleId' => $tmp_one['RoleId'],
               'AuthNo' => $tmp_one['AuthNo'],

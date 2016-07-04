@@ -12,6 +12,12 @@ return array(
      'media_url_pre' => 'http://localhost/Api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),
      'param_fmt_err' => array(500, urlencode('参数格式不正确')),
+     'option_ok'     => urlencode('操作成功'),
+     'option_fail'   => urlencode('操作失败'),
+     'option_no_allow' => urlencode('不允许操作'),
+     'is_exists'     => urlencode('存在'),
+     'no_exists'     => urlencode('不存在'),
+     
 	//'配置项'=>'配置值'
      
      'AminInitCol' => '376,378,379,380,384,392,394,397,398,399,401',//机构管理员权限

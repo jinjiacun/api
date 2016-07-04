@@ -121,6 +121,51 @@ class ComTableController extends BaseController {
         );
   }
 
+  /**
+     功能:查询单条信息
+   */
+  public function get_info($content){
+      $data = $this->fill($content);
+
+      if(count($data) <=0){
+          return C('param_fmt_err');
+      }
+
+      $list = array();
+      $tmp_one = M($this->_module_name)->where($data)->find();
+      if($tmp_one){
+          if(count($tmp_one) >0){
+              $list = array(
+        'ComId'       =>$tmp_one['ComId'],
+        'ComTag'      =>$tmp_one['ComTag'],
+        'ComName'     =>$tmp_one['ComName'],
+        'ComAllName'  =>$tmp_one['ComAllName'],
+        'ComLogo'     =>$tmp_one['ComLogo'],
+        'ComPhone'    =>$tmp_one['ComPhone'],
+        'ComEmail'    =>$tmp_one['ComEmail'],
+        'LoginBack'   =>$tmp_one['LoginBack'],
+        'ComMin'      =>$tmp_one['ComMin'],
+        'ComSLogo'    =>$tmp_one['ComSLogo'],
+        'ComBanner'   =>$tmp_one['ComBanner'],
+        'ComBanLink'  =>$tmp_one['ComBanLink'],
+        'ComState'    =>$tmp_one['ComState'],
+        'ComFlag'     =>$tmp_one['ComFlag'],
+        'ComUrl'      =>$tmp_one['ComUrl'],
+        'ComLine'     =>$tmp_one['ComLine'],
+        'ComMob'      =>$tmp_one['ComMob'],
+        'ComMail'     =>$tmp_one['ComMail'],
+        'ComAddress'  =>$tmp_one['ComAddress'],
+        'CreateTime'  =>$tmp_one['CreateTime'],
+        'UpTime'      =>$tmp_one['UpTime'],
+        'ExpTime'     =>$tmp_one['ExpTime'],
+        'AppId'       =>$tmp_one['AppId'],
+      );
+          }
+      }
+
+      return array(200, $list);
+  }
+
   #通过关键字查询单条
   public function get_info_by_key($content)
   {

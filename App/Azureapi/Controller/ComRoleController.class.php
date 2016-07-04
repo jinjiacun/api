@@ -117,13 +117,13 @@ class ComRoleController extends BaseController
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'RoleId' => $v['RoleId'],
-                            'RoleName' => $v['RoleName'],
-                            'ComId' => $v['ComId'],
-                            'RoleState' => $v['RoleState'],
+                            'RoleId' => intval($v['RoleId']),
+                            'RoleName' => urlencode($v['RoleName']),
+                            'ComId' => intval($v['ComId']),
+                            'RoleState' => intval($v['RoleState']),
                             'Creatime' => $v['Creatime'],
                             'UpTime' => $v['UpTime'],
-                            'AdminId' => $v['AdminId'],
+                            'AdminId' => intval($v['AdminId']),
                         );
                     }
             }
