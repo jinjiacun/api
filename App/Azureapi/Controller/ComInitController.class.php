@@ -184,7 +184,7 @@ class ComInitController extends BaseController
         $tmp_one = M($this->_module_name)->where($data)->find();
         $list = array();
         if($tmp_one){
-            $list[] = array(
+            $list = array(
                 'ComId' => $tmp_one['ComId'],
                 'ComAdmin' => $tmp_one['ComAdmin'],
                 'AdminPWD' => $tmp_one['AdminPWD'],
@@ -206,9 +206,7 @@ class ComInitController extends BaseController
         }
 
         return array(200,
-        array(
-            'list' => $list,
-            'record_count'=> $record_count));
+            $list);
     }
 
     /**
@@ -223,7 +221,7 @@ class ComInitController extends BaseController
         $tmp_one = M($this->_module_name)->find($data[$this->_key]);
         $list = array();
         if($tmp_one){
-            $list[] = array(
+            $list = array(
                 'ComId' => $tmp_one['ComId'],
                 'ComAdmin' => $tmp_one['ComAdmin'],
                 'AdminPWD' => $tmp_one['AdminPWD'],
@@ -244,9 +242,6 @@ class ComInitController extends BaseController
                 'CeUpTime' => $tmp_one['CeUpTime']);
         }
 
-        return array(200,
-        array(
-            'list' => $list,
-            'record_count'=> $record_count));
+        return array(200,$list);
     }
 }

@@ -7,10 +7,10 @@ class HelpController extends BaseController
     public function get_dictionary(){
         $_list = array();
         //管理员id及其名称
-        $list = M('com_admin')->field("ComId,AdminName")->select();
+        $list = M('com_admin')->field("AdminId,AdminName")->select();
         if($list){
             foreach($list as $v){
-                $_list['admin'][intval($v['ComId'])] = urlencode($v['AdminName']);
+                $_list['admin'][intval($v['AdminId'])] = urlencode($v['AdminName']);
             }
         }
         
