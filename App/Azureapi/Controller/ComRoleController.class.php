@@ -61,7 +61,7 @@ class ComRoleController extends BaseController
         $data['AdminId'] = intval(trim($data['AdminId']));
 
         if('' == $data['RoleName']
-        || 0 >= $data['ComId']
+        || 0 > $data['ComId']
         || 0 > $data['AdminId']){
             return C('param_fmt_err');
         }
@@ -140,7 +140,29 @@ class ComRoleController extends BaseController
        功能:查询一条信息
      */
     public function get_info($content){
+        $data = $this->fill($content);
+
+        if(count($data) <=0){
+            return C('param_fmt_err');
+        }
+
+        $tmp_one = M($this->_module_name)->where($content)->find();
+        
         $list = array();
+        if($tmp_one){
+            if(count($tmp_one) > 0){
+                $list = array(
+                    'RoleId'    => intval($tmp_one['RoleId']),
+                    'RoleName'  => urlencode($tmp_one['RoleName']),
+                    'ComId'     => intval($tmp_one['ComId']),
+                    'RoleState' => intval($tmp_one['RoleState']),
+                    'Creatime'  => $tmp_one['Creatime'],
+                    'UpTime'    => $tmp_one['UpTime'],
+                    'AdminId'   => intval($tmp_one['AdminId']),
+                );
+            }
+        }
+
         return array(200,
         $list);
     }
@@ -149,7 +171,27 @@ class ComRoleController extends BaseController
        功能:通过关键字查询一条信息
      */
     public function get_info_by_key($content){
+        $data = $this->fill($content);
+        if(!isset($data[$this->_key])){
+            return C('param_err');
+        }
+
         $list = array();
+        $tmp_one = M($this->_module_name)->find($data[$this->_key]);
+        if($tmp_one){
+            if(count($tmp_one)> 0){
+                $list = array(
+                    'RoleId'    => intval($tmp_one['RoleId']),
+                    'RoleName'  => urlencode($tmp_one['RoleName']),
+                    'ComId'     => intval($tmp_one['ComId']),
+                    'RoleState' => intval($tmp_one['RoleState']),
+                    'Creatime'  => $tmp_one['Creatime'],
+                    'UpTime'    => $tmp_one['UpTime'],
+                    'AdminId'   => intval($tmp_one['AdminId']),
+                );
+            }
+        }
+
         return array(200,
         $list);
     }

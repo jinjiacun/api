@@ -60,10 +60,11 @@ class ComRoMoController extends BaseController
         
         if(False !== M($this->_module_name)->add($data)){
             return array(200,
-            arrary(
+            array(
                 'is_success' => 0,
-                'message' => C('option_ok'))
-            );
+                'message' => C('option_ok'),
+                'id' => M()->getLastInsID()
+            ));
         }
 
         return array(200,
