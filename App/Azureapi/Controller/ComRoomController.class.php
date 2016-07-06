@@ -213,8 +213,95 @@ class ComRoomController extends BaseController
         return array(200,
         array(
             'list'=> $list,
-            'record_count'=> $record_count
-        )
+            'record_count'=> $record_count)
         );
+    }
+
+    /**
+       功能:查询单条
+     */
+    public function get_info($content){
+        $data = $this->fill($content);
+        
+        if(count($data) <=0){
+            return C('param_fmt_err');
+        }
+
+        $list = array();
+        $tmp_one = M($this->_module_name)->where($data)->find();
+        if($tmp_one){
+            $list = array(
+                'RoomId'           => intval($tmp_one['RoomId']),
+                'RoomName'         => urlencode($tmp_one['RoomName']),
+                'RoomTitle'        => urlencode($tmp_one['RoomTitle']),
+                'RoomIntro'        => urlencode($tmp_one['RoomIntro']),
+                'RoomTeacher'      => urlencode($tmp_one['RoomTeacher']),
+                'RoomMEtip'        => urlencode($tmp_one['RoomMEtip']),
+                'RoomPopSet'       => urlencode($tmp_one['RoomPopSet']),
+                'RoomHisPop'       => urlencode($tmp_one['RoomHisPop']),
+                'ComId'            => intval($tmp_one['ComId']),
+                'RoomLivetime'     => urlencode($tmp_one['RoomLivetime']),
+                'RoomMaximage'     => urlencode($tmp_one['RoomMaximage']),
+                'RoomMinimage'     => urlencode($tmp_one['RoomMinimage']),
+                'RoomLiveLimit'    => urlencode($tmp_one['RoomLiveLimit']),
+                'RoomLivehisLimit' => urlencode($tmp_one['RoomLivehisLimit']),
+                'RoomVipType'      => urlencode($tmp_one['RoomVipType']),
+                'RoomInterLimit'   => urlencode($tmp_one['RoomInterLimit']),
+                'LiveNum'          => urlencode($tmp_one['LiveNum']),
+                'InterNum'         => urlencode($tmp_one['InterNum']),
+                'RoomEnable'       => urlencode($tmp_one['RoomEnable']),
+                'RoomLiveState'    => urlencode($tmp_one['RoomLiveState']),
+                'RoomAddTime'      => urlencode($tmp_one['RoomAddTime']),
+                'RoomUpdateTime'   => urlencode($tmp_one['RoomUpdateTime']),
+                'RoomUpdateAdmin'  => urlencode($tmp_one['RoomUpdateAdmin']),
+                'RoomType'         => urlencode($tmp_one['RoomType']) 
+                );
+        }
+
+        return array(200, $list);
+    }
+    
+    /**
+       功能:通过关键字查询单条
+     */
+    public function get_info_by_key($content){
+         $data = $this->fill($content);
+        
+        if(!isset($data[$this->_key])){
+            return C('param_fmt_err');
+        }
+
+        $list = array();
+        $tmp_one = M($this->_module_name)->find($data[$this->_key]);
+        if($tmp_one){
+            $list = array(
+                'RoomId'           => intval($tmp_one['RoomId']),
+                'RoomName'         => urlencode($tmp_one['RoomName']),
+                'RoomTitle'        => urlencode($tmp_one['RoomTitle']),
+                'RoomIntro'        => urlencode($tmp_one['RoomIntro']),
+                'RoomTeacher'      => urlencode($tmp_one['RoomTeacher']),
+                'RoomMEtip'        => urlencode($tmp_one['RoomMEtip']),
+                'RoomPopSet'       => urlencode($tmp_one['RoomPopSet']),
+                'RoomHisPop'       => urlencode($tmp_one['RoomHisPop']),
+                'ComId'            => intval($tmp_one['ComId']),
+                'RoomLivetime'     => urlencode($tmp_one['RoomLivetime']),
+                'RoomMaximage'     => urlencode($tmp_one['RoomMaximage']),
+                'RoomMinimage'     => urlencode($tmp_one['RoomMinimage']),
+                'RoomLiveLimit'    => urlencode($tmp_one['RoomLiveLimit']),
+                'RoomLivehisLimit' => urlencode($tmp_one['RoomLivehisLimit']),
+                'RoomVipType'      => urlencode($tmp_one['RoomVipType']),
+                'RoomInterLimit'   => urlencode($tmp_one['RoomInterLimit']),
+                'LiveNum'          => urlencode($tmp_one['LiveNum']),
+                'InterNum'         => urlencode($tmp_one['InterNum']),
+                'RoomEnable'       => urlencode($tmp_one['RoomEnable']),
+                'RoomLiveState'    => urlencode($tmp_one['RoomLiveState']),
+                'RoomAddTime'      => urlencode($tmp_one['RoomAddTime']),
+                'RoomUpdateTime'   => urlencode($tmp_one['RoomUpdateTime']),
+                'RoomUpdateAdmin'  => urlencode($tmp_one['RoomUpdateAdmin']),
+                'RoomType'         => urlencode($tmp_one['RoomType']) 
+                );
+        }
+
+        return array(200, $list);
     }
 }

@@ -2,7 +2,7 @@
 namespace Azureapi\Controller;
 use Azureapi\Controller;
 include_once(dirname(__FILE__).'/BaseController.class.php');
-
+/*--会员登陆--*/
 class UserLoginController extends BaseController
 {
     /**
@@ -52,7 +52,7 @@ class UserLoginController extends BaseController
                             'VFlag' => $v['VFlag'],
                             'PswFlag' => $v['PswFlag'],
                             'User_Id' => $v['User_Id'],
-                            'TLExtend' => $v['TLExtend'],
+                            'LTExtend' => $v['LTExtend'],
                             'Createtime' => $v['Createtime'],
                             'LoginTime' => $v['LoginTime'],
                             'LoginIp' => $v['LoginIp'],

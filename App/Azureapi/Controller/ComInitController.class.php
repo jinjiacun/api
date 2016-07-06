@@ -77,6 +77,7 @@ class ComInitController extends BaseController
      */
     public function add($content){
         $data = $this->fill($content);
+
         if(!isset($data['ComAdmin'])
         || !isset($data['AdminPWD'])
         || !isset($data['ComAdminRole'])
@@ -114,7 +115,7 @@ class ComInitController extends BaseController
         $data['CeTime'] = date('Y-m-d H:i:s');
         $data['CeUpTime'] = date('Y-m-d H:i:s');
 
-        if(False != M($this->_module_name)->add($data)){
+        if(False !== M($this->_module_name)->add($data)){
             return array(200,
             array(
                 'is_success'=>0,
@@ -126,7 +127,7 @@ class ComInitController extends BaseController
         return array(200,
         array(
             'is_success'=>1,
-            'message'=>'错误'));
+            'message'=>C('option_fail')));
     }
 
     /**
@@ -135,30 +136,31 @@ class ComInitController extends BaseController
     public function get_list($content)
     {
         list($data, $record_count) = parent::get_list($content);
+
         $list = array();
         if($data)
             {
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'ComId' => $v["ComId"],
-                            'ComAdmin' => $v['ComAdmin'],
-                            'AdminPWD' => $v['AdminPWD'],
+                            'ComId'        => $v["ComId"],
+                            'ComAdmin'     => $v['ComAdmin'],
+                            'AdminPWD'     => $v['AdminPWD'],
                             'ComAdminRole' => $v['ComAdminRole'],
-                            'ComAnaId' => $v['ComAnaId'],
-                            'AnaPWD' => $v['AnaPWD'],
-                            'ComAnaRole' => $v['ComAnaRole'],
-                            'ComShowSpan' => $v['ComShowSpan'],
+                            'ComAnaId'     => $v['ComAnaId'],
+                            'AnaPWD'       => $v['AnaPWD'],
+                            'ComAnaRole'   => $v['ComAnaRole'],
+                            'ComShowSpan'  => $v['ComShowSpan'],
                             'ComShowState' => $v['ComShowState'],
-                            'ComShowAsc' => $v['ComShowAsc'],
-                            'ComLinkType' => $v['ComLinkType'],
-                            'ResType' => $v['ResType'],
-                            'ShowType' => $v['ShowType'],
-                            'ThemeId' => $v['ThemeId'],
-                            'ComIntro' => $v['ComIntro'],
-                            'ComSafe' => $v['ComSafe'],
-                            'CeTime' => $v['CeTime'],
-                            'CeUpTime' => $v['CeUpTime'],
+                            'ComShowAsc'   => $v['ComShowAsc'],
+                            'ComLinkType'  => $v['ComLinkType'],
+                            'ResType'      => $v['ResType'],
+                            'ShowType'     => $v['ShowType'],
+                            'ThemeId'      => $v['ThemeId'],
+                            'ComIntro'     => $v['ComIntro'],
+                            'ComSafe'      => $v['ComSafe'],
+                            'CeTime'       => $v['CeTime'],
+                            'CeUpTime'     => $v['CeUpTime'],
                         );
                     }
             }
@@ -166,8 +168,7 @@ class ComInitController extends BaseController
         return array(200,
         array(
             'list'=> $list,
-            'record_count'=> $record_count
-        )
+            'record_count'=> $record_count)
         );
     }
 
@@ -176,8 +177,8 @@ class ComInitController extends BaseController
      */
     public function get_info($content){
         $data = $this->fill($content);
-        if(!$data
-        || 0>=count($data)){
+
+        if(0 >= count($data)){
             return C('param_err');
         }
         
@@ -185,24 +186,25 @@ class ComInitController extends BaseController
         $list = array();
         if($tmp_one){
             $list = array(
-                'ComId' => $tmp_one['ComId'],
-                'ComAdmin' => $tmp_one['ComAdmin'],
-                'AdminPWD' => $tmp_one['AdminPWD'],
+                'ComId'        => $tmp_one['ComId'],
+                'ComAdmin'     => $tmp_one['ComAdmin'],
+                'AdminPWD'     => $tmp_one['AdminPWD'],
                 'ComAdminRole' => $tmp_one['ComAdminRole'],
-                'ComAnaId' => $tmp_one['ComAnaId'],
-                'AnaPWD' => $tmp_one['AnaPWD'],
-                'ComAnaRole' => $tmp_one['ComAnaRole'],
-                'ComShowSpan' => $tmp_one['ComShowSpan'],
+                'ComAnaId'     => $tmp_one['ComAnaId'],
+                'AnaPWD'       => $tmp_one['AnaPWD'],
+                'ComAnaRole'   => $tmp_one['ComAnaRole'],
+                'ComShowSpan'  => $tmp_one['ComShowSpan'],
                 'ComShowState' => $tmp_one['ComShowState'],
-                'ComShowAsc' => $tmp_one['ComShowAsc'],
-                'ComLinkType' => $tmp_one['ComLinkType'],
-                'ResType' => $tmp_one['ResType'],
-                'ShowType' => $tmp_one['ShowType'],
-                'ThemeId' => $tmp_one['ThemeId'],
-                'ComIntro' => $tmp_one['ComIntro'],
-                'ComSafe' => $tmp_one['ComSafe'],
-                'CeTime' => $tmp_one['CeTime'],
-                'CeUpTime' => $tmp_one['CeUpTime']);
+                'ComShowAsc'   => $tmp_one['ComShowAsc'],
+                'ComLinkType'  => $tmp_one['ComLinkType'],
+                'ResType'      => $tmp_one['ResType'],
+                'ShowType'     => $tmp_one['ShowType'],
+                'ThemeId'      => $tmp_one['ThemeId'],
+                'ComIntro'     => $tmp_one['ComIntro'],
+                'ComSafe'      => $tmp_one['ComSafe'],
+                'CeTime'       => $tmp_one['CeTime'],
+                'CeUpTime'     => $tmp_one['CeUpTime']
+            );
         }
 
         return array(200,
@@ -214,6 +216,7 @@ class ComInitController extends BaseController
      */
     public function get_info_by_key($content){
         $data = $this->fill($content);
+
         if(!isset($data[$this->_key])){
             return C('param_err');
         }
@@ -222,24 +225,25 @@ class ComInitController extends BaseController
         $list = array();
         if($tmp_one){
             $list = array(
-                'ComId' => $tmp_one['ComId'],
-                'ComAdmin' => $tmp_one['ComAdmin'],
-                'AdminPWD' => $tmp_one['AdminPWD'],
+                'ComId'        => $tmp_one['ComId'],
+                'ComAdmin'     => $tmp_one['ComAdmin'],
+                'AdminPWD'     => $tmp_one['AdminPWD'],
                 'ComAdminRole' => $tmp_one['ComAdminRole'],
-                'ComAnaId' => $tmp_one['ComAnaId'],
-                'AnaPWD' => $tmp_one['AnaPWD'],
-                'ComAnaRole' => $tmp_one['ComAnaRole'],
-                'ComShowSpan' => $tmp_one['ComShowSpan'],
+                'ComAnaId'     => $tmp_one['ComAnaId'],
+                'AnaPWD'       => $tmp_one['AnaPWD'],
+                'ComAnaRole'   => $tmp_one['ComAnaRole'],
+                'ComShowSpan'  => $tmp_one['ComShowSpan'],
                 'ComShowState' => $tmp_one['ComShowState'],
-                'ComShowAsc' => $tmp_one['ComShowAsc'],
-                'ComLinkType' => $tmp_one['ComLinkType'],
-                'ResType' => $tmp_one['ResType'],
-                'ShowType' => $tmp_one['ShowType'],
-                'ThemeId' => $tmp_one['ThemeId'],
-                'ComIntro' => $tmp_one['ComIntro'],
-                'ComSafe' => $tmp_one['ComSafe'],
-                'CeTime' => $tmp_one['CeTime'],
-                'CeUpTime' => $tmp_one['CeUpTime']);
+                'ComShowAsc'   => $tmp_one['ComShowAsc'],
+                'ComLinkType'  => $tmp_one['ComLinkType'],
+                'ResType'      => $tmp_one['ResType'],
+                'ShowType'     => $tmp_one['ShowType'],
+                'ThemeId'      => $tmp_one['ThemeId'],
+                'ComIntro'     => $tmp_one['ComIntro'],
+                'ComSafe'      => $tmp_one['ComSafe'],
+                'CeTime'       => $tmp_one['CeTime'],
+                'CeUpTime'     => $tmp_one['CeUpTime']
+            );
         }
 
         return array(200,$list);
