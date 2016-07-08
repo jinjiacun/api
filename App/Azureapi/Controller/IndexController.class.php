@@ -93,6 +93,7 @@ class IndexController extends Controller {
            $this->in_content = str_replace("$", "%", $this->in_content);
         }
 
+        $ip = $this->getIP().'_';
         #访问日志
         $log_str = sprintf("begin   ip:%s   date:%s method:%s  content:%s   type:%s\r\n",
                           $this->getIP(),
@@ -100,7 +101,7 @@ class IndexController extends Controller {
                           $this->method,
                           $this->in_content,
                           $this->type);
-        file_put_contents(__PUBLIC__."log/request_azure_".date("Y-m-d").".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_azure_".$ip.date("Y-m-d").".log", $log_str, FILE_APPEND);
 
         list($class_name, $method)= explode('.', $this->method);
         $class_name = 'Azureapi/'.$class_name;
@@ -127,24 +128,28 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request_azure_".date("Y-m-d").".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request_azure_".$ip.date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                   break;
             case 'text':
                 {
+                    $stime = microtime(true);
                     list($status_code, $out_content) = $obj->{$method}($this->in_content);//,&$this->status, &$this->out_content);#处理普通数据
+                    $etime = microtime(true);
+                    $total = $etime - $stime;
                     #访问日志
-                    $log_str = sprintf("end   ip:%s   date:%s method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n",
+                    $log_str = sprintf("end   ip:%s   date:%s use:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n",
                                       $this->getIP(),
                                       date("Y-m-d H:i:s"),
+                                      $total,
                                       $this->method,
                                       $this->in_content,
                                       $this->type,
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request_azure_".date("Y-m-d").".log", $log_str, FILE_APPEND);
+                    file_put_contents(__PUBLIC__."log/request_azure_".$ip.date("Y-m-d").".log", $log_str, FILE_APPEND);
                     self::call_back($status_code, $out_content);
                 }
                 break;
@@ -164,7 +169,7 @@ class IndexController extends Controller {
                           $status_code,
                           json_encode($out_content)
                           );
-        file_put_contents(__PUBLIC__."log/request_azure".date("Y-m-d").".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_azure_".$ip.date("Y-m-d").".log", $log_str, FILE_APPEND);
     }
 
     public function call_back($status_code, $out_content)

@@ -52,6 +52,8 @@ public function send_email                发送邮件
 public function get_real_ip               获取当前访问的ip地址
 ##--------------------------------------------------------##
 public function is_exists                 是否存在
+##--------------------------------------------------------##
+public function get_count                 获取条件下的总记录数
 ------------------------------------------------------------
 */
 class BaseController extends Controller {
@@ -423,5 +425,19 @@ class BaseController extends Controller {
             'is_exists'=>1,
             'message'=>urlencode('不存在'))
         );
+    }
+
+    /**
+       功能:获取条件下的总记录数
+     */
+    public function get_count($content){
+        $data = $this->fill($content);
+        
+        $count = 0;
+        
+        $count = M($this->_module_name)->where($data)->Count();
+
+        return array(200,
+        $count);
     }
 }

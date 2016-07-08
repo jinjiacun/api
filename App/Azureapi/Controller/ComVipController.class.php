@@ -127,15 +127,15 @@ class ComVipController extends BaseController
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'CVipId' => $v['CVipId'],
-                            'ComId' => $v['ComId'],
-                            'CVipIntro' => $v['CVipIntro'],
-                            'VipLevel' => $v['VipLevel'],
-                            'VipState' => $v['VipState'],
-                            'VipName' => $v['VipName'],
-                            'CVipTime' => $v['CVipTime'],
-                            'UpTime' => $v['UpTime'],
-                            'AdminId' => $v['AdminId']
+                            'CVipId'    => intval($v['CVipId']),
+                            'ComId'     => intval($v['ComId']),
+                            'CVipIntro' => urlencode($v['CVipIntro']),
+                            'VipLevel'  => intval($v['VipLevel']),
+                            'VipState'  => intval($v['VipState']),
+                            'VipName'   => urlencode($v['VipName']),
+                            'CVipTime'  => urlencode($v['CVipTime']),
+                            'UpTime'    => urlencode($v['UpTime']),
+                            'AdminId'   => intval($v['AdminId'])
                         );
                     }
             }
@@ -146,5 +146,65 @@ class ComVipController extends BaseController
             'record_count'=>$record_count
         )
         );
+    }
+
+    /**
+       功能:查询单条
+     */
+    public function get_info($content){
+        $data = $this->fill($data);
+        
+        if(count($data) <= 0){
+            return C('param_fmt_err');
+        }
+        
+        $list = array();
+        
+        $tmp_one = M($this->_module_name)->where($data)->find();
+        if($tmp_one){
+            $list = array(
+                            'CVipId'    => intval($tmp_one['CVipId']),
+                            'ComId'     => intval($tmp_one['ComId']),
+                            'CVipIntro' => urlencode($tmp_one['CVipIntro']),
+                            'VipLevel'  => intval($tmp_one['VipLevel']),
+                            'VipState'  => intval($tmp_one['VipState']),
+                            'VipName'   => urlencode($tmp_one['VipName']),
+                            'CVipTime'  => urlencode($tmp_one['CVipTime']),
+                            'UpTime'    => urlencode($tmp_one['UpTime']),
+                            'AdminId'   => intval($tmp_one['AdminId'])
+                        );
+        }
+
+        return array(200, $list);
+    }
+
+    /**
+       功能:通过关键字查询单条
+     */
+    public function get_info_by_key($content){
+        $data = $this->fill($data);
+        
+        if(!isset($data[$this->_key])){
+            return C('param_err');
+        }
+        
+        $list = array();
+        
+        $tmp_one = M($this->_module_name)->where($data)->find();
+        if($tmp_one){
+            $list = array(
+                            'CVipId'    => intval($tmp_one['CVipId']),
+                            'ComId'     => intval($tmp_one['ComId']),
+                            'CVipIntro' => urlencode($tmp_one['CVipIntro']),
+                            'VipLevel'  => intval($tmp_one['VipLevel']),
+                            'VipState'  => intval($tmp_one['VipState']),
+                            'VipName'   => urlencode($tmp_one['VipName']),
+                            'CVipTime'  => urlencode($tmp_one['CVipTime']),
+                            'UpTime'    => urlencode($tmp_one['UpTime']),
+                            'AdminId'   => intval($tmp_one['AdminId'])
+                        );
+        }
+
+        return array(200, $list);
     }
 }
