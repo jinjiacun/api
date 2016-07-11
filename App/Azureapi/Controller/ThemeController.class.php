@@ -39,14 +39,14 @@ class ThemeController extends BaseController
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'ThemeId' => $v['ThemeId'],
-                            'AppVersion' => $v['AppVersion'],
-                            'ThemePath' => $v['ThemePath'],
-                            'ThemeName' => $v['ThemeName'],
-                            'ThemeImg' => $v['ThemeImg'],
-                            'ThemeState' => $v['ThemeState'],
-                            'ThemeTime' => $v['ThemeTime'],
-                            'UpTime' => $v['UpTime']
+                            'ThemeId'    => urlencode($v['ThemeId']),
+                            'AppVersion' => urlencode($v['AppVersion']),
+                            'ThemePath'  => urlencode($v['ThemePath']),
+                            'ThemeName'  => urlencode($v['ThemeName']),
+                            'ThemeImg'   => urlencode($v['ThemeImg']),
+                            'ThemeState' => urlencode($v['ThemeState']),
+                            'ThemeTime'  => urlencode($v['ThemeTime']),
+                            'UpTime'     => urlencode($v['UpTime'])
                         );
                     }
             }

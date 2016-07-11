@@ -23,7 +23,7 @@ class ComUserController extends BaseController
        User_Id bigint(19),
        ComId int,
        ComTag varchar(50),
-       UState int,
+       UCState int,
        VipLevel int,
        ComTime timestamp,
        AgreeTime timestamp
@@ -37,7 +37,7 @@ class ComUserController extends BaseController
     protected $User_Id;
     protected $ComId;
     protected $ComTag;
-    protected $UState;
+    protected $UCState;
     protected $VipLevel;
     protected $ComTime;
     protected $AgreeTime;
@@ -58,7 +58,7 @@ class ComUserController extends BaseController
                             'User_Id'   => urlencode($v['User_Id']),
                             'ComId'     => urlencode($v['ComId']),
                             'ComTag'    => urlencode($v['ComTag']),
-                            'UState'    => urlencode($v['UState']),
+                            'UCState'   => urlencode($v['UCState']),
                             'VipLevel'  => urlencode($v['VipLevel']),
                             'ComTime'   => urlencode($v['ComTime']),
                             'AgreeTime' => urlencode($v['AgreeTime']),
@@ -91,8 +91,8 @@ class ComUserController extends BaseController
                             'User_Id'   => urlencode($tmp_one['User_Id']),
                             'ComId'     => urlencode($tmp_one['ComId']),
                             'ComTag'    => urlencode($tmp_one['ComTag']),
-                            'UState'    => urlencode($tmp_one['UState']),
-                            'vipLevel'  => urlencode($tmp_one['VipLevel']),
+                            'UCState'   => urlencode($tmp_one['UCState']),
+                            'VipLevel'  => urlencode($tmp_one['VipLevel']),
                             'ComTime'   => urlencode($tmp_one['ComTime']),
                             'AgreeTime' => urlencode($tmp_one['AgreeTime']),
                         );
@@ -119,8 +119,8 @@ class ComUserController extends BaseController
                             'User_Id'   => urlencode($tmp_one['User_Id']),
                             'ComId'     => urlencode($tmp_one['ComId']),
                             'ComTag'    => urlencode($tmp_one['ComTag']),
-                            'UState'    => urlencode($tmp_one['UState']),
-                            'vipLevel'  => urlencode($tmp_one['VipLevel']),
+                            'UCState'   => urlencode($tmp_one['UCState']),
+                            'VipLevel'  => urlencode($tmp_one['VipLevel']),
                             'ComTime'   => urlencode($tmp_one['ComTime']),
                             'AgreeTime' => urlencode($tmp_one['AgreeTime']),
                         );

@@ -28,8 +28,12 @@ class ComInitController extends BaseController
        ResType int,
        ShowType int,
        ThemeId int,
-       ComIntro text,
-       ComSafe text,
+       ComIntro_Introduce text comment '公司简介',
+       ComIntro_Download text comment '软件下载',
+       ComIntro_Contact text comment '联系我们',
+       ComSafe_Invest text comment '投资安全',
+       ComSafe_Guarantee text comment '平台保障',
+       ComSafe_Suggest text comment '安全建议',
        CeTime timestamp,
        CeUpTime timestamp
        )charset=utf8;
@@ -51,8 +55,12 @@ class ComInitController extends BaseController
     protected $ComLinkType;
     protected $ResType;
     protected $ThemeId;
-    protected $ComIntro;
-    protected $ComSafe;
+    protected $ComIntro_Introduce;
+    protected $ComIntro_Download;
+    protected $ComIntro_Contact;
+    protected $ComSafe_Invest;
+    protected $ComSafe_Guarantee;
+    protected $ComSafe_Suggest;
     protected $CeTime;
     protected $CeUpTime;
 
@@ -143,24 +151,27 @@ class ComInitController extends BaseController
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'ComId'        => $v["ComId"],
-                            'ComAdmin'     => $v['ComAdmin'],
-                            'AdminPWD'     => $v['AdminPWD'],
-                            'ComAdminRole' => $v['ComAdminRole'],
-                            'ComAnaId'     => $v['ComAnaId'],
-                            'AnaPWD'       => $v['AnaPWD'],
-                            'ComAnaRole'   => $v['ComAnaRole'],
-                            'ComShowSpan'  => $v['ComShowSpan'],
-                            'ComShowState' => $v['ComShowState'],
-                            'ComShowAsc'   => $v['ComShowAsc'],
-                            'ComLinkType'  => $v['ComLinkType'],
-                            'ResType'      => $v['ResType'],
-                            'ShowType'     => $v['ShowType'],
-                            'ThemeId'      => $v['ThemeId'],
-                            'ComIntro'     => $v['ComIntro'],
-                            'ComSafe'      => $v['ComSafe'],
-                            'CeTime'       => $v['CeTime'],
-                            'CeUpTime'     => $v['CeUpTime'],
+                            'ComId'        => urlencode($v["ComId"]),
+                            'ComAdmin'     => urlencode($v['ComAdmin']),
+                            'ComAdminRole' => urlencode($v['ComAdminRole']),
+                            'ComAnaId'     => urlencode($v['ComAnaId']),
+                            'ComAnaRole'   => urlencode($v['ComAnaRole']),
+                            'ComShowSpan'  => urlencode($v['ComShowSpan']),
+                            'ComShowState' => urlencode($v['ComShowState']),
+                            'ComShowAsc'   => urlencode($v['ComShowAsc']),
+                            'ComLinkType'  => urlencode($v['ComLinkType']),
+                            'ResType'      => urlencode($v['ResType']),
+                            'ShowType'     => urlencode($v['ShowType']),
+                            'ThemeId'      => urlencode($v['ThemeId']),
+                            'ComIntro_Introduce' => urlencode($v['ComIntro_Introduce']),
+                            'ComIntro_Download'  => urlencode($v['ComIntro_Download']),
+                            'ComIntro_Contact'   => urlencode($v['ComIntro_Contact']),
+                            'ComSafe_Invest'     => urlencode($v['ComSafe_Invest']),
+                            'ComSafe_Guarantee'  => urlencode($v['ComSafe_Guarantee']),
+                            'ComSafe_Suggest'    => urlencode($v['ComSafe_Suggest']),                     
+                            'ComSafe'      => urlencode($v['ComSafe']),
+                            'CeTime'       => urlencode($v['CeTime']),
+                            'CeUpTime'     => urlencode($v['CeUpTime']),
                         );
                     }
             }
@@ -186,24 +197,26 @@ class ComInitController extends BaseController
         $list = array();
         if($tmp_one){
             $list = array(
-                'ComId'        => $tmp_one['ComId'],
-                'ComAdmin'     => $tmp_one['ComAdmin'],
-                'AdminPWD'     => $tmp_one['AdminPWD'],
-                'ComAdminRole' => $tmp_one['ComAdminRole'],
-                'ComAnaId'     => $tmp_one['ComAnaId'],
-                'AnaPWD'       => $tmp_one['AnaPWD'],
-                'ComAnaRole'   => $tmp_one['ComAnaRole'],
-                'ComShowSpan'  => $tmp_one['ComShowSpan'],
-                'ComShowState' => $tmp_one['ComShowState'],
-                'ComShowAsc'   => $tmp_one['ComShowAsc'],
-                'ComLinkType'  => $tmp_one['ComLinkType'],
-                'ResType'      => $tmp_one['ResType'],
-                'ShowType'     => $tmp_one['ShowType'],
-                'ThemeId'      => $tmp_one['ThemeId'],
-                'ComIntro'     => $tmp_one['ComIntro'],
-                'ComSafe'      => $tmp_one['ComSafe'],
-                'CeTime'       => $tmp_one['CeTime'],
-                'CeUpTime'     => $tmp_one['CeUpTime']
+                'ComId'        => urlencode($tmp_one['ComId']),
+                'ComAdmin'     => urlencode($tmp_one['ComAdmin']),
+                'ComAdminRole' => urlencode($tmp_one['ComAdminRole']),
+                'ComAnaId'     => urlencode($tmp_one['ComAnaId']),
+                'ComAnaRole'   => urlencode($tmp_one['ComAnaRole']),
+                'ComShowSpan'  => urlencode($tmp_one['ComShowSpan']),
+                'ComShowState' => urlencode($tmp_one['ComShowState']),
+                'ComShowAsc'   => urlencode($tmp_one['ComShowAsc']),
+                'ComLinkType'  => urlencode($tmp_one['ComLinkType']),
+                'ResType'      => urlencode($tmp_one['ResType']),
+                'ShowType'     => urlencode($tmp_one['ShowType']),
+                'ThemeId'      => urlencode($tmp_one['ThemeId']),   
+                'ComIntro_Introduce' => urlencode($tmp_one['ComIntro_Introduce']),
+                'ComIntro_Download'  => urlencode($tmp_one['ComIntro_Download']),
+                'ComIntro_Contact'   => urlencode($tmp_one['ComIntro_Contact']),
+                'ComSafe_Invest'     => urlencode($tmp_one['ComSafe_Invest']),
+                'ComSafe_Guarantee'  => urlencode($tmp_one['ComSafe_Guarantee']),
+                'ComSafe_Suggest'    => urlencode($tmp_one['ComSafe_Suggest']),  
+                'CeTime'       => urlencode($tmp_one['CeTime']),
+                'CeUpTime'     => urlencode($tmp_one['CeUpTime'])
             );
         }
 
@@ -225,24 +238,26 @@ class ComInitController extends BaseController
         $list = array();
         if($tmp_one){
             $list = array(
-                'ComId'        => $tmp_one['ComId'],
-                'ComAdmin'     => $tmp_one['ComAdmin'],
-                'AdminPWD'     => $tmp_one['AdminPWD'],
-                'ComAdminRole' => $tmp_one['ComAdminRole'],
-                'ComAnaId'     => $tmp_one['ComAnaId'],
-                'AnaPWD'       => $tmp_one['AnaPWD'],
-                'ComAnaRole'   => $tmp_one['ComAnaRole'],
-                'ComShowSpan'  => $tmp_one['ComShowSpan'],
-                'ComShowState' => $tmp_one['ComShowState'],
-                'ComShowAsc'   => $tmp_one['ComShowAsc'],
-                'ComLinkType'  => $tmp_one['ComLinkType'],
-                'ResType'      => $tmp_one['ResType'],
-                'ShowType'     => $tmp_one['ShowType'],
-                'ThemeId'      => $tmp_one['ThemeId'],
-                'ComIntro'     => $tmp_one['ComIntro'],
-                'ComSafe'      => $tmp_one['ComSafe'],
-                'CeTime'       => $tmp_one['CeTime'],
-                'CeUpTime'     => $tmp_one['CeUpTime']
+                'ComId'        => urlencode($tmp_one['ComId']),
+                'ComAdmin'     => urlencode($tmp_one['ComAdmin']),
+                'ComAdminRole' => urlencode($tmp_one['ComAdminRole']),
+                'ComAnaId'     => urlencode($tmp_one['ComAnaId']),
+                'ComAnaRole'   => urlencode($tmp_one['ComAnaRole']),
+                'ComShowSpan'  => urlencode($tmp_one['ComShowSpan']),
+                'ComShowState' => urlencode($tmp_one['ComShowState']),
+                'ComShowAsc'   => urlencode($tmp_one['ComShowAsc']),
+                'ComLinkType'  => urlencode($tmp_one['ComLinkType']),
+                'ResType'      => urlencode($tmp_one['ResType']),
+                'ShowType'     => urlencode($tmp_one['ShowType']),
+                'ThemeId'      => urlencode($tmp_one['ThemeId']),
+                'ComIntro_Introduce' => urlencode($tmp_one['ComIntro_Introduce']),
+                'ComIntro_Download'  => urlencode($tmp_one['ComIntro_Download']),
+                'ComIntro_Contact'   => urlencode($tmp_one['ComIntro_Contact']),
+                'ComSafe_Invest'     => urlencode($tmp_one['ComSafe_Invest']),
+                'ComSafe_Guarantee'  => urlencode($tmp_one['ComSafe_Guarantee']),
+                'ComSafe_Suggest'    => urlencode($tmp_one['ComSafe_Suggest']),
+                'CeTime'       => urlencode($tmp_one['CeTime']),
+                'CeUpTime'     => urlencode($tmp_one['CeUpTime'])
             );
         }
 
