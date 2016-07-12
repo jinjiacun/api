@@ -17,6 +17,9 @@ return array(
      'option_no_allow' => urlencode('不允许操作'),
      'is_exists'     => urlencode('存在'),
      'no_exists'     => urlencode('不存在'),
+     'media'         => array(
+         '003001'   =>'友情链接',
+     ),
      
 	//'配置项'=>'配置值'
      
