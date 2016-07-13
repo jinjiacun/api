@@ -62,6 +62,7 @@ class ComTableController extends BaseController {
  protected $ComEmail;   //企业邮箱
  protected $LoginBack;
  protected $ComMin;
+ protected $ComLogin;
  protected $ComSLogo;
  protected $ComBanner;
  protected $ComBanLink;
@@ -95,6 +96,7 @@ class ComTableController extends BaseController {
             'ComEmail'    => urlencode($v['ComEmail']),
             'LoginBack'   => urlencode($v['LoginBack']),
             'ComMin'      => urlencode($v['ComMin']),
+            'ComLogin'    => urlencode($v['ComLogin']),
             'ComSLogo'    => urlencode($v['ComSLogo']),
             'ComBanner'   => urlencode($v['ComBanner']),
             'ComBanLink'  => urlencode($v['ComBanLink']),
@@ -136,29 +138,30 @@ class ComTableController extends BaseController {
       if($tmp_one){
           if(count($tmp_one) >0){
               $list = array(
-        'ComId'       =>$tmp_one['ComId'],
-        'ComTag'      =>$tmp_one['ComTag'],
-        'ComName'     =>$tmp_one['ComName'],
-        'ComAllName'  =>$tmp_one['ComAllName'],
-        'ComLogo'     =>$tmp_one['ComLogo'],
-        'ComPhone'    =>$tmp_one['ComPhone'],
-        'ComEmail'    =>$tmp_one['ComEmail'],
-        'LoginBack'   =>$tmp_one['LoginBack'],
-        'ComMin'      =>$tmp_one['ComMin'],
-        'ComSLogo'    =>$tmp_one['ComSLogo'],
-        'ComBanner'   =>$tmp_one['ComBanner'],
-        'ComBanLink'  =>$tmp_one['ComBanLink'],
-        'ComState'    =>$tmp_one['ComState'],
-        'ComFlag'     =>$tmp_one['ComFlag'],
-        'ComUrl'      =>$tmp_one['ComUrl'],
-        'ComLine'     =>$tmp_one['ComLine'],
-        'ComMob'      =>$tmp_one['ComMob'],
-        'ComMail'     =>$tmp_one['ComMail'],
-        'ComAddress'  =>$tmp_one['ComAddress'],
-        'CreateTime'  =>$tmp_one['CreateTime'],
-        'UpTime'      =>$tmp_one['UpTime'],
-        'ExpTime'     =>$tmp_one['ExpTime'],
-        'AppId'       =>$tmp_one['AppId'],
+                  'ComId'       => urlencode($tmp_one['ComId']),
+                  'ComTag'      => urlencode($tmp_one['ComTag']),
+                  'ComName'     => urlencode($tmp_one['ComName']),
+                  'ComAllName'  => urlencode($tmp_one['ComAllName']),
+                  'ComLogo'     => urlencode($tmp_one['ComLogo']),
+                  'ComPhone'    => urlencode($tmp_one['ComPhone']),
+                  'ComEmail'    => urlencode($tmp_one['ComEmail']),
+                  'LoginBack'   => urlencode($tmp_one['LoginBack']),
+                  'ComMin'      => urlencode($tmp_one['ComMin']),
+                  'ComLogin'    => urlencode($tmp_one['ComLogin']),
+                  'ComSLogo'    => urlencode($tmp_one['ComSLogo']),
+                  'ComBanner'   => urlencode($tmp_one['ComBanner']),
+                  'ComBanLink'  => urlencode($tmp_one['ComBanLink']),
+                  'ComState'    => urlencode($tmp_one['ComState']),
+                  'ComFlag'     => urlencode($tmp_one['ComFlag']),
+                  'ComUrl'      => urlencode($tmp_one['ComUrl']),
+                  'ComLine'     => urlencode($tmp_one['ComLine']),
+                  'ComMob'      => urlencode($tmp_one['ComMob']),
+                  'ComMail'     => urlencode($tmp_one['ComMail']),
+                  'ComAddress'  => urlencode($tmp_one['ComAddress']),
+                  'CreateTime'  => urlencode($tmp_one['CreateTime']),
+                  'UpTime'      => urlencode($tmp_one['UpTime']),
+                  'ExpTime'     => urlencode($tmp_one['ExpTime']),
+                  'AppId'       => urlencode($tmp_one['AppId']),
       );
           }
       }
@@ -197,6 +200,7 @@ class ComTableController extends BaseController {
           'ComEmail'    => urlencode($tmp_one['ComEmail']),
           'LoginBack'   => urlencode($tmp_one['LoginBack']),
           'ComMin'      => urlencode($tmp_one['ComMin']),
+          'ComLogin'    => urlencode($tmp_one['ComLogin']),
           'ComSLogo'    => urlencode($tmp_one['ComSLogo']),
           'ComBanner'   => urlencode($tmp_one['ComBanner']),
           'ComBanLink'  => urlencode($tmp_one['ComBanLink']),

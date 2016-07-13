@@ -222,21 +222,14 @@ class MediaController extends BaseController {
             break;
             case '003002':#登陆图片
             {
-                /*
-                if(400 < ($_FILES[$field_name]["size"] / 1024))
-				{
-					return array(
-						200,
-						array('is_success'=>-4,
-							  'message'=> urlencode('超过了400k')
-						),
-					);
-				}
-                */
 				$file_dir  = 'media/'.'login'.'/'.date("Y-m-d").'/';
             }
             break;
-            
+            case '003003':#banner图片
+            {
+				$file_dir  = 'media/'.'banner'.'/'.date("Y-m-d").'/';
+            }
+            break;
 		}
 		if(!is_dir(__PUBLIC__.$file_dir))
 		{

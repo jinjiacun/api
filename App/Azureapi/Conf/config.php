@@ -10,8 +10,9 @@ return array(
      'DB_CHARSET'    => 'utf8',    // 字符集
      'domain_url'    => 'http://localhost',
      'media_url_pre' => 'http://localhost/Api/Public/',
-     'param_err'     => array(500, urlencode('参数不合法')),
-     'param_fmt_err' => array(500, urlencode('参数格式不正确')),
+     'param_field'     => 'err_field',
+     'param_err'     => array(500, urlencode(session('err_field').'参数不合法')),
+     'param_fmt_err' => array(500, urlencode(session('err_field').'参数格式不正确')),
      'option_ok'     => urlencode('操作成功'),
      'option_fail'   => urlencode('操作失败'),
      'option_no_allow' => urlencode('不允许操作'),

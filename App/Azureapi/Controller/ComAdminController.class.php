@@ -261,19 +261,19 @@ class ComAdminController extends BaseController {
       if($data){
           foreach($data as $v){
               $list[] = array(
-                  'AdminId' => $v['AdminId'],
-                  'AdminName' => $v['AdminName'],
-                  'AdminUserName' => $v['AdminUserName'],
-                  'ComId' => $v['ComId'],
-                  'RoleId' => $v['RoleId'],
-                  'AuthNo' => $v['AuthNo'],
-                  'Adavatar' => $v['Adavatar'],
-                  'Creatime' => $v['Creatime'],
-                  'UpTime' => $v['UpTime'],
-                  'AdminState' => $v['AdminState'],
-                  'LoginIp' => $v['LoginIp'],
-                  'LoginTime' => $v['LoginTime'],
-                  'CreateAdminId' => $v['CreateAdminId']
+                  'AdminId'       => urlencode($v['AdminId']),
+                  'AdminName'     => urlencode($v['AdminName']),
+                  'AdminUserName' => urlencode($v['AdminUserName']),
+                  'ComId'         => urlencode($v['ComId']),
+                  'RoleId'        => urlencode($v['RoleId']),
+                  'AuthNo'        => urlencode($v['AuthNo']),
+                  'Adavatar'      => urlencode($v['Adavatar']),
+                  'Creatime'      => urlencode($v['Creatime']),
+                  'UpTime'        => urlencode($v['UpTime']),
+                  'AdminState'    => urlencode($v['AdminState']),
+                  'LoginIp'       => urlencode($v['LoginIp']),
+                  'LoginTime'     => urlencode($v['LoginTime']),
+                  'CreateAdminId' => urlencode($v['CreateAdminId'])
               );
           }
       }
@@ -301,19 +301,19 @@ class ComAdminController extends BaseController {
                                        ->find();
       if($tmp_one){
           $list = array(
-              'AdminId' => $tmp_one['AdminId'],
-              'AdminName' => $tmp_one['AdminName'],
-              'AdminUserName' => $tmp_one['AdminUserName'],
-              'ComId' => $tmp_one['ComId'],
-              'RoleId' => $tmp_one['RoleId'],
-              'AuthNo' => $tmp_one['AuthNo'],
-              'Adavatar' => $tmp_one['Adavatar'],
-              'Creatime' => $tmp_one['Creatime'],
-              'UpTime' => $tmp_one['UpTime'],
-              'AdminState' => $tmp_one['AdminState'],
-              'LoginIp' => $tmp_one['LoginIp'],
-              'LoginTime' => $tmp_one['LoginTime'],
-              'CreateAdminId' => $tmp_one['CreateAdminId']
+              'AdminId'       => urlencode($tmp_one['AdminId']),
+              'AdminName'     => urlencode($tmp_one['AdminName']),
+              'AdminUserName' => urlencode($tmp_one['AdminUserName']),
+              'ComId'         => urlencode($tmp_one['ComId']),
+              'RoleId'        => urlencode($tmp_one['RoleId']),
+              'AuthNo'        => urlencode($tmp_one['AuthNo']),
+              'Adavatar'      => urlencode($tmp_one['Adavatar']),
+              'Creatime'      => urlencode($tmp_one['Creatime']),
+              'UpTime'        => urlencode($tmp_one['UpTime']),
+              'AdminState'    => urlencode($tmp_one['AdminState']),
+              'LoginIp'       => urlencode($tmp_one['LoginIp']),
+              'LoginTime'     => urlencode($tmp_one['LoginTime']),
+              'CreateAdminId' => urlencode($tmp_one['CreateAdminId'])
           );
       }
           
@@ -334,18 +334,19 @@ class ComAdminController extends BaseController {
       $tmp_one = M($this->_module_name)->find($data[$this->_key]);
       if($tmp_one){
           $list = array(
-              'AdminId' => $tmp_one['AdminId'],
-              'AdminName' => $tmp_one['AdminName'],
-              'AdminUserName' => $tmp_one['AdminUserName'],
-              'ComId' => $tmp_one['ComId'],
-              'RoleId' => $tmp_one['RoleId'],
-              'AuthNo' => $tmp_one['AuthNo'],
-              'Creatime' => $tmp_one['Creatime'],
-              'UpTime' => $tmp_one['UpTime'],
-              'AdminState' => $tmp_one['AdminState'],
-              'LoginIp' => $tmp_one['LoginIp'],
-              'LoginTime' => $tmp_one['LoginTime'],
-              'CreateAdminId' => $tmp_one['CreateAdminId']);
+              'AdminId'       => urlencode($tmp_one['AdminId']),
+              'AdminName'     => urlencode($tmp_one['AdminName']),
+              'AdminUserName' => urlencode($tmp_one['AdminUserName']),
+              'ComId'         => urlencode($tmp_one['ComId']),
+              'RoleId'        => urlencode($tmp_one['RoleId']),
+              'AuthNo'        => urlencode($tmp_one['AuthNo']),
+              'Creatime'      => urlencode($tmp_one['Creatime']),
+              'UpTime'        => urlencode($tmp_one['UpTime']),
+              'AdminState'    => urlencode($tmp_one['AdminState']),
+              'LoginIp'       => urlencode($tmp_one['LoginIp']),
+              'LoginTime'     => urlencode($tmp_one['LoginTime']),
+              'CreateAdminId' => urlencode($tmp_one['CreateAdminId'])
+              );
       }
 
       return array(200,
