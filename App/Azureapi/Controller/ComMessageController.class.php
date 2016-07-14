@@ -5,7 +5,7 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
    --消息管理--
 */
-class ComMessageController extends Controller
+class ComMessageController extends BaseController
 {
     /**
      sql script:
@@ -43,15 +43,15 @@ class ComMessageController extends Controller
                 foreach($data as $v)
                     {
                         $list[] = array(
-                            'CMId' => $v['CMId'],
-                            'ComId' => $v['ComId'],
-                            'CMTitle' => $v['CMTitle'],
-                            'CMCon' => $v['CMCon'],
-                            'CMState' => $v['CMState'],
-                            'CMFlag' => $v['CMFlag'],
-                            'CMTime' => $v['CMTime'],
-                            'CMUpTime' => $v['CMUpTime'],
-                            'FMId' => $v['FMId']
+                            'CMId'     => urlencode($v['CMId']),
+                            'ComId'    => urlencode($v['ComId']),
+                            'CMTitle'  => urlencode($v['CMTitle']),
+                            'CMCon'    => urlencode(base64_encode($v['CMCon'])),
+                            'CMState'  => urlencode($v['CMState']),
+                            'CMFlag'   => urlencode($v['CMFlag']),
+                            'CMTime'   => urlencode($v['CMTime']),
+                            'CMUpTime' => urlencode($v['CMUpTime']),
+                            'FMId'     => urlencode($v['FMId'])
                         );
                     }
             }
