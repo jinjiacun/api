@@ -36,4 +36,36 @@ class HelpController extends BaseController
         $_list);
     }
 
+    /**
+       功能:通过sql查询信息
+     */
+    private function get_by_sql($sql){
+        //$data = $this->fill($content);
+        $result = M()->query($sql);
+        return array(200,
+        $result
+        );
+    }
+
+    /**
+       功能:通过模板查询统计
+
+       参数:
+       @@input
+       @param $ComId int 机构id
+       @param $template_name string 模板名称
+    */
+    public function stat_by_template($content){
+        $data = $this->fill($content);
+        if(!isset($data['ComId'])){
+            return C('param_err');
+        }
+        $_template_sql_list = C('TEMPLATE_SQL');
+        
+        $sql = $_template_sql_list[$data['template_name']];
+        $sql = str_replace('<ComId>', $data['ComId'], $sql);
+        $sql = str_replace("\r\n", '', $sql);
+        return $this->get_by_sql($sql);
+    }
+    
 }

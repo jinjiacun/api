@@ -38,15 +38,17 @@ class ComAdminLTEController extends BaseController {
        $list = array();
        if($data)
        {
-           $list[] = array(
-               'ComAdminId' => $v['ComAdminId'],
-               'ComTLevel' => $v['ComTLevel'],
-               'ComTStyle' => $v['ComTStyle'],
-               'ComTIntro' => $v['ComTINtro'],
-               'ComLiveNum' => $v['ComLiveNum'],
-               'ComFanNum' => $v['ComFanNum'],
-               'ComIntroNum' => $v['ComIntroNum'],
-           );
+           foreach($data as $v){
+               $list[] = array(
+                   'ComAdminId'  => urlencode($v['ComAdminId']),
+                   'ComTLevel'   => urlencode($v['ComTLevel']),
+                   'ComTStyle'   => urlencode($v['ComTStyle']),
+                   'ComTIntro'   => urlencode($v['ComTIntro']),
+                   'ComLiveNum'  => urlencode($v['ComLiveNum']),
+                   'ComFanNum'   => urlencode($v['ComFanNum']),
+                   'ComInterNum' => urlencode($v['ComInterNum']),
+               );
+           }
        }
 
        return array(200,
@@ -56,8 +58,56 @@ class ComAdminLTEController extends BaseController {
        )
        );
    }
+
+   public function get_info($content){
+       $data = $this->fill($content);
+       
+       if(count($data) <= 0){
+           return C("param_fmt_err");
+       }
+
+       $list = array();
+       $tmp_one = M($this->_module_name)->where($data)->find();
+       if($tmp_one){
+           $list = array(
+               'ComAdminId'  => urlencode($tmp_one['ComAdminId']),
+               'ComTLevel'   => urlencode($tmp_one['ComTLevel']),
+               'ComTStyle'   => urlencode($tmp_one['ComTStyle']),
+               'ComTIntro'   => urlencode($tmp_one['ComTIntro']),
+               'ComLiveNum'  => urlencode($tmp_one['ComLiveNum']),
+               'ComFanNum'   => urlencode($tmp_one['ComFanNum']),
+               'ComInterNum' => urlencode($tmp_one['ComInterNum']),
+           );
+       }
+
+       return array(200,
+       $list);
+   }
    
    //通过关键字ComAdminId
-   public function get_info_by_key($contentx){
+   public function get_info_by_key($content){
+       $data = $this->fill($content);
+       
+       if(!isset($data[$this->_key])){
+           return C("param_err");
+       }
 
+       $list = array();
+       $tmp_one = M($this->_module_name)->find($data[$this->_key]);
+       if($tmp_one){
+           $list = array(
+               'ComAdminId'  => urlencode($tmp_one['ComAdminId']),
+               'ComTLevel'   => urlencode($tmp_one['ComTLevel']),
+               'ComTStyle'   => urlencode($tmp_one['ComTStyle']),
+               'ComTIntro'   => urlencode($tmp_one['ComTIntro']),
+               'ComLiveNum'  => urlencode($tmp_one['ComLiveNum']),
+               'ComFanNum'   => urlencode($tmp_one['ComFanNum']),
+               'ComInterNum' => urlencode($tmp_one['ComInterNum']),
+           );
+       }
+
+       return array(200,
+       $list);
    }
+
+}
