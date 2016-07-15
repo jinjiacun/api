@@ -144,17 +144,17 @@ class ComAdminController extends BaseController {
   public function login($content)
   {
     $data = $this->fill($content);
-    if(!isset($data['AdminName'])
+    if(!isset($data['AdminUserName'])
     || !isset($data['Password'])
     )
     {
       return C('param_err');
     }
 
-    $data['AdminName'] = htmlspecialchars(trim($data['AdminName']));
-    $data['Password']  = htmlspecialchars(trim($data['Password']));
+    $data['AdminUserName'] = htmlspecialchars(trim($data['AdminUserName']));
+    $data['Password']      = htmlspecialchars(trim($data['Password']));
 
-    if('' == $data['AdminName']
+    if('' == $data['AdminUserName']
     || '' == $data['Password']
     )
     {
@@ -162,7 +162,7 @@ class ComAdminController extends BaseController {
     }
 
     $where = array(
-          'AdminName'=>$data['AdminName'],
+          'AdminUserName'=>$data['AdminUserName'],
           'Password'=>md5($data['Password'])
       );
     $tmp_one = M($this->_module_name)->where($where)->find();
@@ -181,7 +181,7 @@ class ComAdminController extends BaseController {
           'is_success' => 0,
           'message' => urlencode('成功登录'),
           'AdminId' => $tmp_one['AdminId'],
-          'AdminName' => $tmp_one['AdminName'],
+          'AdminName' => $tmp_one['AdminUserName'],
           'RoleId' => $tmp_one['RoleId'],
           'ComId' => $tmp_one['ComId'],
           'Adavatar' => $tmp_one['Adavatar'],

@@ -99,36 +99,33 @@ class RoomLiveController extends BaseController
     
     public function get_list($content)
     {
-        list($data, $record_count) = parent::get_list($conent);
+        list($data, $record_count) = parent::get_list($content);
         $list = array();
-        if($data)
-            {
-                foreach($data as $v)
-                    {
-                        $list[] = array(
-                            'LiveID' => $v['LiveID'],
-                            'AdminId' => $v['AdminId'],
-                            'AdminName' => $v['AdminName'],
-                            'AdminAvartar' => $v['AdminAvartar'],
-                            'LiveContent' => $v['LiveContent'],
-                            'LiveQuote' => $v['LiveQuote'],
-                            'LiveTime' => $v['LiveTime'],
-                            'LiveVipGrade' => $v['LiveVipGrade'],
-                            'LiveTop' => $v['LiveTop'],
-                            'RoomId' => $v['RoomId'],
-                            'LiveType' => $v['LiveType'],
-                            'LiveState' => $v['LiveState'],
-                            'LiveUpdate' => $v['LiveUpdate'],
-                            'ComId' => $v['ComId'],
-                        );
-                    }
+        if($data){
+            foreach($data as $v){
+                $list[] = array(
+                    'LiveID'       => urlencode($v['LiveID']),
+                    'AdminId'      => urlencode($v['AdminId']),
+                    'AdminName'    => urlencode($v['AdminName']),
+                    'AdminAvartar' => urlencode($v['AdminAvartar']),
+                    'LiveContent'  => urlencode($v['LiveContent']),
+                    'LiveQuote'    => urlencode($v['LiveQuote']),
+                    'LiveTime'     => urlencode($v['LiveTime']),
+                    'LiveVipGrade' => urlencode($v['LiveVipGrade']),
+                    'LiveTop'      => urlencode($v['LiveTop']),
+                    'RoomId'       => urlencode($v['RoomId']),
+                    'LiveType'     => urlencode($v['LiveType']),
+                    'LiveState'    => urlencode($v['LiveState']),
+                    'LiveUpdate'   => urlencode($v['LiveUpdate']),
+                    'ComId'        => urlencode($v['ComId']),
+                );
             }
+        }
         
         return array(200,
         array(
             'list'=>$list,
-            'record_count'=>$record_count
-        )
+            'record_count'=>$record_count)
         );
     }
 }

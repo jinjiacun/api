@@ -117,16 +117,16 @@ class AModuleController extends BaseController {
      foreach($data as $v)
      {
        $list[] = array(
-         'AMoId'       =>$v['AMoId'],
-         'AMoName'     =>$v['AMoName'],
-         'AMoPId'      =>$v['AMoPId'],
-         'AdminId'     =>$v['AdminId'],
-         'AMoUrl'      =>$v['AMoUrl'],
-         'AMoType'     =>$v['AMoType'],
-         'AMoState'    =>$v['AMoState'],
-         'AMTime'      =>$v['AMTime'],
-         'AMPath'      =>$v['AMPath'],
-         'AMUpTime'    =>$v['AMUpTime'],
+           'AMoId'       => urlencode($v['AMoId']),
+           'AMoName'     => urlencode($v['AMoName']),
+           'AMoPId'      => urlencode($v['AMoPId']),
+           'AdminId'     => urlencode($v['AdminId']),
+           'AMoUrl'      => urlencode($v['AMoUrl']),
+           'AMoType'     => urlencode($v['AMoType']),
+           'AMoState'    => urlencode($v['AMoState']),
+           'AMTime'      => urlencode($v['AMTime']),
+           'AMPath'      => urlencode($v['AMPath']),
+           'AMUpTime'    => urlencode($v['AMUpTime']),
          );
      }
    }
@@ -152,16 +152,16 @@ class AModuleController extends BaseController {
          if($tmp_one
          && count($tmp_one) > 0){
              $list = array(
-                 'AMoId'       => $tmp_one['AMoId'],
-                 'AMoName'     => $tmp_one['AMoName'],
-                 'AMoPId'      => $tmp_one['AMoPId'],
-                 'AdminId'     => $tmp_one['AdminId'],
-                 'AMoUrl'      => $tmp_one['AMoUrl'],
-                 'AMoType'     => $tmp_one['AMoType'],
-                 'AMoState'    => $tmp_one['AMoState'],
-                 'AMTime'      => $tmp_one['AMTime'],
-                 'AMPath'      => $tmp_one['AMPath'],
-                 'AMUpTime'    => $tmp_one['AMUpTime'],
+                 'AMoId'       => urlencode($tmp_one['AMoId']),
+                 'AMoName'     => urlencode($tmp_one['AMoName']),
+                 'AMoPId'      => urlencode($tmp_one['AMoPId']),
+                 'AdminId'     => urlencode($tmp_one['AdminId']),
+                 'AMoUrl'      => urlencode($tmp_one['AMoUrl']),
+                 'AMoType'     => urlencode($tmp_one['AMoType']),
+                 'AMoState'    => urlencode($tmp_one['AMoState']),
+                 'AMTime'      => urlencode($tmp_one['AMTime']),
+                 'AMPath'      => urlencode($tmp_one['AMPath']),
+                 'AMUpTime'    => urlencode($tmp_one['AMUpTime']),
              );
          }
      }
@@ -186,16 +186,16 @@ class AModuleController extends BaseController {
          if($tmp_one
          && count($tmp_one) > 0){
              $list = array(
-                 'AMoId'       => $tmp_one['AMoId'],
-                 'AMoName'     => $tmp_one['AMoName'],
-                 'AMoPId'      => $tmp_one['AMoPId'],
-                 'AdminId'     => $tmp_one['AdminId'],
-                 'AMoUrl'      => $tmp_one['AMoUrl'],
-                 'AMoType'     => $tmp_one['AMoType'],
-                 'AMoState'    => $tmp_one['AMoState'],
-                 'AMTime'      => $tmp_one['AMTime'],
-                 'AMPath'      => $tmp_one['AMPath'],
-                 'AMUpTime'    => $tmp_one['AMUpTime'],
+                 'AMoId'       => urlencode($tmp_one['AMoId']),
+                 'AMoName'     => urlencode($tmp_one['AMoName']),
+                 'AMoPId'      => urlencode($tmp_one['AMoPId']),
+                 'AdminId'     => urlencode($tmp_one['AdminId']),
+                 'AMoUrl'      => urlencode($tmp_one['AMoUrl']),
+                 'AMoType'     => urlencode($tmp_one['AMoType']),
+                 'AMoState'    => urlencode($tmp_one['AMoState']),
+                 'AMTime'      => urlencode($tmp_one['AMTime']),
+                 'AMPath'      => urlencode($tmp_one['AMPath']),
+                 'AMUpTime'    => urlencode($tmp_one['AMUpTime']),
              );
          }
      }
