@@ -1,5 +1,6 @@
 <?php
 return array(
+	 'MODULE_NAME'    => 'Hqapi',
      'IS_DEBUG'      => 0,
      'DB_TYPE'       => 'mysql',     // 数据库类型
      'DB_HOST'       => '221.6.167.248', // 服务器地址

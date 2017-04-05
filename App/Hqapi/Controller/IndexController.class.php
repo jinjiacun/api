@@ -201,7 +201,7 @@ class IndexController extends Controller {
                     }
                     */
                     list($class_name, $method)= explode('.', $this->method);
-                    $class_name = 'Bugapi/'.$class_name;        
+                    $class_name = 'Hqapi/'.$class_name;        
                     $obj = A($class_name);
                     list($status_code, $out_content) = $obj->{$method}($this->in_content, $handler);#处理带有资源的数据信息
                     $etime=microtime(true);//获取程序执行结束的时间
@@ -245,7 +245,7 @@ class IndexController extends Controller {
                          $cur_content = json_encode($tmp_content);
                          unset($tmp_content);
                          list($class_name, $method)= explode('.', $cur_method);
-                         $class_name = 'Bugapi/'.$class_name;        
+                         $class_name = 'Hqapi/'.$class_name;        
                          $obj = A($class_name);
                          list($status_code, $out_content) = $obj->{$method}($cur_content);//,&$this->status, &$this->out_content);#处理普通数据
                          $etime=microtime(true);//获取程序执行结束的时间

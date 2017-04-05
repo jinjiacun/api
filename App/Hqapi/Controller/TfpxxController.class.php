@@ -52,12 +52,12 @@ class TfpxxController extends BaseController {
 						'code'            => urlencode($v['code']),
 						'name'            => urlencode($v['name']),
 						'haltdate'        => urlencode($v['haltdate']),
-						'haltstopdate'	  => urlencode($v['haltstopdate']),
-						'recoverydate'    => urlencode($v['recoverydate']),
+						'haltstopdate'	  => $v['haltstopdate']=='0000-00-00 00:00:00'?'':urlencode($v['haltstopdate']),
+						'recoverydate'    => $v['recoverydate']=='0000-00-00 00:00:00'?'':urlencode($v['recoverydate']),
 						'haltterm'        => urlencode($v['haltterm']),
-						'haltreason'      => intval($v['haltreason']),
+						'haltreason'      => urlencode($v['haltreason']),
 						'block'           => urlencode($v['block']),
-						'machinetime'     => urlencode($v['machinetime']),
+						//'machinetime'     => urlencode($v['machinetime']),
 					);	
 			}
 		}
