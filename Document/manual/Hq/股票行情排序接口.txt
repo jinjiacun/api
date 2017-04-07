@@ -1,0 +1,77 @@
+测试接口地址:http://192.168.1.140:8080/StockWebServer/LSort
+
+
+get参数：
+index  当前页数
+number 每页展示条数
+market　市场编号（SH_A(默认):上证A股，
+                  SH_B:上证B股,
+                  SH_BOOM:上证债券,
+                  SH_FOUND:上证基金,
+                  SZ_A:深证A股,
+                  SZ_B:深证B股,
+                  SZ_BOOM:深证债券,
+                  SZ_FOUND:深证基金,
+                  SZ_MIDDLE:中小板,
+                  SZ_ACCOUNT:创业板)，请求多个市场之间用逗号隔开
+column 排序类型(SORT_M,           //成交额(默认)
+        				SORT_RAISE,       //涨跌幅
+        				SORT_AMPLITUDE,   //振幅
+        				SORT_TURNOVERRATE,//换手率
+        				SORT_EARMING      //市盈率)
+way    排序方式(0-正序(默认),1-反序)
+
+返回：
+symbol       证券代码
+name         证券名称
+bid1price    买一价格
+bid1volume   买一量
+bid2price    买二价格
+bid2volume	 买二量
+bid3price    买三价格
+bid3volume   买三量
+bid4price    买四价格
+bid4volume   买四量
+bid5price    买五价格
+bid5volume   买五量
+ask1price    卖一价
+ask1volume	 卖一量
+ask2price    卖二价
+ask2volume   卖二量
+ask3price    卖三价
+ask3volume   卖三量
+ask4price    卖四价
+ask4volume   卖四量
+ask5price    卖五价
+ask5volume   卖五量
+change       涨跌
+changerate   涨跌幅
+open         开盘价格
+high         最高价格
+low          最低价格
+close        最新价格
+pclose       昨收价格
+volume       成交量
+turnover     成交金额
+time 
+示例：
+
+
+请求:
+http://192.168.1.140:8080/StockWebServer/LSort?index=100&r=0.9860960829776169&&_=1490171128168
+r为随机数，_为当前时间戳
+返回：
+[{"symbol":"SH603601","name":"再升科技","bid1price":17.01,"bid1volume":32,"bid2price":17,"bid2volume":174,"bid3price":16.98,"bid3volume":20,"bid4price":16.97,"bid4volume":20,"bid5price":16.96,"bid5volume":1,"ask1price":17.03,"ask1volume":8,"ask2price":17.04,"ask2volume":5,"ask3price":17.05,"ask3volume":12,"ask4price":17.06,"ask4volume":15,"ask5price":17.07,"ask5volume":7,"change":"0.06","changerate":"0.35%","open":16.8,"high":17.18,"low":16.8,"close":17.03,"pclose":16.97,"volume":"4217","turnover":"7191872","time":102350},{"symbol":"SH603309","name":"维力医疗","bid1price":23.42,"bid1volume":45,"bid2price":23.4,"bid2volume":1,"bid3price":23.39,"bid3volume":30,"bid4price":23.34,"bid4volume":67,"bid5price":23.33,"bid5volume":9,"ask1price":23.43,"ask1volume":32,"ask2price":23.44,"ask2volume":26,"ask3price":23.45,"ask3volume":32,"ask4price":23.46,"ask4volume":19,"ask5price":23.48,"ask5volume":29,"change":"0.20","changerate":"0.86%","open":23.08,"high":23.48,"low":23.08,"close":23.43,"pclose":23.23,"volume":"3155","turnover":"7320457","time":102348},{"symbol":"SH600754","name":"锦江股份","bid1price":29.15,"bid1volume":1,"bid2price":29.13,"bid2volume":23,"bid3price":29.12,"bid3volume":44,"bid4price":29.11,"bid4volume":53,"bid5price":29.1,"bid5volume":60,"ask1price":29.17,"ask1volume":3,"ask2price":29.18,"ask2volume":149,"ask3price":29.19,"ask3volume":132,"ask4price":29.2,"ask4volume":39,"ask5price":29.22,"ask5volume":2,"change":"0.27","changerate":"0.93%","open":28.9,"high":29.18,"low":28.9,"close":29.15,"pclose":28.88,"volume":"2567","turnover":"7460143","time":102343},{"symbol":"SH600981","name":"汇鸿集团","bid1price":8.64,"bid1volume":142,"bid2price":8.63,"bid2volume":311,"bid3price":8.62,"bid3volume":527,"bid4price":8.61,"bid4volume":218,"bid5price":8.6,"bid5volume":481,"ask1price":8.65,"ask1volume":65,"ask2price":8.66,"ask2volume":840,"ask3price":8.67,"ask3volume":132,"ask4price":8.68,"ask4volume":410,"ask5price":8.69,"ask5volume":313,"change":"0.10","changerate":"1.17%","open":8.54,"high":8.66,"low":8.54,"close":8.65,"pclose":8.55,"volume":"8668","turnover":"7480664","time":102334},{"symbol":"SH600299","name":"安迪苏","bid1price":14.18,"bid1volume":20,"bid2price":14.17,"bid2volume":66,"bid3price":14.16,"bid3volume":111,"bid4price":14.15,"bid4volume":424,"bid5price":14.14,"bid5volume":34,"ask1price":14.2,"ask1volume":202,"ask2price":14.21,"ask2volume":209,"ask3price":14.22,"ask3volume":149,"ask4price":14.23,"ask4volume":85,"ask5price":14.24,"ask5volume":37,"change":"0.08","changerate":"0.57%","open":14.22,"high":14.22,"low":14.07,"close":14.2,"pclose":14.12,"volume":"5465","turnover":"7737049","time":102350},{"symbol":"SH603918","name":"金桥信息","bid1price":31.7,"bid1volume":62,"bid2price":31.69,"bid2volume":35,"bid3price":31.67,"bid3volume":1,"bid4price":31.59,"bid4volume":5,"bid5price":31.58,"bid5volume":3,"ask1price":31.73,"ask1volume":2,"ask2price":31.74,"ask2volume":6,"ask3price":31.75,"ask3volume":45,"ask4price":31.77,"ask4volume":1,"ask5price":31.78,"ask5volume":36,"change":"0.62","changerate":"1.99%","open":31.17,"high":31.78,"low":31.17,"close":31.7,"pclose":31.08,"volume":"2493","turnover":"7858008","time":102253},{"symbol":"SH600618","name":"氯碱化工","bid1price":12.32,"bid1volume":14,"bid2price":12.31,"bid2volume":113,"bid3price":12.3,"bid3volume":160,"bid4price":12.29,"bid4volume":93,"bid5price":12.28,"bid5volume":207,"ask1price":12.33,"ask1volume":132,"ask2price":12.34,"ask2volume":162,"ask3price":12.35,"ask3volume":440,"ask4price":12.36,"ask4volume":190,"ask5price":12.37,"ask5volume":162,"change":"0.12","changerate":"0.98%","open":12.22,"high":12.35,"low":12.2,"close":12.32,"pclose":12.2,"volume":"6505","turnover":"7979852","time":102337},{"symbol":"SH603519","name":"立霸股份","bid1price":30.9,"bid1volume":1,"bid2price":30.88,"bid2volume":4,"bid3price":30.86,"bid3volume":1,"bid4price":30.85,"bid4volume":69,"bid5price":30.8,"bid5volume":5,"ask1price":30.93,"ask1volume":13,"ask2price":30.95,"ask2volume":6,"ask3price":30.98,"ask3volume":23,"ask4price":30.99,"ask4volume":45,"ask5price":31,"ask5volume":150,"change":"0.67","changerate":"2.22%","open":30.25,"high":30.95,"low":30.25,"close":30.9,"pclose":30.23,"volume":"2625","turnover":"8054130","time":102349},{"symbol":"SH600831","name":"广电网络","bid1price":12.74,"bid1volume":491,"bid2price":12.73,"bid2volume":146,"bid3price":12.72,"bid3volume":595,"bid4price":12.71,"bid4volume":348,"bid5price":12.7,"bid5volume":162,"ask1price":12.75,"ask1volume":1283,"ask2price":12.76,"ask2volume":20,"ask3price":12.77,"ask3volume":23,"ask4price":12.78,"ask4volume":92,"ask5price":12.79,"ask5volume":145,"change":"0.22","changerate":"1.76%","open":12.47,"high":12.75,"low":12.47,"close":12.75,"pclose":12.53,"volume":"6366","turnover":"8073400","time":102339},{"symbol":"SH603318","name":"派思股份","bid1price":13.22,"bid1volume":23,"bid2price":13.19,"bid2volume":24,"bid3price":13.18,"bid3volume":125,"bid4price":13.17,"bid4volume":64,"bid5price":13.16,"bid5volume":85,"ask1price":13.23,"ask1volume":4,"ask2price":13.25,"ask2volume":14,"ask3price":13.26,"ask3volume":8,"ask4price":13.27,"ask4volume":40,"ask5price":13.28,"ask5volume":35,"change":"0.17","changerate":"1.30%","open":13,"high":13.38,"low":13,"close":13.22,"pclose":13.05,"volume":"6151","turnover":"8087964","time":102347}]
+
+
+
+
+
+
+
+
+
+
+
+
+

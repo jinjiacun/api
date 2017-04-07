@@ -1,0 +1,53 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Nmdividend.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "explains":"EXPLAINS",
+                                                "perdividend":"<PERDIVIDEND>",
+                                                "baseequity":"<BASEEQUITY>",
+                                                "reportdate":"<REPORTDATE>",
+                                                "publicdate":"<PUBLICDATE>",
+                                                "exdividenddate":"<EXDIVIDENDDATE>",
+                                                "dividenddate":"<DIVIDENDDATE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<EXPLAINS>						方案说明
+<PERDIVIDEND>					每股派息
+<BASEEQUITY>					基本股本
+<REPORTDATE>					报告期
+<PUBLICDATE>					实施公告期
+<EXDIVIDENDDATE>			除权除息日
+<DIVIDENDDATE>				派息日
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Nmdividend.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":3672,"code":"430011.OC","name":"指南针","explains":"10送12.50派3.13元(含税，扣税后0.004元)","perdividend":"0.0000","baseequity":"2600.00","reportdate":"2007-06-30","publicdate":"2007-08-08","exdividenddate":"2007-08-16","dividenddate":"2007-08-16"},{"id":3671,"code":"430048.OC","name":"建设数字","explains":"10派1.50元(含税，扣税后1.20元)","perdividend":"0.1200","baseequity":"11250.00","reportdate":"2007-12-31","publicdate":"2008-05-23","exdividenddate":"2008-06-02","dividenddate":"2008-06-11"},{"id":3670,"code":"430029.OC","name":"金泰得","explains":"10派0.40元(含税，扣税后0.32元)","perdividend":"0.0300","baseequity":"2147.25","reportdate":"2008-12-31","publicdate":"2009-03-24","exdividenddate":"2009-03-26","dividenddate":"2009-04-03"},{"id":3669,"code":"430035.OC","name":"中兴通融","explains":"10派0.20元(含税，扣税后0.16元)","perdividend":"0.0200","baseequity":"11000.00","reportdate":"2008-12-31","publicdate":"2009-04-21","exdividenddate":"2009-04-29","dividenddate":"2009-04-29"},{"id":3668,"code":"430051.OC","name":"九恒星","explains":"10送1.90转7.10派1.00元(含税，扣税后0.42元)","perdividend":"0.0400","baseequity":"1100.00","reportdate":"2008-12-31","publicdate":"2009-05-06","exdividenddate":"2009-05-11","dividenddate":"2009-05-11"},{"id":3667,"code":"430041.OC","name":"中机非晶","explains":"10派1.00元(含税，扣税后0.80元)","perdividend":"0.0800","baseequity":"3800.00","reportdate":"2008-12-31","publicdate":"2009-05-25","exdividenddate":"2009-06-02","dividenddate":"2009-06-02"},{"id":3666,"code":"430048.OC","name":"建设数字","explains":"10派2.00元(含税，扣税后1.60元)","perdividend":"0.1600","baseequity":"11250.00","reportdate":"2008-12-31","publicdate":"2009-06-02","exdividenddate":"2009-06-09","dividenddate":"2009-06-11"},{"id":3665,"code":"430033.OC","name":"彩讯科技","explains":"10送2.00派0.50元(含税)","perdividend":"0.0000","baseequity":"2218.00","reportdate":"2008-12-31","publicdate":"2009-07-07","exdividenddate":"2009-07-14","dividenddate":""},{"id":3664,"code":"430029.OC","name":"金泰得","explains":"10派0.40元(含税，扣税后0.32元)","perdividend":"0.0300","baseequity":"2147.25","reportdate":"2009-06-30","publicdate":"2009-10-13","exdividenddate":"2009-10-15","dividenddate":"2009-10-30"},{"id":3663,"code":"430024.OC","name":"金和网络","explains":"10送10.00派1.20元(含税，扣税后0.00元)","perdividend":"0.0000","baseequity":"1128.60","reportdate":"2009-12-31","publicdate":"2010-03-08","exdividenddate":"2010-03-05","dividenddate":""}],"record_count":"3672"}}
+
+
+
+
+
+
+
+
+
+
+
+
+

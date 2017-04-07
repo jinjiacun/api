@@ -1,0 +1,54 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Ahparity.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "name":"<NAME>",
+                                                "hcode":"<HCODE>",
+                                                "hnewprice":"<HNEWPRICE>",
+                                                "hchg":"<HCHG>",
+                                                "acode":"<ACODE>",
+                                                "anewprice":"<ANEWPRICE>",
+                                                "achg":"<ACHG>",
+                                                "parity":"<PARITY>",
+                                                "premium":"<PREMIUM>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<NAME>				名称
+<HCODE>				H股代码
+<HNEWPRICE>		H股最新价
+<HCHG>				H股涨跌幅
+<ACODE>				A股代码
+<ANEWPRICE>		A股最新价
+<ACHG>				A股涨跌幅
+<PARITY>			比价(A/H)
+<PREMIUM>			溢价A/H)
+
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Ahparity.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":94,"name":"山东墨龙","hcode":"002490","hnewprice":"7.120","hchg":"-4.94","acode":"00568","anewprice":"1.93","achg":"-3.50","parity":"-3.16","premium":"4.1600"},{"id":93,"name":"北京北辰实业股份","hcode":"601588","hnewprice":"5.760","hchg":"-3.68","acode":"00588","anewprice":"3.16","achg":"-1.25","parity":"-1.05","premium":"2.0500"},{"id":92,"name":"中国南方航空股份","hcode":"600029","hnewprice":"8.250","hchg":"0.86","acode":"01055","anewprice":"5.49","achg":"-1.08","parity":"-0.69","premium":"1.6900"},{"id":91,"name":"中国平安","hcode":"601318","hnewprice":"36.830","hchg":"-0.35","acode":"02318","anewprice":"42.60","achg":"-0.93","parity":"0.03","premium":"0.9700"},{"id":90,"name":"中兴通讯","hcode":"000063","hnewprice":"17.250","hchg":"-0.23","acode":"00763","anewprice":"14.06","achg":"-0.85","parity":"-0.38","premium":"1.3800"},{"id":89,"name":"中国人寿","hcode":"601628","hnewprice":"25.080","hchg":"0.08","acode":"02628","anewprice":"23.45","achg":"-0.85","parity":"-0.21","premium":"1.2100"},{"id":88,"name":"中国银行","hcode":"601988","hnewprice":"3.640","hchg":"-0.55","acode":"03988","anewprice":"3.71","achg":"-0.80","parity":"-0.11","premium":"1.1100"},{"id":87,"name":"HTSC","hcode":"601688","hnewprice":"17.190","hchg":"0.06","acode":"06886","anewprice":"15.30","achg":"-0.78","parity":"-0.27","premium":"1.2700"},{"id":86,"name":"比亚迪股份","hcode":"002594","hnewprice":"49.510","hchg":"0.06","acode":"01211","anewprice":"45.15","achg":"-0.77","parity":"-0.24","premium":"1.2400"},{"id":85,"name":"长城汽车","hcode":"601633","hnewprice":"12.930","hchg":"-2.19","acode":"02333","anewprice":"9.14","achg":"-0.76","parity":"-0.59","premium":"1.5900"}],"record_count":"94"}}
+
+
+
+
+
+
+
+
+
+
+
+
+

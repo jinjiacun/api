@@ -22,7 +22,7 @@ class TfpxxController extends BaseController {
 					  `block` varchar(10) DEFAULT NULL COMMENT '所属板块',
 					  `machinetime` datetime NOT NULL COMMENT '数据库更新时间',
 					  PRIMARY KEY (`id`,`machinetime`)
-					) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8;
+					) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 	 * */
 	 
 	 protected $_module_name = 'tfpxx';

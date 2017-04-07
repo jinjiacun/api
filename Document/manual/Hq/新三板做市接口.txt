@@ -1,0 +1,53 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Marketmaker.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "num":"<NUM>",
+                                                "tips":"<TIPS>",
+                                                "totalequity":"<TOTALQQUITY>",
+                                                "totalvalue":"<TOTALVALUE>",
+                                                "closeprice":"<CLOSEPRICE>",
+                                                "chg":"<CHG>",
+                                                "startdate":"<STARTDATE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<NUM>									做市商总数
+<TIPS>								提示信息
+<TOTALEQUITY>					总股本
+<TOTALVALUE>					总市值
+<CLOSEPRICE>					做市首日前收盘价
+<CHG>									做市首日涨跌幅
+<STARTDATE>						做市起始日
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Marketmaker.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":1606,"code":"430664.OC","name":"联合永道","num":"5","tips":"新增做市商","totalequity":"4117.59","totalvalue":"14617.44","closeprice":"0.00","chg":"65.48","startdate":"2014-08-25"},{"id":1605,"code":"430458.OC","name":"陆海科技","num":"4","tips":"新增做市商","totalequity":"5396.80","totalvalue":"27793.52","closeprice":"0.00","chg":"47.33","startdate":"2014-08-25"},{"id":1604,"code":"430522.OC","name":"超弦科技","num":"4","tips":"新增做市商","totalequity":"5010.00","totalvalue":"5160.30","closeprice":"0.00","chg":"80.20","startdate":"2014-08-25"},{"id":1603,"code":"430609.OC","name":"中磁视讯","num":"14","tips":"新增做市商","totalequity":"8193.00","totalvalue":"155257.34","closeprice":"0.00","chg":"11.11","startdate":"2014-08-25"},{"id":1602,"code":"430607.OC","name":"大树智能","num":"9","tips":"新增做市商","totalequity":"8321.95","totalvalue":"53843.02","closeprice":"0.00","chg":"1.82","startdate":"2014-08-25"},{"id":1601,"code":"430403.OC","name":"英思科技","num":"2","tips":"新增做市商","totalequity":"1100.00","totalvalue":"6248.00","closeprice":"0.00","chg":"74.93","startdate":"2014-08-25"},{"id":1600,"code":"430360.OC","name":"竹邦能源","num":"2","tips":"新增做市商","totalequity":"4000.00","totalvalue":"10325.00","closeprice":"0.00","chg":"15.00","startdate":"2014-08-25"},{"id":1599,"code":"430174.OC","name":"沃捷传媒","num":"13","tips":"新增做市商","totalequity":"20460.56","totalvalue":"145269.98","closeprice":"0.00","chg":"28.57","startdate":"2014-08-25"},{"id":1598,"code":"830879.OC","name":"基康仪器","num":"13","tips":"新增做市商","totalequity":"13800.00","totalvalue":"62100.00","closeprice":"0.00","chg":"81.43","startdate":"2014-08-25"},{"id":1597,"code":"830837.OC","name":"古城香业","num":"9","tips":"新增做市商","totalequity":"15606.17","totalvalue":"104717.40","closeprice":"0.00","chg":"22.92","startdate":"2014-08-25"}],"record_count":"1606"}}
+
+
+
+
+
+
+
+
+
+
+
+
+

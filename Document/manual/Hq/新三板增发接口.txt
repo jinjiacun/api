@@ -1,0 +1,57 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Seo.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "progress":"<PROGRESS>",
+                                                "num":"<NUM>",
+                                                "price":"<PRICE>",
+                                                "peratio":"<PERATIO>",
+                                                "dpratio":"<DPRATIO>",
+                                                "mode":"<MODE>",
+                                                "result":"<RESULT>",
+                                                "newdate":"<NEWDATE>",
+                                                "firstdate":"<FIRSTDATE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<PROGRESS>						方案进度
+<NUM>									增发数量
+<PRICE>								增发价格
+<PERATIO>							市盈率
+<DPRATIO>							折溢价率
+<MODE>								发行方式
+<RESULT>							结果
+<NEWDATE>							最新公告日
+<FIRSTDATE>						首次公告日
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Seo.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":9108,"code":"430003.OC","name":"北京时代","progress":"股东大会批准","num":"1250.0000","price":"4.00","peratio":"0.00","dpratio":"60.00","mode":"定向","reslut":"实施","newdate":"2006-10-24","firstdate":"2006-10-24"},{"id":9107,"code":"430002.OC","name":"中科软","progress":"股东大会批准","num":"3000.0000","price":"2.00","peratio":"12.28","dpratio":"-88.53","mode":"定向","reslut":"实施","newdate":"2006-10-25","firstdate":"2006-10-25"},{"id":9106,"code":"430015.OC","name":"盖特佳","progress":"股东大会批准","num":"360.0000","price":"3.00","peratio":"0.00","dpratio":"185.71","mode":"定向","reslut":"实施","newdate":"2007-09-11","firstdate":"2007-09-11"},{"id":9105,"code":"430011.OC","name":"指南针","progress":"股东大会批准","num":"1463.0000","price":"5.00","peratio":"12.04","dpratio":"-31.88","mode":"定向","reslut":"实施","newdate":"2007-09-14","firstdate":"2007-09-14"},{"id":9104,"code":"430010.OC","name":"现代农装","progress":"股东大会批准","num":"1000.0000","price":"5.50","peratio":"0.00","dpratio":"120.88","mode":"定向","reslut":"实施","newdate":"2008-01-25","firstdate":"2008-01-25"},{"id":9103,"code":"430014.OC","name":"恒业世纪","progress":"股东大会批准","num":"1000.0000","price":"2.30","peratio":"24.19","dpratio":"-46.51","mode":"定向","reslut":"实施","newdate":"2008-05-09","firstdate":"2008-05-09"},{"id":9102,"code":"430003.OC","name":"北京时代","progress":"股东大会修改","num":"750.0000","price":"4.05","peratio":"0.00","dpratio":"62.00","mode":"定向","reslut":"实施","newdate":"2008-12-25","firstdate":"2008-06-13"},{"id":9101,"code":"430037.OC","name":"联飞翔","progress":"股东大会批准","num":"1044.0000","price":"3.20","peratio":"24.94","dpratio":"-33.75","mode":"定向","reslut":"实施","newdate":"2009-10-21","firstdate":"2009-06-08"},{"id":9100,"code":"430029.OC","name":"金泰得","progress":"股东大会批准","num":"302.7500","price":"5.50","peratio":"0.00","dpratio":"414.02","mode":"定向","reslut":"实施","newdate":"2010-04-06","firstdate":"2010-03-16"},{"id":9099,"code":"430057.OC","name":"清畅电力","progress":"股东大会批准","num":"300.0000","price":"5.00","peratio":"82.96","dpratio":"100.80","mode":"定向","reslut":"实施","newdate":"2010-05-04","firstdate":"2009-11-13"}],"record_count":"9108"}}
+
+
+
+
+
+
+
+
+
+
+
+
+

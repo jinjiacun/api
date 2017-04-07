@@ -1,0 +1,56 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Listed.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "newprice":"<NEWPRICE>",
+                                                "marketvalue":"<MARKETVALUE>",
+                                                "mode":"<MODE>",
+                                                "hosted":"<HOSTED>",
+                                                "flowequity":"<FLOWEQUITY>",
+                                                "totalequity":"<TOTALQEUITY>",
+                                                "industry":"<INDUSTRY>",
+                                                "listdate":"LISTDATE"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<NEWPRICE>							最新价
+<MARKETVALUE>						市值
+<MODE>									转让方式
+<HOSTED>								主办券商
+<FLOWEQUITY>						流通股本
+<TOTALQQUITY>						总股本
+<INDUSTRY>							所属行业
+<LISTDATE>							挂牌日期
+
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Listed.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":11816,"code":"870419.OC","name":"威迪股份","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"西南证券","flowequity":"507.98","totalequity":"2000.00","industry":"机械设备","listdate":"2017-01-19"},{"id":11815,"code":"870503.OC","name":"香兰米业","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"东莞证券","flowequity":"0.00","totalequity":"5005.00","industry":"农林牧渔","listdate":"2017-01-19"},{"id":11814,"code":"870418.OC","name":"飞瑞敖","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"第一创业","flowequity":"0.00","totalequity":"2138.00","industry":"信息技术","listdate":"2017-01-19"},{"id":11813,"code":"870497.OC","name":"江苏润奥","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"东吴证券","flowequity":"0.00","totalequity":"2000.00","industry":"电子设备","listdate":"2017-01-19"},{"id":11812,"code":"870538.OC","name":"美诺科技","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"方正证券","flowequity":"0.00","totalequity":"1117.65","industry":"信息技术","listdate":"2017-01-19"},{"id":11811,"code":"870494.OC","name":"厚利春","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"国联证券","flowequity":"0.00","totalequity":"4172.80","industry":"基础化工","listdate":"2017-01-19"},{"id":11810,"code":"870575.OC","name":"奥尼电子","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"东兴证券","flowequity":"0.00","totalequity":"4000.00","industry":"信息技术","listdate":"2017-01-19"},{"id":11809,"code":"870414.OC","name":"紫竹物业","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"东兴证券","flowequity":"228.14","totalequity":"1176.47","industry":"房地产","listdate":"2017-01-19"},{"id":11808,"code":"870532.OC","name":"储秀网络","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"财通证券","flowequity":"16.67","totalequity":"550.00","industry":"信息技术","listdate":"2017-01-19"},{"id":11807,"code":"870440.OC","name":"金爵智能","newprice":"0.00","marketvalue":"0.00","mode":"协议","hosted":"中原证券","flowequity":"0.00","totalequity":"10000.00","industry":"商贸零售","listdate":"2017-01-19"}],"record_count":"11816"}}
+
+
+
+
+
+
+
+
+
+
+
+
+
