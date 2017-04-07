@@ -38,6 +38,42 @@ http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list
 {"status_code":200,"content":{"list":[{"id":238,"code":"300322","name":"硕贝德","haltdate":"2017-02-23 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"创业板"},{"id":237,"code":"600490","name":"鹏欣资源","haltdate":"2017-02-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"沪市A股"},{"id":236,"code":"600481","name":"双良节能","haltdate":"2017-02-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"沪市A股"},{"id":235,"code":"300423","name":"鲁亿通","haltdate":"2017-02-27 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"创业板"},{"id":234,"code":"603268","name":"松发股份","haltdate":"2017-02-27 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"沪市A股"},{"id":233,"code":"000032","name":"深桑达A","haltdate":"2017-02-27 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"深主板A股"},{"id":232,"code":"300440","name":"运达科技","haltdate":"2017-02-20 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"创业板"},{"id":231,"code":"000803","name":"金宇车城","haltdate":"2017-02-20 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"刊登重要公告","block":""},{"id":230,"code":"000723","name":"美锦能源","haltdate":"2017-02-20 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"深主板A股"},{"id":229,"code":"002547","name":"春兴精工","haltdate":"2017-02-20 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"中小板"}],"record_count":"238"}}
 
 
+===================================================================================================
+按照品种查询
+method=Thpxx.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'where':{"code":"<CODE>"}}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "haltdate":"<HALTDATE>",
+                                                "haltstopdate":"<HALTSTOPDATE>",
+                                                "recoverydate":"<RECOVERYDATE>",
+                                                "haltterm":"<HALTTERM>",
+                                                "haltreason":"<HALTREASON>",
+                                                "block":"<BLOCK>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<HALTDATE>            停牌时间
+<HALTSTOPDATE>        停牌截止时间
+<RECOVERYDATE>        预计复牌时间
+<HALTTERM>            停牌期限
+<HALTREASON>          停牌原因
+<BLOCK>               所属板块
+
+示例
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list&content={"where":{"code":"300423"}}
+返回
+{"status_code":200,"content":{"list":[{"id":241,"code":"300423","name":"鲁亿通","haltdate":"2017-02-27 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"创业板"}],"record_count":"1"}}
+
 
 
 
