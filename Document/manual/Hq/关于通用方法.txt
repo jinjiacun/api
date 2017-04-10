@@ -1,0 +1,14 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+关于上面地址接口模式的一些通用接口模式
+<PAGE_INDEX>
+<PAGE_SIZE>
+<WHERE>
+<ORDER>
+
+以上为同级关系
+<WHERE>模式中常用:
+条件为相等关系，多个为相等的条件组合
+"where":{"<FIELD(1)>":"<VALU(1)>",...,"<FIELD(n)>":"<VALUE(n)>"}
+<ORDER>模式中常用:
+按照指定字段排序，多个字段组合时，在前面为优先排序，后面依次排序
+"order":{"<FIELD(1)>":"<ASC|DESC>",...,"<FIELD(n)>":"<ASC|DESC>"}
