@@ -66,6 +66,7 @@ public function rtx_push                  rxt消息推送
 class BaseController extends Controller {
 
 	protected $_module_name = '';
+	protected $_key         = 'id';
 
 	public function __set($property_name, $value)
 	{
@@ -178,7 +179,11 @@ class BaseController extends Controller {
 		}
 		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
 		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
-		$data['order']      = isset($data['order'])?$data['order']:array('id'=>'desc');
+		if($this->key){
+			$data['order']      = isset($data['order'])?$data['order']:array($this->key=>'desc');
+		}else{
+			$data['order']      = isset($data['order'])?$data['order']:null;
+		}
 		$obj  = M($this->_module_name);
 		if(isset($data['page_index']))
 			$page_index = $data['page_index'];
@@ -209,13 +214,18 @@ class BaseController extends Controller {
 		            ->order($data['order'])
 		            ->select();
 		}
-		else
+		else if(isset($data['order']))
 		{
 			$list = $obj->page($page_index, $page_size)
 				->where($data['where'])
 				->order($data['order'])
 				->select();
-		}           
+		}
+		else{
+			$list = $obj->page($page_index, $page_size)
+				->where($data['where'])
+				->select();
+		}
 		            
 		//echo M()->getlastSql();
 		//die;

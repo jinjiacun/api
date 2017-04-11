@@ -9,7 +9,7 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 ------------------------------------------------------------
 ##--------------------------------------------------------##
 */
-class GnplatesController extends BaseController {
+class DyplatesController extends BaseController {
 	/**
 	 * sql script:
 	CREATE TABLE `dy_plates` (
@@ -24,6 +24,7 @@ class GnplatesController extends BaseController {
 	 
 	 protected $_module_name = 'dy_plates';
 	 protected $id;
+	 protected $_key = null;
 	 
 	 public function get_list($content)
 	{
@@ -39,7 +40,7 @@ class GnplatesController extends BaseController {
 						'codetype'			=> urlencode($v['codetype']),
 						'code'				=> urlencode($v['code']),
 						'pname'				=> urlencode($v['pname']),
-						'cmd'				=> urlencode($v['cmd']),				  		
+						'cmd'				=> "dy_".urlencode($v['cmd']),				  		
 					);	
 			}
 		}

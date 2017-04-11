@@ -44,6 +44,8 @@ class ListedController extends BaseController {
 						'id'              	=> intval($v['id']),
 						'code'            	=> urlencode($v['code']),
 				  		'name'				=> urlencode($v['name']),
+				  		'level'             => urlencode($v['level']),
+				  		'method'            => urlencode($v['method']),
 				  		'hosted'			=> urlencode($v['hosted']),
 		  				'flowequity'        => urlencode($v['flowequity']),
 		  				'totalequity'       => urlencode($v['totalequity']),

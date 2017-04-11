@@ -24,6 +24,7 @@ class HyplatesController extends BaseController {
 	 
 	 protected $_module_name = 'hy_plates';
 	 protected $id;
+	 protected $_key = null;
 	 
 	 public function get_list($content)
 	{
@@ -39,7 +40,7 @@ class HyplatesController extends BaseController {
 						'codetype'			=> urlencode($v['codetype']),
 						'code'				=> urlencode($v['code']),
 						'pname'				=> urlencode($v['pname']),
-						'cmd'				=> urlencode($v['cmd']),
+						'cmd'				=> 'hy_'.urlencode($v['cmd']),
 					);	
 			}
 		}

@@ -24,6 +24,7 @@ class GnplatesController extends BaseController {
 	 
 	 protected $_module_name = 'gn_plates';
 	 protected $id;
+	 protected $_key = null;
 	 
 	 public function get_list($content)
 	{
@@ -39,7 +40,7 @@ class GnplatesController extends BaseController {
 						'codetype'			=> urlencode($v['codetype']),
 						'code'				=> urlencode($v['code']),
 						'pname'				=> urlencode($v['pname']),
-						'cmd'			  	=> urlencode($v['cmd']),
+						'cmd'			  	=> 'gn_'.urlencode($v['cmd']),
 					);	
 			}
 		}

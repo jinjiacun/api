@@ -45,6 +45,8 @@ class SeoController extends BaseController {
 						'id'              	=> intval($v['id']),
 						'code'            	=> urlencode($v['code']),
 				  		'name'				=> urlencode($v['name']),
+				  		'level'             => urlencode($v['level']),
+				  		'method'            => urlencode($v['method']),
 				  		'plandate'			=> urlencode($v['plandate']),
 		  				'finatype'			=> urlencode($v['finatype']),
 		  				'progress'			=> urlencode($v['progress']),

@@ -40,10 +40,12 @@ class ShabparityController extends BaseController {
 				  		'bcode'             => urlencode($v['bcode']),
 				  		'bname'				=> urlencode($v['bname']),
 				  		'bprice'            => doubleval(0.00),
+				  		'bclose'            => doubleval(0.00),
 				  		'americaprice'      => doubleval(0.00),
 				  		'acode'             => urlencode($v['acode']),
 				  		'aname'             => urlencode($v['aname']),
 				  		'aprice'            => doubleval(0.00),
+				  		'aclose'            => doubleval(0.00),
 					);	
 			}
 		}
