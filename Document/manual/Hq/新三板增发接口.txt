@@ -9,15 +9,14 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
 {'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
                                                 "code":"<CODE>",
                                                 "name":"<NAME>",
+                                                "plandate":"<PLANDATE>",
+                                                "finatype":"<FINATYPE>",
                                                 "progress":"<PROGRESS>",
-                                                "num":"<NUM>",
-                                                "price":"<PRICE>",
-                                                "peratio":"<PERATIO>",
-                                                "dpratio":"<DPRATIO>",
-                                                "mode":"<MODE>",
-                                                "result":"<RESULT>",
-                                                "newdate":"<NEWDATE>",
-                                                "firstdate":"<FIRSTDATE>"}
+                                                "principle":"<PRINCIPLE>",
+                                                "sumfina":"<SUMFINA>",
+                                                "host":"<HOST>",
+                                                "purpose":"<PURPOSE>",
+                                                "industry":"<INDUSTRY>"}
                                                 ,...],'record_count':<RECORD_COUNT>}}
                                                 
 <STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
@@ -26,32 +25,19 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
 <ID>                
 <CODE>                代码
 <NAME>                名称
-<PROGRESS>						方案进度
-<NUM>									增发数量
-<PRICE>								增发价格
-<PERATIO>							市盈率
-<DPRATIO>							折溢价率
-<MODE>								发行方式
-<RESULT>							结果
-<NEWDATE>							最新公告日
-<FIRSTDATE>						首次公告日
+<PLANDATE>            预案公告日
+<FINATYPE>            是否配套增发
+<PROGRESS>            方案进度
+<PRINCIPLE>           定价原则
+<SUMFINA>             募资金额
+<HOST>                主承销商
+<PURPOSE>             增发目的
+<INDUSTRY>            管理型行业
+
 
 
 示例：
 请求
 http://192.168.1.233/yms_api/index.php?m=hqapi&method=Seo.get_list
 返回：
-{"status_code":200,"content":{"list":[{"id":9108,"code":"430003.OC","name":"北京时代","progress":"股东大会批准","num":"1250.0000","price":"4.00","peratio":"0.00","dpratio":"60.00","mode":"定向","reslut":"实施","newdate":"2006-10-24","firstdate":"2006-10-24"},{"id":9107,"code":"430002.OC","name":"中科软","progress":"股东大会批准","num":"3000.0000","price":"2.00","peratio":"12.28","dpratio":"-88.53","mode":"定向","reslut":"实施","newdate":"2006-10-25","firstdate":"2006-10-25"},{"id":9106,"code":"430015.OC","name":"盖特佳","progress":"股东大会批准","num":"360.0000","price":"3.00","peratio":"0.00","dpratio":"185.71","mode":"定向","reslut":"实施","newdate":"2007-09-11","firstdate":"2007-09-11"},{"id":9105,"code":"430011.OC","name":"指南针","progress":"股东大会批准","num":"1463.0000","price":"5.00","peratio":"12.04","dpratio":"-31.88","mode":"定向","reslut":"实施","newdate":"2007-09-14","firstdate":"2007-09-14"},{"id":9104,"code":"430010.OC","name":"现代农装","progress":"股东大会批准","num":"1000.0000","price":"5.50","peratio":"0.00","dpratio":"120.88","mode":"定向","reslut":"实施","newdate":"2008-01-25","firstdate":"2008-01-25"},{"id":9103,"code":"430014.OC","name":"恒业世纪","progress":"股东大会批准","num":"1000.0000","price":"2.30","peratio":"24.19","dpratio":"-46.51","mode":"定向","reslut":"实施","newdate":"2008-05-09","firstdate":"2008-05-09"},{"id":9102,"code":"430003.OC","name":"北京时代","progress":"股东大会修改","num":"750.0000","price":"4.05","peratio":"0.00","dpratio":"62.00","mode":"定向","reslut":"实施","newdate":"2008-12-25","firstdate":"2008-06-13"},{"id":9101,"code":"430037.OC","name":"联飞翔","progress":"股东大会批准","num":"1044.0000","price":"3.20","peratio":"24.94","dpratio":"-33.75","mode":"定向","reslut":"实施","newdate":"2009-10-21","firstdate":"2009-06-08"},{"id":9100,"code":"430029.OC","name":"金泰得","progress":"股东大会批准","num":"302.7500","price":"5.50","peratio":"0.00","dpratio":"414.02","mode":"定向","reslut":"实施","newdate":"2010-04-06","firstdate":"2010-03-16"},{"id":9099,"code":"430057.OC","name":"清畅电力","progress":"股东大会批准","num":"300.0000","price":"5.00","peratio":"82.96","dpratio":"100.80","mode":"定向","reslut":"实施","newdate":"2010-05-04","firstdate":"2009-11-13"}],"record_count":"9108"}}
-
-
-
-
-
-
-
-
-
-
-
-
-
+{"status_code":200,"content":{"list":[{"id":9319,"code":"430003.OC","name":"北京时代","plandate":"2006-10-24","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"5000.00","host":"","purpose":"项目融资","industry":"制造业"},{"id":9318,"code":"430002.OC","name":"中科软","plandate":"2006-10-25","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"6000.00","host":"","purpose":"项目融资","industry":"信息传输、软件和信息技术服务业"},{"id":9317,"code":"430015.OC","name":"盖特佳","plandate":"2007-09-11","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"1080.00","host":"","purpose":"项目融资","industry":"信息传输、软件和信息技术服务业"},{"id":9316,"code":"430011.OC","name":"指南针","plandate":"2007-09-14","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"7315.00","host":"","purpose":"收购资产,项目融资","industry":"信息传输、软件和信息技术服务业"},{"id":9315,"code":"430018.OC","name":"合纵科技","plandate":"2008-01-09","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"3000.00","host":"","purpose":"补充流动资金,项目融资","industry":"制造业"},{"id":9314,"code":"430010.OC","name":"现代农装","plandate":"2008-01-25","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"5500.00","host":"","purpose":"补充流动资金,项目融资","industry":"制造业"},{"id":9313,"code":"430006.OC","name":"北陆药业","plandate":"2008-02-27","finatype":"否","progress":"股东大会批准","principle":"定价","sumfina":"6662.50","host":"","purpose":"项目融资","industry":""},{"id":9312,"code":"430014.OC","name":"恒业世纪","plandate":"2008-05-09","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"2300.00","host":"","purpose":"补充流动资金,项目融资","industry":"制造业"},{"id":9311,"code":"430003.OC","name":"北京时代","plandate":"2008-06-13","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"3037.50","host":"","purpose":"项目融资","industry":"制造业"},{"id":9310,"code":"430008.OC","name":"紫光华宇","plandate":"2008-12-05","finatype":"否","progress":"实施完成","principle":"定价","sumfina":"3185.00","host":"国信证券","purpose":"收购资产","industry":""}],"record_count":"9319"}}

@@ -1,0 +1,71 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+
+上证AB股比价
+get,post参数：
+method=Shabparity.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "bcode":"<BCODE>",
+                                                "bname":"<BNAME>",
+                                                "bprice":"<BPRICE>",
+                                                "americaprice":"<AMERICAPRICE>",
+                                                "acode":"<ACODE>",
+                                                "aname":"<ANAME>",
+                                                "aprice":"<APRICE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<BCODE>                   B股代码
+<BNAME>                   B股名称
+<BPRICE>                  B股价格
+<AMERICAPRICE>            美元价格
+<ACODE>                   A股代码
+<ANAME>                   A股名称
+<APRICE>                  A股价格
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Shabparity.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":44,"bcode":"900901","bname":"云赛B股","bprice":0,"americaprice":0,"acode":"600602","aname":"云赛智联","aprice":0},{"id":43,"bcode":"900943","bname":"开开B股","bprice":0,"americaprice":0,"acode":"600272","aname":"开开实业","aprice":0},{"id":42,"bcode":"900941","bname":"东信B股","bprice":0,"americaprice":0,"acode":"600776","aname":"东方通信","aprice":0},{"id":41,"bcode":"900918","bname":"耀皮B股","bprice":0,"americaprice":0,"acode":"600819","aname":"耀皮玻璃","aprice":0},{"id":40,"bcode":"900937","bname":"华电B股","bprice":0,"americaprice":0,"acode":"600726","aname":"华电能源","aprice":0},{"id":39,"bcode":"900940","bname":"大名城B","bprice":0,"americaprice":0,"acode":"600094","aname":"大名城","aprice":0},{"id":38,"bcode":"900905","bname":"老凤祥B","bprice":0,"americaprice":0,"acode":"600612","aname":"老凤祥","aprice":0},{"id":37,"bcode":"900936","bname":"鄂资B股","bprice":0,"americaprice":0,"acode":"600295","aname":"鄂尔多斯","aprice":0},{"id":36,"bcode":"900903","bname":"大众B股","bprice":0,"americaprice":0,"acode":"600611","aname":"大众交通","aprice":0},{"id":35,"bcode":"900923","bname":"百联B股","bprice":0,"americaprice":0,"acode":"600827","aname":"百联股份","aprice":0}],"record_count":"44"}}
+
+===================================================================================================
+深证AB股比价
+method=Szabparity.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'where':{"code":"<CODE>"}}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "bcode":"<BCODE>",
+                                                "bname":"<BNAME>",
+                                                "bprice":"<BPRICE>",
+                                                "americaprice":"<AMERICAPRICE>",
+                                                "acode":"<ACODE>",
+                                                "aname":"<ANAME>",
+                                                "aprice":"<APRICE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<BCODE>                   B股代码
+<BNAME>                   B股名称
+<BPRICE>                  B股价格
+<AMERICAPRICE>            美元价格
+<ACODE>                   A股代码
+<ANAME>                   A股名称
+<APRICE>                  A股价格
+
+示例
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Shabparity.get_list
+返回
+{"status_code":200,"content":{"list":[{"id":44,"bcode":"900901","bname":"云赛B股","bprice":0,"americaprice":0,"acode":"600602","aname":"云赛智联","aprice":0},{"id":43,"bcode":"900943","bname":"开开B股","bprice":0,"americaprice":0,"acode":"600272","aname":"开开实业","aprice":0},{"id":42,"bcode":"900941","bname":"东信B股","bprice":0,"americaprice":0,"acode":"600776","aname":"东方通信","aprice":0},{"id":41,"bcode":"900918","bname":"耀皮B股","bprice":0,"americaprice":0,"acode":"600819","aname":"耀皮玻璃","aprice":0},{"id":40,"bcode":"900937","bname":"华电B股","bprice":0,"americaprice":0,"acode":"600726","aname":"华电能源","aprice":0},{"id":39,"bcode":"900940","bname":"大名城B","bprice":0,"americaprice":0,"acode":"600094","aname":"大名城","aprice":0},{"id":38,"bcode":"900905","bname":"老凤祥B","bprice":0,"americaprice":0,"acode":"600612","aname":"老凤祥","aprice":0},{"id":37,"bcode":"900936","bname":"鄂资B股","bprice":0,"americaprice":0,"acode":"600295","aname":"鄂尔多斯","aprice":0},{"id":36,"bcode":"900903","bname":"大众B股","bprice":0,"americaprice":0,"acode":"600611","aname":"大众交通","aprice":0},{"id":35,"bcode":"900923","bname":"百联B股","bprice":0,"americaprice":0,"acode":"600827","aname":"百联股份","aprice":0}],"record_count":"44"}}

@@ -5,7 +5,7 @@ include_once(dirname(__FILE__).'/BaseController.class.php');
 /**
 5、新三板增发
 表名：seo
-字段：code(代码)、name(名称)、progress(方案进度)、num(增发数量)、price(增发价格)、peratio(市盈率)、dpratio(折溢价率)、mode(发行方式)、reslut(结果)、newdate(最新公告日)、firstdate(首次公告日)
+字段：code(代码)、name(名称)、plandate(预案公告日)、finatype(是否配套增发)、progress(方案进度)、principle(定价原则)、sumfina(募资金额)、host(主承销商)、purpose(增发目的)、industry(管理型行业)
 ------------------------------------------------------------
 ##--------------------------------------------------------##
 */
@@ -16,15 +16,14 @@ class SeoController extends BaseController {
 		  `id` int(11) NOT NULL AUTO_INCREMENT,
 		  `code` varchar(10) DEFAULT NULL,
 		  `name` varchar(10) DEFAULT NULL,
+		  `plandate` varchar(12) DEFAULT NULL,
+		  `finatype` varchar(4) DEFAULT NULL,
 		  `progress` varchar(20) DEFAULT NULL,
-		  `num` decimal(18,4) DEFAULT NULL,
-		  `price` decimal(18,2) DEFAULT NULL,
-		  `peratio` decimal(18,2) DEFAULT NULL,
-		  `dpratio` decimal(18,2) DEFAULT NULL,
-		  `mode` varchar(10) DEFAULT NULL,
-		  `reslut` varchar(20) DEFAULT NULL,
-		  `newdate` varchar(12) DEFAULT NULL,
-		  `firstdate` varchar(12) DEFAULT NULL,
+		  `principle` varchar(10) DEFAULT NULL,
+		  `sumfina` decimal(18,2) DEFAULT NULL,
+		  `host` varchar(20) DEFAULT NULL,
+		  `purpose` varchar(30) DEFAULT NULL,
+		  `industry` varchar(30) DEFAULT NULL,
 		  `machinetime` datetime NOT NULL,
 		  PRIMARY KEY (`id`,`machinetime`)
 		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
@@ -46,15 +45,14 @@ class SeoController extends BaseController {
 						'id'              	=> intval($v['id']),
 						'code'            	=> urlencode($v['code']),
 				  		'name'				=> urlencode($v['name']),
-				  		'progress'          => urlencode($v['progress']),
-						'num'				=> urlencode($v['num']),
-						'price'				=> urlencode($v['price']),
-						'peratio'			=> urlencode($v['peratio']),
-						'dpratio'			=> urlencode($v['dpratio']),
-						'mode'				=> urlencode($v['mode']),
-						'reslut'			=> urlencode($v['reslut']),
-						'newdate'			=> urlencode($v['newdate']),
-						'firstdate'			=> urlencode($v['firstdate'	]),
+				  		'plandate'			=> urlencode($v['plandate']),
+		  				'finatype'			=> urlencode($v['finatype']),
+		  				'progress'			=> urlencode($v['progress']),
+		  				'principle'			=> urlencode($v['principle']),
+		  				'sumfina'			=> urlencode($v['sumfina']),
+		  				'host'				=> urlencode($v['host']),
+		  				'purpose'			=> urlencode($v['purpose']),
+		  				'industry'			=> urlencode($v['industry']),
 					);	
 			}
 		}
