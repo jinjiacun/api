@@ -15,6 +15,7 @@ market　市场编号（SH_A(默认):上证A股，
                   SZ_MIDDLE:中小板,
                   SZ_ACCOUNT:创业板)，请求多个市场之间用逗号隔开
 column 排序类型(SORT_M,           //成交额(默认)
+					SORT_UPDOWN,      //涨跌额 
         				SORT_RAISE,       //涨跌幅
         				SORT_AMPLITUDE,   //振幅
         				SORT_TURNOVERRATE,//换手率
@@ -53,6 +54,8 @@ close        最新价格
 pclose       昨收价格
 volume       成交量
 turnover     成交金额
+turnrate     换手率
+earning      市营率
 time 
 示例：
 

@@ -1,4 +1,4 @@
-测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+﻿测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
 
 
 上证AB股比价
@@ -12,10 +12,12 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
                                                 "bcode":"<BCODE>",
                                                 "bname":"<BNAME>",
                                                 "bprice":"<BPRICE>",
+                                                "bclose":"<BCLOSE>"
                                                 "americaprice":"<AMERICAPRICE>",
                                                 "acode":"<ACODE>",
                                                 "aname":"<ANAME>",
-                                                "aprice":"<APRICE>"}
+                                                "aprice":"<APRICE>",
+                                                "aclose":"<ACLOSE>"}
                                                 ,...],'record_count':<RECORD_COUNT>}}
                                                 
 <STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
@@ -25,10 +27,12 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
 <BCODE>                   B股代码
 <BNAME>                   B股名称
 <BPRICE>                  B股价格
+<BCLOSE>                  B股昨收
 <AMERICAPRICE>            美元价格
 <ACODE>                   A股代码
 <ANAME>                   A股名称
 <APRICE>                  A股价格
+<ACLOSE>                  A股昨收
 
 示例：
 请求
@@ -47,10 +51,12 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'where':{"code":"<COD
                                                 "bcode":"<BCODE>",
                                                 "bname":"<BNAME>",
                                                 "bprice":"<BPRICE>",
+                                                "bclose":"<BCLOSE>",
                                                 "americaprice":"<AMERICAPRICE>",
                                                 "acode":"<ACODE>",
                                                 "aname":"<ANAME>",
-                                                "aprice":"<APRICE>"}
+                                                "aprice":"<APRICE>",
+                                                "aclose":"<ACLOSE>"}
                                                 ,...],'record_count':<RECORD_COUNT>}}
                                                 
 <STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
@@ -60,12 +66,14 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'where':{"code":"<COD
 <BCODE>                   B股代码
 <BNAME>                   B股名称
 <BPRICE>                  B股价格
+<bclose>                  B昨收
 <AMERICAPRICE>            美元价格
 <ACODE>                   A股代码
 <ANAME>                   A股名称
 <APRICE>                  A股价格
+<aclose>                  A股昨收
 
 示例
-http://192.168.1.233/yms_api/index.php?m=hqapi&method=Shabparity.get_list
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Szabparity.get_list
 返回
-{"status_code":200,"content":{"list":[{"id":44,"bcode":"900901","bname":"云赛B股","bprice":0,"americaprice":0,"acode":"600602","aname":"云赛智联","aprice":0},{"id":43,"bcode":"900943","bname":"开开B股","bprice":0,"americaprice":0,"acode":"600272","aname":"开开实业","aprice":0},{"id":42,"bcode":"900941","bname":"东信B股","bprice":0,"americaprice":0,"acode":"600776","aname":"东方通信","aprice":0},{"id":41,"bcode":"900918","bname":"耀皮B股","bprice":0,"americaprice":0,"acode":"600819","aname":"耀皮玻璃","aprice":0},{"id":40,"bcode":"900937","bname":"华电B股","bprice":0,"americaprice":0,"acode":"600726","aname":"华电能源","aprice":0},{"id":39,"bcode":"900940","bname":"大名城B","bprice":0,"americaprice":0,"acode":"600094","aname":"大名城","aprice":0},{"id":38,"bcode":"900905","bname":"老凤祥B","bprice":0,"americaprice":0,"acode":"600612","aname":"老凤祥","aprice":0},{"id":37,"bcode":"900936","bname":"鄂资B股","bprice":0,"americaprice":0,"acode":"600295","aname":"鄂尔多斯","aprice":0},{"id":36,"bcode":"900903","bname":"大众B股","bprice":0,"americaprice":0,"acode":"600611","aname":"大众交通","aprice":0},{"id":35,"bcode":"900923","bname":"百联B股","bprice":0,"americaprice":0,"acode":"600827","aname":"百联股份","aprice":0}],"record_count":"44"}}
+{"status_code":200,"content":{"list":[{"id":38,"bcode":"200613","bname":"*ST东海B","bprice":0,"americaprice":0,"acode":"000613","aname":"*ST东海A","aprice":0},{"id":37,"bcode":"200029","bname":"深深房B","bprice":0,"americaprice":0,"acode":"000029","aname":"深深房A","aprice":0},{"id":36,"bcode":"200016","bname":"深康佳B","bprice":0,"americaprice":0,"acode":"000016","aname":"深康佳A","aprice":0},{"id":35,"bcode":"200045","bname":"深纺织B","bprice":0,"americaprice":0,"acode":"000045","aname":"深纺织A","aprice":0},{"id":34,"bcode":"200058","bname":"深赛格B","bprice":0,"americaprice":0,"acode":"000058","aname":"深赛格","aprice":0},{"id":33,"bcode":"200019","bname":"深深宝B","bprice":0,"americaprice":0,"acode":"000019","aname":"深深宝A","aprice":0},{"id":32,"bcode":"200028","bname":"一致B","bprice":0,"americaprice":0,"acode":"000028","aname":"国药一致","aprice":0},{"id":31,"bcode":"200530","bname":"大冷B","bprice":0,"americaprice":0,"acode":"000530","aname":"大冷股份","aprice":0},{"id":30,"bcode":"200413","bname":"东旭B","bprice":0,"americaprice":0,"acode":"000413","aname":"东旭光电","aprice":0},{"id":29,"bcode":"200581","bname":"苏威孚B","bprice":0,"americaprice":0,"acode":"000581","aname":"威孚高科","aprice":0}],"record_count":"38"}}

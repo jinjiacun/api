@@ -27,8 +27,8 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
 <ID>                
 <CODE>                代码
 <NAME>                名称
-<level>               层级
-<method>              方式
+<LEVEL>               层级
+<METHOD>              方式
 <PLANDATE>            预案公告日
 <FINATYPE>            是否配套增发
 <PROGRESS>            方案进度

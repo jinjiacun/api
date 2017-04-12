@@ -64,13 +64,21 @@ class BlockController extends BaseController {
 		$tmp_data = $data;
 		$tmp_data["group"] = "cmd";
 		$tmp_content = json_encode($tmp_data);
-		list($data, $record_count) = A($_type_list[$data['type']])->get_list($tmp_content);
+		list($status_code, $r_content) = A($_type_list[$data['type']])->get_list($tmp_content);
 		
+		if($r_content && count($r_content)>0){
+			foreach($r_content['list'] as $k=>$v){
+				unset($r_content['list'][$k]['id'],
+					  $r_content['list'][$k]['codetype'],
+					  $r_content['list'][$k]['code']
+					);
+			}
+		}
 
-		return array(200, 
+		return array($status_code, 
 				array(
-					'list'=>$list,
-					'record_count'=> $record_count,
+					'list'=>$r_content['list'],
+					'record_count'=> $r_content['record_count'],
 					)
 		);
 		
@@ -113,9 +121,28 @@ class BlockController extends BaseController {
 		$tmp_data = $data;
 		$tmp_data["where"] = array("cmd"=>$block);
 		$tmp_content = json_encode($tmp_data);
-		list($data, $record_count) = A($_type_list[$prefix])->get_list($tmp_content);
+		$tmp_re = A($_type_list[$prefix])->get_list($tmp_content);
+		$status = $tmp_re[0];
+		$record_count = $tmp_re[1]['record_count'];
+		$list   = $tmp_re[1]['list'];
 
-		return array(200, 
+		if($list && count($list)>0){
+			foreach($list as $k=>$v){
+				unset($list[$k]['id'],$list[$k]['cmd'],$list[$k]['pname']);
+				$list[$k]['name']  		= '';//股票名称
+				$list[$k]['price'] 		= doubleval(0.00);//最新价
+				$list[$k]['hight'] 		= doubleval(0.00);//最高价
+				$list[$k]['lower'] 		= doubleval(0.00);//最低价
+				$list[$k]['pclose']		= doubleval(0.00);//昨收
+				$list[$k]['open']  		= doubleval(0.00);//开盘价
+				$list[$k]['turnover']	= doubleval(0.00);//成交额
+				$list[$k]['volume']		= doubleval(0.00);//成交量
+				$list[$k]['turnrate']   = doubleval(0.00);//换手率
+				$list[$k]['earning']    = doubleval(0.00);//市盈率
+			}
+		}
+
+		return array($status, 
 				array(
 					'list'=>$list,
 					'record_count'=> $record_count,

@@ -1,9 +1,77 @@
+﻿测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
 --按板块类型（概念、行业、地域）取具体板块分类信息
-SELECT cmd,pname FROM gn_plates
-GROUP BY cmd;
+get,post参数：
+method=Block.get_class
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'type':'<TYPE>'}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+<TYPE>		  类型标识(GN:概念,HY:行业,DY:地域)
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "pname":"<PNAME>",
+                                                "cmd":"<CMD>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>  
+<PNAME>               板块名称
+<CMD>                 板块代码
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Block.get_class&content={"type":"GN","page_index":10}
+返回：
+{"status_code":200,"content":{"list":[{"pname":"智慧城市","cmd":"gn_BK06281"},{"pname":"北斗导航","cmd":"gn_BK06291"},{"pname":"前海概念","cmd":"gn_BK06301"},{"pname":"土地流转","cmd":"gn_BK06321"},{"pname":"送转预期","cmd":"gn_BK06331"},{"pname":"大数据","cmd":"gn_BK06341"},{"pname":"中超概念","cmd":"gn_BK06351"},{"pname":"B股","cmd":"gn_BK06361"},{"pname":"互联金融","cmd":"gn_BK06371"},{"pname":"创业成份","cmd":"gn_BK06381"}],"record_count":"16947"}}
 
 
 ====================================================================================================================
 --按具体板块代码取该板块中股票列表信息
-SELECT * FROM gn_plates
-where cmd='BK05631
+
+get,post参数：
+method=Block.get_block_info
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'block_num':'<BLOCK_NUM>'}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+<BLOCK_NUM>	  板块代码
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "codetype":"<codetype>",
+                                                "name":"<NAME>",
+                                                "price":"<PRICE>",
+                                                "hight":"<HIGHT>",
+                                                "lower":"<LOWER>",
+                                                "pclose":"<PCLOSE>",
+                                                "open":"<OPEN>",
+                                                "turnover":"<TURNOVER>",
+                                                "volume":"<VOLUME>",
+                                                "turnrate":"<TURNRATE>",
+                                                "earning":"<EARNING>"
+                                                }
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>  
+<CODETYPE>            市场
+<CODE>                代码
+<NAME>                代码名称
+<PRICE>		   		  最新价
+<HIGHT>				  最高价
+<LOWER>				  最低价
+<PCLOSE>		      昨收
+<OPEN>				  开盘价
+<TURNOVER>			  成交额
+<VOLUME>			  成交量
+<TURNRATE>			  换手率
+<EARNING>			  市盈率
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Block.get_block_info&content={"block_num":"dy_BK01541"}
+返回：
+{"status_code":200,"content":{"list":[{"codetype":"1201","code":"000528","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000582","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000608","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000662","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000703","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000716","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000750","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000806","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000833","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000911","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0}],"record_count":"36"}}
