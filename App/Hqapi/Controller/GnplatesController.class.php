@@ -52,4 +52,31 @@ class GnplatesController extends BaseController {
 					)
 				);
 	}
+
+	public function get_list_ex($content)
+	{
+		list($data, $record_count) = parent::get_list_ex($content);
+
+		$list = array();
+		if($data)
+		{
+			foreach($data as $v)
+			{
+				$list[] = array(
+						'id'              	=> intval($v['id']),
+						'codetype'			=> urlencode($v['codetype']),
+						'code'				=> urlencode($v['code']),
+						'pname'				=> urlencode($v['pname']),
+						'cmd'			  	=> 'gn_'.urlencode($v['cmd']),
+					);	
+			}
+		}
+
+		return array(200, 
+				array(
+					'list'=>$list,
+					'record_count'=> $record_count,
+					)
+				);
+	}
 }

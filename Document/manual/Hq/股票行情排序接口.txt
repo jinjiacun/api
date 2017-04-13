@@ -22,6 +22,8 @@ column 排序类型(SORT_M,           //成交额(默认)
         				SORT_EARMING      //市盈率)
 way    排序方式(0-正序(默认),1-反序)
 
+
+【注】:当请求 【深证A股】 市场时,包含<SZ_A,SZ_MIDDLE,SZ_ACCOUNT>,请求这个市场的时候，是带三个市场参数)
 返回：
 symbol       证券代码
 name         证券名称
@@ -57,6 +59,8 @@ turnover     成交金额
 turnrate     换手率
 earning      市营率
 time 
+
+注意:最后一条json为当前条件下的记录条数，其关键字是【record_count】
 示例：
 
 

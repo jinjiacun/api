@@ -62,9 +62,9 @@ class BlockController extends BaseController {
 		}
 
 		$tmp_data = $data;
-		$tmp_data["group"] = "cmd";
+		//$tmp_data["group"] = "cmd";
 		$tmp_content = json_encode($tmp_data);
-		list($status_code, $r_content) = A($_type_list[$data['type']])->get_list($tmp_content);
+		list($status_code, $r_content) = A($_type_list[$data['type']])->get_list_ex($tmp_content);
 		
 		if($r_content && count($r_content)>0){
 			foreach($r_content['list'] as $k=>$v){

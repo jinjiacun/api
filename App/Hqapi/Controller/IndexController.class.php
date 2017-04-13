@@ -10,6 +10,7 @@ class IndexController extends Controller {
     protected $handler     = null;//资源处理句柄
     protected $is_mul      = false;
     protected $debug       = 0;//0-非调试模式,1-调试模式
+    protected $name        = "hqapi";
 
     public function __constract__()
     {
@@ -20,6 +21,7 @@ class IndexController extends Controller {
     {
     	$this->method     = $method;
     	$this->in_content = $in_content;
+
     }    
 
     public function __get($propery_name)
@@ -62,6 +64,10 @@ class IndexController extends Controller {
       {
         $this->debug = I('get.debug');
       }
+      if(I('get.name'))
+      {
+        $this->name = I('get.name');
+      }
 
         ##post
         if(I('post.type'))
@@ -87,6 +93,9 @@ class IndexController extends Controller {
         if(I('post.debug'))
         {
           $this->debug = I('post.debug');
+        }
+        if(I('post.name')){
+          $this->name = I('post.name');
         }
         if(!isset($this->method)
         || !isset($this->in_content)
@@ -324,7 +333,7 @@ class IndexController extends Controller {
         $re_list = array('status_code'=>$status_code,
                          'content'    =>$out_content,
             );
-        echo urldecode(json_encode($re_list));
+        echo 'var '.$this->name.' = '.urldecode(json_encode($re_list)).';';
         exit();
     }
 

@@ -158,6 +158,104 @@ class BaseController extends Controller {
 	}
 
 	#查询列表
+	public function get_list_ex($content)
+	/*
+	@@input
+	@param $page_index   当前满足条件的第几页(可选)
+	@param $page_size    当前请求的页面数(可选)
+	@param $where        当前查询条件(可选)
+	@@output
+	@param 返回对应的列表，具体内容看具体的对应的模块
+	*/
+	{
+		$data = $this->fill($content);
+		$data['where'] = isset($data['where'])?$data['where']:array();
+		if(isset($data['where']['sign']))
+		{
+			if(0<$data['where']['sign'])
+			{
+				$data['where']['sign'] = 1;
+			}
+		}
+		$data['page_index'] = isset($data['page_index'])?intval($data['page_index']):1;
+		$data['page_size']  = isset($data['page_size'])?intval($data['page_size']):10;
+		if($this->key){
+			$data['order']      = isset($data['order'])?$data['order']:array($this->key=>'desc');
+		}else{
+			$data['order']      = isset($data['order'])?$data['order']:null;
+		}
+		$obj  = M($this->_module_name);
+		if(isset($data['page_index']))
+			$page_index = $data['page_index'];
+		else
+			$page_index = 1;
+			
+		if(0>= $page_index)
+		{
+			$page_index = 1;
+		}
+		
+		if(isset($data['page_size']))
+			$page_size  = $data['page_size'];
+		else
+			$page_size  = 10;
+			
+		if(30<= $page_size)
+		{
+			$page_size = 30;
+		}
+		//$page_index = 1;
+		//$page_size  = 10;
+		if(isset($data['group']))
+		{
+				$list = $obj->distinct(true)->field('cmd,pname')
+				    ->page($page_index, $page_size)
+					->group($data['group'])
+		            ->where($data['where'])
+		            ->order($data['order'])
+		            ->select();
+		}
+		else if(isset($data['order']))
+		{
+			$list = $obj->distinct(true)->field('cmd,pname')
+			    ->page($page_index, $page_size)
+				->where($data['where'])
+				->order($data['order'])
+				->select();
+		}
+		else{
+			$list = $obj->distinct(true)->field('cmd,pname')
+			    ->page($page_index, $page_size)
+				->where($data['where'])
+				->select();
+		}
+		            
+		//echo M()->getlastSql();
+		//die;
+		#
+		$record_count = 0;
+		$record_count = $obj->where($data['where'])		                    
+			                ->count("distinct cmd");
+	    /*
+		if(isset($data['group'])){
+			$record_count = $obj->group($data['group'])
+			                     ->where($data['where'])
+			                     ->count();	
+		}
+		else{
+			$record_count = $obj->where($data['where'])
+			                     ->count();		
+		}
+		*/
+		
+		//echo M()->getlastSql();
+		return array(
+					$list, 
+					$record_count
+		);
+	}
+
+	#查询列表
 	public function get_list($content)
 	/*
 	@@input
@@ -208,7 +306,8 @@ class BaseController extends Controller {
 		//$page_size  = 10;
 		if(isset($data['group']))
 		{
-				$list = $obj->page($page_index, $page_size)
+				$list = $obj->distinct(true)->field($data['fields'])
+				    ->page($page_index, $page_size)
 					->group($data['group'])
 		            ->where($data['where'])
 		            ->order($data['order'])
@@ -231,12 +330,27 @@ class BaseController extends Controller {
 		//die;
 		#
 		$record_count = 0;
-		$record_count = $obj->where($data['where'])->count();
+		$record_count = $obj->where($data['where'])
+			                     ->count();
+	    /*
+		if(isset($data['group'])){
+			$record_count = $obj->group($data['group'])
+			                     ->where($data['where'])
+			                     ->count();	
+		}
+		else{
+			$record_count = $obj->where($data['where'])
+			                     ->count();		
+		}
+		*/
+		
+		//echo M()->getlastSql();
 		return array(
 					$list, 
 					$record_count
 		);
 	}
+
 	
 	#通过id查询
 	public function get_list_by_mul_ids($content)
