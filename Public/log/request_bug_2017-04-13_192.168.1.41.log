@@ -1,0 +1,3 @@
+begin   ip:192.168.1.41   date:2017-04-13 18:30:18 method:Block.get_class  content:{"type":"HY"}   type:	debug:0
+end   ip:192.168.1.41   date:2017-04-13 18:30:18 use_time:0.17227911949158秒 method:Block.get_class  content:{"type":"HY"}   type:text   status_code:200, data:{"list":[{"pname":"银行","cmd":"hy_BK04751"},{"pname":"房地产","cmd":"hy_BK04511"},{"pname":"医药制造","cmd":"hy_BK04651"},{"pname":"旅游酒店","cmd":"hy_BK04851"},{"pname":"交运设备","cmd":"hy_BK04291"},{"pname":"园林工程","cmd":"hy_BK07261"},{"pname":"玻璃陶瓷","cmd":"hy_BK05461"},{"pname":"家电行业","cmd":"hy_BK04561"},{"pname":"文教休闲","cmd":"hy_BK07401"},{"pname":"纺织服装","cmd":"hy_BK04361"}],"record_count":"61"}
+

@@ -1,0 +1,22 @@
+﻿测试接口地址:http://192.168.1.140:8080/StockWebServer/count
+
+
+get参数：
+
+返回：
+SH_A        上证a股市场
+SZ_A        深证a股市场(在展示此市场时，需要附加【中小板】和【创业板】)
+SZ_MIDDLE   中小板
+SZ_ACCOUNT  创业板
+UP_PAN      上涨
+FLAT_PAN    平盘
+DOWN_PAN    下跌
+
+示例：
+
+
+请求:
+http://192.168.1.140:8080/StockWebServer/count?&r=0.9860960829776169&&_=1490171128168
+r为随机数，_为当前时间戳
+返回：
+{"SH_A":{"UP_PAN":241,"FLAT_PAN":25,"DOWN_PAN":982},"SZ_A":{"UP_PAN":93,"FLAT_PAN":6,"DOWN_PAN":366},"SZ_MIDDLE":{"UP_PAN":178,"FLAT_PAN":16,"DOWN_PAN":656},"SZ_ACCOUNT":{"UP_PAN":97,"FLAT_PAN":9,"DOWN_PAN":525}}

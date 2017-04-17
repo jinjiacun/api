@@ -1,0 +1,73 @@
+<html>
+	<head></head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<body>
+模式一测试地址:http://192.168.1.233/yms_api/index.php?m=Hqapi<br/>
+模式二测试地址:http://192.168.1.140/StockWebServer/
+<br/>
+正式地址:待定...<br/>
+<h1>通用方法:</h1>
+<h2>模式一通用方法介绍:</h2>
+请求格式:<br/>
+get模式:http://192.168.1.233/yms_api/index.php?m=Hqapi&method=&ltMETHOD&gt[name=&ltNAME&gt]&content={["page_index":"&ltPAGE_INDEX&gt",]["page_size":"&ltPAGE_SIZE&gt",]["order":"&ltORDER&gt",]["where":"&ltWHERE&gt"]<br/><br/>
+post或get参数:<br/>
+<b>method</b>:方法<br/>
+<b>content</b>:请求数据<br/>
+<b>name</b>:兼容js调用<br/>
+在请求时给name赋值，则返还时的格式是:【var &ltvalue(name)&gt=&ltjson数据&gt】，<br/>
+否则返还格式是【json数据格式】
+content里面的一般通用方法:<br/>
+&lt<b>PAGE_INDEX</b>&gt:当前第几页<br/>
+&lt<b>PAGE_SIZE</b>&gt:当前要求返还的条数<br/>
+&lt<b>WHERE</b>&gt:当前请求的赛选数据条件<br/>
+&lt<b>ORDER</b>&gt:当前条件下的排序关系<br/>
+以上为同级关系<br/>
+{WHERE}模式中常用:<br/>
+条件为相等关系，多个为相等的条件组合<br/>
+"where":{"&ltFIELD(1)&gt":"&ltVALU(1)&gt",...,"&ltFIELD(n)&gt":"&ltVALUE(n)&gt"}<br/>
+{ORDER}模式中常用:<br/>
+按照指定字段排序，多个字段组合时，在前面为优先排序，后面依次排序<br/>
+"order":{"&ltFIELD(1)&gt":"&ltASC|DESC&gt",...,"&ltFIELD(n)&gt":"&ltASC|DESC&gt"}<br/>
+<br/>
+返回格式<br/>
+当name赋值时返回格式:var value(name) = &ltjson数据&gt<br>
+当name未赋值返回格式:<br>
+<br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/>
+
+
+
+
+
+
+
+
+
+
+<p id="mod__1">
+模块名称:Version<br/>
+模块名称描述:版本更新<br/>
+方法名称:get_info<br/>
+方法描述:查询版本信息<br/>
+输入参数格式:<br/>
+method=Version.get_info<br/>
+content={'id':'xxx'}<br/>
+@@input<br/>
+@param $id          id(ios=1)<br/>
+示例输出:<br/>
+{'status_code':200,'content':[{'version_sn':'xxx','down_url':'xxx','must_update':'xxx',<br/>
+                               'content':'xxx','app_sys':'xxx'}]}<br/>
+@@output<br/>
+@param $version_sn   版本号<br/>
+@param $down_url     下载地址<br/>
+@param $must_update  是否强制更新(0-不强制,1-强制)<br/>
+@param $content      内容<br/>
+@param $app_sys      系统名称<br/>
+</p>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr>
+
+</body>
+</html>

@@ -10,7 +10,7 @@ class IndexController extends Controller {
     protected $handler     = null;//资源处理句柄
     protected $is_mul      = false;
     protected $debug       = 0;//0-非调试模式,1-调试模式
-    protected $name        = "hqapi";
+    protected $name        = null;
 
     public function __constract__()
     {
@@ -333,7 +333,13 @@ class IndexController extends Controller {
         $re_list = array('status_code'=>$status_code,
                          'content'    =>$out_content,
             );
-        echo 'var '.$this->name.' = '.urldecode(json_encode($re_list)).';';
+        if(!isset($this->name) || $this->name == "")
+        {
+          echo urldecode(json_encode($re_list));
+        }
+        else{          
+          echo 'var '.$this->name.' = '.urldecode(json_encode($re_list)).';';  
+        }
         exit();
     }
 
