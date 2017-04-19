@@ -25,39 +25,41 @@ way    排序方式(0-正序(默认),1-反序)
 
 【注】:当请求 【深证A股】 市场时,包含<SZ_A,SZ_MIDDLE,SZ_ACCOUNT>,请求这个市场的时候，是带三个市场参数)
 返回：
-symbol       证券代码
-name         证券名称
-bid1price    买一价格
-bid1volume   买一量
-bid2price    买二价格
-bid2volume	 买二量
-bid3price    买三价格
-bid3volume   买三量
-bid4price    买四价格
-bid4volume   买四量
-bid5price    买五价格
-bid5volume   买五量
-ask1price    卖一价
-ask1volume	 卖一量
-ask2price    卖二价
-ask2volume   卖二量
-ask3price    卖三价
-ask3volume   卖三量
-ask4price    卖四价
-ask4volume   卖四量
-ask5price    卖五价
-ask5volume   卖五量
-change       涨跌
-changerate   涨跌幅
-open         开盘价格
-high         最高价格
-low          最低价格
-close        最新价格
-pclose       昨收价格
-volume       成交量
-turnover     成交金额
-turnrate     换手率
-earning      市营率
+symbol        证券代码
+name          证券名称
+bid1price     买一价格
+bid1volume    买一量
+bid2price     买二价格
+bid2volume	  买二量
+bid3price     买三价格
+bid3volume    买三量
+bid4price     买四价格
+bid4volume    买四量
+bid5price     买五价格
+bid5volume    买五量
+ask1price     卖一价
+ask1volume	  卖一量
+ask2price     卖二价
+ask2volume    卖二量
+ask3price     卖三价
+ask3volume    卖三量
+ask4price     卖四价
+ask4volume    卖四量
+ask5price     卖五价
+ask5volume    卖五量
+change        涨跌
+changerate    涨跌幅
+upstopprice   涨停价
+downstopprice 跌停价
+open          开盘价格
+high          最高价格
+low           最低价格
+close         最新价格
+pclose        昨收价格
+volume        成交量
+turnover      成交金额
+turnrate      换手率
+earning       市营率
 time 
 
 注意:最后一条json为当前条件下的记录条数，其关键字是【record_count】

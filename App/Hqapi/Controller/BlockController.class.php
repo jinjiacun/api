@@ -110,8 +110,11 @@ class BlockController extends BaseController {
 		{
 			return C('param_fmt_err');
 		}
-		
 
+		if (!preg_match("/^(gn|hy|dy)\_BK[0-9]+?/", $data['block_num'])) {
+            return C('param_fmt_err');
+        }
+		
 		//解析
 		$tmp_list = explode('_', $data['block_num']);
 		$prefix   = $tmp_list[0];
@@ -121,7 +124,8 @@ class BlockController extends BaseController {
 		$tmp_data = $data;
 		$tmp_data["where"] = array("cmd"=>$block);
 		$tmp_content = json_encode($tmp_data);
-		$tmp_re = A($_type_list[$prefix])->get_list($tmp_content);
+		if(A($_type_list[$prefix]))
+			$tmp_re = A($_type_list[$prefix])->get_list($tmp_content);
 		$status = $tmp_re[0];
 		$record_count = $tmp_re[1]['record_count'];
 		$list   = $tmp_re[1]['list'];
