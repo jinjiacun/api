@@ -28,26 +28,33 @@ class ShabparityController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-				  		'bcode'             => urlencode($v['bcode']),
-				  		'bname'				=> urlencode($v['bname']),
-				  		'bprice'            => doubleval(0.00),
-				  		'bclose'            => doubleval(0.00),
-				  		'americaprice'      => doubleval(0.00),
-				  		'acode'             => urlencode($v['acode']),
-				  		'aname'             => urlencode($v['aname']),
-				  		'aprice'            => doubleval(0.00),
-				  		'aclose'            => doubleval(0.00),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+					  		'bcode'             => urlencode($v['bcode']),
+					  		'bname'				=> urlencode($v['bname']),
+					  		'bprice'            => doubleval(0.00),
+					  		'bclose'            => doubleval(0.00),
+					  		'americaprice'      => doubleval(0.00),
+					  		'acode'             => urlencode($v['acode']),
+					  		'aname'             => urlencode($v['aname']),
+					  		'aprice'            => doubleval(0.00),
+					  		'aclose'            => doubleval(0.00),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

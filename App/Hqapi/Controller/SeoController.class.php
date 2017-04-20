@@ -34,29 +34,36 @@ class SeoController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'code'            	=> urlencode($v['code']),
-				  		'name'				=> urlencode($v['name']),
-				  		'level'             => urlencode($v['level']),
-				  		'method'            => urlencode($v['method']),
-				  		'plandate'			=> urlencode($v['plandate']),
-		  				'finatype'			=> urlencode($v['finatype']),
-		  				'progress'			=> urlencode($v['progress']),
-		  				'principle'			=> urlencode($v['principle']),
-		  				'sumfina'			=> urlencode($v['sumfina']),
-		  				'host'				=> urlencode($v['host']),
-		  				'purpose'			=> urlencode($v['purpose']),
-		  				'industry'			=> urlencode($v['industry']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'code'            	=> urlencode($v['code']),
+					  		'name'				=> urlencode($v['name']),
+					  		'level'             => urlencode($v['level']),
+					  		'method'            => urlencode($v['method']),
+					  		'plandate'			=> urlencode($v['plandate']),
+			  				'finatype'			=> urlencode($v['finatype']),
+			  				'progress'			=> urlencode($v['progress']),
+			  				'principle'			=> urlencode($v['principle']),
+			  				'sumfina'			=> urlencode($v['sumfina']),
+			  				'host'				=> urlencode($v['host']),
+			  				'purpose'			=> urlencode($v['purpose']),
+			  				'industry'			=> urlencode($v['industry']),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

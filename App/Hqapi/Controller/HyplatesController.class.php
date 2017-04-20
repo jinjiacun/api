@@ -28,21 +28,27 @@ class HyplatesController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'codetype'			=> urlencode($v['codetype']),
-						'code'				=> urlencode($v['code']),
-						'pname'				=> urlencode($v['pname']),
-						'cmd'				=> 'hy_'.urlencode($v['cmd']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'codetype'			=> urlencode($v['codetype']),
+							'code'				=> urlencode($v['code']),
+							'pname'				=> urlencode($v['pname']),
+							'cmd'				=> 'hy_'.urlencode($v['cmd']),
+						);	
+				}
 			}
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 
@@ -55,21 +61,28 @@ class HyplatesController extends BaseController {
 
 	public function get_list_ex($content)
 	{
-		list($data, $record_count) = parent::get_list_ex($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list_ex($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'codetype'			=> urlencode($v['codetype']),
-						'code'				=> urlencode($v['code']),
-						'pname'				=> urlencode($v['pname']),
-						'cmd'				=> 'hy_'.urlencode($v['cmd']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'codetype'			=> urlencode($v['codetype']),
+							'code'				=> urlencode($v['code']),
+							'pname'				=> urlencode($v['pname']),
+							'cmd'				=> 'hy_'.urlencode($v['cmd']),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

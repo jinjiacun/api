@@ -40,27 +40,35 @@ class TfpxxController extends BaseController {
 	 
 	public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              => intval($v['id']),
-						'code'            => urlencode($v['code']),
-						'name'            => urlencode($v['name']),
-						'haltdate'        => urlencode($v['haltdate']),
-						'haltstopdate'	  => $v['haltstopdate']=='0000-00-00 00:00:00'?'':urlencode($v['haltstopdate']),
-						'recoverydate'    => $v['recoverydate']=='0000-00-00 00:00:00'?'':urlencode($v['recoverydate']),
-						'haltterm'        => urlencode($v['haltterm']),
-						'haltreason'      => urlencode($v['haltreason']),
-						'block'           => urlencode($v['block']),
-						//'machinetime'     => urlencode($v['machinetime']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              => intval($v['id']),
+							'code'            => urlencode($v['code']),
+							'name'            => urlencode($v['name']),
+							'haltdate'        => urlencode($v['haltdate']),
+							'haltstopdate'	  => $v['haltstopdate']=='0000-00-00 00:00:00'?'':urlencode($v['haltstopdate']),
+							'recoverydate'    => $v['recoverydate']=='0000-00-00 00:00:00'?'':urlencode($v['recoverydate']),
+							'haltterm'        => urlencode($v['haltterm']),
+							'haltreason'      => urlencode($v['haltreason']),
+							'block'           => urlencode($v['block']),
+							//'machinetime'     => urlencode($v['machinetime']),
+						);	
+				}
 			}
+			S($this->_module_name.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
+
 
 		return array(200, 
 				array(

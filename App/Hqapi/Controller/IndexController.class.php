@@ -21,7 +21,6 @@ class IndexController extends Controller {
     {
     	$this->method     = $method;
     	$this->in_content = $in_content;
-
     }    
 
     public function __get($propery_name)
@@ -193,7 +192,7 @@ class IndexController extends Controller {
                           $this->in_content,
                           $this->type,
                           $this->debug);
-        file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_hqapi_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
     	  if(!in_array($this->type,array('text','resource')))
     	  {
 			     $this->type = 'text';
@@ -226,7 +225,7 @@ class IndexController extends Controller {
                                       $status_code,
                                       urldecode(json_encode($out_content))
                                       );
-                    file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
+                    file_put_contents(__PUBLIC__."log/request_hqapi_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);                    
 					           /*
 					           A('Soapi/Apistat')->add(json_encode(array(
 							         'name'=>$this->method,
@@ -296,7 +295,7 @@ class IndexController extends Controller {
                                         $status_code,
                                         urldecode(json_encode($out_content))
                       );
-                      file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+                      file_put_contents(__PUBLIC__."log/request_hqapi_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
                       self::call_back($status_code, $out_content);
                     }                    
                 }
@@ -317,15 +316,16 @@ class IndexController extends Controller {
                           $status_code,
                           json_encode($out_content)
                           );
-        file_put_contents(__PUBLIC__."log/request_bug_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
+        file_put_contents(__PUBLIC__."log/request_hqapi_".date("Y-m-d").'_'.$this->getIP().".log", $log_str, FILE_APPEND);
         $etime=microtime(true);//获取程序执行结束的时间
 		$total=$etime-$stime;   //计算差值
-		
+		/*
 		A('Soapi/Apistat')->add(json_encode(array(
 							'name'=>$this->method,
 							'run_time'=>$total,
 							'type'=>2
 					)));
+    */
     }
 
     public function call_back($status_code, $out_content)

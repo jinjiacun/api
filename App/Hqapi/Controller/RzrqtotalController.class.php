@@ -32,23 +32,30 @@ class RzrqtotalController extends BaseController {
 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'tradedate'       	=> urlencode($v['tradedate']),
-			  			'market'			=> urlencode($v['market']),
-			  			'rzremain'			=> urlencode($v['rzremain']),
-			  			'rzbuy'				=> urlencode($v['rzbuy']),
-			  			'rqremain'			=> urlencode($v['rqremain']),
-			  			'rzrqremain'		=> urlencode($v['rzrqremain']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'tradedate'       	=> urlencode($v['tradedate']),
+				  			'market'			=> urlencode($v['market']),
+				  			'rzremain'			=> urlencode($v['rzremain']),
+				  			'rzbuy'				=> urlencode($v['rzbuy']),
+				  			'rqremain'			=> urlencode($v['rqremain']),
+				  			'rzrqremain'		=> urlencode($v['rzrqremain']),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

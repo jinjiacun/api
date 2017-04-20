@@ -37,30 +37,37 @@ class ShdetailController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'code'            	=> urlencode($v['code']),
-				  		'name'				=> urlencode($v['name']),
-				  		'class'				=> urlencode($v['class']),
-				  		'rzbalance'			=> urlencode($v['rzbalance']),
-				  		'rqbalance'			=> urlencode($v['rqbalance']),
-				  		'rzbuy'				=> urlencode($v['rzbuy']),
-				  		'rzrepay'			=> urlencode($v['rzrepay']),
-				  		'rznetbuy'			=> urlencode($v['rznetbuy']),
-				  		'rqremain'			=> urlencode($v['rqremain']),
-				  		'rqsell'			=> urlencode($v['rqsell']),
-				  		'rqrepay'			=> urlencode($v['rqrepay']),
-				  		'total'				=> urlencode($v['total']),
-				  		'tradedate'			=> urlencode($v['tradedate']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'code'            	=> urlencode($v['code']),
+					  		'name'				=> urlencode($v['name']),
+					  		'class'				=> urlencode($v['class']),
+					  		'rzbalance'			=> urlencode($v['rzbalance']),
+					  		'rqbalance'			=> urlencode($v['rqbalance']),
+					  		'rzbuy'				=> urlencode($v['rzbuy']),
+					  		'rzrepay'			=> urlencode($v['rzrepay']),
+					  		'rznetbuy'			=> urlencode($v['rznetbuy']),
+					  		'rqremain'			=> urlencode($v['rqremain']),
+					  		'rqsell'			=> urlencode($v['rqsell']),
+					  		'rqrepay'			=> urlencode($v['rqrepay']),
+					  		'total'				=> urlencode($v['total']),
+					  		'tradedate'			=> urlencode($v['tradedate']),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

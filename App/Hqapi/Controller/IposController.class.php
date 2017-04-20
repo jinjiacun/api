@@ -47,40 +47,48 @@ CREATE TABLE `ipos` (
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-				  		'scode'             => urlencode($v['scode']),
-	  					'name'              => urlencode($v['name']),
-						'pcode'             => urlencode($v['pcode']),
-						'totalissue'        => urlencode($v['totalissue']),
-						'onlineissue'       => urlencode($v['onlineissue']),
-						'marketvalue'       => urlencode($v['marketvalue']),
-						'plimit'            => urlencode($v['plimit']),
-						'issueprice'        => urlencode($v['issueprice']),
-						'newprice'          => urlencode($v['newprice']),
-						'closeprice'        => urlencode($v['closeprice']),
-						'purchasedate'      => urlencode($v['purchasedate']),
-						'publicdate'        => urlencode($v['publicdate']),
-						'paymentdate'       => urlencode($v['paymentdate']),
-						'listeddate'        => urlencode($v['listeddate']),
-						'iporatio'          => urlencode($v['iporatio']),
-						'iperatio'          => urlencode($v['iperatio']),
-						'successrate'       => urlencode($v['successrate']),
-						'quotationmultiple' => urlencode($v['quotationmultiple']),
-						'quotationnum'      => urlencode($v['quotationnum']),
-						'liststatus'        => urlencode($v['liststatus']),
-						'wordboard'         => urlencode($v['wordboard']),
-						'totalincrease'     => urlencode($v['totalincrease'])
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+					  		'scode'             => urlencode($v['scode']),
+		  					'name'              => urlencode($v['name']),
+							'pcode'             => urlencode($v['pcode']),
+							'totalissue'        => urlencode($v['totalissue']),
+							'onlineissue'       => urlencode($v['onlineissue']),
+							'marketvalue'       => urlencode($v['marketvalue']),
+							'plimit'            => urlencode($v['plimit']),
+							'issueprice'        => urlencode($v['issueprice']),
+							'newprice'          => urlencode($v['newprice']),
+							'closeprice'        => urlencode($v['closeprice']),
+							'purchasedate'      => urlencode($v['purchasedate']),
+							'publicdate'        => urlencode($v['publicdate']),
+							'paymentdate'       => urlencode($v['paymentdate']),
+							'listeddate'        => urlencode($v['listeddate']),
+							'iporatio'          => urlencode($v['iporatio']),
+							'iperatio'          => urlencode($v['iperatio']),
+							'successrate'       => urlencode($v['successrate']),
+							'quotationmultiple' => urlencode($v['quotationmultiple']),
+							'quotationnum'      => urlencode($v['quotationnum']),
+							'liststatus'        => urlencode($v['liststatus']),
+							'wordboard'         => urlencode($v['wordboard']),
+							'totalincrease'     => urlencode($v['totalincrease'])
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
+
 
 		return array(200, 
 				array(

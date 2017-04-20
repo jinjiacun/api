@@ -33,26 +33,33 @@ class AhparityController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-				  		'name'				=> urlencode($v['name']),
-				  		'hcode'				=> urlencode($v['hcode']),
-		  				'hnewprice'			=> urlencode($v['hnewprice']),
-		  				'hchg'				=> urlencode($v['hchg']),
-						'acode'				=> urlencode($v['acode']),
-						'anewprice'			=> urlencode($v['anewprice']),
-						'achg'				=> urlencode($v['achg']),
-						'parity'			=> urlencode($v['parity']),
-						'premium'			=> urlencode($v['premium']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+					  		'name'				=> urlencode($v['name']),
+					  		'hcode'				=> urlencode($v['hcode']),
+			  				'hnewprice'			=> urlencode($v['hnewprice']),
+			  				'hchg'				=> urlencode($v['hchg']),
+							'acode'				=> urlencode($v['acode']),
+							'anewprice'			=> urlencode($v['anewprice']),
+							'achg'				=> urlencode($v['achg']),
+							'parity'			=> urlencode($v['parity']),
+							'premium'			=> urlencode($v['premium']),
+						);	
+				}
 			}
+			S($this->_module_name.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 

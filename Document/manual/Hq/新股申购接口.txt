@@ -1,0 +1,64 @@
+测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+
+get,post参数：
+method=Ipos.get_list
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "scode":"<CODE>",
+                                                "name":"<NAME>",
+                                                "pcode":"<PCODE>",
+                                                "totalissue":"<TOTALISSUE>",
+                                                "onlineissue":"<ONLINEISSUE>",
+                                                "marketvalue":"<MARKETVALUE>",
+                                                "plimit":"<PLIMT>",
+                                                "issueprice":"<ISSUEPRICE>",
+                                                "newprice":"<NEWPRICE>",
+                                                "closeprice":"<CLOSEPRICE>",                                                       "purchasedate":"<>",
+                                                "publicdate":"<PUBLICDATE>",                                                       "paymentdate":"<>",                      
+                                                "listeddate":"<LISTEDDATE>",
+                                                "iporatio":"<IPORATIO>",
+                                                "iperatio":"<IPERATIO>",                                          
+                                                "successrate":"<SUCCESSRATE>",
+                                                "quotationmultiple":"<QUOTATIONMULTIPLE>",
+                                                "liststatus":"<LISTSTATUS>",
+                                                "wordboard":"<WORDBOARD>",
+                                                "totalincrease":"<TOTALINCREASE>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<scode>              股票代码
+<name>               名称
+<pcode>              申购代码
+<totalissue>         发行总数
+<onlineissue>        网上发行
+<marketvalue>        市值
+<plimit>             申购上限
+<issueprice>         发行价格
+<newprice>           最新价
+<closeprice>         首日收盘价
+<purchasedate>       申购日期
+<publicdate>         公布日期
+<paymentdate>        中签缴款日期
+<listeddate>         上市日期
+<iporatio>           发行市盈率
+<iperatio>           行业市盈率
+<successrate>        中签率
+<quotationmultiple>  询价累计报价
+<quotationnum>       配售对象报价家属
+<liststatus>         上市状态
+<wordboard>          连续一字板数量
+<totalincrease>      总涨幅
+
+
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Ipos.get_list
+返回：
+{"status_code":200,"content":{"list":[{"id":1,"scode":"603798","name":"康普顿","pcode":"732798","totalissue":"25000000","onlineissue":"22500000","marketvalue":"100000","plimit":"10000","issueprice":"0.00","newprice":"50.55","closeprice":"20.64","purchasedate":"2016-03-23","publicdate":"2016-03-25","paymentdate":"2016-03-25","listeddate":"2016-04-06","iporatio":"17.47","iperatio":"83.33","successrate":"0.0432","quotationmultiple":"1627.20","quotationnum":"1694","liststatus":"开板","wordboard":"12","totalincrease":"346.69"},{"id":2,"scode":"300474","name":"景嘉微","pcode":"300474","totalissue":"33500000","onlineissue":"30150000","marketvalue":"130000","plimit":"13000","issueprice":"0.00","newprice":"43.30","closeprice":"19.64","purchasedate":"2016-03-22","publicdate":"2016-03-24","paymentdate":"2016-03-24","listeddate":"2016-03-31","iporatio":"21.25","iperatio":"50.64","successrate":"0.0484","quotationmultiple":"1473.09","quotationnum":"1571","liststatus":"开板","wordboard":"20","totalincrease":"846.85"},{"id":3,"scode":"603028","name":"赛福天","pcode":"732028","totalissue":"55200000","onlineissue":"49680000","marketvalue":"220000","plimit":"22000","issueprice":"0.00","newprice":"20.55","closeprice":"6.13","purchasedate":"2016-03-21","publicdate":"2016-03-23","paymentdate":"2016-03-23","listeddate":"2016-03-31","iporatio":"22.94","iperatio":"44.54","successrate":"0.0612","quotationmultiple":"1679.77","quotationnum":"1711","liststatus":"开板","wordboard":"16","totalincrease":"557.98"},{"id":4,"scode":"002791","name":"坚朗五金","pcode":"002791","totalissue":"53590000","onlineissue":"39924000","marketvalue":"210000","plimit":"21000","issueprice":"0.00","newprice":"41.88","closeprice":"31.06","purchasedate":"2016-03-18","publicdate":"2016-03-22","paymentdate":"2016-03-22","listeddate":"2016-03-29","iporatio":"21.68","iperatio":"44.67","successrate":"0.0447","quotationmultiple":"1389.75","quotationnum":"1684","liststatus":"开板","wordboard":"6","totalincrease":"148.96"},{"id":5,"scode":"002792","name":"通宇通讯","pcode":"002792","totalissue":"37500000","onlineissue":"27000000","marketvalue":"150000","plimit":"15000","issueprice":"0.00","newprice":"35.92","closeprice":"33.03","purchasedate":"2016-03-17","publicdate":"2016-03-21","paymentdate":"2016-03-21","listeddate":"2016-03-28","iporatio":"9.74","iperatio":"51.08","successrate":"0.0364","quotationmultiple":"1496.02","quotationnum":"1697","liststatus":"开板","wordboard":"9","totalincrease":"235.53"},{"id":6,"scode":"300506","name":"名家汇","pcode":"300506","totalissue":"30000000","onlineissue":"27000000","marketvalue":"120000","plimit":"12000","issueprice":"0.00","newprice":"31.09","closeprice":"12.36","purchasedate":"2016-03-15","publicdate":"2016-03-17","paymentdate":"2016-03-17","listeddate":"2016-03-24","iporatio":"22.96","iperatio":"30.33","successrate":"0.0484","quotationmultiple":"1675.18","quotationnum":"1727","liststatus":"开板","wordboard":"11","totalincrease":"301.05"},{"id":7,"scode":"300484","name":"蓝海华腾","pcode":"300484","totalissue":"13000000","onlineissue":"13000000","marketvalue":"130000","plimit":"13000","issueprice":"0.00","newprice":"71.01","closeprice":"27.00","purchasedate":"2016-03-11","publicdate":"2016-03-15","paymentdate":"2016-03-15","listeddate":"2016-03-22","iporatio":"19.83","iperatio":"28.63","successrate":"0.0237","quotationmultiple":"0.00","quotationnum":"0","liststatus":"开板","wordboard":"19","totalincrease":"766.13"},{"id":8,"scode":"603861","name":"白云电器","pcode":"732861","totalissue":"49100000","onlineissue":"44190000","marketvalue":"140000","plimit":"14000","issueprice":"0.00","newprice":"25.63","closeprice":"12.24","purchasedate":"2016-03-09","publicdate":"2016-03-11","paymentdate":"2016-03-11","listeddate":"2016-03-22","iporatio":"22.97","iperatio":"28.75","successrate":"0.0740","quotationmultiple":"1265.19","quotationnum":"1334","liststatus":"开板","wordboard":"8","totalincrease":"208.12"},{"id":9,"scode":"300505","name":"川金诺","pcode":"300505","totalissue":"23350000","onlineissue":"21015000","marketvalue":"90000","plimit":"9000","issueprice":"0.00","newprice":"47.75","closeprice":"14.76","purchasedate":"2016-03-04","publicdate":"2016-03-08","paymentdate":"2016-03-08","listeddate":"2016-03-15","iporatio":"22.98","iperatio":"41.85","successrate":"0.0458","quotationmultiple":"1550.48","quotationnum":"1606","liststatus":"开板","wordboard":"10","totalincrease":"261.95"},{"id":10,"scode":"601020","name":"华钰矿业","pcode":"780020","totalissue":"52000000","onlineissue":"46800000","marketvalue":"150000","plimit":"15000","issueprice":"0.00","newprice":"32.69","closeprice":"10.34","purchasedate":"2016-03-03","publicdate":"2016-03-07","paymentdate":"2016-03-07","listeddate":"2016-03-16","iporatio":"22.97","iperatio":"48.83","successrate":"0.0713","quotationmultiple":"1262.89","quotationnum":"1276","liststatus":"开板","wordboard":"9","totalincrease":"235.93"}],"record_count":"1527"}}

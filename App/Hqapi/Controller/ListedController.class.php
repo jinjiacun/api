@@ -33,28 +33,35 @@ class ListedController extends BaseController {
 	 
 	 public function get_list($content)
 	{
-		list($data, $record_count) = parent::get_list($content);
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			list($data, $record_count) = parent::get_list($content);
 
-		$list = array();
-		if($data)
-		{
-			foreach($data as $v)
+			$list = array();
+			if($data)
 			{
-				$list[] = array(
-						'id'              	=> intval($v['id']),
-						'code'            	=> urlencode($v['code']),
-				  		'name'				=> urlencode($v['name']),
-				  		'level'             => urlencode($v['level']),
-				  		'method'            => urlencode($v['method']),
-				  		'hosted'			=> urlencode($v['hosted']),
-		  				'flowequity'        => urlencode($v['flowequity']),
-		  				'totalequity'       => urlencode($v['totalequity']),
-		  				'revenue'           => urlencode($v['revenue']),
-		  				'netprofit'			=> urlencode($v['netprofit']),
-		  				'sumasset'			=> urlencode($v['sumasset']),
-			  			'listdate'			=> urlencode($v['listdate']),
-					);	
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              	=> intval($v['id']),
+							'code'            	=> urlencode($v['code']),
+					  		'name'				=> urlencode($v['name']),
+					  		'level'             => urlencode($v['level']),
+					  		'method'            => urlencode($v['method']),
+					  		'hosted'			=> urlencode($v['hosted']),
+			  				'flowequity'        => urlencode($v['flowequity']),
+			  				'totalequity'       => urlencode($v['totalequity']),
+			  				'revenue'           => urlencode($v['revenue']),
+			  				'netprofit'			=> urlencode($v['netprofit']),
+			  				'sumasset'			=> urlencode($v['sumasset']),
+				  			'listdate'			=> urlencode($v['listdate']),
+						);	
+				}
 			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
 		}
 
 		return array(200, 
