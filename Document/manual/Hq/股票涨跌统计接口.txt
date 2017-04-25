@@ -1,5 +1,6 @@
 ﻿测试接口地址:http://192.168.1.140:8080/StockWebServer/count
-
+正式接口地址:http://112.84.186.241:8080/StockWebServer/count
+正式内网接口地址:http://10.0.0.2:8080/StockWebServer/count
 
 get参数：
 

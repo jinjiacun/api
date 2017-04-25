@@ -17,9 +17,9 @@ return array(
 	 'media_physical_path' => 'C:/wamp/www/yms_api/Public/', #媒体物理路径
 	 'swf_tool_path'       => 'C:/SWFTools/pdf2swf.exe',#swf生成工具路径
      
-	 'DATA_CACHE_TYPE' => 'Memcache',
-	 'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
-	// 'DATA_CACHE_TYPE' => 'file',
+	// 'DATA_CACHE_TYPE' => 'Memcache',
+	 //'MEMCACHE_HOST'   => 'tcp://127.0.0.1:11211',
+	 'DATA_CACHE_TYPE' => 'file',
 	 'DATA_CACHE_TIME' => 3600*24,
 	 'PROJECT_CLASS'   => array(
 	 		     1 => '中金网',
@@ -29,7 +29,27 @@ return array(
 			     5 => '投了么',
 			     6 => '其他',			     
 	 ),
-		
+     'market_map'    => array(
+               #sh
+               '1100'=>'SH',
+               '1101'=>'SH',
+               '1102'=>'SH',
+               '1103'=>'SH',
+               '1104'=>'SH',
+               '1109'=>'SH',
+               '110c'=>'SH',
+               #sz
+               '1200'=>'SZ',
+               '1201'=>'SZ',
+               '1202'=>'SZ',
+               '1203'=>'SZ',
+               '1204'=>'SZ',
+               '1206'=>'SZ',
+               '1209'=>'SZ',
+               '120b'=>'SZ',
+               '120c'=>'SZ',
+          ),
+	'real_url'      => 'http://192.168.1.140:8080/StockWebServer/Snapshot?symbol=',	
      'domain_url'    => 'http://192.168.1.131',
      'media_url_pre' => 'http://192.168.1.131/yms_api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),

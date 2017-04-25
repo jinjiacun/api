@@ -1,5 +1,6 @@
 ﻿测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
-
+正式接口地址:http://112.84.186.241:81/api/index.php?m=Hqapi
+正式内网接口地址:http://10.0.0.2:81/api/index.php?m=Hqapi
 
 上证AB股比价
 get,post参数：

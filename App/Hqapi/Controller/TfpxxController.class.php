@@ -36,6 +36,7 @@ class TfpxxController extends BaseController {
 	 protected $haltreason;
 	 protected $block;
 	 protected $machinetime;
+	 protected $key = 'id';
 	 
 	 
 	public function get_list($content)

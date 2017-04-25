@@ -83,7 +83,7 @@ CREATE TABLE `ipos` (
 						);	
 				}
 			}
-			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+			//S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
 		}else{
 			$list         = $_cache[0];
 			$record_count = $_cache[1];			

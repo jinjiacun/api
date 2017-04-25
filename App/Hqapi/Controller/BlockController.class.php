@@ -77,13 +77,14 @@ class BlockController extends BaseController {
 						);
 				}
 			}
-			S($this->_module_name.__FUNCTION__.$content, array($status_code, $list, $record_count));
+			
+			S($this->_module_name.__FUNCTION__.$content, array($status_code, $r_content));
 		}
 		else{
 			$status_code  = $_cache[0];
-			$list         = $_cache[1];
-			$record_count = $_cache[2];
+			$r_content    = $_cache[1];
 		}
+		
 
 		return array($status_code, 
 				array(
@@ -142,27 +143,44 @@ class BlockController extends BaseController {
 			$status = $tmp_re[0];
 			$record_count = $tmp_re[1]['record_count'];
 			$list   = $tmp_re[1]['list'];
+			$_market_map = C('market_map');
 
 			if($list && count($list)>0){
 				foreach($list as $k=>$v){
 					unset($list[$k]['id'],$list[$k]['cmd'],$list[$k]['pname']);
-					$list[$k]['name']  		= '';//股票名称
-					$list[$k]['price'] 		= doubleval(0.00);//最新价
-					$list[$k]['hight'] 		= doubleval(0.00);//最高价
-					$list[$k]['lower'] 		= doubleval(0.00);//最低价
-					$list[$k]['pclose']		= doubleval(0.00);//昨收
-					$list[$k]['open']  		= doubleval(0.00);//开盘价
-					$list[$k]['turnover']	= doubleval(0.00);//成交额
-					$list[$k]['volume']		= doubleval(0.00);//成交量
-					$list[$k]['turnrate']   = doubleval(0.00);//换手率
-					$list[$k]['earning']    = doubleval(0.00);//市盈率
+					$_arr = json_decode(file_get_contents(C('real_url').$_market_map[$v['codetype']].$v['code']), true);
+					$list[$k]['name']  		= urlencode($_arr[0]['name']);//股票名称
+					$list[$k]['price'] 		= doubleval($_arr[0]['close']);//最新价
+					$list[$k]['hight'] 		= doubleval($_arr[0]['high']);//最高价
+					$list[$k]['lower'] 		= doubleval($_arr[0]['low']);//最低价
+					$list[$k]['pclose']		= doubleval($_arr[0]['pclose']);//昨收
+					$list[$k]['open']  		= doubleval($_arr[0]['open']);//开盘价
+					$list[$k]['turnover']	= doubleval($_arr[0]['turnover']);//成交额
+					$list[$k]['volume']		= doubleval($_arr[0]['volume']);//成交量
+					$list[$k]['turnrate']   = doubleval($_arr[0]['turnrate']);//换手率
+					$list[$k]['earning']    = doubleval($_arr[0]['earning']);//市盈率
 				}
 			}
 			S($this->_module_name.__FUNCTION__.$content, array($status, $list, $record_count));
 		}else{
+			$_market_map = C('market_map');
 			$status       = $_cache[0];
 			$list         = $_cache[1];
 			$record_count = $_cache[2];
+			if($list && count($list)>0){
+				foreach($list as $k=>$v){
+					$_arr = json_decode(file_get_contents(C('real_url').$_market_map[$v['codetype']].$v['code']), true);
+					$list[$k]['price'] 		= doubleval($_arr[0]['close']);//最新价
+					$list[$k]['hight'] 		= doubleval($_arr[0]['high']);//最高价
+					$list[$k]['lower'] 		= doubleval($_arr[0]['low']);//最低价
+					$list[$k]['pclose']		= doubleval($_arr[0]['pclose']);//昨收
+					$list[$k]['open']  		= doubleval($_arr[0]['open']);//开盘价
+					$list[$k]['turnover']	= doubleval($_arr[0]['turnover']);//成交额
+					$list[$k]['volume']		= doubleval($_arr[0]['volume']);//成交量
+					$list[$k]['turnrate']   = doubleval($_arr[0]['turnrate']);//换手率
+					$list[$k]['earning']    = doubleval($_arr[0]['earning']);//市盈率
+				}				
+			}
 		}
 
 
