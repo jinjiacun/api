@@ -40,20 +40,18 @@ class ShabparityController extends BaseController {
 			{
 				foreach($data as $v)
 				{
-					//$b_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['bcode']), true);
-					//$a_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['acode']), true);
-					$b_arr = json_decode($this->curl_file_get_contents(C('real_url').'SH'.$v['bcode']), true);
-					$b_arr = json_decode($this->curl_file_get_contents(C('real_url').'SH'.$v['acode']), true);
+					$b_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['bcode']), true);
+					$a_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['acode']), true);
 					$list[] = array(
 							'id'              	=> intval($v['id']),
 					  		'bcode'             => urlencode($v['bcode']),
 					  		'bname'				=> urlencode($v['bname']),
-					  		'bprice'            => doubleval($b_arr[0]['close']),
+					  		'bprice'            => sprintf("%.2f",$b_arr[0]['close']),
 					  		'bclose'            => doubleval($b_arr[0]['pclose']),
 					  		'americaprice'      => doubleval(0.00),
 					  		'acode'             => urlencode($v['acode']),
 					  		'aname'             => urlencode($v['aname']),
-					  		'aprice'            => doubleval($a_arr[0]['close']),
+					  		'aprice'            => sprintf("%.2f",$a_arr[0]['close']),
 					  		'aclose'            => doubleval($a_arr[0]['pclose']),
 						);	
 					//$real_map['a'][intval($v['id'])] = 'SH'.$v['acode'];
@@ -69,9 +67,9 @@ class ShabparityController extends BaseController {
 				foreach($list as $k=>$v){
 					$b_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['bcode']), true);
 					$a_arr = json_decode(file_get_contents(C('real_url').'SH'.$v['acode']), true);
-					$list[$k]['bprice'] = doubleval($b_arr[0]['close']);
+					$list[$k]['bprice'] = sprintf("%.2f",$b_arr[0]['close']);
 					$list[$k]['bclose'] = doubleval($b_arr[0]['pclose']);
-					$list[$k]['aprice'] = doubleval($a_arr[0]['close']);
+					$list[$k]['aprice'] = sprintf("%.2f",$a_arr[0]['close']);
 					$list[$k]['aclose'] = doubleval($a_arr[0]['pclose']);
 				}
 			}		

@@ -43,7 +43,13 @@ class TfpxxController extends BaseController {
 	{
 		$_cache = S($this->_module_name.$content);
 		if(!$_cache){
-			list($data, $record_count) = parent::get_list($content);
+			//查询最新日期
+			M()->query("set @a =(select DATE_FORMAT(max(machinetime),'%Y-%m-%d')
+				from tfpxx);");
+			$tmp_data = $this->fill($content);
+			$tmp_data['where']['_string'] = "DATE_FORMAT(machinetime,'%Y-%m-%d') = @a";
+			$tmp_content = json_encode($tmp_data);
+			list($data, $record_count) = parent::get_list($tmp_content);
 
 			$list = array();
 			if($data)
@@ -64,7 +70,7 @@ class TfpxxController extends BaseController {
 						);	
 				}
 			}
-			S($this->_module_name.$content, array($list, $record_count));
+			//S($this->_module_name.$content, array($list, $record_count));
 		}else{
 			$list         = $_cache[0];
 			$record_count = $_cache[1];			
