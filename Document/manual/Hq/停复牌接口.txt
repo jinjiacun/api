@@ -76,6 +76,41 @@ http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list&content={"w
 返回
 {"status_code":200,"content":{"list":[{"id":241,"code":"300423","name":"鲁亿通","haltdate":"2017-02-27 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"创业板"}],"record_count":"1"}}
 
+===================================================================================================
+当天复牌数据+其他数据按照停牌时间排序(除当天复牌数据)
+method=Thpxx.get_list_union
+content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}}
+<PAGE_INDEX>  当前要查询的页数
+<PAGE_SIZE>   当前每页展示的条数
+返回:
+{'status_code':<STATUS_CODE>,'content':{'list':[{"id":<ID>,
+                                                "code":"<CODE>",
+                                                "name":"<NAME>",
+                                                "haltdate":"<HALTDATE>",
+                                                "haltstopdate":"<HALTSTOPDATE>",
+                                                "recoverydate":"<RECOVERYDATE>",
+                                                "haltterm":"<HALTTERM>",
+                                                "haltreason":"<HALTREASON>",
+                                                "block":"<BLOCK>"}
+                                                ,...],'record_count':<RECORD_COUNT>}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+<RECORD_COUNT> 当前条件下总记录条数
+
+<ID>                
+<CODE>                代码
+<NAME>                名称
+<HALTDATE>            停牌时间
+<HALTSTOPDATE>        停牌截止时间
+<RECOVERYDATE>        预计复牌时间
+<HALTTERM>            停牌期限
+<HALTREASON>          停牌原因
+<BLOCK>               所属板块
+
+示例
+http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list_union
+返回
+{"status_code":200,"content":{"list":[{"id":11,"code":"002219","name":"恒康医疗","haltdate":"2017-04-21 09:30:00","haltstopdate":"2017-05-05 15:00:00","recoverydate":"2017-05-08 00:00:00","haltterm":"连续停牌","haltreason":"重要事项未公告","block":"中小板"},{"id":12,"code":"002252","name":"上海莱士","haltdate":"2017-04-21 09:30:00","haltstopdate":"2017-05-05 15:00:00","recoverydate":"2017-05-08 00:00:00","haltterm":"连续停牌","haltreason":"重要事项未公告","block":"中小板"},{"id":13,"code":"000780","name":"平庄能源","haltdate":"2017-04-21 09:30:00","haltstopdate":"2017-04-21 15:00:00","recoverydate":"2017-04-24 00:00:00","haltterm":"停牌一天","haltreason":"刊登重要公告","block":"深主板A股"},{"id":14,"code":"600100","name":"同方股份","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"拟筹划重大资产重组","block":"沪市A股"},{"id":15,"code":"300462","name":"华铭智能","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"重要事项未公告","block":"创业板"},{"id":16,"code":"000100","name":"TCL集团","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"重要事项未公告","block":"深主板A股"},{"id":17,"code":"002669","name":"康达新材","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"刊登重要公告","block":"中小板"},{"id":18,"code":"000021","name":"深科技","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"重要事项未公告","block":"深主板A股"},{"id":19,"code":"600201","name":"生物股份","haltdate":"2017-04-21 09:30:00","haltstopdate":"","recoverydate":"","haltterm":"连续停牌","haltreason":"刊登重要公告","block":"沪市A股"},{"id":20,"code":"300554","name":"三超新材","haltdate":"2017-04-21 10:13:00","haltstopdate":"2017-04-21 10:43:00","recoverydate":"","haltterm":"盘中停牌","haltreason":"交易异常波动","block":"创业板"}],"record_count":"256"}}
 
 
 

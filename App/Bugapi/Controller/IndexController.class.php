@@ -277,7 +277,7 @@ class IndexController extends Controller {
                       $etime=microtime(true);//获取程序执行结束的时间
                       $total=$etime-$stime;   //计算差值
                       #访问日志
-                      $log_str = sprintf("end   ip:%s   date:%s use_time:%s秒 method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
+                      $log_str = sprintf("end   ip:%s   date:%s use_time:%s秒  method:%s  content:%s   type:%s   status_code:%s, data:%s\r\n\r\n", 
                                         $this->getIP(),
                                         date("Y-m-d H:i:s"), 
                                         $total,

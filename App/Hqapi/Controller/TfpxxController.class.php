@@ -84,5 +84,81 @@ class TfpxxController extends BaseController {
 					)
 				);
 	}
+
+
+	public function get_list_union($content){
+		$_cache = S($this->_module_name.__FUNCTION__.$content);
+		if(!$_cache){
+			$tmp_data = $this->fill($content);
+			$tmp_data['page_index'] = isset($tmp_data['page_index'])?intval($tmp_data['page_index']):1;
+			$tmp_data['page_size']  = isset($tmp_data['page_size'])?intval($tmp_data['page_size']):10;
+			$now_date = date("Y-m-d",strtotime("-17 day"));
+			$wk_day   =date('w');
+			if($wk_day == 6){
+				$now_date = date("Y-m-d",strtotime("-1 day"));
+			}else if($wk_day == 7){
+				$now_date = date("Y-m-d",strtotime("-2 day"));
+			}
+
+			if($tmp_data['page_index'] == 1){
+				$tmp_data['page_index'] = 0;
+			}else if($tmp_data['page_index'] > 1)
+			{
+				$tmp_data['page_index'] = ($tmp_data['page_index']-1)*$tmp_data['page_size'];
+			}
+
+			/*
+			M()->query("set @a =(select DATE_FORMAT(max(machinetime),'%Y-%m-%d')
+				from tfpxx);");
+			*/
+			//查询最新日期
+			$_sql_str = "(select * 
+				          from tfpxx 
+				          where date_format(recoverydate,'%Y-%m-%d') = '$now_date'
+				          and date_format(machinetime, '%Y-%m-%d') = '$now_date')
+						union all(
+						select * from tfpxx 
+						where date_format(machinetime,'%Y-%m-%d') = '$now_date'
+						and date_format(recoverydate, '%Y-%m-%d') <> '$now_date'
+						order by haltdate desc) limit ".$tmp_data['page_index'].','.$tmp_data['page_size'];
+	        $_sql_str1 = "select count(1) as t from tfpxx where date_format(machinetime,'%Y-%m-%d') ='$now_date'";
+		    $data = M()->query($_sql_str);
+		    
+		    $amount = M()->query($_sql_str1);
+		    $record_count = $amount[0]['t'];
+
+			$list = array();
+			if($data)
+			{
+				foreach($data as $v)
+				{
+					$list[] = array(
+							'id'              => intval($v['id']),
+							'code'            => urlencode($v['code']),
+							'name'            => urlencode($v['name']),
+							'haltdate'        => urlencode($v['haltdate']),
+							'haltstopdate'	  => $v['haltstopdate']=='0000-00-00 00:00:00'?'':urlencode($v['haltstopdate']),
+							'recoverydate'    => $v['recoverydate']=='0000-00-00 00:00:00'?'':urlencode($v['recoverydate']),
+							'haltterm'        => urlencode($v['haltterm']),
+							'haltreason'      => urlencode($v['haltreason']),
+							'block'           => urlencode($v['block']),
+							//'machinetime'     => urlencode($v['machinetime']),
+						);	
+				}
+			}
+			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		}else{
+			$list         = $_cache[0];
+			$record_count = $_cache[1];			
+		}
+
+
+		return array(200, 
+				array(
+					'list'=>$list,
+					'record_count'=> $record_count,
+					)
+				);
+	}
 	 
 }

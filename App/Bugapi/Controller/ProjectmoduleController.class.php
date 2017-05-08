@@ -53,7 +53,7 @@ class ProjectmoduleController extends BaseController {
 		$data['name']       = htmlspecialchars(trim($data['name']));
 	
 		if('' == $data['name']
-		|| '' == $data['project_id']
+		|| 0 == $data['project_id']
 		)
 		{
 				return C('param_fmt_err');
