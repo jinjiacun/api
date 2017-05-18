@@ -1,4 +1,5 @@
 测试接口地址:192.168.1.233/yms_api/index.php?m=Hqapi
+扬州服务器:
 正式接口地址:http://112.84.186.241:81/api/index.php?m=Hqapi
 正式接口内网地址:http://10.0.0.2:81/api/index.php?m=Hqapi
 

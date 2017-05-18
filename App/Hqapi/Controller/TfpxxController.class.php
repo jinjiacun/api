@@ -70,7 +70,7 @@ class TfpxxController extends BaseController {
 						);	
 				}
 			}
-			//S($this->_module_name.$content, array($list, $record_count));
+			S($this->_module_name.$content, array($list, $record_count));
 		}else{
 			$list         = $_cache[0];
 			$record_count = $_cache[1];			
@@ -92,7 +92,8 @@ class TfpxxController extends BaseController {
 			$tmp_data = $this->fill($content);
 			$tmp_data['page_index'] = isset($tmp_data['page_index'])?intval($tmp_data['page_index']):1;
 			$tmp_data['page_size']  = isset($tmp_data['page_size'])?intval($tmp_data['page_size']):10;
-			$now_date = date("Y-m-d",strtotime("-17 day"));
+			//$now_date = date("Y-m-d",strtotime("-17 day"));
+			$now_date = date("Y-m-d");
 			$wk_day   =date('w');
 			if($wk_day == 6){
 				$now_date = date("Y-m-d",strtotime("-1 day"));
@@ -106,11 +107,7 @@ class TfpxxController extends BaseController {
 			{
 				$tmp_data['page_index'] = ($tmp_data['page_index']-1)*$tmp_data['page_size'];
 			}
-
-			/*
-			M()->query("set @a =(select DATE_FORMAT(max(machinetime),'%Y-%m-%d')
-				from tfpxx);");
-			*/
+			
 			//查询最新日期
 			$_sql_str = "(select * 
 				          from tfpxx 

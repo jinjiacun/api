@@ -1,9 +1,13 @@
 测试接口地址:http://192.168.1.233/yms_api/index.php?m=Hqapi
+扬州服务器:
 正式接口地址:http://112.84.186.241:81/api/index.php?m=Hqapi
 正式接口内网地址:http://10.0.0.2:81/api/index.php?m=Hqapi
+上海服务器:
+正式接口地址:http://122.144.199.126:81/api/index.php?m=Hqapi
+正式接口内网地址:http://10.0.1.1:81/api/index.php?m=Hqapi
 
 get,post参数：
-method=Thpxx.get_list
+method=Tfpxx.get_list
 content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}
 <PAGE_INDEX>  当前要查询的页数
 <PAGE_SIZE>   当前每页展示的条数
@@ -42,7 +46,7 @@ http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list
 
 ===================================================================================================
 按照品种查询
-method=Thpxx.get_list
+method=Tfpxx.get_list
 content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'where':{"code":"<CODE>"}}
 <PAGE_INDEX>  当前要查询的页数
 <PAGE_SIZE>   当前每页展示的条数
@@ -78,7 +82,7 @@ http://192.168.1.233/yms_api/index.php?m=hqapi&method=Tfpxx.get_list&content={"w
 
 ===================================================================================================
 当天复牌数据+其他数据按照停牌时间排序(除当天复牌数据)
-method=Thpxx.get_list_union
+method=Tfpxx.get_list_union
 content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>}}
 <PAGE_INDEX>  当前要查询的页数
 <PAGE_SIZE>   当前每页展示的条数
