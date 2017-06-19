@@ -1,3 +1,4 @@
+
 <?php
 return array(
 	 'MODULE_NAME'    => 'Hqapi',
@@ -175,7 +176,15 @@ return array(
                     'am_time' =>array('s'=>'9:30:00',  'e'=>'11:30:00'),    #上午交易时间
                     'pm_time' =>array('s'=>'13:00:00', 'e'=>'15:00:00'),    #下午交易时间
           ),
-	'real_url'      => 'http://192.168.1.140:8080/StockWebServer/Snapshot?symbol=',	
+     'block_type'=>array(
+               'dy_plates',
+               'gn_plates',
+               'hy_plates'
+          ),
+     'cache_block'=>'block.php',
+     'cache_block_code'=>'block_code.php',
+     'raise_url'     => 'http://192.168.1.140:8080/StockWebServer/GetMap?market=SH_A,SH_B,SZ_A,SZ_B,SZ_MIDDLE,SZ_ACCOUNT&column=SORT_RAISE',
+     'real_url'      => 'http://192.168.1.140:8080/StockWebServer/Snapshot?symbol=',	
      'domain_url'    => 'http://192.168.1.131',
      'media_url_pre' => 'http://192.168.1.131/yms_api/Public/',
      'param_err'     => array(500, urlencode('参数不合法')),

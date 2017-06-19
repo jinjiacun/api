@@ -190,5 +190,96 @@ class BlockController extends BaseController {
 					'record_count'=> $record_count,
 					)
 		);
+
+	}
+	
+	public function get_code_raise($content){
+		$data = $this->fill($content);			
+		
+		if(!isset($data['code'])){
+			return C('param_err');
+		}
+
+		$url = C('real_url');
+		$block_type = C('block_type');
+		$code_list = array();
+		$block_code_list = array();
+
+		$raise_list = $this->get_raise();
+		$cache_block = include_once(__PUBLIC__."/cache/block.php");
+		$cache_code  = include_once(__PUBLIC__."/cache/block_code.php");
+
+		foreach($data['code'] as $v){
+			$_tmp = explode('_', $v);
+			$block_type = $_tmp[0];
+			$block_code = $_tmp[1];
+			$code = $this->my_max($block_type.'_plates', 
+			                      $block_code, 
+					      $raise_list, 
+					      $cache_code);
+                        $block_code_list[$block_code] = array('cmd'  => $block_code,
+					             'pname'=> $cache_block[$block_type.'_plates'][$block_code]['pname'],
+						     'amount'=> $cache_block[$block_type.'_plates'][$block_code]['amount'],
+						     'code'  => $code
+                                                     );
+                        $code_list[] = $code;
+		}
+		/*
+		$i = 0;
+		foreach($cache_block['gn_plates'] as $k=>$v){
+			$i++;
+			$code = $this->my_max('gn_plates', $k, $raise_list, $cache_code);
+			$block_code_list[$k] = array('cmd'=>$k,'pname'=>$v['pname'],'amount'=>$v['amount'], 'code' => $code);
+			$code_list[] = $code;
+			
+			if($i > 20)
+			      break;
+		}
+		*/
+		
+		$code_str     = implode(",", $code_list);
+		$code_content = $this->request_by_curl($url.$code_str, $code_str);
+		$_tmp_list = json_decode($code_content, true);
+		$code_list = array();
+		foreach($_tmp_list as $v){
+			$code_list[$v['symbol']] = $v;
+		}
+		unset($_tmp_list, $v);
+		foreach($block_code_list as $k=>$v){
+			$block_code_list[$k]['price'] = $code_list[$v['code']]['close'];
+			$block_code_list[$k]['changerate'] = $code_list[$v['code']]['changerate'];
+			$block_code_list[$k]['name'] = urlencode($code_list[$v['code']]['name']);
+		}
+		
+		return array(200, $block_code_list); 
+	}	
+
+	private function my_max($block_type, $block_num, $raise_list, $cache_code){
+		$code_list  = array();
+		$stock_list = array();
+			
+		$tmp_list = $cache_code[$block_type][$block_num];
+		$i = 0;
+		foreach($tmp_list as $k=>$v){
+			if(isset($raise_list[$k]))
+				$code_list[$k] = doubleval($raise_list[$k]);
+		}
+
+		if(is_array($code_list))
+			$max_raise_code = array_search(max($code_list), $code_list);
+		else
+			$max_raise_code = $code_list;
+
+		return $max_raise_code;
+	}
+
+	private function get_raise(){
+		$raise_url  = C('raise_url');
+
+		//获取涨跌幅
+		$raise_content = $this->request_by_curl($raise_url, '');
+		$raise_list    = json_decode($raise_content, true);	
+
+		return $raise_list;
 	}
 }
