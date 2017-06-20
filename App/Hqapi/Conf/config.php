@@ -182,7 +182,7 @@ return array(
                'hy_plates'
           ),
      'cache_block'=>'block.php',
-     'cache_block_code'=>'block_code.php',
+     'cache_code'=>'block_code.php',
      'raise_url'     => 'http://192.168.1.140:8080/StockWebServer/GetMap?market=SH_A,SH_B,SZ_A,SZ_B,SZ_MIDDLE,SZ_ACCOUNT&column=SORT_RAISE',
      'real_url'      => 'http://192.168.1.140:8080/StockWebServer/Snapshot?symbol=',	
      'domain_url'    => 'http://192.168.1.131',

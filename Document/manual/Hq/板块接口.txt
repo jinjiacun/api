@@ -78,3 +78,38 @@ content={'page_index':<PAGE_INDEX>,'page_size':<PAGE_SIZE>,'block_num':'<BLOCK_N
 http://192.168.1.233/yms_api/index.php?m=hqapi&method=Block.get_block_info&content={"block_num":"dy_BK01541"}
 返回：
 {"status_code":200,"content":{"list":[{"codetype":"1201","code":"000528","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000582","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000608","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000662","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000703","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000716","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000750","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000806","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000833","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0},{"codetype":"1201","code":"000911","name":"","price":0,"hight":0,"lower":0,"pclose":0,"open":0,"turnover":0,"volume":0,"turnrate":0,"earning":0}],"record_count":"36"}}
+
+
+====================================================================================================================
+--板块领涨
+
+get,post参数：
+method=Block.get_code_raise
+content={'code':["<BLOCK_NUM1>","<BLOCK_NUM2>",...,""<BLOCK_NUMn>""]}
+<BLOCK_NUM>       板块代码
+返回:
+{'status_code':<STATUS_CODE>,'content':{'<BLOCK_NUM>':{"block_num":"<BLOCK_NUM>",
+                                                       "pname":"<PNAME>",
+                                                       "amount":"<AMOUNT>",
+                                                       "code":"<CODE>",
+                                                       "price":"<PRICE>",
+                                                       "changerate":"<CHANGERATE>",                                                       "name":"<NAME>"
+                                                }
+                                                ,...}}
+                                                
+<STATUS_CODE>  返回状态码(200为正常，500表示参数有错误)
+
+
+
+<PNAME>               板块名称
+<AMOUNT>              品种总数
+<CODE>                领涨代码
+<NAME>                领涨代码名称
+<PRICE>               领涨股票最新价
+<CHANGERATE>          领涨涨跌幅
+
+示例：
+请求
+http://192.168.1.233/yms_api/index.php?m=Hqapi&method=Block.get_code_raise&content={%22code%22:[%22gn_BK05001%22,%22gn_BK07161%22,%22gn_BK05491%22,%22gn_BK05681%22,%22gn_BK08041%22,%22gn_BK05961%22,%22gn_BK07181%22,%22gn_BK05711%22,%22gn_BK04991%22,%22gn_BK06851%22,%22gn_BK06301%22,%22gn_BK06101%22,%22gn_BK09301%22,%22gn_BK05671%22,%22gn_BK08031%22,%22gn_BK07001%22,%22gn_BK05261%22,%22gn_BK05061%22,%22gn_BK07011%22,%22gn_BK06831%22]}
+返回：
+{"status_code":200,"content":{"BK05001":{"block_num":"gn_BK05001","pname":"HS300_","amount":"330","code":"SH600648","price":"18.270","changerate":"5.06%","name":"外高桥"},"BK07161":{"block_num":"gn_BK07161","pname":"大金融","amount":"52","code":"SH600816","price":"11.310","changerate":"1.80%","name":"安信信托"},"BK05491":{"block_num":"gn_BK05491","pname":"深圳特区","amount":"182","code":"SZ300130","price":"20.970","changerate":"10.02%","name":"新国都"},"BK05681":{"block_num":"gn_BK05681","pname":"深成500","amount":"500","code":"SZ000801","price":"9.530","changerate":"10.05%","name":"四川九洲"},"BK08041":{"block_num":"gn_BK08041","pname":"深股通","amount":"957","code":"SZ000801","price":"9.530","changerate":"10.05%","name":"四川九洲"},"BK05961":{"block_num":"gn_BK05961","pname":"融资融券","amount":"944","code":"SZ000801","price":"9.530","changerate":"10.05%","name":"四川九洲"},"BK07181":{"block_num":"gn_BK07181","pname":"证金持股","amount":"388","code":"SH600581","price":"9.640","changerate":"5.13%","name":"八一钢铁"},"BK05711":{"block_num":"gn_BK05711","pname":"预盈预增","amount":"872","code":"SZ300352","price":"6.140","changerate":"10.04%","name":"北信源"},"BK04991":{"block_num":"gn_BK04991","pname":"AH股","amount":"95","code":"SH600874","price":"21.040","changerate":"5.20%","name":"创业环保"},"BK06851":{"block_num":"gn_BK06851","pname":"举牌概念","amount":"161","code":"SZ002591","price":"0.000","changerate":"10.02%","name":"恒大高新"},"BK06301":{"block_num":"gn_BK06301","pname":"前海概念","amount":"33","code":"SZ300037","price":"22.800","changerate":"2.06%","name":"新宙邦"},"BK06101":{"block_num":"gn_BK06101","pname":"央视50_","amount":"50","code":"SZ000970","price":"14.510","changerate":"4.24%","name":"中科三环"},"BK09301":{"block_num":"gn_BK09301","pname":"深港通","amount":"29","code":"SZ002703","price":"25.160","changerate":"1.86%","name":"浙江世宝"},"BK05671":{"block_num":"gn_BK05671","pname":"股权激励","amount":"390","code":"SZ300312","price":"12.050","changerate":"10.05%","name":"邦讯技术"},"BK08031":{"block_num":"gn_BK08031","pname":"股权转让","amount":"83","code":"SZ000912","price":"9.130","changerate":"4.46%","name":"泸天化"},"BK07001":{"block_num":"gn_BK07001","pname":"充电桩","amount":"43","code":"SZ300491","price":"38.700","changerate":"5.88%","name":"通合科技"},"BK05261":{"block_num":"gn_BK05261","pname":"分拆上市","amount":"40","code":"SH600330","price":"8.700","changerate":"1.99%","name":"天通股份"},"BK05061":{"block_num":"gn_BK05061","pname":"创投","amount":"89","code":"SH600128","price":"11.690","changerate":"4.66%","name":"弘业股份"},"BK07011":{"block_num":"gn_BK07011","pname":"中证500","amount":"551","code":"SZ002056","price":"7.600","changerate":"9.99%","name":"横店东磁"},"BK06831":{"block_num":"gn_BK06831","pname":"国企改革","amount":"203","code":"SZ002246","price":"14.890","changerate":"2.48%","name":"北化股份"}}}

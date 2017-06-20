@@ -217,7 +217,7 @@ class BlockController extends BaseController {
 			                      $block_code, 
 					      $raise_list, 
 					      $cache_code);
-                        $block_code_list[$block_code] = array('cmd'  => $block_code,
+                        $block_code_list[$block_code] = array('block_num'  => $block_type.'_'.$block_code,
 					             'pname'=> $cache_block[$block_type.'_plates'][$block_code]['pname'],
 						     'amount'=> $cache_block[$block_type.'_plates'][$block_code]['amount'],
 						     'code'  => $code
