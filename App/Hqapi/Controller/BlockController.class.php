@@ -247,8 +247,11 @@ class BlockController extends BaseController {
 		unset($_tmp_list, $v);
 		foreach($block_code_list as $k=>$v){
 			$block_code_list[$k]['price'] = $code_list[$v['code']]['close'];
+			if($block_code_list[$k]['price'] == null)
+				$block_code_list[$k]['price'] = 0;
 			$block_code_list[$k]['changerate'] = $code_list[$v['code']]['changerate'];
 			$block_code_list[$k]['name'] = urlencode($code_list[$v['code']]['name']);
+			$block_code_list[$k]['code'] = substr($block_code_list[$k]['code'],2,6);
 		}
 		
 		return array(200, $block_code_list); 
@@ -257,6 +260,7 @@ class BlockController extends BaseController {
 	private function my_max($block_type, $block_num, $raise_list, $cache_code){
 		$code_list  = array();
 		$stock_list = array();
+		$max_raise_code = null;
 			
 		$tmp_list = $cache_code[$block_type][$block_num];
 		$i = 0;
@@ -264,11 +268,14 @@ class BlockController extends BaseController {
 			if(isset($raise_list[$k]))
 				$code_list[$k] = doubleval($raise_list[$k]);
 		}
-
 		if(is_array($code_list))
 			$max_raise_code = array_search(max($code_list), $code_list);
-		else
+		else if(count($count_list) == 1)
 			$max_raise_code = $code_list;
+		
+		if($max_raise_code == null)
+			$max_raise_code = $k;
+		
 
 		return $max_raise_code;
 	}
