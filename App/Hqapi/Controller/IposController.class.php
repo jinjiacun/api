@@ -48,9 +48,31 @@ CREATE TABLE `ipos` (
 	 public function get_list($content)
 	{
 		$_cache = S($this->_module_name.__FUNCTION__.$content);
-		if(!$_cache){
+		//if(!$_cache){
+			$tmp_content = $this->fill($content);
+			unset($content);
+			if(isset($tmp_content['where']['type'])){
+				$type = intval($tmp_content['where']['type']);
+				unset($tmp_content['where']['type']);
+				switch($type){
+					//type=1  申购数据   当前时间<申购时间
+					case 1:{
+						$tmp_content['where']['purchasedate'] = array("gt",date("Y-m-d"));
+					}break;
+					//type=2  待上市数据  申购时间<当前时间<上市时间
+					case 2:{
+						$tmp_content['where']['purchasedate'] = array("lt",date("Y-m-d"));
+						$tmp_content['where']['listeddate'] = array("gt",date("Y-m-d"));
+					}break;
+					//type=3  已上市数据  上市时间<当前时间
+					case 3:{
+						$tmp_content['where']['listeddate'] = array("lt",date("Y-m-d"));
+					}break;				
+				}
+				$content = json_encode($tmp_content);
+			}
 			list($data, $record_count) = parent::get_list($content);
-
+			//print_r($content);
 			$list = array();
 			if($data)
 			{
@@ -83,11 +105,13 @@ CREATE TABLE `ipos` (
 						);	
 				}
 			}
-			S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+			//S($this->_module_name.__FUNCTION__.$content, array($list, $record_count));
+		/*
 		}else{
 			$list         = $_cache[0];
 			$record_count = $_cache[1];			
 		}
+		*/
 
 
 		return array(200, 

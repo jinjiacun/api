@@ -48,7 +48,19 @@ class TfpxxController extends BaseController {
 				from tfpxx);");
 			$tmp_data = $this->fill($content);
 			$tmp_data['where']['_string'] = "DATE_FORMAT(machinetime,'%Y-%m-%d') = @a";
+			if(isset($tmp_data['where']['name'])){
+				//echo 'name:';
+				//print_r($tmp_data['where']['name']);
+				$left   = $right = '';
+				$length = strlen($tmp_data['where']['name'][1]);
+				$left  = $tmp_data['where']['name'][1][0] == '%'?'%':'';
+				$right = $tmp_data['where']['name'][1][$length-1] == '%'?'%':'';
+				$tmp_data['where']['name'][1] = $left.base64_decode(trim($tmp_data['where']['name'][1],'%'), true).$right;
+			}
+			//print_r($tmp_data);
 			$tmp_content = json_encode($tmp_data);
+			//print_r($tmp_content);
+			//die;
 			list($data, $record_count) = parent::get_list($tmp_content);
 
 			$list = array();
@@ -70,7 +82,7 @@ class TfpxxController extends BaseController {
 						);	
 				}
 			}
-			S($this->_module_name.$content, array($list, $record_count));
+			//S($this->_module_name.$content, array($list, $record_count));
 		}else{
 			$list         = $_cache[0];
 			$record_count = $_cache[1];			
