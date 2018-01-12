@@ -1,0 +1,113 @@
+[28-Apr-2016 16:05:40 PRC] PHP Fatal error:  Class 'Spreadsheet_Excel_Reader' not found in /var/www/html/testlink/lib/testcases/tcImport.php on line 1124
+[28-Apr-2016 16:40:43 PRC] PHP Fatal error:  Class 'Spreadsheet_Excel_Reader' not found in /var/www/html/testlink/lib/testcases/tcImport.php on line 1125
+[28-Apr-2016 17:01:22 PRC] PHP Parse error:  syntax error, unexpected 'require_once' (T_REQUIRE_ONCE) in /var/www/html/testlink/lib/testcases/tcImport.php on line 18
+[29-Apr-2016 09:09:24 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 09:16:38 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 09:16:38 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 09:16:38 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 09:51:05 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 09:51:05 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 09:51:05 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 09:58:06 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 09:58:06 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 09:58:06 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 10:04:15 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 10:04:15 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 10:04:15 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 10:07:26 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 10:07:26 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 10:07:26 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 10:09:41 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 10:09:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 10:09:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 10:09:41 PRC] 
+[29-Apr-2016 10:09:58 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 10:09:58 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 10:09:58 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 10:09:58 PRC] 
+[29-Apr-2016 10:11:26 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 10:11:26 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 10:11:26 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 11:26:37 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 11:26:37 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 11:26:37 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 11:28:10 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 11:28:10 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 11:28:10 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 12:20:41 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 12:20:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 12:20:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 12:20:41 PRC] PHP Fatal error:  Call to undefined function create_xml_tsspec_from_xls() in /var/www/html/testlink/lib/testcases/tcImport.php on line 1084
+[29-Apr-2016 12:21:00 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 12:21:00 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 12:21:00 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 12:21:00 PRC] PHP Fatal error:  Call to undefined function create_xml_tsspec_from_xls() in /var/www/html/testlink/lib/testcases/tcImport.php on line 1084
+[29-Apr-2016 12:30:40 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 12:30:40 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 12:30:40 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 12:31:33 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 12:31:33 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 12:31:33 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:27:06 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:27:06 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:27:06 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:27:06 PRC] 
+[29-Apr-2016 13:32:57 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:32:57 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:32:57 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:34:01 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:34:01 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:34:01 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:35:54 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:35:54 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:35:54 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:38:45 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:38:45 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:38:45 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:38:45 PRC] 
+[29-Apr-2016 13:58:08 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:58:08 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:58:08 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 13:59:51 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 13:59:51 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 13:59:51 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:01:16 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:01:16 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:01:16 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:01:46 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:01:46 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:01:46 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:03:02 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:03:02 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:03:02 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:48:02 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:48:02 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:48:02 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:52:04 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:52:04 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:52:04 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:54:51 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:54:51 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:54:51 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:56:15 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:56:15 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:56:15 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:57:00 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:57:00 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:57:00 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:57:41 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:57:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:57:41 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[29-Apr-2016 14:58:07 PRC] importTestCaseDataFromSpreadsheet
+[29-Apr-2016 14:58:07 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xls
+[29-Apr-2016 14:58:07 PRC] /var/www/html/testlink/gui/templates_c/218er6p4olip552vp8svg9pjl6-importtcs.xml
+[03-May-2016 10:27:01 PRC] importTestCaseDataFromSpreadsheet
+[03-May-2016 10:27:01 PRC] /var/www/html/testlink/gui/templates_c/0al5jno8vpbdmvfkqop5u89fv6-importtcs.xls
+[03-May-2016 10:27:01 PRC] /var/www/html/testlink/gui/templates_c/0al5jno8vpbdmvfkqop5u89fv6-importtcs.xml
+[03-May-2016 10:27:01 PRC] PHP Fatal error:  Class 'ZipArchive' not found in /var/www/html/testlink/lib/testcases/PHPExcel/Reader/Excel2007.php on line 94
+[03-May-2016 10:37:08 PRC] PHP Fatal error:  require_once(): Failed opening required 'ZipArchive.php' (include_path='.:/usr/local/php/lib/php:.:/var/www/html/testlink/lib/functions/:/var/www/html/testlink/lib/issuetrackerintegration/:/var/www/html/testlink/lib/reqmgrsystemintegration/:/var/www/html/testlink/third_party/') in /var/www/html/testlink/lib/testcases/PHPExcel/Reader/Excel2007.php on line 28
+[03-May-2016 10:37:25 PRC] PHP Fatal error:  require_once(): Failed opening required 'ZipArchive.php' (include_path='.:/usr/local/php/lib/php:.:/var/www/html/testlink/lib/functions/:/var/www/html/testlink/lib/issuetrackerintegration/:/var/www/html/testlink/lib/reqmgrsystemintegration/:/var/www/html/testlink/third_party/') in /var/www/html/testlink/lib/testcases/PHPExcel/Reader/Excel2007.php on line 28
+[03-May-2016 10:38:53 PRC] importTestCaseDataFromSpreadsheet
+[03-May-2016 10:38:53 PRC] /var/www/html/testlink/gui/templates_c/0al5jno8vpbdmvfkqop5u89fv6-importtcs.xls
+[03-May-2016 10:38:53 PRC] /var/www/html/testlink/gui/templates_c/0al5jno8vpbdmvfkqop5u89fv6-importtcs.xml
+[03-May-2016 10:38:53 PRC] PHP Fatal error:  Class 'ZipArchive' not found in /var/www/html/testlink/lib/testcases/PHPExcel/Reader/Excel2007.php on line 94

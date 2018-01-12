@@ -1,0 +1,322 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: wuyanxiong_ht
+ * Date: 2017/11/30
+ * Time: 16:34
+ */
+require('../../config.inc.php');
+require_once('common.php');
+require_once('displayMgr.php');
+
+/*
+require_once('object.class.php');
+require_once('assignment_mgr.class.php');
+*/
+
+
+$templateCfg = templateConfiguration();//获取数据渲染的视图模板
+$args        = init_args($db);
+$tplan_mgr   = new testplan($db);
+$testcase    = new testcase($db);
+$testproject = new testproject($db);
+$assignment_mgr = new assignment_mgr($db);
+$gui = initializeGui($db,$args,$tplan_mgr);
+
+#cache list
+$cache_list = array(
+        'm'         =>  'cache_module',                 #module key and name map
+        'm_v'       =>  'cache_module_testsuite',       #module key and tcversion id list map
+        'm_v_u_a'   =>  'cache_module_assign_by_user',  #user map to module and tcversion total
+        'm_v_u_e'   =>  'cache_module_exec_by_user',    #user map to module and tcexec total
+    );
+//add
+//author:jinjaicun
+//time:2017-12-29 14:29
+//get build by current plan id
+$gui->tplan_id = $args->tplan_id;
+$build_list = $tplan_mgr->get_builds($args->tplan_id,
+                                     null,
+                                     null,
+                                     null);
+$gui->build_map = array();
+//$gui->build_map[0] = 'all';
+if(count($build_list) > 0){
+    foreach($build_list as $k=>$v){
+        $gui->build_map[$k] = $v['name'];
+    }
+}
+$gui->build_selected_id = 204;
+$gui->user_map      = get_select_tcproject_user_id($args->tproject_id, $db);
+$gui->user_map[0]   = '全部';
+//module
+$gui->module_map    = GetModulesByProjectId($args->tproject_id, $db);
+##---------get current testplan case assigment ---------------------
+
+#查询当前用例数
+//$testcases_count = $testproject->count_testcases($args->tproject_id);
+$gui->assignment_testcase_list = array();
+$user_id_list = array();
+
+$cache_dir = $tlCfg->cache_file['cache_dir'];
+##----------get case id by module ----------------------------------
+/*$k = 67;
+$k = 770684;
+$module_id_list = array();
+$testproject->get_all_testcases_id($k,$module_id_list);
+var_dump($module_id_list);
+die;*/
+
+/*$gui->module_map = array(
+    748495 => '辅助DEP应急系统-新',
+);*/
+
+$cache_module_file = $cache_dir.$cache_list['m_v'].".php";
+if(!file_exists($cache_module_file)){
+	$module_case_id_list = array();//module_id map case_id list
+	if(count($gui->module_map) > 0){
+		foreach($gui->module_map as $k => $v){
+			$tmp_id_list    = array();
+			$module_id_list = array();
+			$testproject->get_all_testcases_id($k,$tmp_id_list);
+			$module_id_list = $testproject->getTcversionIdByCaseId($tmp_id_list);
+			$module_case_id_list[$k] = $module_id_list;
+			unset($tmp_id_list, $module_id_list);
+	    }   
+	    unset($k, $v);
+	}
+	file_put_contents($cache_module_file, "<?php return ".var_export($module_case_id_list,true).";");
+}else{
+	$module_case_id_list = include_once($cache_module_file);
+}
+var_dump($module_case_id_list);
+die;
+#unset($module_case_id_list[770684]);
+#echo var_dump(array_keys($module_case_id_list));
+#get first test case suite has assignment by user
+$gui->assignment_testcase_list = array();
+$cache_moudle_assignment = array();
+$cache_module_assignment_file = $cache_dir.$cache_list['m_v_u_a'].".php";
+if(!file_exists($cache_module_assignment_file)){
+	if(count($module_case_id_list) > 0){
+		foreach($module_case_id_list as $k => $v){
+			$tmp_list = $assignment_mgr->getAssignTestCaseCountByPlanOrBuildOrModuleGroupUser($module_case_id_list[$k],
+				$gui->module_map[$k],
+				$args->tplan_id,
+				$args->user_id,
+				$args->build_id);
+			if($tmp_list){			
+				$cache_module_assignment[$k] = $tmp_list;
+				unset($tmp_list);	
+			}
+		}
+	}
+	file_put_contents($cache_module_assignment_file, "<?php return ".var_export($cache_module_assignment, true).";");
+}else{
+	$cache_module_assignment = include_once($cache_module_assignment_file);
+}
+###------------------------get test case not exec stat ---------------------------------------
+$cache_module_no_exec = array();
+$index = 0;
+if(count($module_case_id_list) > 0){
+    foreach($module_case_id_list as $k => $v){
+	    $cache_module_no_exec[$k] = $testcase->getCaseCountNoExec($v, $args->tplan_id, $args->build_id);
+    }
+    unset($k, $v);
+}
+print_r($cache_module_no_exec);
+die;
+###------------------------get test case exec stat -------------------------------------------
+#var_dump($gui->);
+$cache_module_exec = array();
+if(count($module_case_id_list) > 0){
+	foreach($module_case_id_list as $k => $v){		
+		$exec_sum = 0;
+		$exec_stat_list = $testcase->getCaseExecStatByVersionIdList($v);
+            	if(count($exec_stat_list) > 0){
+			foreach($exec_stat_list as $tester_id => $v){
+				$exec_sum = 0;
+				if(isset($exec_stat_list)){
+					foreach($v as $val){
+						switch($val['status']){
+						case 'p':#success
+							$cache_module_exec[$k][$tester_id]['exec_pass'] = $val['count'];
+							break;
+						case 'f':#faile
+							$cache_module_exec[$k][$tester_id]['exec_fail'] = $val['count'];
+							break;
+						case 'b':#block
+							$cache_module_exec[$k][$tester_id]['exec_block'] = $val['count'];
+							break;
+						}
+						$exec_sum += $val['count'];
+					}	                		
+                			#sum
+					$cache_module_exec[$k][$tester_id]['exec_sum'] = $exec_sum;
+					$exec_sum = 0;
+            			}
+                	}    
+            	}            
+            
+	}
+}
+###------------------------end:get test case exec stat ---------------------------------------
+$gui->module_map[0] = '全部';
+ksort($gui->module_map);
+$user_id_list = array();
+$user_id_list = array_keys($gui->report_user_module_list);
+#var_dump($gui->assignment_testcase_list);
+#die;
+//stat assignment sum
+$gui->assignment_sum = 0;
+if(count($gui->report_user_module_list) > 0){
+	foreach($gui->report_user_module_list as $author_id => $module_list){
+		foreach($module_list as $module){
+			$gui->assignment_sum += $module['assign_total'];
+		}
+		unset($module);
+	}
+	unset($author_id, $module_list);
+}
+##---------get user name from user_id -------------------------
+
+/*if(count($user_id_list) > 0){
+    $sql_template = "select first,last,login,id "
+                    ." from ".$db->get_table('users')
+                    ." where id in(%s) ";
+    $sql = sprintf($sql_template, implode(",", $user_id_list));
+    $gui->user_map = $db->fetchRowsIntoMap($sql, "id");
+}*/
+
+//end:2017-12-29 14:29
+
+/*$gui->tplan_id = $args->tplan_id;
+$metricsMgr = new tlTestPlanMetrics($db);
+$dummy = $metricsMgr->getTestplanTotalsTestcaseForRender($args->tplan_id);
+if(is_null($dummy))
+{
+    // no test cases -> no report
+    $gui->do_report['status_ok'] = 0;
+    $gui->do_report['msg'] = lang_get('report_tspec_has_no_tsuites');
+}
+else
+{
+    // 获取项目中所有的用例数
+    $gui->statistics->testplan_alltest = $dummy;
+    $gui->do_report['status_ok'] = 1;
+    $gui->do_report['msg'] = '';
+
+    // BUILDS REPORT
+    $colDefinition = null;
+    $results = null;
+    if($gui->do_report['status_ok'])
+    {
+        $gui->statistics->overallBuildStatus = $metricsMgr->getAutoBuildStatusForRender($args->tplan_id);
+        $gui->displayBuildMetrics = !is_null($gui->statistics->overallBuildStatus);
+    }
+
+}*/
+
+$smarty = new TLSmarty;
+$smarty->assign('gui', $gui);
+displayReport($templateCfg->template_dir . $templateCfg->default_template, $smarty, $args->format,$mailCfg);
+
+/*
+  function: init_args
+  args: none
+  returns: array
+*/
+function init_args(&$dbHandler)
+{
+    $iParams = array("apikey"       => array(tlInputParameter::STRING_N,32,64),
+                     "tproject_id"  => array(tlInputParameter::INT_N),
+                     "tplan_id"     => array(tlInputParameter::INT_N),
+                     'build_id'     => array(tlInputParameter::INT_N),
+                     'user_id'      => array(tlInputParameter::INT_N),
+                     'module_id'    => array(tlInputParameter::INT_N),
+                     "format"       => array(tlInputParameter::INT_N));
+    $args = new stdClass();
+    $pParams = R_PARAMS($iParams,$args);
+    if( !is_null($args->apikey) )
+    {
+        $cerbero = new stdClass();
+        $cerbero->args = new stdClass();
+        $cerbero->args->tproject_id = $args->tproject_id;
+        $cerbero->args->tplan_id = $args->tplan_id;
+
+        if(strlen($args->apikey) == 32)
+        {
+            $cerbero->args->getAccessAttr = true;
+            $cerbero->method = 'checkRights';
+            $cerbero->redirect_target = "../../login.php?note=logout";
+            setUpEnvForRemoteAccess($dbHandler,$args->apikey,$cerbero);
+        }
+        else
+        {
+            $args->addOpAccess = false;
+            $cerbero->method = null;
+            setUpEnvForAnonymousAccess($dbHandler,$args->apikey,$cerbero);
+        }
+    }
+    else
+    {
+        testlinkInitPage($dbHandler,true,false,"checkRights");
+        $args->tproject_id = isset($_SESSION['testprojectID']) ? intval($_SESSION['testprojectID']) : 0;
+    }
+
+    if($args->tproject_id <= 0)
+    {
+        $msg = __FILE__ . '::' . __FUNCTION__ . " :: Invalid Test Project ID ({$args->tproject_id})";
+        throw new Exception($msg);
+    }
+
+    if (is_null($args->format))
+    {
+        tlog("Parameter 'format' is not defined", 'ERROR');
+        exit();
+    }
+
+    return $args;
+}
+
+/**
+ *
+ *
+ */
+
+function initializeGui(&$dbHandler,$argsObj,&$tplanMgr)
+{
+    $gui                                = new stdClass();
+    $gui->title                         = lang_get('current_plan_case_exec_stat');
+    $gui->do_report                     = array();
+    $gui->columnsDefinition             = new stdClass();
+    $gui->columnsDefinition->testers    = null;
+    $gui->statistics                    = new stdClass();
+    $gui->statistics->testers           = null;
+    $gui->statistics->overalBuildStatus = null;
+    $gui->elapsed_time                  = 0;
+    $gui->displayBuildMetrics           = false;
+    $mgr                                = new testproject($dbHandler);
+    $dummy                              = $mgr->get_by_id($argsObj->tproject_id);
+    $gui->testprojectOptions            = new stdClass();
+    $gui->tproject_name                 = $dummy['name'];
+
+    $info                               = $tplanMgr->get_by_id($argsObj->tplan_id);
+    $gui->tplan_name                    = $info['name'];
+    return $gui;
+}
+
+
+function checkRights(&$db,&$user,$context = null)
+{
+    if(is_null($context))
+    {
+        $context = new stdClass();
+        $context->tproject_id = $context->tplan_id = null;
+        $context->getAccessAttr = false;
+    }
+
+    $check = $user->hasRight($db,'testplan_metrics',$context->tproject_id,$context->tplan_id,$context->getAccessAttr);
+    return $check;
+}
+?>
