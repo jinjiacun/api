@@ -1147,6 +1147,9 @@ class tlFileLogger extends tlObject
     // @see http://mantis.testlink.org/view.php?id=5148
     // @see http://mantis.testlink.org/view.php?id=4977
     // @see http://mantis.testlink.org/view.php?id=4906
+    if(!file_exists($fileName)){
+      return;
+    }
     @$fd = fopen($fileName,'a+');
     if ($fd)
     {

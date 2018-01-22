@@ -287,6 +287,12 @@ else if($args->do_copy || $args->do_copy_ghost_zone)
   $identity->tproject_id = $args->tproject_id;
   $identity->version_id = $args->tcversion_id;
 
+  //add by zhouzhaoxin for add reviewer name object
+  if (!isset($gui->reviewer_name))
+  {
+      $gui->reviewer_name = "";
+  }
+  
   $tcase_mgr->show($smarty,$gui,$identity,$gui->grants);
 
 }
@@ -319,6 +325,12 @@ else if($args->do_create_new_version)
   $identity->tproject_id = $args->tproject_id;
   $identity->version_id = !is_null($args->show_mode) ? $args->tcversion_id : testcase::ALL_VERSIONS;
  
+  //add by zhouzhaoxin for add reviewer name object
+  if (!isset($gui->reviewer_name))
+  {
+      $gui->reviewer_name = "";
+  }
+  
   $tcase_mgr->show($smarty,$gui,$identity,$gui->grants);
 
 }
@@ -338,6 +350,12 @@ else if($args->do_activate_this || $args->do_deactivate_this)
   $identity->tproject_id = $args->tproject_id;
   $identity->version_id = testcase::ALL_VERSIONS;
  
+  //add by zhouzhaoxin for add reviewer name object
+  if (!isset($gui->reviewer_name))
+  {
+      $gui->reviewer_name = "";
+  }
+  
   $tcase_mgr->show($smarty,$gui,$identity,$gui->grants);
 
 }

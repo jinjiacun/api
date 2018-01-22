@@ -528,9 +528,15 @@ CREATE TABLE `user_testplan_roles` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 #Table structure for user_case_chg_log
-DROP TABLE IF EXISTS `tccase_chg_log`;
-CREATE TABLE `tccase_chg_log`(
-  `case_id` int(10) NOT NULL DEFAULT '0', 
-  `user_id` int(10) NOT NULL DEFAULT '0', 
-  `update_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `tccase_chg_log` (
+  `case_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `update_ts` date NOT NULL,
+  PRIMARY KEY (`case_id`,`user_id`,`update_ts`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+#add  author:jinjiacun,time:2018-1-19
+CREATE TABLE `module_tcversions` (
+  `mod_id` int(11) DEFAULT NULL,
+  `tcversion_id` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8

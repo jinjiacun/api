@@ -349,8 +349,8 @@ class testcaseCommands
   {
     $options = array('status' => $argsObj->tc_status,
                      'estimatedExecDuration' => $argsObj->estimated_execution_duration);
-
-     /**
+    
+    /**
        * add case step to change log
        * author:jinjiacun
        * time:2017-12-25 17:51
@@ -364,7 +364,7 @@ class testcaseCommands
     /**
      * end
      */
-
+	 
     $ret = $this->tcaseMgr->update($argsObj->tcase_id, $argsObj->tcversion_id, $argsObj->name, 
                                    $argsObj->summary, $argsObj->preconditions, $argsObj->tcaseSteps, 
                                    $argsObj->user_id, $argsObj->assigned_keywords_list,
@@ -413,6 +413,13 @@ class testcaseCommands
       $identity->tproject_id = $argsObj->tproject_id;
       $identity->id = $argsObj->tcase_id;
       $identity->version_id = $argsObj->tcversion_id;
+      
+      //add by zhouzhaoxin for add reviewer name object
+      if (!isset($guiObj->reviewer_name))
+      {
+          $guiObj->reviewer_name = "";
+      }
+      
       
       $this->tcaseMgr->show($smartyObj,$guiObj,$identity,$this->grants); 
       exit();
@@ -602,27 +609,26 @@ class testcaseCommands
     $guiObj->step_exec_type = $argsObj->exec_type;
     $guiObj->tcversion_id = $argsObj->tcversion_id;
 
-    
+    $this->initTestCaseBasicInfo($argsObj,$guiObj);
+    $guiObj->main_descr = sprintf(lang_get('create_step'), $guiObj->testcase['tc_external_id'] . ':' . 
+                                  $guiObj->testcase['name'], $guiObj->testcase['version']); 
+
+
+    $new_step = $this->tcaseMgr->get_latest_step_number($argsObj->tcversion_id); 
+    $new_step++;
+    $op = $this->tcaseMgr->create_step($argsObj->tcversion_id,$new_step,
+                                       $argsObj->steps,$argsObj->expected_results,$argsObj->exec_type);  
+                              
+    $guiObj->doExit = false;
+    if( $op['status_ok'] )
+    {
+      $guiObj->doExit = $doAndExit;
+      $guiObj->user_feedback = sprintf(lang_get('step_number_x_created'),$argsObj->step_number);
+      $guiObj->step_exec_type = $guiObj->testcase['execution_type'];
+      $guiObj->cleanUpWebEditor = true;
+      $this->tcaseMgr->update_last_modified($argsObj->tcversion_id,$argsObj->user_id);
       $this->initTestCaseBasicInfo($argsObj,$guiObj);
-      $guiObj->main_descr = sprintf(lang_get('create_step'), $guiObj->testcase['tc_external_id'] . ':' . 
-                                    $guiObj->testcase['name'], $guiObj->testcase['version']); 
-
-
-      $new_step = $this->tcaseMgr->get_latest_step_number($argsObj->tcversion_id);           
-      $new_step++;
-      $op = $this->tcaseMgr->create_step($argsObj->tcversion_id,$new_step,
-                                         $argsObj->steps,$argsObj->expected_results,$argsObj->exec_type);
-
-      $guiObj->doExit = false;
-      if( $op['status_ok'] )
-      {
-        $guiObj->doExit = $doAndExit;
-        $guiObj->user_feedback = sprintf(lang_get('step_number_x_created'),$argsObj->step_number);
-        $guiObj->step_exec_type = $guiObj->testcase['execution_type'];
-        $guiObj->cleanUpWebEditor = true;
-        $this->tcaseMgr->update_last_modified($argsObj->tcversion_id,$argsObj->user_id);
-        $this->initTestCaseBasicInfo($argsObj,$guiObj);
-        /**
+       /**
          * add case step to change log
          * author:jinjiacun
          * time:2017-12-25 17:51
@@ -633,7 +639,7 @@ class testcaseCommands
         }
         //  $_SESSION['jim_case_title_step_change'] = 1;
         //}
-      }  
+    }  
 
     if(!$guiObj->doExit)
     {  
@@ -716,11 +722,11 @@ class testcaseCommands
     $templateCfg = templateConfiguration('tcStepEdit');
     $guiObj->template=$templateCfg->default_template;
     $guiObj->loadOnCancelURL = sprintf($guiObj->loadOnCancelURL,$argsObj->tcase_id,$argsObj->tcversion_id);
-
+        
     return $guiObj;
   }
-
-  function html_chars_change($str){   
+	
+   function html_chars_change($str){   
     $str = str_replace('“', '', $str);
     $str = str_replace('”', '', $str);
     $str = str_replace("&ldquo;", '', $str);
@@ -756,7 +762,6 @@ class testcaseCommands
     $guiObj->main_descr = sprintf(lang_get('edit_step_number_x'),$stepInfo['step_number'],
                           $guiObj->testcase['tc_external_id'] . ':' . 
                           $guiObj->testcase['name'], $guiObj->testcase['version']); 
-
     //get steps,expected_results,exec_type by step_id
     $old_step_info = $this->tcaseMgr->get_step_by_id($argsObj->step_id);   
 
@@ -828,7 +833,7 @@ class testcaseCommands
     $guiObj->step_exec_type = $argsObj->exec_type;
     
 
-    $guiObj = $this->editStep($argsObj,$request);
+    $guiObj = $this->editStep($argsObj,$request);  
     return $guiObj;
   }
 
@@ -887,7 +892,7 @@ class testcaseCommands
     $this->tcaseMgr->update_last_modified($argsObj->tcversion_id,$argsObj->user_id);
 
     $this->initTestCaseBasicInfo($argsObj,$guiObj);
-
+    
     /**
        * add case step to change log
        * author:jinjiacun
@@ -1410,7 +1415,10 @@ class testcaseCommands
     $guiObj->viewerArgs['user_feedback'] = $guiObj->user_feedback;
     
     //add by zhouzhaoxin for add reviewer name object
-    $guiObj->reviewer_name = "";
+    if (!isset($guiObj->reviewer_name))
+    {
+        $guiObj->reviewer_name = "";
+    }
 
   
     $this->tcaseMgr->show($smartyObj,$guiObj,$identity,$this->grants); 

@@ -7706,10 +7706,9 @@ class testcase extends tlObjectWithAttachments
       //select case_id by tcversion_id
       //??
       
-      $sql = "insert into ".$this->db->get_table('tccase_chg_log')
+      $sql = "replace into ".$this->db->get_table('tccase_chg_log')
             ."(case_id, user_id, update_ts) values(".$tcversion_id.","
-            .$_SESSION['currentUser']->dbID.",now())";
-            file_put_contents("D:\\jim\\log", $sql);
+            .$_SESSION['currentUser']->dbID.",curdate())";
             //var_dump($sql);die;
       if($this->db->exec_query($sql)){
           $re_status = true;

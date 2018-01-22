@@ -72,6 +72,18 @@ switch($args->doc_type)
         $build_mgr = new build_mgr($db);
         $build_info = $build_mgr->get_by_id($args->build_id);
         $gui->buildName = htmlspecialchars($build_info['name']);
+        if (!isset($gui->ajaxTree->root_node->name))
+        {
+            $gui->ajaxTree->root_node->name = '';
+        }
+        if (!isset($gui->ajaxTree->root_node->id))
+        {
+            $gui->ajaxTree->root_node->id = '';
+        }
+        if (!isset($gui->ajaxTree->root_node->href))
+        {
+            $gui->ajaxTree->root_node->href = '';
+        }
         /*
         $opt_etree->hideTestCases = HIDE_TESTCASES;
         $opt_etree->tc_action_enabled = false;

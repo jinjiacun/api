@@ -40,7 +40,6 @@ $tpl          = $templateCfg->default_template;
 
 $smarty->assign('gui',$gui);
 $smarty->display($templateCfg->template_dir . $tpl);
-
 /**
 * initialize Gui
 */
@@ -135,7 +134,7 @@ function initializeGuiForResult(&$dbHandler,$argsObj,&$guiObj)
   $mgr = new testproject($dbHandler);
   $guiObj->searchDone = 1;
   //$argsObj->user_id   = 293;
-  $guiObj->resultSet  = $mgr->getCountCreateOrModify($argsObj->tproject_id,$argsObj->user_id,$options); 
+  $guiObj->resultSet  = $mgr->getCountCreateOrModify($argsObj->tproject_id,$argsObj->user_id,$options);
   $guiObj->user_company_map; 
   if($guiObj->resultSet 
   && count($guiObj->resultSet)){
@@ -284,3 +283,4 @@ function checkRights(&$db,&$user)
   return $user->hasRight($db,'testplan_metrics');
 }
 ?>
+

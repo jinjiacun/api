@@ -194,7 +194,7 @@ function execTree(&$dbHandler,$build_id, &$menuUrl,$context,$objFilters,$objOpti
             }
             else
             {
-                if( $my['options']['include_unassigned'] )
+                if(isset($my['options']['include_unassigned']) && $my['options']['include_unassigned'] )
                 {
                     for ($idx = 0; $idx < $tcv_count; $idx++)
                     {
@@ -248,16 +248,25 @@ function execTree(&$dbHandler,$build_id, &$menuUrl,$context,$objFilters,$objOpti
                 continue;
             }
             
-            if ($tplan_tcv_set[$idx]['tcversion_id'] == $exec_build_set[$jdx]['tcversion_id'])
+            if (isset($tplan_tcv_set[$idx]['tcversion_id']) &&
+                isset($exec_build_set[$jdx]['tcversion_id']))
             {
-                $tplan_tcv_set[$idx]['exec_status'] = $exec_build_set[$jdx]['status'];
-                $idx++;
-                $jdx++;
-            }
-            else if ($tplan_tcv_set[$idx]['tcversion_id'] > $exec_build_set[$jdx]['tcversion_id']
-                && $jdx < $exec_count)
-            {
-                $jdx++;
+                if ($tplan_tcv_set[$idx]['tcversion_id'] == $exec_build_set[$jdx]['tcversion_id'])
+                {
+                    $tplan_tcv_set[$idx]['exec_status'] = $exec_build_set[$jdx]['status'];
+                    $idx++;
+                    $jdx++;
+                }
+                else if ($tplan_tcv_set[$idx]['tcversion_id'] > $exec_build_set[$jdx]['tcversion_id']
+                    && $jdx < $exec_count)
+                {
+                    $jdx++;
+                }
+                else
+                {
+                    $tplan_tcv_set[$idx]['exec_status'] = 'n';
+                    $idx++;
+                }
             }
             else
             {
@@ -292,7 +301,7 @@ function execTree(&$dbHandler,$build_id, &$menuUrl,$context,$objFilters,$objOpti
         
             for ($idx = 0; $idx < $tcv_count; $idx++)
             {
-                if( !in_array($tplan_tcv_set[$idx]['exec_status'],$dummy) )
+                if(!isset($tplan_tcv_set[$idx]['exec_status']) || !in_array($tplan_tcv_set[$idx]['exec_status'],$dummy) )
                 {
                     $tplan_tcv_set[$idx]['drop_info'] = true;
                 }

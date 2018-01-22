@@ -353,6 +353,12 @@ function processTestCase(&$dbHandler,$tplEngine,$args,&$gui,$grants,$cfg)
     $identity->id = $args->id;
     $identity->tproject_id = $args->tproject_id;
     $identity->version_id = $args->tcversion_id;
+    
+    //add by zhouzhaoxin for add reviewer name object
+    if (!isset($gui->reviewer_name))
+    {
+        $gui->reviewer_name = "";
+    }
 
     try
     {

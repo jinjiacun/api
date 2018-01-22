@@ -10,12 +10,29 @@ require_once('common.php');
 require_once('displayMgr.php');
 
 $templateCfg = templateConfiguration();//获取数据渲染的视图模板
+$stage_id = 1;
+if(isset($_REQUEST['stage_id'])){
+    $stage_id = intval($_REQUEST['stage_id']);
+}
+#var_dump($stage_id);
 $args = init_args($db);
 $tplan_mgr = new testplan($db);
 $gui = initializeGui($db,$args,$tplan_mgr);
 $gui->tplan_id = $args->tplan_id;
+$gui->format   = $args->format;
+$gui->stage_id = $args->stage_id;
 $metricsMgr = new tlTestPlanMetrics($db);
-$dummy = $metricsMgr->getTestplanTotalsTestcaseForRender($args->tplan_id);
+
+if($args->json){    
+    $dummy = $metricsMgr->getTestplanTotalsTestcaseForRenderByStage($args->tplan_id, $stage_id);
+    $list = $metricsMgr->getAutoBuildStatusForRenderByStage($args->tplan_id, $stage_id);
+    echo json_encode(array('stat'=>$dummy,
+                     'list'=>$list,
+                     ), JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
+$dummy = $metricsMgr->getTestplanTotalsTestcaseForRenderByStage($args->tplan_id, $stage_id);
 if(is_null($dummy))
 {
     // no test cases -> no report
@@ -34,7 +51,8 @@ else
     $results = null;
     if($gui->do_report['status_ok'])
     {
-        $gui->statistics->overallBuildStatus = $metricsMgr->getAutoBuildStatusForRender($args->tplan_id);
+        $gui->statistics->overallBuildStatus = $metricsMgr->getAutoBuildStatusForRenderByStage($args->tplan_id, 
+                                                                                               $stage_id);
         $gui->displayBuildMetrics = !is_null($gui->statistics->overallBuildStatus);
     }
 
@@ -50,10 +68,12 @@ displayReport($templateCfg->template_dir . $templateCfg->default_template, $smar
 */
 function init_args(&$dbHandler)
 {
-    $iParams = array("apikey" => array(tlInputParameter::STRING_N,32,64),
-        "tproject_id" => array(tlInputParameter::INT_N),
-        "tplan_id" => array(tlInputParameter::INT_N),
-        "format" => array(tlInputParameter::INT_N));
+    $iParams = array("apikey"     => array(tlInputParameter::STRING_N,32,64),
+                    "tproject_id" => array(tlInputParameter::INT_N),
+                    "tplan_id"    => array(tlInputParameter::INT_N),
+                    "format"      => array(tlInputParameter::INT_N),
+                    'stage_id'    => array(tlInputParameter::INT_N),
+                    'json'        => array(tlInputParameter::INT_N));
     $args = new stdClass();
     $pParams = R_PARAMS($iParams,$args);
     if( !is_null($args->apikey) )
@@ -82,7 +102,7 @@ function init_args(&$dbHandler)
         testlinkInitPage($dbHandler,true,false,"checkRights");
         $args->tproject_id = isset($_SESSION['testprojectID']) ? intval($_SESSION['testprojectID']) : 0;
     }
-
+    
     if($args->tproject_id <= 0)
     {
         $msg = __FILE__ . '::' . __FUNCTION__ . " :: Invalid Test Project ID ({$args->tproject_id})";
@@ -94,7 +114,6 @@ function init_args(&$dbHandler)
         tlog("Parameter 'format' is not defined", 'ERROR');
         exit();
     }
-
     return $args;
 }
 

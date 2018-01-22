@@ -1087,8 +1087,9 @@ class tlTestCaseFilterControl extends tlFilterControl {
                     "root_node={$this->args->testproject_id}&" .
                     "tcprefix=" . urlencode($tc_prefix .
                     $this->configuration->tc_cfg->glue_character);
-
-          $tcase_qty = $this->testproject_mgr->count_testcases($this->args->testproject_id);                    
+          
+          $tcase_qty = $this->testproject_mgr->count_testcases($this->args->testproject_id);
+          
           $root_node = new stdClass();
           $root_node->href = "javascript:EP({$this->args->testproject_id})";
           $root_node->id = $this->args->testproject_id;

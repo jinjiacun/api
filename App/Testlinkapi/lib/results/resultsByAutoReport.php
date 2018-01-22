@@ -21,7 +21,7 @@ $metricsMgr = new tlTestPlanMetrics($db);
 if(isset($_REQUEST['creatRpoert'])){
     CreatTestReport($db);
 }else if(isset($_REQUEST['testRpoert'])){
-    export_word($metricsMgr->getAutoBuildStatusForRender($_REQUEST['tplan_id']),$dummy = $metricsMgr->getTestplanTotalsTestcaseForRender($_REQUEST['tplan_id']));
+    export_word($metricsMgr->getAutoBuildStatusForRenderByStage($_REQUEST['tplan_id'],$_REQUEST['stage_id']),$dummy = $metricsMgr->getTestplanTotalsTestcaseForRenderByStage($_REQUEST['tplan_id'],$_REQUEST['stage_id']), $_REQUEST['stage_id']);
     $tmp_file = "../../Public/word/result.docx";
     $content = file_get_contents($tmp_file);
     header("Cache-Control:no-cache, must-revalidate");
@@ -36,7 +36,8 @@ if(isset($_REQUEST['creatRpoert'])){
 function CreatTestReport($curpid)
 {
     global $metricsMgr;
-    $id = $_REQUEST['tplan_id'];
+    $id       = $_REQUEST['tplan_id'];
+    $stage_id = $_REQUEST['stage_id'];
     testlinkInitPage($db,false,false,null);
     $round_precision = config_get('dashboard_precision');
     //$metricsMgr = new tlTestPlanMetrics($db);
@@ -83,7 +84,7 @@ function CreatTestReport($curpid)
     $objPHPExcel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($styleArray2);
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', '当前项目下每个轮次的执行统计');
     //详细数据
-    $dummy = $metricsMgr->getautoBuildStatusForRender($id);
+    $dummy = $metricsMgr->getautoBuildStatusForRenderByStage($id, $stage_id);
     $curLine=2;
     $objPHPExcel->getActiveSheet()->getStyle('A'.$curLine)->getAlignment()->setWrapText(true);
     $objPHPExcel->getActiveSheet()->getStyle('A'.$curLine)->applyFromArray($styleArray2);
@@ -163,7 +164,7 @@ function CreatTestReport($curpid)
 
     //当前项目中所有用例的统计
     $curLine += 1;
-    $total = $metricsMgr->getTestplanTotalsTestcaseForRender($id);
+    $total = $metricsMgr->getTestplanTotalsTestcaseForRenderByStage($id, $stage_id);
     $objPHPExcel->getActiveSheet()->mergeCells('A'.$curLine.':C'.$curLine); //合并单元格
     $objPHPExcel->getActiveSheet()->getStyle('A' . $curLine)->getAlignment()->setWrapText(true);
     $objPHPExcel->getActiveSheet()->getStyle('A' . $curLine)->applyFromArray($styleArray2);

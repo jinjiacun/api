@@ -510,7 +510,9 @@ function init_args(&$dbHandler,$cfgObj)
     $args->itsCfg = $it_mgr->getLinkedTo($args->tproject_id);
     unset($it_mgr);
   }
- 
+
+  $args->bug_no          = isset($_REQUEST['bug_no'])?htmlspecialchars(trim($_REQUEST['bug_no'])):'';
+  $args->find_version_no = isset($_REQUEST['find_version_no'])?htmlspecialchars(trim($_REQUEST['find_version_no'])):'';
   
   $inputCfg = array("bug_notes" => array("POST",tlInputParameter::STRING_N),
                     "issueType" => array("POST",tlInputParameter::INT_N),

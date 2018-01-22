@@ -86,7 +86,10 @@ class tlReports extends tlObjectWithDB
  
     $items[$xdx] = array('name' => lang_get('test_date_report'), 'href' => 'lib/results/tcCreatMsg.php?',
         'directLink' => '');
-    $xdx = 1;
+    $xdx ++;
+    $items[$xdx] = array('name' => lang_get('test_date_report'), 'href' => 'lib/results/tcCreatMsgEx.php?',
+        'directLink' => '');
+    $xdx = 2;
     foreach ($reportList as &$reportItem) 
     {
       // check validity of report   

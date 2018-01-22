@@ -74,12 +74,15 @@ foreach($matrix as $build_id => $build_execution_map)
   }
 
   // build progress
-  $build_statistics[$build_id]['progress'] = round($build_statistics[$build_id]['executed'] / 
+  $build_statistics[$build_id]['progress'] = 0;
+  if ($build_statistics[$build_id]['total'] != 0)
+  {
+      $build_statistics[$build_id]['progress'] = round($build_statistics[$build_id]['executed'] / 
                                                    $build_statistics[$build_id]['total'] * 100,2);
-
+  }
+  
   // We have to fill this if we want time at BUILD LEVEL
   $build_statistics[$build_id]['total_time'] = minutes2HHMMSS($build_statistics[$build_id]['total_time']);
-  
 }
 
 // build the content of the table

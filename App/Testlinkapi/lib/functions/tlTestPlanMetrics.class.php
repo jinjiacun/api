@@ -110,7 +110,35 @@ class tlTestPlanMetrics extends testplan
         }
         return $renderObj;
     }
-//获取每个轮次下数据的sql
+
+    // 获取每个轮次下统计数据，按阶段分
+    function getAutoBuildStatusForRenderByStage($id, $stage_id)
+    {
+        $renderObj = null;
+        $code_verbose = $this->getStatusForReports();//定义测试用例执行的结果
+        $labels = $this->resultsCfg['status_label'];//拿到resultscfg中的status_label数组
+        $metrics = $this->getAutoByBuildExecStatusByStage($id, $stage_id);
+        var_dump($metrics);
+        die;
+        if( !is_null($metrics) )
+        {
+            $renderObj = new stdClass();
+            $buildList = array_keys($metrics['total']);
+            $renderObj->info = array();
+            foreach($buildList as $buildID)
+            {
+                $totalRun = 0;
+                $renderObj->info[$buildID]['build_name'] = $metrics['active_builds'][$buildID]['name']; //每个轮次的名称
+                $renderObj->info[$buildID]['total_assigned'] = $metrics['total'][$buildID]['pd'];   //拿到每个轮次下总的分配用例
+                $renderObj->info[$buildID]["addUP"] = $metrics['repeatbuildtotal'][$buildID]['count(1)'];  //拿到每个轮次下累计的用例执行次数
+                $renderObj->info[$buildID]['fact'] = $metrics['fact'][$buildID]['qty'];  //拿到每个轮次下实际的用例执行次数
+            }
+
+        }
+        return $renderObj;
+    }
+
+    //获取每个轮次下数据的sql
     function getAutoByBuildExecStatus($id, $filters=null, $opt=null)
     {
         $debugMsg = 'Class:' . __CLASS__ . ' - Method: ' . __FUNCTION__;
@@ -131,6 +159,34 @@ class tlTestPlanMetrics extends testplan
         $exec['active_builds'] = $builds->infoSet;
         return $exec;
     }
+
+    //获取每个轮次下数据的sql,按阶段分
+    function getAutoByBuildExecStatusByStage($id, $stage_id, $filters=null, $opt=null)
+    {
+        $debugMsg = 'Class:' . __CLASS__ . ' - Method: ' . __FUNCTION__;
+        $safe_id       = intval($id);
+        $safe_stage_id = intval($stage_id);        
+        list($my,$builds,$sqlStm) = $this->helperGetExecCountersByStage($safe_id, $safe_stage_id, $filters, $opt);
+        //实际执行的用例数
+        $sqlLEBBP =  $sqlStm['LEBBP'];//查询指定轮次下不同用例版本的数据 相同用例版本的取id值最大的
+        echo 'LEBBP:';var_dump($sqlStm['LEBBP']);
+        $sql =  " SELECT COUNT(1) AS qty, TT.build_id FROM ($sqlLEBBP) AS TT " .
+            " GROUP BY build_id ";
+        $exec['fact'] = (array)$this->db->fetchRowsIntoMap($sql,'build_id');
+        //每个轮次计划分配的用例数
+        $sqllapp = $sqlStm['LAPP'];
+        echo 'lapp:';var_dump($sqlStm['LAPP']);
+        $sql = " SELECT pd, TT.build_id FROM ($sqllapp) AS TT " ;
+        $exec['total'] = (array)$this->db->fetchRowsIntoMap($sql,'build_id');
+        //累计执行的用例数
+        $sqlLABP = $sqlStm['LABP'];
+        echo 'labp:';var_dump($sqlStm['LABP']);
+        $exec['repeatbuildtotal'] = (array)$this->db->fetchRowsIntoMap($sqlLABP,'build_id');
+        $exec['active_builds'] = $builds->infoSet;
+        return $exec;
+    }
+
+
     //获取当前项目下的所有用例数 和通过用例数 的执行情况
     function  getTestplanTotalsTestcaseForRender($id, $filters=null, $opt=null)
     {
@@ -138,10 +194,18 @@ class tlTestPlanMetrics extends testplan
         $safe_id = intval($id);
         list($my,$builds,$sqlStm) = $this->helperGetExecCounters($safe_id, $filters, $opt);
         $sqlLATT =  $sqlStm['LATT'];
-        $sql = "SELECT COUNT(0)as at,TT.id FROM ($sqlLATT) AS TT";
+        #$sql = "SELECT COUNT(0)as at,TT.id FROM ($sqlLATT) AS TT";
+        $sql  = "select count(distinct(tt.tcversion_id)) as at,max(b.id) as id " 
+                ." from ".$this->db->get_table("builds")." as b left join "
+                ." ".$this->db->get_table('testplan_tcversions')." as tt "
+                ." on tt.testplan_id = b.testplan_id and tt.build_id = b.id "
+                ." right join ".$this->db->get_table("nodes_hierarchy")." as nh "
+                ." on tt.tcversion_id = nh.id "
+                ." where  b.testplan_id= $id;";
+        //var_dump($sql);
         $exect['all_tc'] = (array)$this->db->fetchRowsIntoMap($sql,'id');
         $sqlLATPT =  $sqlStm['LATPT'];
-        $sqld = "SELECT COUNT(0)as pt,et.id FROM ($sqlLATPT) AS et";
+        $sqld = "SELECT COUNT(0)as pt,et.id FROM ($sqlLATPT) AS et where et.status='p'";
         $exect['all_passtc'] = (array)$this->db->fetchRowsIntoMap($sqld,'id');
         $exectd = array();
         $buildList = array_keys($exect);
@@ -156,6 +220,45 @@ class tlTestPlanMetrics extends testplan
         $exectd['percentage']= round($exectd['pt']/$exectd['at']*100,2);
         return $exectd;
     }
+
+    //获取当前项目下的所有用例数 和通过用例数 的执行情况,分阶段筛选
+    function  getTestplanTotalsTestcaseForRenderByStage($id, $stage_id, $filters=null, $opt=null)
+    {
+        global $tlCfg;
+        $stage_name = $tlCfg->build_stage[$stage_id];
+        $debugMsg = 'Class:' . __CLASS__ . ' - Method: ' . __FUNCTION__;
+        $safe_id        = intval($id);
+        $safe_stage_id  = intval($stage_id);
+        list($my,$builds,$sqlStm) = $this->helperGetExecCountersByStage($safe_id, $stage_id, $filters, $opt);
+        $sqlLATT =  $sqlStm['LATT'];
+        #$sql = "SELECT COUNT(0)as at,TT.id FROM ($sqlLATT) AS TT";
+        $sql  = "select count(distinct(tt.tcversion_id)) as at,max(b.id) as id " 
+                ." from ".$this->db->get_table("builds")." as b left join "
+                ." ".$this->db->get_table('testplan_tcversions')." as tt "
+                ." on tt.testplan_id = b.testplan_id and tt.build_id = b.id "
+                ." right join ".$this->db->get_table("nodes_hierarchy")." as nh "
+                ." on tt.tcversion_id = nh.id "
+                ." where  b.testplan_id= $id and b.name like '%{$stage_name}%';";
+        
+        $exect['all_tc'] = (array)$this->db->fetchRowsIntoMap($sql,'id');
+        $sqlLATPT =  $sqlStm['LATPT_EX'];
+        $sqld = "SELECT COUNT(0)as pt,et.id "
+                ." FROM ($sqlLATPT) AS et "
+                ." where et.status='p' and et.name like '%{$stage_name}%'; ";
+        $exect['all_passtc'] = (array)$this->db->fetchRowsIntoMap($sqld,'id');
+        $exectd = array('at'=>0,'pt'=>0);
+        $buildList = array_keys($exect);
+        foreach($exect as $item)
+        {
+               foreach($item as $v)
+               {
+                   if($v['at']){ $exectd['at'] = $v['at'];}
+                   if($v['pt']){ $exectd['pt'] = $v['pt'];}
+               }
+        }
+        $exectd['percentage']= round($exectd['pt']/$exectd['at']*100,2);
+        return $exectd;
+    }    
 
   /**
    * Function returns prioritized test result counter
@@ -1046,11 +1149,15 @@ class tlTestPlanMetrics extends testplan
       {
           return null;  
       }
-  
-      $sql = "select build_id, status, count(0) as qty " .
-          " from ( select tptcv.tcversion_id, tptcv.build_id, COALESCE (lebp.status, 'n') as status " .
-          " from " . 
-          $this->db->get_table('testplan_tcversions') . " tptcv " .
+
+      $sql = "set @build_ids = '$builds->inClause';";
+      $this->db->exec_query($sql);
+      /*
+      $sql = "select build_id, status, count(0) as qty " 
+            ." from ( "
+            ."       select tptcv.tcversion_id, tptcv.build_id, COALESCE (lebp.status, 'n') as status "
+            ."       from " 
+            .$this->db->get_table('testplan_tcversions') . " tptcv " .
           " left outer join ( " .
           " select ee.tcversion_id, ee.build_id, ee.platform_id, max(ee.id) as id, ee.status from " .
           $this->db->get_table('executions') . " ee " .
@@ -1061,8 +1168,36 @@ class tlTestPlanMetrics extends testplan
           " where tptcv.testplan_id = " . $safe_id .
           " and tptcv.build_id in ( " . $builds->inClause . ") ) sqpl " . 
           " group by build_id, status";
-  
+      */
+     $sql = "select build_id, status, count(0) as qty " 
+            ." from ( "
+            ."       select tptcv.tcversion_id, tptcv.build_id, COALESCE (lebp.status, 'n') as status "
+            ."       from " 
+            .$this->db->get_table('testplan_tcversions') . " tptcv " .
+          " left outer join ( " .
+          " select ee.tcversion_id, ee.build_id, ee.platform_id, max(ee.id) as id, ee.status from " .
+          $this->db->get_table('executions') . " ee " .
+          " where ee.testplan_id = " . $safe_id .
+          " and find_in_set(ee.build_id ,@build_ids ) " .
+          " group by ee.tcversion_id, ee.platform_id, ee.build_id) as lebp " .
+          " on lebp.build_id = tptcv.build_id and lebp.tcversion_id = tptcv.tcversion_id " .
+          " where tptcv.testplan_id = " . $safe_id .
+          " and find_in_set(tptcv.build_id , @build_ids) ) sqpl " . 
+          " group by build_id, status";
+      if($id == 764205){$begin_time = microtime(true);}
       $dummy = $this->db->get_recordset($sql);
+      if($id == 764205){
+        $end_time = microtime(true);
+        echo "<br/>";
+        echo __FUNCTION__.':'.($end_time - $begin_time);
+        echo "<br/>";
+        echo $sql;
+        echo "<br/>";
+      }
+
+
+
+
       
       $builds_exec = array();
       $codeVerbose = array_flip($this->map_tc_status);
@@ -1366,13 +1501,13 @@ class tlTestPlanMetrics extends testplan
     $exec_set     = $this->db->get_recordset($sql_exec);
     $exec_num_set = $this->db->get_recordset($sql_exec_num);
     
-    var_dump($sql_ua);
+   /* var_dump($sql_ua);
     echo "<br/><br/>";
     var_dump($sql_exec);
     echo "<br/><br/>";
     var_dump($sql_exec_num);
-    echo "<br/><br/>";
-    die;
+    echo "<br/><br/>";*/
+    #die;
 
    /* var_dump($sql_ua);
     echo "<br/><br/>";
@@ -1801,92 +1936,29 @@ class tlTestPlanMetrics extends testplan
           foreach($code_verbose as $statusCode => $statusVerbose)
           {
             $out[$topItemID][$itemID][$statusVerbose]['count'] = $elem[$statusCode]['exec_qty'];
-            $pc = ($elem[$statusCode]['exec_qty'] / $out[$topItemID][$itemID]['total']) * 100;
+            $pc = 0;
+            if ($out[$topItemID][$itemID]['total'] != 0)
+            {
+                $pc = ($elem[$statusCode]['exec_qty'] / $out[$topItemID][$itemID]['total']) * 100;
+            }
             $out[$topItemID][$itemID][$statusVerbose]['percentage'] = number_format($pc, 1);
 
             if($statusVerbose != 'not_run')
             {
               $progress += $elem[$statusCode]['exec_qty'];
             }
-          }  
-          $progress = ($progress / $out[$topItemID][$itemID]['total']) * 100;
+          }
+          if ($out[$topItemID][$itemID]['total'] != 0)
+          {
+              $progress = ($progress / $out[$topItemID][$itemID]['total']) * 100;
+          }
+          else 
+          {
+              $progress = 0;
+          }
           $out[$topItemID][$itemID]['progress'] = number_format($progress,1); 
           $out[$topItemID][$itemID]['total_time'] = 
               number_format($metrics['total'][$topItemID][$itemID]['total_time'],2,'.',''); 
-        }
-      }
-    }
-    return $renderObj;
-  }
-
-  /**
-   * @see resultsByTesterPerBuild.php
-   * @internal revisions
-   *
-   * @since 1.9.6
-   * modify
-   * author:jinjiacun
-   * time:2018-01-03 20:24
-   */
-  function getStatusTotalsByBuildUAForRenderEx($id,
-                                               $build_id = 0,
-                                               $user_id = 0,
-                                               $mod_id = 0,
-                                               $begin_date = '',
-                                               $end_date = '',
-                                               $opt=null)
-  {
-    $my = array('opt' => array('processClosedBuilds' => true));
-    $my['opt'] = array_merge($my['opt'],(array)$opt);
-    
-    $renderObj = null;
-    $code_verbose = $this->getStatusForReports();
-    $labels = $this->resultsCfg['status_label'];
-    $metrics = $this->getExecCountersByBuildUAExecStatusEx($id,
-                                                           $build_id,
-                                                           $user_id,
-                                                           $mod_id,
-                                                           $begin_date,
-                                                           $end_date,
-                                                           null,
-                                                           $my['opt']);
-    
-    if( !is_null($metrics) )
-    {
-      $renderObj = new stdClass();
-      $topItemSet = array_keys($metrics['with_tester']);
-      $renderObj->info = array();  
-      $out = &$renderObj->info;
-
-      $topElem = &$metrics['with_tester'];
-      foreach($topItemSet as $topItemID)#build_id
-      {
-        $itemSet = array_keys($topElem[$topItemID]);
-        foreach($itemSet as $itemID)    #user_id
-        {
-          $itemModSet = array_keys($topElem[$topItemID][$itemID]);
-          foreach($itemModSet as $itemModID){
-            $elem = &$topElem[$topItemID][$itemID][$itemModID];
-            $out[$topItemID][$itemID][$itemModID]['total'] = $metrics['total'][$topItemID][$itemID][$itemModID]['qty'];
-            $out[$topItemID][$itemID][$itemModID]['tc_exec_times'] = $elem['tc_exec_times'];
-            $progress = 0; 
-            foreach($code_verbose as $statusCode => $statusVerbose)
-            {
-              $out[$topItemID][$itemID][$itemModID][$statusVerbose]['count'] = $elem[$statusCode]['exec_qty'];
-              $pc = ($elem[$statusCode]['exec_qty'] / $out[$topItemID][$itemID][$itemModID]['total']) * 100;
-              $out[$topItemID][$itemID][$itemModID][$statusVerbose]['percentage'] = number_format($pc, 2);
-
-              if($statusVerbose != 'not_run')
-              {
-                $progress += $elem[$statusCode]['exec_qty'];
-              }
-            }  
-            $progress = ($progress / $out[$topItemID][$itemID][$itemModID]['total']) * 100;
-            $out[$topItemID][$itemID][$itemModID]['progress'] = number_format($progress,2); 
-            $out[$topItemID][$itemID][$itemModID]['total_time'] = 
-                number_format($metrics['total'][$topItemID][$itemID][$itemModID]['total_time'],2,'.',''); 
-
-          }        
         }
       }
     }
@@ -2269,7 +2341,6 @@ class tlTestPlanMetrics extends testplan
     
     unset($dx);
     unset($keySet);
-//      print_r($exec);die;
     return $exec;
   }
 
@@ -2533,13 +2604,191 @@ class tlTestPlanMetrics extends testplan
             " WHERE TT.testplan_id =". intval($id) .
             " GROUP BY TT.tcversion_id ";
     //当前项目下通过的用例
-      $sql['LATPT'] = " SELECT EE.tcversion_id,MAX(id) AS id ".
+      $sql['LATPT'] = " SELECT EE.tcversion_id,status,MAX(id) AS id ".
           " FROM ".$this->db->get_table('executions'). " EE ".
           " WHERE EE.testplan_id =". intval($id) .
            " AND EE.`status` in('p','f','b')".
           " GROUP BY EE.tcversion_id ";
     return array($my,$bi,$sql);
   }  
+
+   /** 
+   *    
+   *  @used-by
+   *  getExecutionsByStatus()
+   *  getNotRunWithTesterAssigned()
+   *  getNotRunWOTesterAssigned()
+   *  getExecCountersByBuildExecStatus()
+   *  getExecCountersByKeywordExecStatus()
+   *  getExecCountersByPriorityExecStatus()
+   *  getExecCountersByBuildUAExecStatus()
+   *  getExecCountersByTestSuiteExecStatus()
+   *   
+   *    
+   *  @internal revisions
+   *  
+   */    
+  function helperGetExecCountersByStage($id, $stage_id, $filters, $opt)//获取对项目进行获取的一些公共数据,按阶段分
+  {
+    global $tlCfg;
+    $stage_name = $tlCfg->build_stage[$stage_id];
+    $sql = array();
+    $my = array();
+    $my['opt'] = array('getOnlyAssigned'     => false, 
+                       'tprojectID'          => 0, 
+                       'getUserAssignment'   => false,
+                       'getPlatformSet'      => false, 
+                       'processClosedBuilds' => true);
+    $my['opt'] = array_merge($my['opt'], (array)$opt);
+    
+    $my['filters'] = array('buildSet' => null);
+    $my['filters'] = array_merge($my['filters'], (array)$filters);
+    
+    // Build Info
+    $bi = new stdClass();
+    $bi->idSet = $my['filters']['buildSet']; 
+    $bi->inClause = '';
+    $bi->infoSet = null;
+    if( is_null($bi->idSet) )
+    {
+      $openStatus = $my['opt']['processClosedBuilds'] ? null : 1;      
+      $bi->idSet = array_keys($bi->infoSet = $this->get_builds($id,testplan::ACTIVE_BUILDS,$openStatus, array('like_name'=>$stage_name)));
+    }
+    
+    // ==========================================================================
+    // Emergency Exit !!!
+    if( is_null($bi->idSet) )
+    {
+        //throw new Exception(__METHOD__ . " - Can not work with empty build set");
+    }
+    // ==========================================================================
+    
+    
+    // Things seems to be OK
+      //$this->db 走了一系列的调用 进入底层的数据库连接类object中的getDBTables方法 数据库的连接信息在common.php中
+    $bi->inClause = implode(",",$bi->idSet);
+    if( $my['opt']['getOnlyAssigned'] )
+    {
+      $sql['getAssignedFeatures']   =  " /* Get feature id with Tester Assignment */ " .
+                                       " JOIN ".$this->db->get_table('user_assignments')." UA " .
+                                       " ON UA.feature_id = TPTCV.id " .
+                                       " AND UA.build_id IN ({$bi->inClause}) " .
+                                       " AND UA.type = {$this->execTaskCode} ";
+      $bi->source = "UA";
+      $bi->joinAdd = " AND E.build_id = UA.build_id ";
+      $bi->whereAddExec = " AND {$bi->source}.build_id IN ({$bi->inClause}) "; 
+      $bi->whereAddNotRun = $bi->whereAddExec; 
+    }            
+    else
+    {
+      $sql['getAssignedFeatures'] = '';
+      $bi->source = "E";
+      
+      // TICKET 5353
+      // $bi->joinAdd = "";
+      $bi->joinAdd = " AND E.build_id IN ({$bi->inClause}) ";
+      
+      // Why ?
+      // If I'm consider test cases WITH and WITHOUT Tester assignment,
+      // I will have no place to go to filter for builds.
+      // Well at least when trying to get EXECUTED test case, I will be able
+      // to apply filter on Executions table.
+      // Why then I choose to have this blank ANYWAY ?
+      // Because I will get filtering on Build set through 
+      // the Latest Execution queries (see below sql['LE'], sql['LEBP'].
+      // 
+      // Anyway we need to backup all these thoughts with a long, long test run
+      // on test link itself.
+      $bi->whereAddExec = " AND {$bi->source}.build_id IN ({$bi->inClause}) "; 
+      $bi->whereAddNotRun = ""; 
+    }               
+
+    $sql['getUserAssignment']['not_run'] = "";
+    $sql['getUserAssignment']['exec'] = "";
+
+    if( $my['opt']['getUserAssignment'] )
+    {
+      $sql['getUserAssignment']['not_run'] = 
+        " LEFT JOIN ".$this->db->get_table('user_assignments')." UA " .
+        " ON UA.feature_id = TPTCV.id " .
+        " AND UA.build_id = BU.id " .
+        " AND UA.type = {$this->execTaskCode} ";
+   
+      $sql['getUserAssignment']['exec'] = 
+        " LEFT JOIN ".$this->db->get_table('user_assignments')." UA " .
+        " ON UA.feature_id = TPTCV.id " .
+        " AND UA.build_id = E.build_id " .
+        " AND UA.type = {$this->execTaskCode} ";
+    }
+
+
+    // Latest Execution IGNORING Build and Platform
+    $sql['LE'] = " SELECT EE.tcversion_id,EE.testplan_id,MAX(EE.id) AS id " .
+                 " FROM ".$this->db->get_table('executions')." EE " . 
+                 " WHERE EE.testplan_id=" . intval($id) . 
+                 " AND EE.build_id IN ({$bi->inClause}) " .
+                 " GROUP BY EE.tcversion_id,EE.testplan_id ";
+
+
+    // Latest Execution By Platform (ignore build)
+    $sql['LEBP'] =   " SELECT EE.tcversion_id,EE.testplan_id,EE.platform_id,MAX(EE.id) AS id " .
+                    " FROM ".$this->db->get_table('executions')." EE " . 
+                     " WHERE EE.testplan_id=" . intval($id) . 
+                    " AND EE.build_id IN ({$bi->inClause}) " .
+                     " GROUP BY EE.tcversion_id,EE.testplan_id,EE.platform_id ";
+
+    // Last Executions By Build (LEBB) (ignore platform)
+    $sql['LEBB'] =  " SELECT EE.tcversion_id,EE.testplan_id,EE.build_id,MAX(EE.id) AS id " .
+                    " FROM ".$this->db->get_table('executions')." EE " . 
+                    " WHERE EE.testplan_id=" . intval($id) . 
+                    " AND EE.build_id IN ({$bi->inClause}) " .
+                    " GROUP BY EE.tcversion_id,EE.testplan_id,EE.build_id ";
+  
+
+    // Last Executions By Build and Platform (LEBBP)
+    $sql['LEBBP'] = " SELECT EE.tcversion_id,EE.testplan_id,EE.platform_id,EE.build_id," .
+                    " MAX(EE.id) AS id " .
+                    " FROM ".$this->db->get_table('executions')." EE " . 
+                    " WHERE EE.testplan_id=" . intval($id) . 
+                    " AND EE.build_id IN ({$bi->inClause}) " .
+                    " GROUP BY EE.tcversion_id,EE.testplan_id,EE.platform_id,EE.build_id ";
+
+     //不同轮次的计划用例数
+      $sql['LAPP'] = " SELECT count(1) pd,TT.tcversion_id,TT.build_id".
+          " FROM ".$this->db->get_table('testplan_tcversions'). " TT ".
+          " WHERE TT.build_id IN ({$bi->inClause}) ".
+          " GROUP BY TT.build_id ";
+
+
+      //不同轮次下累计的执行用例数
+      $sql['LABP'] =  " SELECT count(1),EE.build_id" .
+          " FROM ".$this->db->get_table('executions')." EE " .
+          " WHERE EE.testplan_id=" . intval($id) .
+          " AND EE.build_id IN ({$bi->inClause}) " .
+          " GROUP BY EE.build_id ";
+      //当前项目的所有测试用例数
+      $sql['LATT'] = " SELECT TT.tcversion_id,MAX(id) AS id ".
+          " FROM ".$this->db->get_table('testplan_tcversions'). " TT ".
+            " WHERE TT.testplan_id =". intval($id) .
+            " GROUP BY TT.tcversion_id ";
+    //当前项目下通过的用例
+      $sql['LATPT'] = " SELECT EE.tcversion_id,status,MAX(id) AS id ".
+          " FROM ".$this->db->get_table('executions'). " EE ".
+          " inner join ".$this->db->get_table('builds')." b ".
+          " on EE.build_id = b.id ".
+          " WHERE EE.testplan_id =". intval($id) .
+           " AND EE.`status` in('p','f','b')".
+          " GROUP BY EE.tcversion_id ";
+      $sql['LATPT_EX'] = " SELECT EE.tcversion_id,status,MAX(EE.id) AS id,b.name ".
+          " FROM ".$this->db->get_table('executions'). " EE ".
+          " inner join ".$this->db->get_table('builds')." b ".
+          " on EE.build_id = b.id ".
+          " WHERE EE.testplan_id =". intval($id) .
+           " AND EE.`status` in('p','f','b')".
+          " GROUP BY EE.tcversion_id ";
+
+    return array($my,$bi,$sql);
+  }
 
   /** 
    *    

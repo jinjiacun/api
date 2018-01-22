@@ -2060,8 +2060,6 @@ function setPublicStatus($id,$status)
 */
   function get_all_testcases_id($idList,&$tcIDs,$options = null)
   {
-    $cache_file = "d:/xampp/htdocs/testlink/cache/performance.log";
-    $start_time = microtime(true);
     static $tcNodeTypeID;
     static $tsuiteNodeTypeID;
     static $debugMsg;
@@ -2091,8 +2089,8 @@ function setPublicStatus($id,$status)
     $sql = "/* $debugMsg */  SELECT id,node_type_id from ".$this->db->get_table('nodes_hierarchy')." " .
            " WHERE parent_id IN ({$idList})";
     $sql .= " AND node_type_id IN ({$tcNodeTypeID},{$tsuiteNodeTypeID}) "; 
+    
     $result = $this->db->exec_query($sql);
-    file_put_contents($cache_file, $sql."\r\n", FILE_APPEND);
     if ($result)
     {
       $suiteIDs = array();
@@ -2108,7 +2106,6 @@ function setPublicStatus($id,$status)
                    " WHERE NH.parent_id = {$row['id']} ";
             
             $rs = $this->db->fetchRowsIntoMap($sql,'parent_id');
-            file_put_contents($cache_file, $sql."\r\n", FILE_APPEND);
             $tcIDs[$row['id']] = $rs[$row['id']]['tc_external_id'];
           }
           else
@@ -2121,8 +2118,6 @@ function setPublicStatus($id,$status)
           $suiteIDs[] = $row['id'];
         }
       }
-      $end_time = microtime(true);
-      file_put_contents($cache_file, sprintf("diff_time:".($end_time - $start_time))."\r\n", FILE_APPEND);
       if (sizeof($suiteIDs))
       {
         $suiteIDs  = implode(",",$suiteIDs);
@@ -3859,7 +3854,7 @@ function getPublicAttr($id)
     $opt = array_merge($opt,(array)$options);
     $safe = array('user_id' => intval($user_id), 'tproject_id' => intval($id));
 
-    $eid = $this->db->db->concat('TPROJ.prefix',"'{$cfg->glue_character}'",'TCV.tc_external_id'); 
+    $eid = $this->db->concat('TPROJ.prefix',"'{$cfg->glue_character}'",'TCV.tc_external_id'); 
 
     $target = array();
     $this->get_all_testcases_id($id,$target);
@@ -4049,7 +4044,6 @@ function getPublicAttr($id)
    */
   function getCountExectionByUser($id, $tplan_id, $user_id, $options = null)
   {
-    //$begin_time = microtime(true);
     $opt = array('startTime' => null, 'endTime' => null);
     $opt = array_merge($opt,(array)$options);
     $safe = array('user_id' => intval($user_id), 
@@ -4059,10 +4053,7 @@ function getPublicAttr($id)
     $eid = $this->db->db->concat('TPROJ.prefix',"'{$cfg->glue_character}'",'TCV.tc_external_id'); 
 
     $target = array();
-    $this->get_all_testcases_id($id,$target);  
-    //print_r($target);
-    $end_time = microtime(true);
-    //echo 'diff_time:'.($end_time - $begin_time)."<br/>";  
+    $this->get_all_testcases_id($id,$target);
     $itemQty   = count($target);    
     $rs        = null;
 
@@ -4095,14 +4086,78 @@ function getPublicAttr($id)
       }
       $sql .= " group by U.login";
         //var_dump($sql);
-      //$end_time = microtime(true);
-    //echo 'diff_time:'.($end_time - $begin_time)."<br/>";
-      $rs  = $this->db->fetchRowsIntoMap($sql,'login');      
+      $rs  = $this->db->fetchRowsIntoMap($sql,'login');
     }
-    //$end_time = microtime(true);
-    /*echo sprintf('diff_time:'.($end_time - $begin_time));
-    die;*/
-    return $rs;    
+
+    return $rs;
+  }
+
+  /**
+   * author:jinjiacun
+   * time:2018-1-15
+   * [getCaseAndBug description]
+   * @param  [type] $id       [description]
+   * @param  [type] $tplan_id [description]
+   * @param  [type] $build_id [description]
+   * @param  [type] $options  [description]
+   * @return [type]           [description]
+   */
+  function getCaseAndBug($id, $tplan_id, $build_id, $case_no, $bug_no, $find_version_no, $options = null){
+    $opt = array('startTime' => null, 'endTime' => null);
+    $opt = array_merge($opt,(array)$options);
+    $safe = array('user_id'         => intval($user_id), 
+                  'tproject_id'     => intval($id),
+                  'tplan_id'        => intval($tplan_id),
+                  'build_id'        => intval($build_id),
+                  'case_no'         => intval($case_no),
+                  'bug_no'          => htmlspecialchars($bug_no),
+                  'find_version_no' => htmlspecialchars($find_version_no),
+                  );
+    $eid = $this->db->db->concat('TPROJ.prefix',"'{$cfg->glue_character}'",'TCV.tc_external_id'); 
+
+    $target = array();
+    $this->get_all_testcases_id($id,$target);  
+    //print_r($target);
+    $end_time = microtime(true);
+    //echo 'diff_time:'.($end_time - $begin_time)."<br/>";  
+    $itemQty   = count($target);    
+    $rs        = null;
+
+    if($itemQty > 0)
+    {
+      $sql = " /* $debugMsg */ SELECT TCV.id as tcversion_id,TCV.tc_external_id as tcase_no, ".
+             " Ex.testplan_id,Ex.id as exec_id,Ex.bug_no,Ex.find_version_no, ".
+             " Ex.build_id, U.login,U.first,U.last,Ex.execution_ts,Ex.status, ".
+             " NHTC.name AS tcase_name, ". 
+             " NHTC.id  AS tcase_id".            
+             " FROM ".$this->db->get_table('testprojects')." TPROJ,".$this->db->get_table('nodes_hierarchy')." NHTC " .
+             " JOIN ".$this->db->get_table('nodes_hierarchy')." NHTCV ON NHTCV.parent_id = NHTC.id " .
+             " JOIN ".$this->db->get_table('tcversions')." TCV ON TCV.id = NHTCV.id " . 
+             " JOIN ".$this->db->get_table('executions')." Ex ON Ex.tcversion_id = TCV.id".
+             " JOIN ".$this->db->get_table('users')." U ON U.id = Ex.tester_id " .
+             " WHERE TPROJ.id = {$safe['tproject_id']} " .             
+             " AND NHTC.id IN (" . implode(',', $target) . ")";             
+      if($tplan_id <> 0){
+          $sql .= " AND Ex.testplan_id = {$safe['tplan_id']} ";
+      }
+      if($build_id <> 0){
+          $sql .= " AND Ex.build_id = {$safe['build_id']} ";
+      }
+      if($case_no <> 0){
+          $sql .= " AND TCV.tc_external_id = {$safe['case_no']}";
+      }
+      if(trim($bug_no) <> ""){
+          $sql .= " AND Ex.bug_no = '{$safe["bug_no"]}' ";
+      }
+      if(trim($find_version_no) <> ""){
+          $sql .= " AND Ex.find_version_no like '%{$safe["find_version_no"]}%' ";
+      }
+      if(trim($bug_no) == "" || trim($find_version_no) == ""){
+        $sql .= " AND (Ex.bug_no <> '' or Ex.find_version_no <> '') ";
+      }
+      $rs  = $this->db->fetchRowsIntoMap($sql,'exec_id');
+    }
+    return $rs;   
   }
 
   /**

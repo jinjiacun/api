@@ -854,7 +854,14 @@ class tree extends tlObject
     $debugMsg='Class:' .__CLASS__ . ' - Method:' . __FUNCTION__ . ' :: ';
     
     $my['opt'] = array();
-    $my['opt'] = array_merge(array('node_type' => null),$opt);
+    if ($opt == null)
+    {
+        $my['opt'] = array_merge(array('node_type' => null),$opt);
+    }
+    else 
+    {
+        $my['opt'] = array('node_type' => null);
+    }
 
     
     $sql = "SELECT MAX(node_order) AS max_order" .

@@ -122,10 +122,12 @@ function write_execution(&$db,&$exec_signature,&$exec_data,&$issueTracker)
 
       $sql = "INSERT INTO " . $db->get_table($executions_table) .
              "(build_id,tester_id,status,testplan_id,tcversion_id," .
-             " execution_ts,notes,tcversion_number,platform_id,execution_duration)".
+             " execution_ts,notes,tcversion_number,platform_id,bug_no,find_version_no,".
+             " execution_duration)".
              " VALUES ( {$exec_signature->build_id}, {$exec_signature->user_id}, '{$exec_data[$execStatusKey][$tcversion_id]}',".
              "{$exec_signature->tplan_id}, {$tcversion_id},{$db_now},'{$my_notes}'," .
-             "{$version_number},{$exec_signature->platform_id}";
+             "{$version_number},{$exec_signature->platform_id},'{$exec_signature->bug_no}',".
+             "'{$exec_signature->find_version_no}'";
 
       if(trim($exec_data['execution_duration']) == '')
       {

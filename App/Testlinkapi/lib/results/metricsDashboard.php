@@ -33,6 +33,7 @@ $labels = init_labels(array('overall_progress' => null, 'test_plan' => null, 'bu
                             'platform' => null, 'th_active_tc' => null, 'in_percent' => null));
 
 list($gui->tplan_metrics,$gui->show_platforms, $platforms) = getMetrics($db,$_SESSION['currentUser'],$args,$result_cfg, $labels);
+die;
 
 // new dBug($gui->tplan_metrics);
 if(count($gui->tplan_metrics) > 0) 
@@ -165,6 +166,8 @@ $smarty->display($templateCfg->template_dir . $templateCfg->default_template);
  */
 function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
 {
+  $debug = true;
+  $begin_time = microtime(true);
   $user_id = $args->currentUserID;
   $tproject_id = $args->tproject_id;
   $linked_tcversions = array();
@@ -195,8 +198,12 @@ function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
   } 
   
   $codeStatusVerbose = array_flip($result_cfg['status_code']);
+  if($debug){
+    echo 'test_plans_count:'.count($test_plans)."<br/>";
+    $index = 0;
   foreach($test_plans as $key => &$dummy)
   {
+    $item_begin_time = microtime(true);
     // We need to know if test plan has builds, if not we can not call any method 
     // that try to get exec info, because you can only execute if you have builds.
     //
@@ -219,7 +226,6 @@ function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
       $neurus = $metricsMgr->getExecCountersByPlatformExecStatus($key,null,
                                                                  array('getPlatformSet' => true,
                                                                        'getOnlyActiveTCVersions' => true));
-                                     
       $mm[$key]['overall']['active'] = $mm[$key]['overall']['executed'] = 0;
       foreach($neurus['with_tester'] as $platform_id => &$pinfo)
       {
@@ -253,7 +259,9 @@ function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
     }
     else
     {
+      if($key == 764205){$my_begin_time = microtime(true);}
       $mm[$key]['overall']['builds'] = $metricsMgr->getBuildExecCountersByExecStatus($key,null,null);
+      if($key == 764205){$my_end_time = microtime(true);echo 'my_diff:'.($my_end_time - $my_begin_time)."<br/>";}
       $mm[$key]['overall']['active'] = 0;
       foreach ($mm[$key]['overall']['builds'] as $build_id => $status_column)
       {
@@ -281,7 +289,14 @@ function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
       $mm[$key]['platforms'][0]['tplan_name'] = $dummy['name'];
       $mm[$key]['platforms'][0]['platform_name'] = $labels['not_aplicable'];
     } 
+    $item_end_time = microtime(true);
+    echo "key:$key,diff_time:".($item_end_time - $item_begin_time)."<br/>";
+    $index ++;
+    if($index > 2){
+      break;
+    }
   }
+}
     
   // remove duplicate platform names
   $platformsUnique = array();
@@ -293,6 +308,8 @@ function getMetrics(&$db,$userObj,$args, $result_cfg, $labels)
     }
   }
   
+  $end_time = microtime(true);
+  echo 'diff_time'.($end_time - $begin_time);
   return array($metrics, $show_platforms, $platformsUnique);
 }
 

@@ -95,7 +95,8 @@ class database
       'user_group_assign' => 'user_group_assign',
       'user_inside_group' => 'user_inside_group',
       'user_testproject_roles' => 'user_testproject_roles',
-      'users' => 'users' 
+      'users' => 'users',
+      'tscs_task' => 'tscs_task' 
       );
   
   // timer analysis

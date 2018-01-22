@@ -144,6 +144,13 @@ switch($args->feature)
       $gui->direct_link = $item_mgr->buildDirectWebLink($_SESSION['basehref'],$args->id);
     }
     $gui->id = $args->id;
+    
+    //add by zhouzhaoxin for add reviewer name object
+    if (!isset($gui->reviewer_name))
+    {
+        $gui->reviewer_name = "";
+    }
+    
     $item_mgr->show($smarty,$gui,$templateCfg->template_dir,$args->id,$args->tcversion_id,
                     $viewerArgs,$path_info,$args->show_mode);
     break;

@@ -516,8 +516,6 @@ class assignment_mgr extends tlObjectWithDB
   }
 
 
-
-
   /**
    * get hash with build id and amount of test cases assigned to testers,
    * but NOT EXECUTED.

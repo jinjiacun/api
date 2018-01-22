@@ -2162,7 +2162,8 @@ class testplan extends tlObjectWithAttachments
                                       closed_on_date,creation_ts',
                        'orderBy'  => " ORDER BY name ASC", 
                        'getCount' => false, 
-                       'buildID'  => null);
+                       'buildID'  => null,
+                       'like_name'=> null);//name like '%xxx%'
 
     $my['opt'] = array_merge($my['opt'],(array)$opt);
     if( $my['opt']['getCount'] )
@@ -2192,6 +2193,9 @@ class testplan extends tlObjectWithAttachments
       {
         $sql .= " AND id=" . intval($my['opt']['buildID']) . " ";
       }
+      if($my['opt']['like_name']){
+        $sql .= "AND name like '%".$my['opt']['like_name']."%' ";
+      }
     }  
 
 
@@ -2206,7 +2210,6 @@ class testplan extends tlObjectWithAttachments
     
     $sql .= $groupBy;
     $sql .= ($doOrderBy = !is_null($my['opt']['orderBy'])) ? $my['opt']['orderBy'] : '';
-    
     $rs = $this->db->fetchRowsIntoMap($sql,$accessField);
 
     // _natsort_builds() has to be used ONLY if name is used on ORDER BY
